@@ -1,0 +1,643 @@
+﻿@{
+    ViewBag.Title = "Nouveau Bon de Réception";
+}
+
+<div class="switch">
+    Rechercher par :
+    <label>
+        Designation
+        <input type="checkbox" ng-model="search">
+        <span class="lever"></span> Ref
+    </label>
+</div>
+<div class="switch">
+    Activer le Code barre :
+    <label>
+        Désactivé
+        <input type="checkbox" ng-model="barcode">
+        <span class="lever"></span> Activé
+    </label>
+</div>
+
+
+
+
+<div class="row">
+    <!-- BEGIN EXAMPLE TABLE widget-->
+
+
+    <div>
+        <div class="card-panel">
+            <div class="row">
+                <div class="row">
+                    <div class="col-lg-2">
+
+                        <div class="form-group">
+                            <label>Importer une commande</label>
+                            <input type="text" autocomplete="off" ng-model="filterOptions.filterBonCommande" placeholder="Numero bon de commande"
+                                   typeahead="v as v.NumBon for v  in lookupFactory.getExpand('BonCommandes', 'NumBon', $viewValue,'BonCommandeItems/Article,Fournisseur',null,'oui',null)"
+                                   @*typeahead-input-formatter="lookupFactory.format($model,'Name')"
+                                        typeahead-on-select="lookupFactory.format($model,'Name')"*@
+                                   typeahead-wait-ms=" 100"
+                                   class="" />
+                            <a onclick='javascript:window.open(" @Url.Action("PopUpBonCommande", "Administration") ", "devis", "width=730, height=650,top=0, left=0" );' class="btn-floating waves-effect waves-light cyan right" style="margin-right:-45px !important;margin-top:-50px;"><i class="mdi-content-add"></i></a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+
+                        <div class="form-group">
+                            <label>Entrez le numéro du BR</label>
+
+                            <input type="text" ng-model="item.NumBon" placeholder="Numero du BR" class="" />
+                        </div>
+                    </div>
+        
+                    <div class="col-lg-3 col-lg-offset-2">
+                        <div class="form-group">
+                            <label>Entrez un fournisseur</label>
+
+                            <input type="text" autocomplete="off" ng-model="filterOptions.filterFournisseur" id="filterFournisseur" placeholder="Nom du fournisseur"
+                                   typeahead="v as v.Name for v  in lookupFactory.get('Fournisseurs', 'Name', $viewValue)"
+                                   @*typeahead-input-formatter="lookupFactory.format($model,'Name')"
+                                        typeahead-on-select="lookupFactory.format($model,'Name')"*@
+                                   typeahead-wait-ms=" 100"
+                                   class="" />
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-lg-offset-3">
+                        <label>Date</label>
+                        <input type="date" id="datePicker" placeholder="Choisissez une date" ng-model="item.Date">
+                    </div>
+                </div>
+                @*<div class="row">
+
+                    <div>
+                        <img class="img-responsive img-thumbnail" src="{{myItem.Article.Logo}}" ng-show="myItem.Article.Logo!=null" style="height: 150px!important;" />
+                    </div>
+                </div>*@
+             
+                @if (StatistiqueController.getCompanyName() == "AQK")
+                {
+                  <div class="row">
+                    <div class="switch" style="margin-left:15px;">
+                        Prix :
+                        <label>
+                            HT
+                            <input type="checkbox" ng-model="prix">
+                            <span class="lever"></span> TTC
+                        </label>
+                    </div>
+                </div>
+                }
+                <div class="row">
+                  
+                    <div ui-grid-selection ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="fixed-action-btn" style="right:100px !important;">
+    <a ng-click="save()" class="btn-floating waves-effect waves-light btn-large cyan">
+        <i class="large mdi-content-save"></i>
+    </a>
+</div>
+
+
+@*<div class="dataTables_filter"><label>Date: <input ng-model="item.Date" type="date" id="datePicker" aria-controls="editable-sample" class="medium"></label></div>
+        <div style="margin-left:350px;" class="span6">
+            <label> Fournisseur :
+                <input type="text" autocomplete="off" ng-model="filterOptions.filterFournisseur" placeholder="choisissez un Fournisseur" id=""
+                       typeahead="v as v.Name for v  in lookupFactory.get('Fournisseurs', 'Name', $viewValue)"
+                       @*typeahead-input-formatter="lookupFactory.format($model,'Name')"
+        typeahead-on-select="lookupFactory.format($model,'Name')"
+                       typeahead-wait-ms=" 100"
+                       class="form-control">
+
+            </label>
+
+        </div>
+        <div ui-grid-selection ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+    <button class="btn btn-large btn-primary" ng-click="save()" type="button">VALIDER</button>*@<!-- END EXAMPLE TABLE widget-->
+@section Scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope','$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope,$http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+                $scope.animation = Animations.opacity;
+                $scope.barcode = false;
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                $scope.pay = new Object({ Id: breeze.core.getUuid() })
+                //$scope.$scope = $scope;
+                $scope.table = "BonReceptions";
+                $scope.lookupFactory = lookupFactory;
+                $scope.bon = 'BonReception';
+                $scope.filterOptions = {
+                    filterText: "",
+                    filterVisible: null,
+                    useExternalFilter: true,
+                    filterFournisseur: ""
+                };
+                $scope.prix = true;
+                
+                //$scope.pagingOptions = {
+                //    pageSizes: [5, 10, 30],
+                //    pageSize: 5,
+                //    totalServerItems: 0,
+                //    currentPage: 1
+                //};
+                $scope.deleteMode = false;
+                $scope.focusFirstCell = function () {
+                    $scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+                }
+                //console.log("ok")
+
+                $scope.onDblClickRow = function (rowItem) {
+
+                    console.log("dbClick")
+                };
+                $scope.gridOptions = {
+                    showColumnFooter: true,
+                    enableRowSelection: true,
+                    enableRowHeaderSelection: false,
+                    showGridFooter: true,
+                    enableFiltering: false,
+                    //paginationPageSizes: [5, 10, 30],
+                    //paginationPageSize: 5,
+                    enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                    enableColumnResizing: true,
+                    rowHeight: 40,
+                    //enableCellEditOnFocus : true,
+                };
+                Date.prototype.toDateInputValue = (function () {
+                    var local = new Date(this);
+                    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+                    return local.toJSON().slice(0, 10);
+                });
+                $('#datePicker').val(new Date().toDateInputValue());
+
+                $scope.gridOptions.multiSelect = false;
+                //$scope.gridOptions.modifierKeysToMultiSelect = false;
+                $scope.gridOptions.noUnselect = true;
+                var CellTemplateDelete = '<a style="margin-left:15px !important;" title="{{row.entity.Article.PA+10}}"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+                Date.prototype.addHours = function (h) {
+                    this.setHours(this.getHours() + h);
+                    return this;
+                }
+                $scope.scrollTo = function( rowIndex, colIndex ) {
+                    $scope.gridApi.cellNav.scrollTo( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+                };
+
+                $scope.scrollToFocus = function( rowIndex, colIndex ) {
+                    $scope.gridApi.cellNav.scrollToFocus( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+                };
+                var pressed = false;
+                var chars = [];
+                $(window).keypress(function(e) {
+                    if ($scope.filterOptions.filterFournisseur != undefined && typeof $scope.filterOptions.filterFournisseur !== 'object')
+                    {
+                        //notificationFactory.warning("Article introuvable", "Attention");
+
+                        return;
+                    }
+                    var s = String.fromCharCode( e.which );
+                    if ( s.toUpperCase() !== s && s.toLowerCase() === s && e.shiftKey ) {
+                        notificationFactory.warning("éteindre le caps lock (majuscule)", "Attention");
+                        return;
+
+                    }
+                    if (e.which >= 48 && e.which <= 57) {
+                        chars.push(String.fromCharCode(e.which));
+                    }
+                    //console.log(e.which + ":" + chars.join("|"));
+                    if (pressed == false) {
+                        setTimeout(function(){
+                            if (chars.length >= 6) {
+                                var barcode = chars.join("");
+                                //console.log("Barcode Scanned: " + barcode);
+                                // assign value to some input (or do whatever you want)
+                                $http.get('/Statistique/getArticleByBarCode/', { params: { barCode: barcode } })
+                                .success(function (data) {
+                                    ////console.log(data);
+                                    if(data != null && data != undefined && data != "")
+                                    {
+                                        if(data.BarCode.length >= 6)
+                                        {
+                                            var a = data;
+                                            $scope.item.BonReceptionItems.unshift(new Object({ Id: breeze.core.getUuid(), IdBonReception: $scope.item.Id, Article: a, IdArticle: a.Id, Pu: a.PA }));
+
+                                        }
+                                            
+                                        $("#rechercher").val("");
+                                        $("#rechercher2").val("");
+                                    }
+                                    else
+                                    {
+                                        notificationFactory.warning("Article introuvable", "Attention");
+                                        $("#rechercher").val("");
+                                        $("#rechercher2").val("");
+                                    }
+
+                                }).error(function(data){
+                                    notificationFactory.error("Erreur", "Attention");
+                                });
+                                //$(".barcode").val(barcode);
+                            }
+                            chars = [];
+                            pressed = false;
+                        },300);
+                    }
+                    pressed = true;
+                });
+
+                i = 0;
+                $scope.$watch('filterOptions.filterArticle', function (oldValue, newValue) {
+                    if ($scope.filterOptions.filterArticle != undefined && typeof $scope.filterOptions.filterArticle === 'object') {
+                        if ($scope.filterOptions.filterFournisseur != undefined && typeof $scope.filterOptions.filterFournisseur === 'object') {
+                            var a = $scope.filterOptions.filterArticle;
+
+
+                            i++;
+                            /*if($scope.prix == false && $scope.client == "AQK")
+                            {
+                                $scope.item.BonReceptionItems.unshift(new Object({ Id: breeze.core.getUuid(), IdBonReception: $scope.item.Id, Article: a, IdArticle: a.Id, Pu: a.PA - (a.PA * (a.TVA/100)), Index : i }));
+
+                            }else{*/
+                                $scope.item.BonReceptionItems.unshift(new Object({ Id: breeze.core.getUuid(), IdBonReception: $scope.item.Id, Article: a, IdArticle: a.Id, Pu: a.PA,Index : i }));
+                            //}
+                            //}
+                            setTimeout(function(){
+                                $scope.filterOptions.filterArticle = null;
+                                //$scope.myLogo = a.Logo;
+                                $scope.scrollToFocus(0,3);
+
+                            },100);
+
+                        }else
+                        {
+
+                            notificationFactory.warning("Choisissez un fournisseur ! ", "Attention");
+                        }
+                    }
+
+                });
+
+
+
+                $scope.setItem = function (item) {
+                    $scope.myItem = item;
+
+                }
+                $scope.$watch('filterOptions.filterFournisseur', function (oldValue, newValue) {
+
+                    if (oldValue != newValue) {
+                        if ($scope.filterOptions.filterFournisseur != undefined && typeof $scope.filterOptions.filterFournisseur === 'object') {
+                            if(!$scope.barcode)
+                            {
+                                setTimeout(function(){
+                                    $("#rechercher").focus();
+                                },30);
+                            }else
+                            {
+                                setTimeout(function(){
+                                    $("#filterFournisseur").blur();
+                                },30);
+                            }
+                           
+                        } 
+                    }
+
+                }, true);
+
+                $scope.item = new Object({ Id: breeze.core.getUuid(), BonReceptionItems: [] });
+                $scope.gridOptions.columnDefs = [
+                { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.addNew()"><span class="icon-plus"></span></button>', name: ' ', cellTemplate: CellTemplateDelete, sortable: false },
+                { name: 'Article.Ref', displayName: 'Ref', width: "130", enableCellEdit: false },
+                { name: 'Article.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+                { name: 'Qte', displayName: 'Qte', width: "105", type: "number", enableCellEditOnFocus: false, cellFilter: 'number: 2' },
+                { name: 'Pu', displayName: 'P.U', width: "105", type: "number", enableCellEditOnFocus: false, cellFilter: 'currency: dh' },
+                { field: 'TotalHT', displayName: 'TOTAL', width: "110", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%', cellFilter: 'currency: dh' },
+
+
+                ];
+
+                $scope.gridOptions.data = [];
+                //angular.forEach($scope.gridOptions.data.BonReceptionItems, function (row) {
+                //    row.getTOTAL = function () {
+                //        return this.Ref;
+                //    }
+                //});
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+                    gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+                        
+                        if($scope.prix == false && $scope.client == "AQK" && newValue != oldValue && colDef.name == "Pu")
+                        {
+                            rowEntity.Pu =  rowEntity.Pu +  (rowEntity.Pu  * (rowEntity.Article.TVA/100));
+                        }
+
+                        rowEntity.TotalHT = rowEntity.Pu * rowEntity.Qte;
+
+                        if (isNaN(rowEntity.TotalHT))
+                            rowEntity.TotalHT = "";
+
+
+
+                        if(!$scope.barcode)
+                        {
+                            if($scope.search)
+                            {
+                                setTimeout(function(){
+                                    $("#rechercher2").focus();
+                                },100);
+                            }else
+                            {
+                                setTimeout(function(){
+                                    $("#rechercher").focus();
+                                },100);
+                            }
+                        }
+                        $scope.$apply();
+                    });
+                    gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                        row.isNew = true;
+                    });
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+                    gridApi.selection.on.rowSelectionChanged($scope, function (row) {
+                        $scope.setItem(row.entity);
+                        //console.log($scope.item);
+                    });
+                }
+                $scope.selectRow = function () {
+                    return $scope.gridApi.selection.getSelectedRows();
+                };
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+                $scope.$watch('filterOptions.filterBonCommande', function (oldValue, newValue) {
+                    var oldfilter = $scope.filterOptions.filterText;
+                    $scope.filterOptions.filterText = '';
+
+
+                    if ($scope.filterOptions.filterBonCommande != undefined && typeof $scope.filterOptions.filterBonCommande === 'object') {
+                        if ($scope.filterOptions.filterBonCommande['NumBon'] != '' && $scope.filterOptions.filterBonCommande['NumBon'] != undefined) {
+
+
+                            for (var i = 0; i < $scope.filterOptions.filterBonCommande.BonCommandeItems.length; i++) {
+                                var myItem = $scope.filterOptions.filterBonCommande.BonCommandeItems[i];
+
+                                $scope.item.BonReceptionItems.unshift({ Id: breeze.core.getUuid(), IdBonReception: $scope.item.Id, IdArticle: myItem.IdArticle, Article: myItem.Article, Ref: myItem.Ref, Designation: myItem.Designation, Qte: myItem.Qte, Pu: myItem.Pu, TotalHT: myItem.TotalHT });
+                            }
+
+                            $scope.gridOptions.data = $scope.item.BonReceptionItems;
+                            $scope.filterOptions.filterFournisseur = $scope.filterOptions.filterBonCommande.Fournisseur;
+
+
+                        }
+                    } else {
+                        $scope.item.BonReceptionItems = [];
+                        $scope.gridOptions.data = $scope.item.BonReceptionItems;
+                    }
+
+
+                }, true);
+
+
+                $scope.addNew = function () {
+                    //$scope.addMode = true;
+                    //$scope.item.BonReceptionItems.unshift(new Object({ Id: breeze.core.getUuid(), IdBonReception: $scope.item.Id }));
+                    //$scope.focusFirstCell();
+                    if(typeof $scope.filterOptions.filterFournisseur == "object")
+                        window.open("@Url.Action("PopUpArticle", "Administration")", "MesProduits", "width=950, height=650,top=0, left=0");
+                    else
+                        notificationFactory.warning("Choisissez un fournisseur !", "Attention");
+
+                }
+                $scope.item.Date = new Date();
+                $scope.save = function () {
+
+                    if ($scope.item.NumBon == undefined || $scope.item.NumBon == "") {
+                        notificationFactory.warning("Saisissez un numéro de bon S.V.P", "Attention");
+                        return;
+                    }
+
+                    if ($scope.item.Date == undefined || $scope.item.Date == "") {
+                        notificationFactory.warning("Saisissez une date valide S.V.P", "Attention");
+                        return;
+                    }
+                    if ($scope.filterOptions.filterFournisseur == "" || typeof $scope.filterOptions.filterFournisseur != 'object') {
+                        notificationFactory.warning("Choisissez un fournisseur S.V.P", "Attention");
+                        return;
+                    }
+                    if ($scope.item.BonReceptionItems.length == 0) {
+                        notificationFactory.warning("Remplissez les piéces de bon S.V.P", "Attention");
+                        return;
+                    }
+
+                    //if ($scope.filterOptions.filterFournisseur.Name != 'Stock') {
+
+
+                    //    if ($scope.pay.Credit < 0) {
+                    //        notificationFactory.warning("Saisissez un montant positif !", "Attention");
+                    //        return;
+                    //    }
+
+                    //    if ($scope.filterOptions.filterFournisseur.Name != "Stock" && ($scope.pay.Credit == "" || $scope.pay.Credit == undefined)) {
+                    //        notificationFactory.warning("Remplissez le champs Montant S.V.P", "Attention");
+                    //        return;
+                    //    }
+
+                    //    if ($scope.pay.IdTypePaiement == '399d159e-9ce0-4fcc-957a-08a65bbeecb3' || $scope.pay.IdTypePaiement == '399d159e-9ce0-4fcc-957a-08a65bbeecb4') {
+                    //        if ($scope.pay.Comment == '' || $scope.pay.Comment == undefined) {
+                    //            notificationFactory.warning("Entrez un numéro de Chéque / Effet S.V.P", "Attention");
+                    //            return;
+                    //        }
+
+                    //    }
+                    //    if ($scope.pay.IdTypePaiement == 'null' || $scope.pay.IdTypePaiement == undefined) {
+                    //        notificationFactory.warning("Choisissez un type de réglement S.V.P !", "Attention");
+                    //        return;
+                    //    }
+
+                    //}
+                    var error = false;
+                    for (var i = 0; i < $scope.item.BonReceptionItems.length ; i++) {
+                        var brItem = $scope.item.BonReceptionItems[i];
+                        if (brItem.Qte == undefined || brItem.Pu == undefined || brItem.TotalHT == undefined || brItem.Qte == null || brItem.Pu == null || brItem.TotalHT == null || brItem.Qte == "" || brItem.Pu == "" || brItem.TotalHT == "") {
+                            error = true;
+                        }
+                    }
+                    if (error) {
+                        notificationFactory.warning("Remplissez tous les lignes S.V.P !", "Attention");
+                        return;
+                    }
+                    //delete $scope.item["Fournisseur"];
+
+                    //if (lookupFactory.getLastId("BonReceptions", "Ref") != undefined && lookupFactory.getLastId("BonReceptions", "Ref") != null && lookupFactory.getLastId("BonReceptions", "Ref").length != 0)
+                    //    $scope.item.Ref = lookupFactory.getLastId("BonReceptions", "Ref")[0].Ref + 1;
+                    //else
+                    //    $scope.item.Ref = 1;
+
+                    $scope.item.IdFournisseur = $scope.filterOptions.filterFournisseur.Id
+                    //$scope.item.Date = new Date($scope.item.Date).addHours(3);
+                    //delete $scope.item.BonReceptionItems[0]["TotalHT"];
+                    //delete $scope.item.BonReceptionItems[0]["Article"];
+                    for (var i = 0; i < $scope.item.BonReceptionItems.length; i++) {
+                        delete $scope.item.BonReceptionItems[i]["Article"];
+                    }
+                    crudGridDataFactory($scope.table).save($scope.item, saveSucceeded, saveFailed);
+
+                }
+                var article;
+                beforeSave = function (item) {
+                    article = $scope.item.BonReceptionItems.Article;
+                }
+
+                $scope.delete = function (e, item) {
+
+                    $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+
+                }
+                $scope.gridOptions.data = $scope.item.BonReceptionItems;
+                /*region generique*/
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                function itemsQuerySucceeded(data) {
+                    $scope.items = data.value;
+                    $scope.gridOptions.data = $scope.item.items;
+                    $timeout(function () {
+                        if ($scope.gridApi.selection.selectRow) {
+                            $scope.gridApi.selection.selectRow($scope.gridOptions.data[0]);
+                        }
+                    });
+                    //$scope.totalServerItems = data["odata.count"];
+                    //if ($scope.items.length > 0) {
+                    //    if ($scope.item) {
+                    //        for (i = 0; i < $scope.items.length; i++) {
+                    //            if ($scope.items[i].Id == $scope.item.Id)
+                    //                $scope.dataGrid.selectedItem = $scope.items[i];
+                    //        }
+                    //    }
+                    //    if ($scope.dataGrid.selectedItem == null) {
+                    //        $scope.dataGrid.selectedItem = $scope.items[0];
+                    //    }
+
+                    //    $scope.setItem($scope.dataGrid.selectedItem);
+                    //}
+
+                    //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+                }
+
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                $scope.client = '@StatistiqueController.getCompanyName().ToUpper()';
+                saveSucceeded = function (saveResult) {
+                    //$scope.item.BonReceptionItems.length = 0;
+                    //$scope.item = {};
+
+
+
+
+                    //pay2 credit
+                    //  399d159e-9ce0-4fcc-957a-08a65bbeecb7    ||
+
+                    $scope.pay.Date = $scope.item.Date; // date credit
+                    $scope.pay.IdFournisseur = $scope.item.IdFournisseur;
+                    $scope.pay.IdBonReception = $scope.item.Id;
+                    var totals = 0;
+                    for (var i = 0; i < $scope.item.BonReceptionItems.length; i++) {
+                        if($scope.client == "SUIV"){
+                          //  var x = $scope.item.BonReceptionItems[i].Qte*$scope.item.BonReceptionItems[i].Pu+($scope.item.BonReceptionItems[i].Qte*$scope.item.BonReceptionItems[i].Pu*$scope.item.BonReceptionItems[i].Article.TVA/100);
+                            //totals += x;
+                        }else{
+                            var x = $scope.item.BonReceptionItems[i].Qte*$scope.item.BonReceptionItems[i].Pu;
+                            totals += x;
+                        }
+                        
+                    }
+                    totals = totals.toFixed(2);
+
+                    $scope.pay.Debit = totals;
+                    //$scope.pay.Credit = 0;
+                    $scope.pay.IdTypePaiement = '399d159e-9ce0-4fcc-957a-08a65bbeecb7'; //id Achat Type Debit
+                    if($scope.client != "SUIV")
+                        crudGridDataFactory("PaiementFs").save($scope.pay, savePaysucceded, saveFailed);
+                    else
+                        $scope.pay = new Object({ Id: breeze.core.getUuid() });
+
+                    $scope.gridOptions.data = [];
+
+                    $scope.item = new Object({ Id: breeze.core.getUuid(), BonReceptionItems: [] });
+                    $scope.gridOptions.data = $scope.item.BonReceptionItems;
+                    $scope.filterOptions.filterFournisseur = "";
+                    notificationFactory.success();
+                    //$scope.getPagedDataAsync();
+
+                }
+
+                savePaysucceded = function (saveResult) {
+                    notificationFactory.success();
+                   // $scope.getPagedDataAsync();
+                    $scope.pay = new Object({ Id: breeze.core.getUuid() });
+
+                }
+
+                saveFailed = function (error) {
+                    var reason = error.statusText;
+                    var detail = error.data["odata.error"];
+                    console.log(reason);
+                    console.log(detail);
+                    if (detail) {
+                        reason += detail.innererror.message;
+                    }
+                    //if (error.config["method"] == "POST")
+                    //    $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                    notificationFactory.error(
+                       "Impossible d'enregistrer les modifications. " + reason +
+                   " Il faut actualiser la page.");
+                    /*
+                    var entityErrors = error.entityErrors;
+
+                    if (entityErrors && entityErrors.length) {
+                        handleSaveValidationError(entityErrors);
+                        return;
+                    }
+                    if (detail && detail.ExceptionType &&
+                        detail.ExceptionType.indexOf('OptimisticConcurrencyException') !== -1) {
+                        // Concurrency error
+                        reason =
+                            "Another user, perhaps the server, may have deleted one or all of the same entities.";
+                    }
+                    */
+
+                };
+                //$scope.gridOptions.data = $scope.table;
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

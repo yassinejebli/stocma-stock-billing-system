@@ -1,0 +1,613 @@
+﻿@{
+    ViewBag.Title = "Gestion des Factures";
+    //Layout = "~/Views/Shared/_LayoutPopUPArticleFacture.cshtml";
+}
+
+
+<div class="card-panel">
+    <div class="row">
+
+        <div class="row">
+            <div style="margin-left:20px !important;" class="pull-left">
+                <div class="form-group">
+                    <input autocomplete="off" readonly placeholder="Filter par un Fournisseur" id="disabled" type="text" class="validate"
+                           ng-model="filterOptions.filterFournisseur" typeahead-wait-ms=" 100"
+                           typeahead="v as v.Name for v  in lookupFactory.get('Fournisseurs', 'Name', $viewValue)">
+                </div>
+            </div>
+            <!--  (table, field, text, expand, vide, limit, wheres) -->
+            <input type="date" readonly id="datePicker" placeholder="Choisissez une date" ng-model="filterOptions.filterDate" style="width:130px !important;margin-right:15px !important;" class="pull-right">
+            <div class="col-lg-4 col-lg-offset-3" style="width:320px !important;">
+                <div class="form-group-inline">
+
+
+                    <div class="input-field col s12">
+                        <input utocomplete="off" ng-model="filterOptions.filterFakeFactureF" placeholder="choisissez une Facture"
+                               typeahead="v as v.NumBon for v  in lookupFactory.getExpand('FakeFactureFs', 'NumBon', $viewValue,'Fournisseur,FakeFactureFItems',null,'oui',null)"
+                               typeahead-wait-ms=" 100" id="name2" type="text">
+                        <label for="first_name" class="active">Facture N° </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div ui-grid-selection ui-grid-exporter ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+
+
+        <div style="bottom: 45px; left: 24px;position:fixed" ng-show="check()">
+            <a class="btn-floating btn-large orange" ng-click="SupprimerBon()">
+                <i class="large mdi-action-delete"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+
+<div style="bottom: 23px; right: 95px;position:fixed" ng-show="check() && envoye">
+    <a class="btn-floating btn-large pink" ng-click="email()">
+        <i class="large mdi-communication-email"></i>
+    </a>
+</div>
+
+@section Scripts
+{
+
+    <script>
+
+    $(document).ready(function () {
+
+
+        app.controller("AdminCtrl", ['$scope', '$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope, $http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+            $scope.showAdd = true;
+            $scope.envoye= true;
+            $scope.isArticleFacture = true;
+            var getTypeTableau = '@StatistiqueController.getTypeTableau()';
+            $scope.afficherHT = '@StatistiqueController.afficherHT()';
+
+            if(getTypeTableau == 1){
+                typeTableau = "headerLineOnly";
+            }else if(getTypeTableau == 3){
+                typeTableau = {hLineWidth: function(i, node) {
+                    return (i === 0 || i === node.table.body.length) ? 2 : 1;
+                },
+                    vLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+                    },
+                    hLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+                    },
+                    vLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+                    }};
+            }else if(getTypeTableau == 4){
+                typeTableau = undefined;
+
+            }
+            else
+            {
+                typeTableau = "lightHorizontalLines";
+            }
+            
+            $scope.email = function(){
+                
+
+                if ($scope.filterOptions.filterFakeFactureF != undefined && typeof $scope.filterOptions.filterFakeFactureF === 'object')
+                {
+                    if($scope.filterOptions.filterFakeFactureF.Fournisseur.Email != undefined && $scope.filterOptions.filterFakeFactureF.Fournisseur.Email != null && $scope.filterOptions.filterFakeFactureF.Fournisseur.Email != ""){
+                        //window.open("EmailFacture?IdFacture="+$scope.filterOptions.filterFacture.Id+"&Chiffre="+$scope.chiffre+"&Cachet="+$scope.cachet,'_blank');
+                        $scope.envoye = false;
+                        $http({ url: "/Administration/EmailFakeFactureF?IdFakeFactureF="+$scope.filterOptions.filterFakeFactureF.Id+"&Cachet="+$scope.cachet, method: 'GET' })
+                 .success(function (data) {
+                     if(data.envoye == 1){
+                         notificationFactory.info("Le mail est bien envoyé à :<br/> <b>"+$scope.filterOptions.filterFakeFactureF.Fournisseur.Name+"</b>", "Succés");
+                         $scope.envoye = true;
+                     }else{
+                         notificationFactory.warning("Il y'a un erreur lors de l'envoi de mail", "Attention");
+                         $scope.envoye = true;
+                     }
+
+                 });
+                    }
+                    else
+                        notificationFactory.warning("Vous devez attribuer un email pour le fournisseur : "+$scope.filterOptions.filterFacture.Fournisseur.Name, "Attention");
+
+                }
+
+            }
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            //$scope.$scope = $scope;
+            $scope.table = "FakeFactureFItems";
+            $scope.lookupFactory = lookupFactory;
+            $scope.bon = 'FakeFactureFList';
+            $scope.filterOptions = {
+                filterText: "",
+                filterVisible: null,
+                useExternalFilter: true
+            };
+            //$scope.pagingOptions = {
+            //    pageSizes: [5, 10, 30],
+            //    pageSize: 5,
+            //    totalServerItems: 0,
+            //    currentPage: 1
+            //};
+            $scope.deleteMode = false;
+            $scope.focusFirstCell = function () {
+                //$scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+            }
+            //console.log("ok")
+            $scope.header = '@StatistiqueController.getHeader()';
+            $scope.footer = '@StatistiqueController.getFooter()';
+            $scope.onDblClickRow = function (rowItem) {
+
+                console.log("dbClick")
+            };
+            $scope.gridOptions = {
+                showColumnFooter: true,
+                enableRowSelection: true,
+                enableRowHeaderSelection: false,
+                showGridFooter: true,
+                enableFiltering: false,
+                //paginationPageSizes: [5, 10, 30],
+                //paginationPageSize: 5,
+                enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                enableColumnResizing: true,
+                rowHeight: 40,
+                //enableCellEditOnFocus : true,
+                /*export*/
+                //enableGridMenu: true,
+                exporterPdfDefaultStyle: { fontSize: 9 },
+                exporterPdfTableStyle: { margin: [-18, 40, 3, 5] },
+                exporterPdfTableHeaderStyle: { fontSize: 12, bold: true, italics: false, color: 'black', },
+                exporterPdfFooter: function (currentPage, pageCount) {
+                    //return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+
+                    //return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                    var footer = [{text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' },{ image: $scope.footer, width: 595,marginTop:-19,marginLeft:17,height:40} ];
+
+
+                        return footer;
+                    },
+                exporterPdfCustomFormatter: function (docDefinition) {
+                    //docDefinition.background = {image:$scope.header,marginLeft:400,width:100,height:100,pageBreak: 'after',margin: [20,20,20,20]};
+                        docDefinition.watermark = "@User.Identity.Name.Split('@')[1].Split('.')[0]";
+                        docDefinition.pageMargins = [40, 140, 50, 40];//[40, 210, 50,57];
+                        docDefinition.styles.headerStyle = { fontSize: 13, bold: true };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 557, marginTop: 0 };
+                        
+
+                        docDefinition.content[0].layout = typeTableau;
+                    
+                        docDefinition.content = docDefinition.content.concat([{marginLeft:347,table: {
+                          
+                            headerRows: 1,
+                            widths: [ 90,  94],
+
+                            body: [
+                              [ { text: 'TOTAL H.T' , bold: false } ,{alignment:'right',text : (totals/1.2).toFixed(2) + " DH",bold:true}],
+                              [ { text: 'TVA 20%' , bold: false } ,{alignment:'right',text :(totals * 20/120).toFixed(2)  + " DH",bold:true}],
+                              [ { text: 'TOTAL T.T.C' , bold: false } ,{alignment:'right',text : parseFloat(totals).toFixed(2) + " DH",bold:true}]
+
+
+                            ]
+                        }}]);
+                    
+                        docDefinition.content = docDefinition.content.concat([{ text: "Arrêté la présente FakeFactureF à la somme de :", marginLeft: 0, fontSize: 12, bold: true, marginTop: 8 }]);
+                        docDefinition.content = docDefinition.content.concat([{ text: $scope.totalInWords, marginLeft: 120, fontSize: 12, bold: true, marginTop: 10 }]);
+                        return docDefinition;
+                    },
+                    exporterPdfOrientation: 'portrait',
+                    exporterPdfPageSize: 'LETTER',
+                    exporterPdfMaxGridWidth: 530,
+                    exporterSuppressColumns: [' ', 'ArticleFacture.Ref', '\''],
+                    exporterFieldCallback: function (grid, row, col, input) {
+                        if (col.name == 'Qte' || col.name == 'Pu' || col.name == 'TotalHT') {
+                            if($scope.afficherHT == 1)
+                            {
+                                if(col.name == "Pu")
+                                {
+                                    return (input/1.2).toFixed(2);
+                                }
+                                if(col.name == "TotalHT")
+                                {
+                                    return  (input/1.2).toFixed(2);
+                                }
+                            }
+                            return input.toFixed(2);
+                        } else {
+                            return input.toUpperCase();
+                        }
+                    },
+
+            };
+            var showRef = '@StatistiqueController.getShowRef()';
+            if(showRef == 1)
+            {
+                $scope.gridOptions.exporterSuppressColumns = [' ', '\''];
+            }
+
+            $scope.print2 = function () {
+
+                window.open("ExportFakeFactureF2?IdFakeFactureF="+$scope.filterOptions.filterFakeFactureF.Id, '_blank');
+            }
+            $scope.print = function () {
+
+                window.open("ExportFakeFactureF?IdFakeFactureF="+$scope.filterOptions.filterFakeFactureF.Id, '_blank');
+
+                return;
+                if($scope.footer == "" || $scope.header == "")
+                {
+
+                    notificationFactory.warning("Vous devez mettre une entete + pied page avant d'imprimer le bon !", "Attention");
+                    return;
+                }
+
+                    for (var i = 0; i < $scope.items.length; i++) {
+                        myItem = $scope.items[i];
+                        if(myItem.Id == null)
+                        {
+                            notificationFactory.warning("Enregistrez tous les lignes !", "Attention");
+                            return;
+                        }
+                    }
+                    if ($scope.filterOptions.filterFakeFactureF != undefined && typeof $scope.filterOptions.filterFakeFactureF === 'object') {
+                        $scope.gridOptions.exporterPdfHeader = {
+
+                            columns: [
+                                { image: $scope.header, width: 250,height:80,margin: [20,20,20,20]},
+                                //{fontSize:12,decoration: 'underline' , width:200, bold: true, alignment: 'left', marginLeft: -580, marginTop: 130, text: ($scope.filterOptions.filterFakeFactureF == undefined) ? '' : "FakeFactureF  N° : " + $scope.filterOptions.filterFakeFactureF.NumBon },
+                                //{ fontSize:14, alignment: 'center', marginTop: 155,marginLeft:-1000, text: "CLIENT :  " + $scope.filterOptions.filterFakeFactureF.Fournisseur.Name.toUpperCase(),bold:true},
+                                //{fontSize:12, alignment: 'left', marginLeft: -320, marginTop: 130, text: "Date  :  "+convertDate(new Date($scope.filterOptions.filterFakeFactureF.Date))}
+                                 {marginLeft:40,marginTop:70,table: {
+                                     // headers are automatically repeated if the table spans over multiple pages
+                                     // you can declare how many rows should be treated as headers
+                                     headerRows: 1,
+                                     widths: [ 65, 65,85],
+
+                                     body: [
+                                       [ { text: 'FakeFactureF' , bold: true,fontSize:11 ,colSpan:3,alignment : 'center'},{},{} ],
+                                       [ {fillColor:'#ccc', text: 'N° FakeFactureF' , bold: false,fontSize:10,alignment : 'center' },{ alignment : 'center',text: 'Date' , bold: false,fontSize:10,fillColor:'#ccc' },{ alignment : 'center',text: 'Fournisseur' , bold: false,fontSize:10 ,fillColor:'#ccc'} ],
+                                       [  {  alignment : 'center',text: $scope.filterOptions.filterFakeFactureF.NumBon,fontSize:9} ,{  alignment : 'center',text: convertDate(new Date($scope.filterOptions.filterFakeFactureF.Date)),fontSize:9}, { text: $scope.filterOptions.filterFakeFactureF.Fournisseur.Name.toUpperCase(),fontSize:9, alignment : 'center'}  ],
+                                    //   	[{ text: 'Header with Colspan = 2', style: 'tableHeader', colSpan: 2, alignment: 'center' }, {}, { text: 'Header 3', style: 'tableHeader', alignment: 'center' }],
+                                    //[{ text: 'Header 1', style: 'tableHeader', alignment: 'center' }, { text: 'Header 2', style: 'tableHeader', alignment: 'center' }, { text: 'Header 3', style: 'tableHeader', alignment: 'center' }],
+
+                                     ]
+                                 }}
+                            ]
+                        };
+
+                        $scope.gridApi.exporter.pdfExport('all', 'all');
+                        //window.close();
+
+                    }
+
+                }
+
+                $scope.gridOptions.multiSelect = false;
+                $scope.gridOptions.modifierKeysToMultiSelect = false;
+                $scope.gridOptions.noUnselect = true;
+                $scope.$watch('filterOptions.filterArticleFacture', function (oldValue, newValue) {
+                    if(oldValue == newValue) return;
+                    if ($scope.filterOptions.filterArticleFacture != undefined && typeof $scope.filterOptions.filterArticleFacture === 'object') {
+                        if ($scope.filterOptions.filterFournisseur != undefined && typeof $scope.filterOptions.filterFournisseur === 'object') {
+                            var a = $scope.filterOptions.filterArticleFacture;
+                           
+                                  // msg = "Dérniere prix de vente : ";
+
+                                  //$scope.myItem.Pu = $scope.lastPrice;
+                                  //$scope.myItem.Qte = null;
+                                  //$scope.myItem.TotalHT = null;
+                                  if($scope.lastPrice == 0)
+                                  {
+                                      $scope.lastPrice = a.PVD;
+                                  }
+                                  $scope.items.unshift(new Object({ IdFakeFactureF: $scope.filterOptions.filterFakeFactureF.Id, ArticleFacture: a, IdArticleFacture: a.Id, Pu: a.PA }));
+                                  setTimeout(function(){
+                                      //$scope.myLogo = a.Logo;
+                                      $scope.filterOptions.filterArticleFacture = null;
+                                      $scope.myLogo = a.Logo;
+                                      $scope.scrollToFocus(0,3);
+
+                                  },100);
+
+                
+
+                        }else
+                        {
+
+                            notificationFactory.warning("Choisissez un fournisseur ! ", "Attention");
+                        }
+                    }
+
+                });
+                $scope.scrollToFocus = function( rowIndex, colIndex ) {
+                    $scope.gridApi.cellNav.scrollToFocus( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+                };
+                $scope.items = [];
+                var headerTemplateAdd = '<a style="margin-left:15px !important;" title="{{row.entity.ArticleFacture.PA+10}}" ng-click="grid.appScope.update($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-content-save"></i></a>';
+
+                var CellTemplateDelete = '<a style="margin-left:15px !important;" title="{{row.entity.ArticleFacture.PA+10}}"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+                if($scope.afficherHT == 1)
+                {
+                    $scope.gridOptions.columnDefs = [
+                              { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.addNew()"><span class="icon-plus"></span></button>', name: ' ', cellTemplate: headerTemplateAdd, sortable: false },
+
+                { name: 'ArticleFacture.Ref', visible: true, enableHiding: true, displayName: 'Ref', width: "140", enableCellEdit: false },
+                { name: 'ArticleFacture.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+                { name: 'Qte', displayName: 'Qte', width: "120", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'number: 2' },
+                { name: 'Pu', displayName: 'P.U HT', width: "120", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'currency:dh' },
+                { name: 'TotalHT', displayName: 'MONTANT HT', width: "92", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%', exporterPdfAlign: 'right', cellFilter: 'currency:dh' },
+
+               { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: CellTemplateDelete, sortable: false },
+
+                    ];
+                }else
+                {
+                    $scope.gridOptions.columnDefs = [
+                              { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.addNew()"><span class="icon-plus"></span></button>', name: ' ', cellTemplate: headerTemplateAdd, sortable: false },
+
+                { name: 'ArticleFacture.Ref', visible: true, enableHiding: true, displayName: 'Ref', width: "140", enableCellEdit: false },
+                { name: 'ArticleFacture.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+                { name: 'Qte', displayName: 'Qte', width: "120", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'number: 2' },
+                { name: 'Pu', displayName: 'P.U', width: "120", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'currency:dh' },
+                { name: 'TotalHT', displayName: 'MONTANT', width: "92", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%', exporterPdfAlign: 'right', cellFilter: 'currency:dh' },
+
+               { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: CellTemplateDelete, sortable: false },
+
+                    ];
+                }
+               
+
+
+                setTimeout(function () {
+                    if (window.myBon != undefined) {
+                        $scope.filterOptions.filterFakeFactureF = window.myBon;
+
+                    }
+
+
+                },100);
+                $scope.filterOptions = {
+                    filterText: '',
+                    filterFakeFactureF: '',
+                    filterFournisseur: ''
+                }
+                $scope.getPagedDataAsync = function () {
+                    crudGridDataFactory($scope.table, $scope.filterOptions.filterText, 'FakeFactureF,ArticleFacture').query(itemsQuerySucceeded, queryFailed);
+                };
+                //$scope.getPagedDataAsync();
+                function convertDate(today) {
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    return today;
+                }
+
+                var totals = 0;
+                $scope.$watch('filterOptions', function (oldValue, newValue) {
+                    var oldfilter = $scope.filterOptions.filterText;
+                    $scope.filterOptions.filterText = '';
+
+
+                    if ($scope.filterOptions.filterFakeFactureF != undefined && typeof $scope.filterOptions.filterFakeFactureF === 'object') {
+                        if ($scope.filterOptions.filterFakeFactureF['NumBon'] != '' && $scope.filterOptions.filterFakeFactureF['NumBon'] != undefined) {
+                            $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'FakeFactureF/Id eq guid\'' + $scope.filterOptions.filterFakeFactureF.Id + '\'';
+                            $scope.filterOptions.filterFournisseur = $scope.filterOptions.filterFakeFactureF.Fournisseur;
+                            $scope.filterOptions.filterDate = new Date($scope.filterOptions.filterFakeFactureF.Date);
+
+                            //$scope.gridOptions.exporterPdfHeader = { columns: [{ decoration: 'underline',
+                            //marginTop: 100,fontSize:14, marginLeft: 25, alignment: 'left', text: ($scope.filterOptions.filterFakeFactureF == undefined) ? '' : "FakeFactureF   N° : "
+                            //+ $scope.filterOptions.filterFakeFactureF.NumBon }, { alignment: 'center', marginTop: 140, text: "CLIENT : " +
+                            //$scope.filterOptions.filterFakeFactureF.Fournisseur.Name.toUpperCase(), decoration: 'underline' ,fontSize:14},
+                            //{ alignment: 'right', text: convertDate(new Date($scope.filterOptions.filterFakeFactureF.Date)), marginTop: 100, marginRight: 25, decoration: 'underline',fontSize:14 }] };
+
+                           
+
+                        }
+                    }
+
+                    if (($scope.filterOptions.filterText == '' /*|| flagWorkUnit == false || flagExercice == false*/)) {
+                        $scope.filterOptions.filterText = 'indexof(FakeFactureF/NumBon,\'\') gt -1';
+                    }
+                    if (oldfilter != $scope.filterOptions.filterText) {
+
+                        $scope.getPagedDataAsync();
+
+                    }
+                }, true);
+                $scope.check = function () {
+                    var ok = false;
+                    if ($scope.filterOptions.filterFakeFactureF != undefined && typeof $scope.filterOptions.filterFakeFactureF === 'object') {
+                        ok = true;
+                    }
+                    return ok;
+                }
+
+                $scope.SupprimerBon = function () {
+                    if ($scope.filterOptions.filterFakeFactureF != undefined && typeof $scope.filterOptions.filterFakeFactureF === 'object') {
+                        if (confirm("Voulez-vous supprimer cet FakeFactureF ?")) {
+                            crudGridDataFactory('FakeFactureFs').remove({ key: 'guid\'' + $scope.filterOptions.filterFakeFactureF.Id + '\'' }, $scope.filterOptions.filterFakeFactureF, saveSucceeded, saveFailed);
+                        }
+                    }
+                    else {
+                        notificationFactory.warning("Choisissez une FakeFactureF pour la supprimer !", "Attention");
+                    }
+
+                }
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+                    gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+                        rowEntity.TotalHT = rowEntity.Pu * rowEntity.Qte;
+                        if (isNaN(rowEntity.TotalHT))
+                            rowEntity.TotalHT = "";
+                        $scope.$apply();
+                    });
+                    gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                        row.isNew = true;
+                    });
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+                }
+                $scope.selectRow = function () {
+                    return $scope.gridApi.selection.getSelectedRows();
+                };
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+
+                $scope.addNew = function () {
+                    $scope.addMode = true;
+                    //$scope.item = new Object();
+                    //$scope.items.unshift($scope.item);
+                    //$scope.focusFirstCell();
+                    if ($scope.filterOptions.filterFakeFactureF != undefined && typeof $scope.filterOptions.filterFakeFactureF === 'object') {
+
+                        window.open("@Url.Action("PopUpArticleFacture", "Administration")", "MesProduits", "width=950, height=650,top=0, left=0");
+
+                } else {
+                    notificationFactory.warning("Choisissez une FakeFactureF", "Attention");
+
+                }
+
+            }
+
+            $scope.update = function (e, item) {
+                //console.log(item)
+
+                if (item.Qte == undefined || item.Pu == undefined || item.TotalHT == undefined || item.Qte == null || item.Pu == null || item.TotalHT == null || item.Qte == "" || item.Pu == "" || item.TotalHT == "") {
+                    notificationFactory.warning("Remplissez tous les informations S.V.P !", "Attention");
+                    return;
+                }
+                item.TotalHT = item.Qte * item.Pu;
+
+                if (item.Id == null) {
+                    item.Id = breeze.core.getUuid();
+
+                    delete item["ArticleFacture"]
+                    delete item["FakeFactureF"]
+                    crudGridDataFactory($scope.table).save(item, saveSucceeded, saveFailed);
+
+                }
+                else {
+
+                    delete item["ArticleFacture"]
+                    delete item["FakeFactureF"]
+                    crudGridDataFactory($scope.table).update({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                }
+            }
+
+
+            $scope.delete = function (e, item) {
+                //console.log(item)
+                if (confirm("Voulez-vous supprimer cet enregistrement ?")) {
+
+                    if (item.Id != null) {
+                        $scope.deleteMode = true;
+                        crudGridDataFactory($scope.table).remove({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                    } else {
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                    }
+                }
+
+            }
+
+            /*region generique*/
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            function itemsQuerySucceeded(data) {
+                $scope.items = data.value;
+                $scope.gridOptions.data = $scope.items;
+
+                //$scope.totalServerItems = data["odata.count"];
+                //if ($scope.items.length > 0) {
+                //    if ($scope.item) {
+                //        for (i = 0; i < $scope.items.length; i++) {
+                //            if ($scope.items[i].Id == $scope.item.Id)
+                //                $scope.dataGrid.selectedItem = $scope.items[i];
+                //        }
+                //    }
+                //    if ($scope.dataGrid.selectedItem == null) {
+                //        $scope.dataGrid.selectedItem = $scope.items[0];
+                //    }
+
+                //    $scope.setItem($scope.dataGrid.selectedItem);
+                //}
+
+                //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+
+                totals = 0;
+                for (var i = 0; i < $scope.items.length; i++) {
+                    var x = $scope.items[i].TotalHT;
+                    totals += x;
+                }
+                totals = totals.toFixed(2);
+                $http({ url: '/Statistique/DecimalToWordsJSON', method: 'GET', params: { nbr: totals } })
+                   .success(function (data) {
+                       $scope.totalInWords = data;
+                   });
+            }
+
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            saveSucceeded = function (saveResult) {
+
+                notificationFactory.success();
+                $scope.getPagedDataAsync();
+                totals = 0;
+                for (var i = 0; i < $scope.items.length; i++) {
+                    var x = $scope.items[i].TotalHT;
+                    totals += x;
+                }
+                totals = totals.toFixed(2);
+
+            }
+
+            saveFailed = function (error) {
+                var reason = error.statusText;
+                var detail = error.data["odata.error"];
+                if (detail) {
+                    reason += detail.innererror.message;
+                }
+                if (error.config["method"] == "POST")
+                    $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                notificationFactory.error(
+                   "Impossible d'enregistrer les modifications. " + reason +
+               " Il faut actualiser la page.");
+                $scope.getPagedDataAsync();
+
+
+            };
+
+
+
+
+        }]);
+        angular.bootstrap(document, ['AdminModule']);
+
+    });
+    </script>
+}

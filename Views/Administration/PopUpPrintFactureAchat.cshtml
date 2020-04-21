@@ -1,0 +1,581 @@
+﻿@{
+    ViewBag.Title = "Gestion des FactureFs d'achat";
+}
+
+
+<div class="card-panel">
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Importer un BL </label>
+
+                    <input type="text" autocomplete="off" ng-model="filterOptions.filterBonLivraison" placeholder="Numéro du BL"
+                           typeahead="v as v.NumBon for v  in lookupFactory.getExpand('BonLivraisons', 'NumBon', $viewValue,'BonLivraisonItems/Article,Fournisseur,FactureFs',null,'oui',null)"
+                           typeahead-wait-ms="100"
+                           class="" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div style="margin-left:20px !important;" class="pull-left">
+                <div class="form-group">
+                    <input autocomplete="off" readonly placeholder="Filter par un Fournisseur" id="disabled" type="text" class="validate"
+                           ng-model="filterOptions.filterFournisseur" typeahead-wait-ms="100"
+                           typeahead="v as v.Name for v  in lookupFactory.get('Fournisseurs', 'Name', $viewValue)">
+                </div>
+            </div>
+            <!--  (table, field, text, expand, vide, limit, wheres) -->
+            <input type="date" readonly id="datePicker" placeholder="Choisissez une date" ng-model="filterOptions.filterDate" style="width:130px !important;margin-right:15px !important;" class="pull-right">
+            <div class="col-lg-4 col-lg-offset-3" style="width:320px !important;">
+                <div class="form-group-inline">
+
+
+                    <div class="input-field col s12">
+                        <input utocomplete="off" ng-model="filterOptions.filterFactureF" placeholder="choisissez une facture"
+                               typeahead="v as v.NumBon for v  in lookupFactory.getExpand('FactureFs', 'NumBon', $viewValue,'Fournisseur,FactureFItems',null,'oui',null)"
+                               typeahead-wait-ms=" 100" id="name2" type="text">
+                        <label for="first_name" class="active">FactureF N° </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ui-grid-selection ui-grid-exporter ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+
+
+        <div style="bottom: 45px; left: 24px;position:fixed" ng-show="check()">
+            <a class="btn-floating btn-large orange" ng-click="SupprimerBon()">
+                <i class="large mdi-action-delete"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts
+{
+
+    <script>
+
+    $(document).ready(function () {
+
+
+        app.controller("AdminCtrl", ['$scope', '$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope, $http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+            $scope.showAdd = true;
+            var getTypeTableau = '@StatistiqueController.getTypeTableau()';
+            $scope.afficherHT = '@StatistiqueController.afficherHT()';
+            $scope.Fournisseur = '@StatistiqueController.getCompanyName().ToUpper()';
+            $scope.cachet= false;
+            $scope.envoye= true;
+
+            if(getTypeTableau == 1){
+                typeTableau = "headerLineOnly";
+            }else if(getTypeTableau == 3){
+                typeTableau = {hLineWidth: function(i, node) {
+                    return (i === 0 || i === node.table.body.length) ? 2 : 1;
+                },
+                    vLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+                    },
+                    hLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+                    },
+                    vLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+                    }};
+            }else if(getTypeTableau == 4){
+                typeTableau = undefined;
+
+            }
+            else
+            {
+                typeTableau = "lightHorizontalLines";
+            }
+
+            $scope.email = function(){
+
+
+                if ($scope.filterOptions.filterFactureF != undefined && typeof $scope.filterOptions.filterFactureF === 'object')
+                {
+                    if($scope.filterOptions.filterFactureF.Fournisseur.Email != undefined && $scope.filterOptions.filterFactureF.Fournisseur.Email != null && $scope.filterOptions.filterFactureF.Fournisseur.Email != ""){
+                        //window.open("EmailFactureF?IdFactureF="+$scope.filterOptions.filterFactureF.Id+"&Chiffre="+$scope.chiffre+"&Cachet="+$scope.cachet,'_blank');
+                        $scope.envoye = false;
+                        $http({ url: "/Administration/EmailFactureF?IdFactureF="+$scope.filterOptions.filterFactureF.Id+"&Cachet="+$scope.cachet, method: 'GET' })
+                 .success(function (data) {
+                     if(data.envoye == 1){
+                         notificationFactory.info("Le mail est bien envoyé à :<br/> <b>"+$scope.filterOptions.filterFactureF.Fournisseur.Name+"</b>", "Succés");
+                         $scope.envoye = true;
+                     }else{
+                         notificationFactory.warning("Il y'a un erreur lors de l'envoi de mail", "Attention");
+                         $scope.envoye = true;
+                     }
+
+                 });
+                    }
+                    else
+                        notificationFactory.warning("Vous devez attribuer un email pour le Fournisseur : "+$scope.filterOptions.filterFactureF.Fournisseur.Name, "Attention");
+
+                }
+
+            }
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            //$scope.$scope = $scope;
+            $scope.table = "FactureFs";
+            $scope.lookupFactory = lookupFactory;
+            $scope.filterOptions = {
+                filterText: "",
+                filterVisible: null,
+                useExternalFilter: true
+            };
+            //$scope.pagingOptions = {
+            //    pageSizes: [5, 10, 30],
+            //    pageSize: 5,
+            //    totalServerItems: 0,
+            //    currentPage: 1
+            //};
+            $scope.deleteMode = false;
+            $scope.focusFirstCell = function () {
+                //$scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+            }
+            //console.log("ok")
+            $scope.header = '@StatistiqueController.getHeader()';
+            $scope.footer = '@StatistiqueController.getFooter()';
+            $scope.onDblClickRow = function (rowItem) {
+
+                console.log("dbClick")
+            };
+            $scope.gridOptions = {
+                showColumnFooter: true,
+                enableRowSelection: true,
+                enableRowHeaderSelection: false,
+                showGridFooter: true,
+                enableFiltering: false,
+                //paginationPageSizes: [5, 10, 30],
+                //paginationPageSize: 5,
+                enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                enableColumnResizing: true,
+                rowHeight: 40,
+                //enableCellEditOnFocus : true,
+                /*export*/
+                //enableGridMenu: true,
+                exporterPdfDefaultStyle: { fontSize: 9 },
+                exporterPdfTableStyle: { margin: [-18, 40, 3, 5] },
+                exporterPdfTableHeaderStyle: { fontSize: 12, bold: true, italics: false, color: 'black', },
+                exporterPdfFooter: function (currentPage, pageCount) {
+                    //return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+
+                    //return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                    var footer = [{text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' },{ image: $scope.footer, width: 595,marginTop:-19,marginLeft:17,height:40} ];
+
+
+                        return footer;
+                    },
+                exporterPdfCustomFormatter: function (docDefinition) {
+                    //docDefinition.background = {image:$scope.header,marginLeft:400,width:100,height:100,pageBreak: 'after',margin: [20,20,20,20]};
+                        docDefinition.watermark = "@User.Identity.Name.Split('@')[1].Split('.')[0]";
+                        docDefinition.pageMargins = [40, 140, 50, 40];//[40, 210, 50,57];
+                        docDefinition.styles.headerStyle = { fontSize: 13, bold: true };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 557, marginTop: 0 };
+
+
+                        docDefinition.content[0].layout = typeTableau;
+
+                        docDefinition.content = docDefinition.content.concat([{marginLeft:347,table: {
+
+                            headerRows: 1,
+                            widths: [ 90,  94],
+
+                            body: [
+                              [ { text: 'TOTAL H.T' , bold: false } ,{alignment:'right',text : (totals/1.2).toFixed(2) + " DH",bold:true}],
+                              [ { text: 'TVA 20%' , bold: false } ,{alignment:'right',text :(totals * 20/120).toFixed(2)  + " DH",bold:true}],
+                              [ { text: 'TOTAL T.T.C' , bold: false } ,{alignment:'right',text : parseFloat(totals).toFixed(2) + " DH",bold:true}]
+
+
+                            ]
+                        }}]);
+
+                        docDefinition.content = docDefinition.content.concat([{ text: "Arrêté la présente Facture à la somme de :", marginLeft: 0, fontSize: 12, bold: true, marginTop: 8 }]);
+                        docDefinition.content = docDefinition.content.concat([{ text: $scope.totalInWords, marginLeft: 120, fontSize: 12, bold: true, marginTop: 10 }]);
+                        return docDefinition;
+                    },
+                    exporterPdfOrientation: 'portrait',
+                    exporterPdfPageSize: 'LETTER',
+                    exporterPdfMaxGridWidth: 530,
+                    exporterSuppressColumns: [' ', 'Article.Ref', '\''],
+                    exporterFieldCallback: function (grid, row, col, input) {
+                        if (col.name == 'Qte' || col.name == 'Pu' || col.name == 'TotalHT') {
+                            if($scope.afficherHT == 1)
+                            {
+                                if(col.name == "Pu")
+                                {
+                                    return (input/1.2).toFixed(2);
+                                }
+                                if(col.name == "TotalHT")
+                                {
+                                    return  (input/1.2).toFixed(2);
+                                }
+                            }
+                            return input.toFixed(2);
+                        } else {
+                            return input.toUpperCase();
+                        }
+                    },
+
+            };
+            var showRef = '@StatistiqueController.getShowRef()';
+            if(showRef == 1)
+            {
+                $scope.gridOptions.exporterSuppressColumns = [' ', '\''];
+            }
+
+
+
+            $scope.$watch('filterOptions.filterBonLivraison', function (oldValue, newValue) {
+                var oldfilter = $scope.filterOptions.filterText;
+                $scope.filterOptions.filterText = '';
+
+
+                if ($scope.filterOptions.filterBonLivraison != undefined && typeof $scope.filterOptions.filterBonLivraison === 'object') {
+                    if ($scope.filterOptions.filterBonLivraison['NumBon'] != '' && $scope.filterOptions.filterBonLivraison['NumBon'] != undefined) {
+                        if ($scope.filterOptions.filterBonLivraison.FactureFs.length > 0) {
+                            notificationFactory.warning("le BL choisi est déja facturé !", "Attention");
+                            return;
+                        }
+
+                        var dateBon = new Date($scope.filterOptions.filterBonLivraison.Date);
+                        NumBon = $scope.filterOptions.filterBonLivraison.NumBon + " DU " + ("0" + dateBon.getDate()).slice(-2) + "/" + ("0" + (dateBon.getMonth() + 1)).slice(-2) + "/" + dateBon.getFullYear().toString().substr(2, 2);
+                        for (var i = 0; i < $scope.filterOptions.filterBonLivraison.BonLivraisonItems.length; i++) {
+                            var myItem = $scope.filterOptions.filterBonLivraison.BonLivraisonItems[i];
+
+                            var _item = { IdFactureF: $scope.filterOptions.filterFactureF.Id, IdArticle: myItem.IdArticle, Article: myItem.Article, Ref: myItem.Ref, Designation: myItem.Designation, Qte: myItem.Qte, Pu: myItem.Pu, TotalHT: myItem.TotalHT, NumBL: NumBon, NumBC: myItem.NumBC };
+                            $scope.items.unshift(_item);
+                            $scope.update(null, _item);
+                        }
+
+                        $scope.gridOptions.data = $scope.items;
+                    }
+                } else {
+                    //   $scope.item.FactureFItems = [];
+                    $scope.gridOptions.data = $scope.items;
+                }
+
+
+            }, true);
+                $scope.gridOptions.multiSelect = false;
+                $scope.gridOptions.modifierKeysToMultiSelect = false;
+                $scope.gridOptions.noUnselect = true;
+                $scope.$watch('filterOptions.filterArticle', function (oldValue, newValue) {
+                    if(oldValue == newValue) return;
+                    if ($scope.filterOptions.filterArticle != undefined && typeof $scope.filterOptions.filterArticle === 'object') {
+                        if ($scope.filterOptions.filterFournisseur != undefined && typeof $scope.filterOptions.filterFournisseur === 'object') {
+                            var a = $scope.filterOptions.filterArticle;
+                            $scope.lastPrice = 0;
+                            $http.get('/Statistique/getPriceLastSell/', { params: { IdFournisseur: $scope.filterOptions.filterFournisseur.Id, IdArticle: a.Id } })
+                              .success(function (data) {
+                                  $scope.lastPrice = data;
+                                  // msg = "Dérniere prix de vente : ";
+
+                                  //$scope.myItem.Pu = $scope.lastPrice;
+                                  //$scope.myItem.Qte = null;
+                                  //$scope.myItem.TotalHT = null;
+                                  if($scope.lastPrice == 0)
+                                  {
+                                      $scope.lastPrice = a.PVD;
+                                  }
+                                  $scope.items.unshift(new Object({ IdFactureF: $scope.filterOptions.filterFactureF.Id, Article: a, IdArticle: a.Id, Pu: $scope.lastPrice }));
+                                  setTimeout(function(){
+                                      //$scope.myLogo = a.Logo;
+                                      $scope.filterOptions.filterArticle = null;
+                                      $scope.myLogo = a.Logo;
+                                      $scope.scrollToFocus(0,3);
+
+                                  },100);
+
+                                  //console.log(a.MinStock);
+
+                              }).error(function(){
+                                  notificationFactory.info("erreur last Price", "erreur");
+
+                              });
+
+
+                        }else
+                        {
+
+                            notificationFactory.warning("Choisissez un Fournisseur ! ", "Attention");
+                        }
+                    }
+
+                });
+                $scope.scrollToFocus = function( rowIndex, colIndex ) {
+                    $scope.gridApi.cellNav.scrollToFocus( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+                };
+                $scope.items = [];
+             $scope.view = function (e, item) {
+
+                    myWindow = window.open("@Url.Action("PopUpPrintBonReception", "Administration")", "");
+                    myWindow.myBon = item;
+                    myWindow.myBon.Fournisseur = item.Fournisseur;
+
+                }
+                var headerTemplateAdd = '<a style="margin-left:15px !important;" ng-click="grid.appScope.view($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-action-visibility"></i></a>';
+
+                var CellTemplateDelete = '<a style="margin-left:15px !important;"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+
+                    $scope.gridOptions.columnDefs = [
+
+                        { enableCellEdit: false, width: "136", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-block" style="width:135px !important;" ng-click="grid.appScope.reset()"><span class="icon-refresh"></span></button>', name: ' ', cellTemplate: headerTemplateAdd, sortable: false },
+
+                        { name: 'NumBon', visible: true, enableHiding: true, displayName: 'Numero BR', width: "200", enableCellEdit: true, enableCellEditOnFocus: false, filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><input type="text" class="ui-grid-filter-input ui-grid-filter-input-0 ng-touched" ng-model="grid.appScope.filterOptions.filterNumBon"/></div>', },
+                        { name: 'Fournisseur.Name', displayName: 'Fournisseur', width: "*", enableCellEdit: false, filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><input type="text" class="ui-grid-filter-input ui-grid-filter-input-0 ng-touched" ng-model="grid.appScope.filterOptions.filterFournisseur"/></div>', },
+                        { name: 'Date', displayName: 'Date', width: "*", type: "date", enableCellEditOnFocus: false, cellFilter: 'date:\'dd/MM/yyyy\'', filterCellFiltered: true, filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><input type="date" class="ui-grid-filter-input ui-grid-filter-input-0 ng-touched" ng-model="grid.appScope.filterOptions.filterDate"/></div>', },
+                        //{ name: 'TotalHT', displayName: 'TOTAL', width: "92", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%',  cellFilter: 'currency:dh' },
+
+                        { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: CellTemplateDelete, sortable: false },
+
+                    ];
+
+
+                setTimeout(function () {
+                    if (window.myBon != undefined) {
+                        $scope.filterOptions.filterFactureF = window.myBon;
+
+                    }
+
+
+                },100);
+                $scope.filterOptions = {
+                    filterText: '',
+                    filterFactureF: '',
+                    filterFournisseur: ''
+                }
+                $scope.getPagedDataAsync = function () {
+                    crudGridDataFactory('BonReceptions', $scope.filterOptions.filterText, 'Fournisseur').query(itemsQuerySucceeded, queryFailed);
+                };
+                //$scope.getPagedDataAsync();
+                function convertDate(today) {
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    return today;
+                }
+
+                var totals = 0;
+                $scope.$watch('filterOptions.filterFactureF', function (oldValue, newValue) {
+                    var oldfilter = $scope.filterOptions.filterText;
+                    $scope.filterOptions.filterText = '';
+
+
+                    if ($scope.filterOptions.filterFactureF != undefined && typeof $scope.filterOptions.filterFactureF === 'object') {
+                        if ($scope.filterOptions.filterFactureF['NumBon'] != '' && $scope.filterOptions.filterFactureF['NumBon'] != undefined) {
+                            $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'FactureF/Id eq guid\'' + $scope.filterOptions.filterFactureF.Id + '\'';
+                            $scope.filterOptions.filterFournisseur = $scope.filterOptions.filterFactureF.Fournisseur;
+                            $scope.filterOptions.filterDate = new Date($scope.filterOptions.filterFactureF.Date);
+
+                            //$scope.gridOptions.exporterPdfHeader = { columns: [{ decoration: 'underline',
+                            //marginTop: 100,fontSize:14, marginLeft: 25, alignment: 'left', text: ($scope.filterOptions.filterFactureF == undefined) ? '' : "FactureF   N° : "
+                            //+ $scope.filterOptions.filterFactureF.NumBon }, { alignment: 'center', marginTop: 140, text: "Fournisseur : " +
+                            //$scope.filterOptions.filterFactureF.Fournisseur.Name.toUpperCase(), decoration: 'underline' ,fontSize:14},
+                            //{ alignment: 'right', text: convertDate(new Date($scope.filterOptions.filterFactureF.Date)), marginTop: 100, marginRight: 25, decoration: 'underline',fontSize:14 }] };
+
+
+
+                        }
+                    }
+
+                    if (($scope.filterOptions.filterText == '' /*|| flagWorkUnit == false || flagExercice == false*/)) {
+                        $scope.filterOptions.filterText = 'indexof(NumBon,\'\') gt -1';
+                    }
+                    if (oldfilter != $scope.filterOptions.filterText) {
+
+                        $scope.getPagedDataAsync();
+
+                    }
+                }, true);
+
+                $scope.check = function () {
+                    var ok = false;
+                    if ($scope.filterOptions.filterFactureF != undefined && typeof $scope.filterOptions.filterFactureF === 'object') {
+                        ok = true;
+                    }
+                    return ok;
+                }
+
+                $scope.SupprimerBon = function () {
+                    if ($scope.filterOptions.filterFactureF != undefined && typeof $scope.filterOptions.filterFactureF === 'object') {
+                        if (confirm("Voulez-vous supprimer cet FactureF ?")) {
+                            crudGridDataFactory('FactureFs').remove({ key: 'guid\'' + $scope.filterOptions.filterFactureF.Id + '\'' }, $scope.filterOptions.filterFactureF, saveSucceeded, saveFailed);
+                        }
+                    }
+                    else {
+                        notificationFactory.warning("Choisissez une facture pour la supprimer !", "Attention");
+                    }
+
+                }
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+                    gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+                        if (rowEntity.Pu <= rowEntity.Article.PA) {
+                            notificationFactory.warning("le prix de vente doit être supérieur que le prix d'achat ", "Attention");
+                            //rowEntity.Pu = "";
+                        }
+                        rowEntity.TotalHT = rowEntity.Pu * rowEntity.Qte;
+                        if (isNaN(rowEntity.TotalHT))
+                            rowEntity.TotalHT = "";
+                        $scope.$apply();
+                    });
+                    gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                        row.isNew = true;
+                    });
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+                }
+                $scope.selectRow = function () {
+                    return $scope.gridApi.selection.getSelectedRows();
+                };
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+
+                $scope.addNew = function () {
+                    $scope.addMode = true;
+                    //$scope.item = new Object();
+                    //$scope.items.unshift($scope.item);
+                    //$scope.focusFirstCell();
+                    if ($scope.filterOptions.filterFactureF != undefined && typeof $scope.filterOptions.filterFactureF === 'object') {
+
+                        window.open("@Url.Action("PopUpArticle", "Administration")", "MesProduits", "width=950, height=650,top=0, left=0");
+
+                } else {
+                    notificationFactory.warning("Choisissez une facture", "Attention");
+
+                }
+
+            }
+
+
+                $scope.delete = function (e, item) {
+                    alert('Pas encore!!');
+                    return;
+                //console.log(item)
+                if (confirm("Voulez-vous supprimer cet enregistrement ?")) {
+
+                    if (item.Id != null) {
+                        $scope.deleteMode = true;
+                        crudGridDataFactory($scope.table).remove({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                    } else {
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                    }
+                }
+
+            }
+
+            /*region generique*/
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            function itemsQuerySucceeded(data) {
+                $scope.items = data.value;
+                $scope.gridOptions.data = $scope.items;
+
+                //$scope.totalServerItems = data["odata.count"];
+                //if ($scope.items.length > 0) {
+                //    if ($scope.item) {
+                //        for (i = 0; i < $scope.items.length; i++) {
+                //            if ($scope.items[i].Id == $scope.item.Id)
+                //                $scope.dataGrid.selectedItem = $scope.items[i];
+                //        }
+                //    }
+                //    if ($scope.dataGrid.selectedItem == null) {
+                //        $scope.dataGrid.selectedItem = $scope.items[0];
+                //    }
+
+                //    $scope.setItem($scope.dataGrid.selectedItem);
+                //}
+
+                //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+
+                totals = 0;
+                for (var i = 0; i < $scope.items.length; i++) {
+                    var x = $scope.items[i].TotalHT;
+                    totals += x;
+                }
+                totals = totals.toFixed(2);
+                $http({ url: '/Statistique/DecimalToWordsJSON', method: 'GET', params: { nbr: totals } })
+                   .success(function (data) {
+                       $scope.totalInWords = data;
+                   });
+            }
+
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            saveSucceeded = function (saveResult) {
+
+                notificationFactory.success();
+                totals = 0;
+                for (var i = 0; i < $scope.items.length; i++) {
+                    var x = $scope.items[i].TotalHT;
+                    totals += x;
+                }
+                totals = totals.toFixed(2);
+                if($scope.Fournisseur == 'SUIV' || $scope.Fournisseur == 'SBCIT'){
+
+
+                    $http.post('/Statistique/updatePaiementFactureF/',{IdFactureF : $scope.filterOptions.filterFactureF.Id})
+                      .success(function (data) {
+                          notificationFactory.success();
+                      }).error(function(){
+                          notificationFactory.error("Erreur", "Query failed");
+                      });
+                }
+
+            }
+            saveFailed = function (error) {
+                var reason = error.statusText;
+                var detail = error.data["odata.error"];
+                if (detail) {
+                    reason += detail.innererror.message;
+                }
+                if (error.config["method"] == "POST")
+                    $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                notificationFactory.error(
+                   "Impossible d'enregistrer les modifications. " + reason +
+               " Il faut actualiser la page.");
+                $scope.getPagedDataAsync();
+
+
+            };
+
+
+
+
+        }]);
+        angular.bootstrap(document, ['AdminModule']);
+
+    });
+    </script>
+}

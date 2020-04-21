@@ -1,0 +1,1648 @@
+﻿@{
+    ViewBag.Title = "Gestion des Bons de livraison";
+    ////Layout = "~/Views/Shared/_LayoutPopUPArticle.cshtml";
+}
+
+
+<div class="card-panel">
+    <div class="row">
+
+        <div class="row">
+            <div style="margin-left:20px !important;" class="pull-left">
+                <div class="form-group">
+                    <input autocomplete="off" readonly placeholder="Client" id="disabled" type="text" class="validate "
+                           ng-model="filterOptions.filterClient" typeahead-wait-ms=" 100"
+                           typeahead="v as v.Name for v  in lookupFactory.get('Clients', 'Name', $viewValue)">
+                </div>
+            </div>
+            <!--  (table, field, text, expand, vide, limit, wheres) -->
+            <input type="date" readonly id="datePicker" placeholder="Choisissez une date" ng-model="filterOptions.filterDate" style="width:130px !important;margin-right:15px !important;" class="pull-right">
+            <div class="col-lg-4 col-lg-offset-3" style="width:320px !important;">
+                <div class="form-group-inline">
+
+                <div class="input-field col s12">
+                    <input utocomplete="off" ng-model="filterOptions.filterBonLivraison" placeholder="choisissez un Bon livraison"
+                           typeahead="v as v.NumBon for v  in lookupFactory.getExpand('BonLivraisons', 'NumBon', $viewValue,'Client,BonLivraisonItems',null,'oui',null)"
+                           typeahead-wait-ms=" 100" id="name2" type="text">
+                    <label for="first_name" class="active">BL N° </label>
+                </div>
+                </div>
+            </div>
+        </div>
+        @if (StatistiqueController.getCompanyName() == "H9S")
+        {
+            <div class="row" style="margin-left:10px;">
+                <div class="switch">
+                    La langue :
+                    <label>
+                        En Français
+                        <input type="checkbox" ng-model="isArabic">
+                        <span class="lever"></span> En Arabe
+                    </label>
+                </div>
+            </div>
+        }
+
+        <div class="row" style="margin-left:10px;" ng-show="showFormat">
+            <div class="switch">
+                Format du BL :
+                <label>
+                    Petit
+                    <input type="checkbox" ng-model="grandFormat">
+                    <span class="lever"></span> Grand
+                </label>
+            </div>
+        </div>
+        <div class="row" style="margin-left:10px;" ng-show="showPrices">
+            <div class="switch">
+                Afficher les prix :
+                <label>
+                    Non
+                    <input type="checkbox" ng-model="afficherPrices">
+                    <span class="lever"></span> Oui
+                </label>
+            </div>
+        </div>
+
+        <div class="row" style="margin-left:10px;" ng-show="afficherEspece">
+            <div class="switch">
+                Espèce ?
+                <label>
+                    Non
+                    <input type="checkbox" ng-model="isEspece">
+                    <span class="lever"></span> Oui
+                </label>
+            </div>
+        </div>
+        <div class="row" style="margin-left:10px;" ng-show="showSolde">
+            <div class="switch">
+                Afficher le solde
+                <label>
+                    Non
+                    <input type="checkbox" ng-model="afficherSolde">
+                    <span class="lever"></span> Oui
+                </label>
+            </div>
+        </div>
+        @if (StatistiqueController.getCompanyName() == "SUIV" || StatistiqueController.getCompanyName() == "SBCIT")
+        {
+            <div class="row" style="margin-left:10px;">
+                <div class="switch">
+                    Cachet :
+                    <label>
+                        Non
+                        <input type="checkbox" ng-model="cachet">
+                        <span class="lever"></span> Oui
+                    </label>
+                </div>
+            </div>
+        }
+        <div ui-grid-selection ui-grid-exporter ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+
+
+        <div style="bottom: 45px; left: 24px;position:fixed" ng-show="check()">
+            <a class="btn-floating btn-large orange" ng-click="SupprimerBon()">
+                <i class="large mdi-action-delete"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<div style="bottom: 45px; left: 90px;position:fixed" ng-show="check()">
+    <a class="btn-floating btn-large green" ng-click="print()">
+        <i class="large mdi-action-print"></i>
+    </a>
+</div>
+@if (StatistiqueController.getCompanyName() == "SUIV" || StatistiqueController.getCompanyName() == "SBCIT" || StatistiqueController.getCompanyName() == "AQK")
+{
+<div style="bottom: 23px; right: 95px;position:fixed" ng-show="check() && envoye">
+    <a class="btn-floating btn-large pink" ng-click="email()">
+        <i class="large mdi-communication-email"></i>
+    </a>
+</div>
+}
+
+@section Scripts
+{
+
+    <script>
+
+    $(document).ready(function () {
+
+
+        app.controller("AdminCtrl", ['$scope','$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope,$http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+            $scope.client = '@StatistiqueController.getCompanyName().ToUpper()';
+            //$scope.client = "EAS";
+            //$scope.client = "TSR";
+            //$scope.client = "ALATFA";
+            //$scope.client = "ALATFA";
+            $scope.cachet= false;
+
+            $scope.envoye= true;
+            $scope.showPrices = true;
+            if($scope.client == "H9S"){
+                $scope.isArabic = false;
+            }else
+                $scope.isArabic = false;
+
+            $scope.showAdd = true;
+            var getTypeTableau = '@StatistiqueController.getTypeTableau()';
+            if(getTypeTableau == 1){
+                typeTableau = "headerLineOnly";
+            }else if(getTypeTableau == 3){
+                typeTableau = {hLineWidth: function(i, node) {
+                    return (i === 0 || i === node.table.body.length) ? 2 : 1;
+                },
+                    vLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+                    },
+                    hLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+                    },
+                    vLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+                    }};
+            }else if(getTypeTableau == 4){
+                typeTableau = undefined;
+
+            }
+            else
+            {
+                typeTableau = "lightHorizontalLines";
+            }
+            $scope.email = function(){
+
+
+                if ($scope.filterOptions.filterBonLivraison != undefined && typeof $scope.filterOptions.filterBonLivraison === 'object')
+                {
+                    if($scope.filterOptions.filterBonLivraison.Client.Email != undefined && $scope.filterOptions.filterBonLivraison.Client.Email != null && $scope.filterOptions.filterBonLivraison.Client.Email != ""){
+                        $scope.envoye = false;
+                        $http({ url: "/Administration/EmailBonLivraison?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+'&ShowPrices='+$scope.afficherPrices+"&IsEspece="+$scope.isEspece+"&Cachet="+$scope.cachet, method: 'GET' })
+                 .success(function (data) {
+                     if(data.envoye == 1){
+                         notificationFactory.info("Le mail est bien envoyé à :<br/> <b>"+$scope.filterOptions.filterBonLivraison.Client.Name+"</b>", "Succés");
+                         $scope.envoye = true;
+                     }else{
+                         notificationFactory.warning("Il y'a un erreur lors de l'envoi de mail", "Attention");
+                         $scope.envoye = true;
+                     }
+
+                 });
+                    }
+                    else
+                        notificationFactory.warning("Vous devez attribuer un email pour le client : "+$scope.filterOptions.filterBonLivraison.Client.Name, "Attention");
+
+                }
+
+            }
+            var formatBl = '@StatistiqueController.getFormatBL()';
+            if(formatBl == 1)
+            {
+                $scope.grandFormat = true;
+
+            }else
+            {
+                $scope.grandFormat = false;
+
+            }
+
+            if ($scope.client != 'SHMZ')
+                $scope.afficherSolde = true;
+            else
+                $scope.afficherSolde = false;
+
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            //$scope.$scope = $scope;
+            $scope.table = "BonLivraisonItems";
+            $scope.lookupFactory = lookupFactory;
+            $scope.bon = 'BonLivraisonList';
+            $scope.filterOptions = {
+                filterText: "",
+                filterVisible: null,
+                useExternalFilter: true
+            };
+            //$scope.pagingOptions = {
+            //    pageSizes: [5, 10, 30],
+            //    pageSize: 5,
+            //    totalServerItems: 0,
+            //    currentPage: 1
+            //};
+            $scope.deleteMode = false;
+            $scope.focusFirstCell = function () {
+                //$scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+            }
+            //console.log("ok")
+
+            $scope.onDblClickRow = function (rowItem) {
+
+                console.log("dbClick")
+            };
+            $scope.gridOptions = {
+                showColumnFooter: true,
+                enableRowSelection: true,
+                enableRowHeaderSelection: false,
+                showGridFooter: true,
+                enableFiltering: false,
+                //paginationPageSizes: [5, 10, 30],
+                //paginationPageSize: 5,
+                enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                enableColumnResizing: true,
+                rowHeight: 40,
+                //enableCellEditOnFocus : true,
+                /*export*/
+                //enableGridMenu: true,
+                exporterPdfDefaultStyle: { fontSize: 10 },
+                exporterPdfTableStyle: { margin: [-18, 25, 3, 5] },
+                exporterPdfTableHeaderStyle: { fontSize: 12, bold: true, italics: false, color: 'black' },
+                exporterPdfFooter: function (currentPage, pageCount) {
+
+                    return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                },
+                exporterPdfCustomFormatter: function (docDefinition) {
+                    //docDefinition.pageMargins = [32, 60, 50, 50];
+                    docDefinition.watermark = ("@User.Identity.Name.Split('@')[1].Split('.')[0]").toUpperCase();
+                    docDefinition.pageMargins = [40, 140, 50, 70];//[40, 210, 50,57];
+
+
+                    docDefinition.styles.headerStyle = { fontSize: 12, bold: true, };
+                    docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 370 };
+                    //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                    docDefinition.content[0].layout = typeTableau;
+
+                    docDefinition.content = docDefinition.content.concat([{ width:400,decoration: 'underline', text: "TOTAL : " + totals + " DH", marginLeft: 270, fontSize: 10, bold: true, marginTop: 13 }]);
+                    return docDefinition;
+                },
+                exporterPdfOrientation: 'landscape',
+                exporterPdfPageSize: 'LETTER',
+                exporterPdfMaxGridWidth: 345,
+                exporterSuppressColumns: [' ', 'Article.Ref', '\'','Index'],
+                exporterFieldCallback: function (grid, row, col, input) {
+                    if (col.name == 'Qte' || col.name == 'Pu' || col.name == 'TotalHT') {
+                        return input.toFixed(2);
+                    } else {
+                        if(col.name!='Index')
+                        return input.toUpperCase();
+                    }
+                },
+            };
+            $scope.add = function(a){
+                $http.get('/Statistique/getPriceLastSell/', { params: { IdClient: $scope.filterOptions.filterClient.Id, IdArticle: a.Id } })
+                         .success(function (data) {
+                             $scope.lastPrice = data;
+                             // msg = "Dérniere prix de vente : ";
+
+                             //$scope.myItem.Pu = $scope.lastPrice;
+                             //$scope.myItem.Qte = null;
+                             //$scope.myItem.TotalHT = null;
+                             if($scope.lastPrice == 0)
+                             {
+                                 $scope.lastPrice = a.PVD;
+                             }
+                             $scope.items.unshift(new Object({ IdBonLivraison: $scope.filterOptions.filterBonLivraison.Id, Article: a, IdArticle: a.Id, Pu: $scope.lastPrice }));
+
+                             setTimeout(function(){
+                                 //$scope.myLogo = a.Logo;
+                                 $scope.filterOptions.filterArticle = null;
+                                 //$scope.myLogo = a.Logo;
+                                 $scope.scrollToFocus(0,3);
+                             },40);
+                             ////console.log(a.MinStock);
+                         }).error(function(){
+                             notificationFactory.info("erreur last Price", "erreur");
+                         });
+
+            }
+            var pressed = false;
+            var chars = []; $scope.priorityScan = '@StatistiqueController.getScannerPriority()';
+            $(window).keypress(function(e) {
+
+                var s = String.fromCharCode( e.which );
+                if ( s.toUpperCase() !== s && s.toLowerCase() === s && e.shiftKey ) {
+                    notificationFactory.warning("éteindre le caps lock (majuscule)", "Attention");
+                    return;
+
+                }
+                if (e.which >= 48 && e.which <= 57) {
+                    chars.push(String.fromCharCode(e.which));
+                }
+                //console.log(e.which + ":" + chars.join("|"));
+                if (pressed == false) {
+                    setTimeout(function(){
+                        if (chars.length >= 10) {
+                            var barcode = chars.join("");
+                            //console.log("Barcode Scanned: " + barcode);
+                            // assign value to some input (or do whatever you want)
+                            $http.get('/Statistique/getArticleByBarCode/', { params: { barCode: barcode } })
+                            .success(function (data) {
+                                ////console.log(data);
+                                if(data != null && data != undefined)
+                                {
+                                    if(data.BarCode.length >= 10)
+                                        $scope.add(data);
+
+                                }
+                                else
+                                {
+                                    notificationFactory.warning("Article introuvable", "Attention");
+                                }
+
+                            }).error(function(data){
+                                notificationFactory.error("Erreur", "Attention");
+                            });
+                            //$(".barcode").val(barcode);
+                        }
+                        chars = [];
+                        pressed = false;
+                    },300);
+                }
+                pressed = true;
+            });
+
+            $scope.header = '@StatistiqueController.getHeader()';
+            $scope.footer = '@StatistiqueController.getFooter()';
+            $scope.qrCode = '@StatistiqueController.getQrCode()';
+            $scope.partner = '@StatistiqueController.getPartner()';
+            $scope.print2 = function(){
+                $scope.print();
+                if($scope.client == "ATF")
+                {
+                    ///////////////////////////////////////
+                    $scope.gridOptions.exporterPdfDefaultStyle = { fontSize: @StatistiqueController.getPoliceImpression() };
+                    $scope.gridOptions.exporterPdfTableStyle = { margin: [-18, 18, 3, 5] };
+                    $scope.gridOptions.exporterPdfTableHeaderStyle = { fontSize: 11, bold: true, italics: false, color: 'black' };
+                    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                        if($scope.partner == "")
+                        {
+                            return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                        }else
+                        {
+                            var footer = [{text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle'},
+                                { image: $scope.partner, width: 390,marginTop:-45,marginLeft:400,height:20} ];
+
+                            return footer;
+                        }
+
+                    }
+                    //if($scope.qrCode == "")
+                    //{
+                    //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                    //        return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                    //    }
+                    //}else
+                    //{
+                    //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                    //        var myFooter = [{ text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' },
+                    //            { image: $scope.qrCode, width: 50,marginTop:-48,marginLeft:740,height:50} ];
+                    //        return myFooter;
+                    //    }
+                    //}
+
+                    $scope.gridOptions.exporterPdfCustomFormatter = function (docDefinition) {
+                        docDefinition.pageMargins = [410, 75, 0, 50];
+
+                        docDefinition.styles.headerStyle = { fontSize: 12, bold: true, };
+                        //docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 580 };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 593,marginTop:30 };
+
+                        //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                        docDefinition.content[0].layout = typeTableau;
+                        //docDefinition.content = docDefinition.content.concat([{width:500, decoration: 'underline', text: "TOTAL : " + totals + " DH", marginLeft: 260, fontSize: 10, bold: true, marginTop: 13 }]);
+                        docDefinition.content = docDefinition.content.concat([{marginLeft:220,marginTop:11,table: {
+                            // headers are automatically repeated if the table spans over multiple pages
+                            // you can declare how many rows should be treated as headers
+                            headerRows: 1,
+                            widths: [ 40,  70],
+
+                            body: [
+                              [ { text: 'TOTAL' , bold: false,fontSize:10 } ,{alignment:'right',text : totals + " DH",bold:true,fontSize:10}],
+
+
+                            ]
+                        }}]);
+                        docDefinition.content = docDefinition.content.concat([{ text: "Nb Articles  :  " + nbr, marginLeft: -15, fontSize: 10, bold: true, marginTop: -15 }]);
+
+                        if ($scope.tel != undefined && $scope.tel != "")
+                            docDefinition.content = docDefinition.content.concat([{ text: "TEL  : " + $scope.tel, marginLeft: -15, fontSize: 11, bold: true, marginTop: 10 }]);
+                        if ($scope.filterOptions.filterClient.Id != '45c8b294-3a63-487c-821e-70bf4f9bdc39' && $scope.afficherSolde == true)
+                            //docDefinition.content = docDefinition.content.concat([{ text: "solde  : " + (parseFloat($scope.solde)).toFixed(2) + " DH", marginLeft: -15, fontSize: 12, bold: true, marginTop: 10 }]);
+                            docDefinition.content = docDefinition.content.concat([{marginLeft:-15,marginTop:10,table: {
+                                // headers are automatically repeated if the table spans over multiple pages
+                                // you can declare how many rows should be treated as headers
+                                headerRows: 1,
+                                widths: [ 50,  90],
+
+                                body: [
+                                  [ { text: 'Solde' , bold: false,fontSize:10 } ,{text : (parseFloat($scope.solde)).toFixed(2) + " DH",bold:true,fontSize:10}],
+
+
+                                ]
+                            }}]);
+                        return docDefinition;
+                    },
+                    $scope.gridOptions.exporterPdfOrientation = 'landscape';
+                    $scope.gridOptions.exporterPdfPageSize = 'LETTER';
+                    $scope.gridOptions.exporterPdfMaxGridWidth = 345;
+                    //$scope.gridOptions.exporterPdfHeader = {
+                    //    columns: [{width:800, bold: true, fontSize: 12,  marginLeft: 390, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "Bon de livraison   BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                               "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                    //        { marginLeft: -280, marginTop: 40, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), decoration: 'underline', bold: false, fontSize: 12 },
+                    //        { marginLeft: -410, marginTop: 57, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "                                                                                            " + time() , fontSize: 11 }]
+                    //};
+                    if($scope.qrCode == "")
+                    {
+                        $scope.gridOptions.exporterPdfHeader = {
+
+                            columns: [
+                                {width:800, bold: true, fontSize: 12,  marginLeft: 519, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + " (Copie)                                               "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                                { marginLeft: -280, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                            {marginLeft:-410,marginTop:57,table: {
+                                // headers are automatically repeated if the table spans over multiple pages
+                                // you can declare how many rows should be treated as headers
+                                headerRows: 1,
+                                widths: [ 50,  130],
+
+                                body: [
+                                  [ { text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                ]
+                            }}
+                            ]
+
+                        };
+
+                    }else
+                    {
+                        $scope.gridOptions.exporterPdfHeader = {
+                            columns: [
+                               {image:$scope.qrCode,width:60,height:60,marginLeft:730},
+                                {width:800, bold: true, fontSize: 12,  marginLeft: 329, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon+" (Copie)"},
+                                { marginLeft: -470, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                            {marginLeft:-380,marginTop:57,table: {
+                                // headers are automatically repeated if the table spans over multiple pages
+                                // you can declare how many rows should be treated as headers
+                                headerRows: 1,
+                                widths: [ 50,  150],
+
+                                body: [
+                                  [ { text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                ]
+                            }}
+                            ]
+
+                        };
+                    }
+                }else if($scope.client == "EAS"){
+                    window.open("ExportMiniBonLivraisonFrancais?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+"&Solde="+$scope.afficherSolde+"&IsArabic="+false+"&ShowPrices="+$scope.afficherPrices,'_blank');
+                    return;
+                    ///////////////////////////////////////
+                    $scope.gridOptions.exporterPdfDefaultStyle = { fontSize: @StatistiqueController.getPoliceImpression() };
+                    $scope.gridOptions.exporterPdfTableStyle = { margin: [-18, 18, 3, 5] };
+                    $scope.gridOptions.exporterPdfTableHeaderStyle = { fontSize: 11, bold: true, italics: false, color: 'black' };
+                    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                        return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                    }
+                    //if($scope.qrCode == "")
+                    //{
+                    //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                    //        return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                    //    }
+                    //}else
+                    //{
+                    //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                    //        var myFooter = [{ text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' },
+                    //            { image: $scope.qrCode, width: 50,marginTop:-48,marginLeft:740,height:50} ];
+                    //        return myFooter;
+                    //    }
+                    //}
+
+                    $scope.gridOptions.exporterPdfCustomFormatter = function (docDefinition) {
+                        docDefinition.pageMargins = [410, 75, 0, 20];
+
+                        docDefinition.styles.headerStyle = { fontSize: 12, bold: true, };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 580 };
+                        //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                        docDefinition.content[0].layout = typeTableau;
+                        //docDefinition.content = docDefinition.content.concat([{width:500, decoration: 'underline', text: "TOTAL : " + totals + " DH", marginLeft: 260, fontSize: 10, bold: true, marginTop: 13 }]);
+                        docDefinition.content = docDefinition.content.concat([{marginLeft:220,marginTop:11,table: {
+                            // headers are automatically repeated if the table spans over multiple pages
+                            // you can declare how many rows should be treated as headers
+                            headerRows: 1,
+                            widths: [ 40,  70],
+
+                            body: [
+                              [ { text: 'TOTAL' , bold: false,fontSize:10 } ,{text : totals + " DH",bold:true,fontSize:10}],
+
+
+                            ]
+                        }}]);
+                        docDefinition.content = docDefinition.content.concat([{ text: "Nb Articles  :  " + nbr, marginLeft: -15, fontSize: 10, bold: true, marginTop: -15 }]);
+
+                        if ($scope.tel != undefined && $scope.tel != "")
+                            docDefinition.content = docDefinition.content.concat([{ text: "TEL  : " + $scope.tel, marginLeft: -15, fontSize: 11, bold: true, marginTop: 10 }]);
+                        if ($scope.filterOptions.filterClient.Id != '45c8b294-3a63-487c-821e-70bf4f9bdc39' && $scope.afficherSolde == true)
+                            //docDefinition.content = docDefinition.content.concat([{ text: "solde  : " + (parseFloat($scope.solde)).toFixed(2) + " DH", marginLeft: -15, fontSize: 12, bold: true, marginTop: 10 }]);
+                            docDefinition.content = docDefinition.content.concat([{marginLeft:-15,marginTop:10,table: {
+                                // headers are automatically repeated if the table spans over multiple pages
+                                // you can declare how many rows should be treated as headers
+                                headerRows: 1,
+                                widths: [ 50,  90],
+
+                                body: [
+                                  [ { text: 'Solde' , bold: false,fontSize:10 } ,{text : (parseFloat($scope.solde)).toFixed(2) + " DH",bold:true,fontSize:10}],
+
+
+                                ]
+                            }}]);
+                        return docDefinition;
+                    },
+                    $scope.gridOptions.exporterPdfOrientation = 'landscape';
+                    $scope.gridOptions.exporterPdfPageSize = 'LETTER';
+                    $scope.gridOptions.exporterPdfMaxGridWidth = 345;
+
+                    if($scope.qrCode == "")
+                    {
+                        $scope.gridOptions.exporterPdfHeader = {
+
+                            columns: [
+                                {width:800, bold: true, fontSize: 12,  marginLeft: 519, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                       "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                                { marginLeft: -280, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                            {marginLeft:-410,marginTop:57,table: {
+                                // headers are automatically repeated if the table spans over multiple pages
+                                // you can declare how many rows should be treated as headers
+                                headerRows: 1,
+                                widths: [ 50,  130],
+
+                                body: [
+                                  [ { text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                ]
+                            }}
+                            ]
+
+                        };
+                    }else
+                    {
+                        //$scope.gridOptions.exporterPdfHeader = {
+                        //    columns: [{width:800, bold: true, fontSize: 12,  marginLeft: 390, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "Bon de livraison   BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                               "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                        //        { marginLeft: -280, marginTop: 40, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), decoration: 'underline', bold: false, fontSize: 12 },
+                        //        { marginLeft: -410, marginTop: 57, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "                                                                                            " + time() , fontSize: 11 }]
+                        //};
+                        $scope.gridOptions.exporterPdfHeader = {
+                            columns: [
+                               {image:$scope.qrCode,width:60,height:60,marginLeft:730},
+                                {decoration:'underline',width:800, bold: true, fontSize: 12,  marginLeft: 329, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + " (Copie)"},
+                                { marginLeft: -470, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() + "  à Marrakech" ,  bold: false, fontSize: 9,bold:true },
+                                //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                            {marginLeft:-380,marginTop:57,table: {
+                                // headers are automatically repeated if the table spans over multiple pages
+                                // you can declare how many rows should be treated as headers
+                                headerRows: 1,
+                                widths: [ 50,  150],
+
+                                body: [
+                                  [ { text: 'Client' , bold: true,fontSize:10 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:10}],
+
+
+                                ]
+                            }}
+                            ]
+
+                        };
+                    }
+
+                }
+                $scope.gridApi.exporter.pdfExport('all', 'all');
+
+            }
+            $scope.print = function () {
+
+
+                $scope.solde = 0;
+                $http.get('/Statistique/getSoldeByClient/', { params: { IdClient: $scope.filterOptions.filterClient.Id } })
+                  .success(function (data) {
+                      $scope.solde = data.solde;
+                      for (var i = 0; i < $scope.items.length; i++) {
+                          myItem = $scope.items[i];
+                          if(myItem.Id == null)
+                          {
+                              notificationFactory.warning("Enregistrez tous les lignes !", "Attention");
+                              return;
+                          }
+                      }
+                      if ($scope.filterOptions.filterBonLivraison != undefined && typeof $scope.filterOptions.filterBonLivraison === 'object') {
+                          if ($scope.grandFormat) {
+                              window.open("ExportBonLivraison?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+'&ShowPrices='+$scope.afficherPrices+"&IsEspece="+$scope.isEspece+"&Cachet="+$scope.cachet,'_blank');
+
+                              return;
+                              if($scope.footer == "" || $scope.header == "")
+                              {
+
+                                  notificationFactory.warning("Vous devez mettre une entete + pied page avant d'imprimer le bon !", "Attention");
+                                  return;
+                              }
+                              $scope.gridOptions.exporterPdfDefaultStyle = { fontSize: 10 };
+                              $scope.gridOptions.exporterPdfTableStyle = { margin: [-18, 20, 3, 5] };
+                              $scope.gridOptions.exporterPdfTableHeaderStyle = { fontSize: 12, bold: true, italics: false, color: 'black' };
+                              $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                  //return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                                  var footer = [{text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' },{ image: $scope.footer, width: 595,marginTop:-19,marginLeft:17,height:40} ];
+
+
+                                  return footer;
+                              },
+                              $scope.gridOptions.exporterPdfCustomFormatter = function (docDefinition) {
+                                  //docDefinition.pageMargins = [40, 210, 50,57];
+                                  docDefinition.pageMargins = [40, 140, 50, 70];//[40, 210, 50,57];
+                                  docDefinition.watermark = ("@User.Identity.Name.Split('@')[1].Split('.')[0]").toUpperCase();
+
+
+                                  docDefinition.styles.headerStyle = { fontSize: 11, bold: true };
+                                  docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 557, marginTop: 20 };
+                                  //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                                  docDefinition.content[0].layout = typeTableau;
+                                  //docDefinition.content = docDefinition.content.concat([{ decoration: 'underline', text: "TOTAL :  " + totals + " DH", marginLeft: 385, bold: true, marginTop: 50, fontSize: 14 }]);
+                                  docDefinition.content = docDefinition.content.concat([{marginLeft:350,marginTop:14,table: {
+                                      // headers are automatically repeated if the table spans over multiple pages
+                                      // you can declare how many rows should be treated as headers
+                                      headerRows: 1,
+                                      widths: [ 50,  90],
+
+                                      body: [
+                                        [ { text: 'TOTAL' , bold: true,fontSize:10 } ,{alignment:'right',text : totals + " DH",bold:true,fontSize:12}],
+
+
+                                      ]
+                                  }}]);
+                                  //if ($scope.tel != undefined && $scope.tel != "")
+                                  //    docDefinition.content = docDefinition.content.concat([{ text: "TEL  : " + $scope.tel, marginLeft: -15, fontSize: 11, bold: true, marginTop: 10 }]);
+                                  if ($scope.filterOptions.filterClient.Id != '45c8b294-3a63-487c-821e-70bf4f9bdc39' && $scope.afficherSolde == true)
+                                      docDefinition.content = docDefinition.content.concat([{marginLeft:-15,marginTop:10,table: {
+                                          // headers are automatically repeated if the table spans over multiple pages
+                                          // you can declare how many rows should be treated as headers
+                                          headerRows: 1,
+                                          widths: [ 60,  100],
+
+                                          body: [
+                                            [ { text: 'Solde' , bold: false,fontSize:11 } ,{text : (parseFloat($scope.solde)).toFixed(2) + " DH",bold:true,fontSize:11}],
+
+
+                                          ]
+                                      }}]);
+                                  //docDefinition.content = docDefinition.content.concat([{ text: "solde  : " + (parseFloat($scope.solde)).toFixed(2) + " DH", marginLeft: -15, fontSize: 12, bold: true, marginTop: 10 }]);
+
+                                  return docDefinition;
+                              },
+                              $scope.gridOptions.exporterPdfOrientation = 'portrait';
+                              $scope.gridOptions.exporterPdfPageSize = 'LETTER';
+                              $scope.gridOptions.exporterPdfMaxGridWidth = 530;
+                              //$scope.gridOptions.exporterPdfHeader.content =   $scope.gridOptions.exporterPdfHeader.content.concat({text:"dfdgdfgd"});
+
+                              $scope.gridOptions.exporterPdfHeader = {
+
+                                  columns: [
+                                      { image: $scope.header, width: 250,height:80,marginLeft:12,margin: [20,20,20,20]},
+                                      //{fontSize:12,decoration: 'underline' , width:200, bold: true, alignment: 'left', marginLeft: -580, marginTop: 130, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BonLivraison  N° : " + $scope.filterOptions.filterBonLivraison.NumBon },
+                                      //{ fontSize:14, alignment: 'center', marginTop: 155,marginLeft:-1000, text: "CLIENT :  " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),bold:true},
+                                      //{fontSize:12, alignment: 'left', marginLeft: -320, marginTop: 130, text: "Date  :  "+convertDate(new Date($scope.filterOptions.filterBonLivraison.Date))}
+                                       {marginLeft:40,marginTop:70,table: {
+                                           // headers are automatically repeated if the table spans over multiple pages
+                                           // you can declare how many rows should be treated as headers
+                                           headerRows: 1,
+                                           widths: [ 65, 65,85],
+
+                                           body: [
+                                             [ { text: 'Bon Livraison' , bold: true,fontSize:11 ,colSpan:3,alignment : 'center'},{},{} ],
+                                             [ {alignment : 'center',fillColor:'#DFE4E6', text: 'N° BL' , bold: false,fontSize:10 },{ alignment : 'center',text: 'Date' , bold: false,fontSize:10,fillColor:'#DFE4E6' },{ alignment : 'center',text: 'Client' , bold: false,fontSize:10 ,fillColor:'#DFE4E6'} ],
+                                             [  {  alignment : 'center',text: $scope.filterOptions.filterBonLivraison.NumBon,fontSize:9} ,{  alignment : 'center',text: convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)),fontSize:9}, { text: $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9, alignment : 'center'}  ],
+                                          //   	[{ text: 'Header with Colspan = 2', style: 'tableHeader', colSpan: 2, alignment: 'center' }, {}, { text: 'Header 3', style: 'tableHeader', alignment: 'center' }],
+                                          //[{ text: 'Header 1', style: 'tableHeader', alignment: 'center' }, { text: 'Header 2', style: 'tableHeader', alignment: 'center' }, { text: 'Header 3', style: 'tableHeader', alignment: 'center' }],
+
+                                           ]
+                                       }}
+                                  ]
+                              };
+
+                          } else
+                          {
+
+                              if($scope.client == "ATF")
+                              {
+                                  window.open("ExportMiniBonLivraisonArabic?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id,"_blank");
+                                  return;
+                                  ///////////////////////////////////////
+                                  $scope.gridOptions.exporterPdfDefaultStyle = { fontSize: @StatistiqueController.getPoliceImpression() };
+                                  $scope.gridOptions.exporterPdfTableStyle = { margin: [-18, 18, 3, 5] };
+                                  $scope.gridOptions.exporterPdfTableHeaderStyle = { fontSize: 11, bold: true, italics: false, color: 'black' };
+                                  $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                      if($scope.partner == "")
+                                      {
+                                          return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                                      }else
+                                      {
+                                          var footer = [{text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle'},
+                                              { image: $scope.partner, width: 390,marginTop:-45,marginLeft:400,height:20} ];
+
+                                          return footer;
+                                      }
+
+                                  }
+                                  //if($scope.qrCode == "")
+                                  //{
+                                  //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                  //        return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                                  //    }
+                                  //}else
+                                  //{
+                                  //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                  //        var myFooter = [{ text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' },
+                                  //            { image: $scope.qrCode, width: 50,marginTop:-48,marginLeft:740,height:50} ];
+                                  //        return myFooter;
+                                  //    }
+                                  //}
+
+                                  $scope.gridOptions.exporterPdfCustomFormatter = function (docDefinition) {
+                                      docDefinition.pageMargins = [410, 75, 0, 50];
+
+                                      docDefinition.styles.headerStyle = { fontSize: 12, bold: true, };
+                                      //docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 580 };
+                                      docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 593,marginTop:30 };
+
+                                      //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                                      docDefinition.content[0].layout = typeTableau;
+                                      //docDefinition.content = docDefinition.content.concat([{width:500, decoration: 'underline', text: "TOTAL : " + totals + " DH", marginLeft: 260, fontSize: 10, bold: true, marginTop: 13 }]);
+                                      docDefinition.content = docDefinition.content.concat([{marginLeft:220,marginTop:11,table: {
+                                          // headers are automatically repeated if the table spans over multiple pages
+                                          // you can declare how many rows should be treated as headers
+                                          headerRows: 1,
+                                          widths: [ 40,  70],
+
+                                          body: [
+                                            [ { text: 'TOTAL' , bold: false,fontSize:10 } ,{alignment:'right',text : totals + " DH",bold:true,fontSize:10}],
+
+
+                                          ]
+                                      }}]);
+                                      docDefinition.content = docDefinition.content.concat([{ text: "Nb Articles  :  " + nbr, marginLeft: -15, fontSize: 10, bold: true, marginTop: -15 }]);
+
+                                      if ($scope.tel != undefined && $scope.tel != "")
+                                          docDefinition.content = docDefinition.content.concat([{ text: "TEL  : " + $scope.tel, marginLeft: -15, fontSize: 11, bold: true, marginTop: 10 }]);
+                                      if ($scope.filterOptions.filterClient.Id != '45c8b294-3a63-487c-821e-70bf4f9bdc39' && $scope.afficherSolde == true)
+                                          //docDefinition.content = docDefinition.content.concat([{ text: "solde  : " + (parseFloat($scope.solde)).toFixed(2) + " DH", marginLeft: -15, fontSize: 12, bold: true, marginTop: 10 }]);
+                                          docDefinition.content = docDefinition.content.concat([{marginLeft:-15,marginTop:10,table: {
+                                              // headers are automatically repeated if the table spans over multiple pages
+                                              // you can declare how many rows should be treated as headers
+                                              headerRows: 1,
+                                              widths: [ 50,  90],
+
+                                              body: [
+                                                [ { text: 'Solde' , bold: false,fontSize:10 } ,{text : (parseFloat($scope.solde)).toFixed(2) + " DH",bold:true,fontSize:10}],
+
+
+                                              ]
+                                          }}]);
+                                      return docDefinition;
+                                  },
+                                  $scope.gridOptions.exporterPdfOrientation = 'landscape';
+                                  $scope.gridOptions.exporterPdfPageSize = 'LETTER';
+                                  $scope.gridOptions.exporterPdfMaxGridWidth = 345;
+                                  //$scope.gridOptions.exporterPdfHeader = {
+                                  //    columns: [{width:800, bold: true, fontSize: 12,  marginLeft: 390, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "Bon de livraison   BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                               "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                                  //        { marginLeft: -280, marginTop: 40, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), decoration: 'underline', bold: false, fontSize: 12 },
+                                  //        { marginLeft: -410, marginTop: 57, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "                                                                                            " + time() , fontSize: 11 }]
+                                  //};
+                                  if($scope.qrCode == "")
+                                  {
+                                      $scope.gridOptions.exporterPdfHeader = {
+
+                                          columns: [
+                                              {width:800, bold: true, fontSize: 12,  marginLeft: 519, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                       "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                                              { marginLeft: -280, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                              //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                                          {marginLeft:-410,marginTop:57,table: {
+                                              // headers are automatically repeated if the table spans over multiple pages
+                                              // you can declare how many rows should be treated as headers
+                                              headerRows: 1,
+                                              widths: [ 50,  130],
+
+                                              body: [
+                                                [ { text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                              ]
+                                          }}
+                                          ]
+
+                                      };
+                                  }else
+                                  {
+                                      $scope.gridOptions.exporterPdfHeader = {
+                                          columns: [
+                                             {image:$scope.qrCode,width:60,height:60,marginLeft:730},
+                                              {width:800, bold: true, fontSize: 12,  marginLeft: 329, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon},
+                                              { marginLeft: -470, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                              //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                                          {marginLeft:-380,marginTop:57,table: {
+                                              // headers are automatically repeated if the table spans over multiple pages
+                                              // you can declare how many rows should be treated as headers
+                                              headerRows: 1,
+                                              widths: [ 50,  150],
+
+                                              body: [
+                                                [ { text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                              ]
+                                          }}
+                                          ]
+
+                                      };
+                                  }
+
+
+
+                              }else if($scope.client == "SANVIE")
+                              {
+                                  window.open("ExportMiniBonLivraisonFrancais?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+"&Solde="+$scope.afficherSolde+"&IsArabic="+false+"&ShowPrices="+$scope.afficherPrices,'_blank');
+                                  return;
+
+
+
+                              }else if($scope.client == "SHMZ")
+                              {
+                                  window.open("ExportMiniBonLivraisonFrancais?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+"&Solde="+$scope.afficherSolde+"&IsArabic="+false+"&ShowPrices="+$scope.afficherPrices,'_blank');
+                                  return;
+
+
+
+                              }else if($scope.client == "EAS")
+                              {
+                                  window.open("ExportMiniBonLivraisonFrancais?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+"&Solde="+$scope.afficherSolde+"&IsArabic="+false+"&ShowPrices="+$scope.afficherPrices,'_blank');
+                                  return;
+
+
+
+                              }
+                              else if($scope.client == "H9S")
+                              {
+                                  window.open("ExportMiniBonLivraisonFrancais?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+"&Solde="+$scope.afficherSolde+"&IsArabic="+false+"&ShowPrices="+$scope.afficherPrices,'_blank');
+                                  return;
+
+
+
+                              }else if($scope.client == "TSR")
+                              {
+                                  window.open("ExportMiniBonLivraisonFrancais?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+"&Solde="+$scope.afficherSolde+"&IsArabic="+$scope.isArabic,'_blank');
+                                  return;
+                              }
+                              else if($scope.client == "AQK")
+                                  {
+                                      window.open("ExportMiniBonLivraisonFrancais?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+"&Solde="+$scope.afficherSolde+"&IsArabic="+$scope.isArabic,'_blank');
+                                      return;
+
+                                  }else if($scope.client == "TSR")
+                                  {
+                                      window.open("ExportMiniBonLivraisonFrancais?IdBonLivraison="+$scope.filterOptions.filterBonLivraison.Id+"&Solde="+$scope.afficherSolde+"&IsArabic="+$scope.isArabic,'_blank');
+                                      return;
+                                      ///////////////////////////////////////
+                                      $scope.gridOptions.exporterPdfDefaultStyle = { fontSize: @StatistiqueController.getPoliceImpression() };
+                                      $scope.gridOptions.exporterPdfTableStyle = { margin: [-18, 18, 0, 5] };
+                                      $scope.gridOptions.exporterPdfTableHeaderStyle = { fontSize: 11, bold: true, italics: false, color: 'black' };
+                                      $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                          if($scope.partner == "")
+                                          {
+                                              return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                                          }else
+                                          {
+                                              var footer = [{text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle'},
+                                                  { image: $scope.partner, width: 390,marginTop:-45,marginLeft:400,height:35} ];
+
+                                              return footer;
+                                          }
+                                      }
+                                      //if($scope.qrCode == "")
+                                      //{
+                                      //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                      //        return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                                      //    }
+                                      //}else
+                                      //{
+                                      //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                      //        var myFooter = [{ text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' },
+                                      //            { image: $scope.qrCode, width: 50,marginTop:-48,marginLeft:740,height:50} ];
+                                      //        return myFooter;
+                                      //    }
+                                      //}
+
+                                      $scope.gridOptions.exporterPdfCustomFormatter = function (docDefinition) {
+                                          docDefinition.pageMargins = [410, 75, 0, 50];
+
+                                          docDefinition.styles.headerStyle = { fontSize: 12, bold: true, };
+                                          docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 593,marginTop:30 };
+                                          //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                                          docDefinition.content[0].layout = typeTableau;
+                                          //docDefinition.content = docDefinition.content.concat([{width:500, decoration: 'underline', text: "TOTAL : " + totals + " DH", marginLeft: 260, fontSize: 10, bold: true, marginTop: 13 }]);
+                                          docDefinition.content = docDefinition.content.concat([{marginLeft:220,marginTop:11,table: {
+                                              // headers are automatically repeated if the table spans over multiple pages
+                                              // you can declare how many rows should be treated as headers
+                                              headerRows: 1,
+                                              widths: [ 40,  70],
+
+                                              body: [
+                                                [ { fillColor:'#DFE4E6',text: 'TOTAL' , bold: false,fontSize:10 } ,{text : totals + " DH",bold:true,fontSize:10,alignment : 'right'}],
+
+
+                                              ]
+                                          }}]);
+                                          docDefinition.content = docDefinition.content.concat([{ text: "Nb Articles  :  " + nbr, marginLeft: -15, fontSize: 10, bold: true, marginTop: -15 }]);
+
+                                          if ($scope.tel != undefined && $scope.tel != "")
+                                              docDefinition.content = docDefinition.content.concat([{ text: "TEL  : " + $scope.tel, marginLeft: -15, fontSize: 11, bold: true, marginTop: 10 }]);
+                                          if ($scope.filterOptions.filterClient.Id != '45c8b294-3a63-487c-821e-70bf4f9bdc39' && $scope.afficherSolde == true)
+                                              //docDefinition.content = docDefinition.content.concat([{ text: "solde  : " + (parseFloat($scope.solde)).toFixed(2) + " DH", marginLeft: -15, fontSize: 12, bold: true, marginTop: 10 }]);
+                                              docDefinition.content = docDefinition.content.concat([{marginLeft:-15,marginTop:10,table: {
+                                                  // headers are automatically repeated if the table spans over multiple pages
+                                                  // you can declare how many rows should be treated as headers
+                                                  headerRows: 1,
+                                                  widths: [ 50,  90],
+
+                                                  body: [
+                                                    [ {fillColor:'#DFE4E6', text: 'Solde' , bold: false,fontSize:10 } ,{text : (parseFloat($scope.solde)).toFixed(2) + " DH",bold:true,fontSize:10}],
+
+
+                                                  ]
+                                              }}]);
+                                          return docDefinition;
+                                      },
+                                      $scope.gridOptions.exporterPdfOrientation = 'landscape';
+                                      $scope.gridOptions.exporterPdfPageSize = 'LETTER';
+                                      $scope.gridOptions.exporterPdfMaxGridWidth = 345;
+                                      //$scope.gridOptions.exporterPdfHeader = {
+                                      //    columns: [{width:800, bold: true, fontSize: 12,  marginLeft: 390, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "Bon de livraison   BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                               "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                                      //        { marginLeft: -280, marginTop: 40, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), decoration: 'underline', bold: false, fontSize: 12 },
+                                      //        { marginLeft: -410, marginTop: 57, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "                                                                                            " + time() , fontSize: 11 }]
+                                      //};
+                                      if($scope.qrCode == "")
+                                      {
+                                          $scope.gridOptions.exporterPdfHeader = {
+
+                                              columns: [
+                                                  {width:800, bold: true, fontSize: 12,  marginLeft: 519, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                       "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                                                  { marginLeft: -280, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                                  //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                                              {marginLeft:-410,marginTop:57,table: {
+                                                  // headers are automatically repeated if the table spans over multiple pages
+                                                  // you can declare how many rows should be treated as headers
+                                                  headerRows: 1,
+                                                  widths: [ 50,  130],
+
+                                                  body: [
+                                                    [ {fillColor:'#DFE4E6', text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                                  ]
+                                              }}
+                                              ]
+
+                                          };
+                                      }else
+                                      {
+                                          $scope.gridOptions.exporterPdfHeader = {
+                                              columns: [
+                                                 {image:$scope.qrCode,width:60,height:60,marginLeft:730},
+                                                  {width:800, bold: true, fontSize: 12,  marginLeft: 329, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon},
+                                                  { marginLeft: -470, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                                  //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                                              {marginLeft:-380,marginTop:57,table: {
+                                                  // headers are automatically repeated if the table spans over multiple pages
+                                                  // you can declare how many rows should be treated as headers
+                                                  headerRows: 1,
+                                                  widths: [ 50,  150],
+
+                                                  body: [
+                                                    [ {fillColor:'#DFE4E6', text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                                  ]
+                                              }}
+                                              ]
+
+                                          };
+                                      }
+
+
+                                  }else{
+                                      ///////////////////////////////////////
+                                      $scope.gridOptions.exporterPdfDefaultStyle = { fontSize: @StatistiqueController.getPoliceImpression() };
+                                      $scope.gridOptions.exporterPdfTableStyle = { margin: [-18, 18, 3, 5] };
+                                      $scope.gridOptions.exporterPdfTableHeaderStyle = { fontSize: 11, bold: true, italics: false, color: 'black' };
+                                      $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                          return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                                      }
+                                      //if($scope.qrCode == "")
+                                      //{
+                                      //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                      //        return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                                      //    }
+                                      //}else
+                                      //{
+                                      //    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                                      //        var myFooter = [{ text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' },
+                                      //            { image: $scope.qrCode, width: 50,marginTop:-48,marginLeft:740,height:50} ];
+                                      //        return myFooter;
+                                      //    }
+                                      //}
+
+                                      $scope.gridOptions.exporterPdfCustomFormatter = function (docDefinition) {
+                                          docDefinition.pageMargins = [410, 75, 0, 20];
+
+                                          docDefinition.styles.headerStyle = { fontSize: 12, bold: true, };
+                                          docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 580 };
+                                          //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                                          docDefinition.content[0].layout = typeTableau;
+                                          //docDefinition.content = docDefinition.content.concat([{width:500, decoration: 'underline', text: "TOTAL : " + totals + " DH", marginLeft: 260, fontSize: 10, bold: true, marginTop: 13 }]);
+                                          docDefinition.content = docDefinition.content.concat([{marginLeft:220,marginTop:11,table: {
+                                              // headers are automatically repeated if the table spans over multiple pages
+                                              // you can declare how many rows should be treated as headers
+                                              headerRows: 1,
+                                              widths: [ 40,  70],
+
+                                              body: [
+                                                [ { text: 'TOTAL' , bold: false,fontSize:10 } ,{text : totals + " DH",bold:true,fontSize:10}],
+
+
+                                              ]
+                                          }}]);
+                                          docDefinition.content = docDefinition.content.concat([{ text: "Nb Articles  :  " + nbr, marginLeft: -15, fontSize: 10, bold: true, marginTop: -15 }]);
+
+                                          if ($scope.tel != undefined && $scope.tel != "")
+                                              docDefinition.content = docDefinition.content.concat([{ text: "TEL  : " + $scope.tel, marginLeft: -15, fontSize: 11, bold: true, marginTop: 10 }]);
+                                          if ($scope.filterOptions.filterClient.Id != '45c8b294-3a63-487c-821e-70bf4f9bdc39' && $scope.afficherSolde == true)
+                                              //docDefinition.content = docDefinition.content.concat([{ text: "solde  : " + (parseFloat($scope.solde)).toFixed(2) + " DH", marginLeft: -15, fontSize: 12, bold: true, marginTop: 10 }]);
+                                              docDefinition.content = docDefinition.content.concat([{marginLeft:-15,marginTop:10,table: {
+                                                  // headers are automatically repeated if the table spans over multiple pages
+                                                  // you can declare how many rows should be treated as headers
+                                                  headerRows: 1,
+                                                  widths: [ 50,  90],
+
+                                                  body: [
+                                                    [ { text: 'Solde' , bold: false,fontSize:10 } ,{text : (parseFloat($scope.solde)).toFixed(2) + " DH",bold:true,fontSize:10}],
+
+
+                                                  ]
+                                              }}]);
+                                          return docDefinition;
+                                      },
+                                      $scope.gridOptions.exporterPdfOrientation = 'landscape';
+                                      $scope.gridOptions.exporterPdfPageSize = 'LETTER';
+                                      $scope.gridOptions.exporterPdfMaxGridWidth = 345;
+                                      //$scope.gridOptions.exporterPdfHeader = {
+                                      //    columns: [{width:800, bold: true, fontSize: 12,  marginLeft: 390, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "Bon de livraison   BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                               "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                                      //        { marginLeft: -280, marginTop: 40, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), decoration: 'underline', bold: false, fontSize: 12 },
+                                      //        { marginLeft: -410, marginTop: 57, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "                                                                                            " + time() , fontSize: 11 }]
+                                      //};
+                                      if($scope.qrCode == "")
+                                      {
+                                          $scope.gridOptions.exporterPdfHeader = {
+
+                                              columns: [
+                                                  {width:800, bold: true, fontSize: 12,  marginLeft: 519, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon + "                                                       "+$scope.filterOptions.filterBonLivraison.User.toUpperCase().split('').join('.')},
+                                                  { marginLeft: -280, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                                  //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                                              {marginLeft:-410,marginTop:57,table: {
+                                                  // headers are automatically repeated if the table spans over multiple pages
+                                                  // you can declare how many rows should be treated as headers
+                                                  headerRows: 1,
+                                                  widths: [ 50,  130],
+
+                                                  body: [
+                                                    [ { text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                                  ]
+                                              }}
+                                              ]
+
+                                          };
+                                      }else
+                                      {
+                                          $scope.gridOptions.exporterPdfHeader = {
+                                              columns: [
+                                                 {image:$scope.qrCode,width:60,height:60,marginLeft:730},
+                                                  {width:800, bold: true, fontSize: 12,  marginLeft: 329, marginTop: 15, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "BL° : " + $scope.filterOptions.filterBonLivraison.NumBon},
+                                                  { marginLeft: -470, marginTop: 37, text: "DATE : " + convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)) + "  " + time() ,  bold: false, fontSize: 10 },
+                                                  //{ marginLeft: -410,bold:true, marginTop: 47, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), fontSize: 12 },
+
+                                              {marginLeft:-380,marginTop:57,table: {
+                                                  // headers are automatically repeated if the table spans over multiple pages
+                                                  // you can declare how many rows should be treated as headers
+                                                  headerRows: 1,
+                                                  widths: [ 50,  150],
+
+                                                  body: [
+                                                    [ { text: 'Client' , bold: true,fontSize:9 } ,{text : $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(),fontSize:9}],
+
+
+                                                  ]
+                                              }}
+                                              ]
+
+                                          };
+                                      }
+
+
+                                  }
+
+
+
+                          }
+                          $scope.gridApi.exporter.pdfExport('all', 'all');
+                          //window.close();
+
+                      }
+
+
+                  });
+
+            }
+
+            var showRef = '@StatistiqueController.getShowRef()';
+            if(showRef == 1)
+            {
+                $scope.gridOptions.exporterSuppressColumns = [' ', '\'','Index'];
+            }
+            $scope.$watch('filterOptions.filterArticle', function (oldValue, newValue) {
+                if(oldValue == newValue) return;
+                if ($scope.filterOptions.filterArticle != undefined && typeof $scope.filterOptions.filterArticle === 'object') {
+                    if ($scope.filterOptions.filterClient != undefined && typeof $scope.filterOptions.filterClient === 'object') {
+                        var a = $scope.filterOptions.filterArticle;
+                        $scope.add(a);
+
+                    }else
+                    {
+
+                        notificationFactory.warning("Choisissez un client ! ", "Attention");
+                    }
+                }
+
+            });
+            $scope.scrollToFocus = function( rowIndex, colIndex ) {
+                $scope.gridApi.cellNav.scrollToFocus( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+            };
+            $scope.gridOptions.multiSelect = false;
+            $scope.gridOptions.modifierKeysToMultiSelect = false;
+            $scope.gridOptions.noUnselect = true;
+            $scope.orderQte = '@StatistiqueController.getQteOrder()';
+            $scope.items = [];
+
+            $scope.compte =  @User.Identity.Name.Contains("cmp").ToString().ToLower() || @User.Identity.Name.Contains("comptabilite").ToString().ToLower();
+            var headerTemplateAdd = '';
+            var CellTemplateDelete = '';
+            if (!$scope.compte) {
+                CellTemplateDelete = '<a style="margin-left:15px !important;" ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+                headerTemplateAdd = '<a style="margin-left:15px !important;" title="{{row.entity.Article.PA+10}}" ng-click="grid.appScope.update($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-content-save"></i></a>';
+            }
+
+            if ($scope.client == "EAS")
+                headerTemplateAdd = '<a style="margin-left:15px !important;" title="{{row.entity.Article.PA+10}}" ng-click="grid.appScope.update($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-content-save"></i></a>';
+
+            if($scope.orderQte == 0)
+            {
+                $scope.gridOptions.columnDefs = [
+                       { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.addNew()"><span class="icon-plus"></span></button>', name: ' ', cellTemplate: headerTemplateAdd, sortable: false },
+
+                         { name: 'Article.Ref', visible: true, enableHiding: true, displayName: 'Ref', width: "140", enableCellEdit: false },
+                         { name: 'Article.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+                         { name: 'Qte', displayName: 'Qte', width: "149", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'number: 2' },
+                         { name: 'Pu', displayName: 'P.U', width: "149", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'currency:dh' },
+                         { name: 'TotalHT', displayName: 'MONTANT', width: "92", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%', exporterPdfAlign: 'right', cellFilter: 'currency:dh' },
+
+                        { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: CellTemplateDelete, sortable: false },
+                         {
+                             field: 'Index',
+                             sort: {
+                                 direction: uiGridConstants.DESC,
+                                 priority: 0,
+                             },
+                             width:"0",
+                             displayName:' ',
+                             visible:false
+
+                         }
+
+                ];
+            }else
+            {
+                $scope.gridOptions.columnDefs = [
+                          { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.addNew()"><span class="icon-plus"></span></button>', name: ' ', cellTemplate: headerTemplateAdd, sortable: false },
+
+                    { name: 'Qte', displayName: 'Qte', width: "149", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'number: 2' },
+                    { name: 'Article.Ref', visible: true, enableHiding: true, displayName: 'Ref', width: "140", enableCellEdit: false },
+                    { name: 'Article.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+                    { name: 'Pu', displayName: 'P.U', width: "149", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'currency:dh' },
+                    { name: 'TotalHT', displayName: 'MONTANT', width: "92", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%', exporterPdfAlign: 'left', cellFilter: 'currency:dh' },
+
+                   { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: CellTemplateDelete, sortable: false },
+
+                ];
+            }
+
+            if($scope.client == 'SUIV' || $scope.client == 'SBCIT')
+            {
+                $scope.gridOptions.columnDefs.splice(6, 0, { name: 'NumBC', displayName: 'BC°', width: "140" });
+                //$scope.gridOptions.columnDefs.push({ name: 'NumBC', displayName: 'BC°', width: "140" });
+
+                $scope.grandFormat = true;
+                $scope.showSolde = false;
+                $scope.afficherPrices = true;
+                $scope.showPrices = true;
+                $scope.showFormat = false;
+
+                $scope.afficherEspece = true;
+
+
+            }else{
+                $scope.showPrices = false;
+                $scope.isEspece = false;
+                $scope.afficherPrices = false;
+                $scope.showPrices = false;
+                $scope.showFormat = true;
+                $scope.grandFormat = false;
+                $scope.showSolde = true;
+                $scope.afficherEspece = false;
+
+
+            }
+            if($scope.client == "EAS"){
+                $scope.afficherPrices = true;
+                $scope.showPrices = true;
+            }
+            setTimeout(function () {
+                if (window.myBon != undefined)
+                {
+                    $scope.filterOptions.filterBonLivraison = window.myBon;
+                }
+
+
+            },100);
+            $scope.filterOptions = {
+                filterText: '',
+                filterBonLivraison: '',
+                filterClient: ''
+            }
+            $scope.getPagedDataAsync = function () {
+                crudGridDataFactory($scope.table, $scope.filterOptions.filterText, 'BonLivraison,Article').query(itemsQuerySucceeded, queryFailed);
+            };
+            $http.get('/Statistique/getTel/')
+              .success(function (data) {
+                  $scope.tel = data;
+
+              });
+            // d.getDate().padLeft(),
+            // d.getMonth()+1).padLeft(),
+            // d.getFullYear()].join('/') +' ' +
+            //[d.getHours().padLeft(),
+            // d.getMinutes().padLeft(),
+            // d.getSeconds().padLeft()].join(':');
+
+            time = function()
+            {
+                var d = new Date();
+                hours = (d.getHours().toString().length == 2) ? d.getHours().toString() :"0"+ d.getHours().toString()
+                minutes =  (d.getMinutes().toString().length == 2) ? d.getMinutes().toString() : "0" +  d.getMinutes().toString() ;
+                seconds = (d.getSeconds().toString().length == 2) ?  d.getSeconds().toString() : "0" + d.getSeconds().toString();
+
+                return hours + ":" + minutes + ":" + seconds;
+            }
+
+            //$scope.getPagedDataAsync();
+            function convertDate(today) {
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+
+                var yyyy = today.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+                var today = dd + '/' + mm + '/' + yyyy;
+                return today;
+            }
+            var totals = 0;
+            $scope.$watch('filterOptions', function (oldValue, newValue) {
+                var oldfilter = $scope.filterOptions.filterText;
+                $scope.filterOptions.filterText = '';
+
+
+                if ($scope.filterOptions.filterBonLivraison != undefined && typeof $scope.filterOptions.filterBonLivraison === 'object') {
+                    if ($scope.filterOptions.filterBonLivraison['NumBon'] != '' && $scope.filterOptions.filterBonLivraison['NumBon'] != undefined) {
+                        $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'BonLivraison/Id eq guid\'' + $scope.filterOptions.filterBonLivraison.Id + '\'';
+                        $scope.filterOptions.filterClient = $scope.filterOptions.filterBonLivraison.Client;
+                        $scope.filterOptions.filterDate = new Date($scope.filterOptions.filterBonLivraison.Date);
+                        $scope.solde = 0;
+                        $http.get('/Statistique/getSoldeByClient/', { params: { IdClient: $scope.filterOptions.filterClient.Id } })
+                          .success(function (data) {
+                              $scope.solde = data.solde;
+                              solde = data.solde;
+                              //notificationFactory.info($scope.solde, "Solde");
+
+                          });
+                        //$scope.gridOptions.exporterPdfHeader = { columns: [{bold:true,fontSize:12,alignment:'left',marginLeft:24,marginTop:10, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "Bon de livraison   BL° : " + $scope.filterOptions.filterBonLivraison.NumBon},{marginLeft:-45,marginTop:10,text: convertDate(new Date($scope.filterOptions.filterBonLivraison.Date))}]};
+                        //$scope.gridOptions.exporterPdfHeader = {
+                        //    columns: [{ bold: true, fontSize: 12, alignment: 'left', marginLeft: 18, marginTop: 10, text: ($scope.filterOptions.filterBonLivraison == undefined) ? '' : "Bon de livraison   BL° : " + $scope.filterOptions.filterBonLivraison.NumBon },
+                        //        { marginLeft: -245, marginTop: 39, text: "CLIENT : " + $scope.filterOptions.filterBonLivraison.Client.Name.toUpperCase(), decoration: 'underline', bold: false, fontSize: 12 },
+                        //        { marginLeft: -165, marginTop: 10, text: convertDate(new Date($scope.filterOptions.filterBonLivraison.Date)), fontSize: 11 }]
+                        //};
+                        if($scope.filterOptions.filterBonLivraison.TypeReglement != undefined && $scope.filterOptions.filterBonLivraison.TypeReglement != null){
+                            if($scope.filterOptions.filterBonLivraison.TypeReglement.toLowerCase() =="au-comptant")
+                                $scope.isEspece = true;
+                            else
+                                $scope.isEspece = false;
+                        }else{
+                                $scope.isEspece = false;
+                        }
+
+                         setTimeout(function(){
+                                $("#rechercher").focus();
+                            },30);
+                    }
+                }
+
+                if (($scope.filterOptions.filterText == '' /*|| flagWorkUnit == false || flagExercice == false*/)) {
+                    $scope.filterOptions.filterText = 'indexof(BonLivraison/NumBon,\'\') gt -1';
+                }
+                if (oldfilter != $scope.filterOptions.filterText) {
+
+                    $scope.getPagedDataAsync();
+
+                }
+            }, true);
+            $scope.check = function () {
+                var ok = false;
+                if ($scope.filterOptions.filterBonLivraison != undefined && typeof $scope.filterOptions.filterBonLivraison === 'object') {
+                    ok = true;
+                }
+                return ok;
+            }
+
+            $scope.SupprimerBon = function () {
+                if ($scope.filterOptions.filterBonLivraison != undefined && typeof $scope.filterOptions.filterBonLivraison === 'object') {
+                    if (confirm("Voulez-vous supprimer ce bon ?")) {
+                        crudGridDataFactory('BonLivraisons').remove({ key: 'guid\'' + $scope.filterOptions.filterBonLivraison.Id + '\'' }, $scope.filterOptions.filterBonLivraison, saveSucceeded, saveFailed);
+                    }
+                }
+                else {
+                    notificationFactory.warning("Choisissez un bon de livraison pour le supprimer !", "Attention");
+                }
+
+            }
+
+            $scope.gridOptions.onRegisterApi = function (gridApi) {
+                $scope.gridApi = gridApi;
+                gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+               /*     if (rowEntity.Pu <= rowEntity.Article.PA) {
+                        notificationFactory.warning("le prix de vente doit être supérieur que le prix d'achat ", "Attention");
+                        //rowEntity.Pu = "";
+                    }*/
+                    console.log({ newValue, oldValue });
+                    console.log({ colDef })
+                    if (colDef.name === "Pu")
+                        rowEntity.TotalHT = newValue * rowEntity.Qte;
+
+                    if (colDef.name === "Qte")
+                        rowEntity.TotalHT = newValue * rowEntity.Pu;
+
+                    if (isNaN(rowEntity.TotalHT))
+                        rowEntity.TotalHT = "";
+                    $scope.$apply();
+                });
+                gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                    row.isNew = true;
+                });
+                gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                    $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                });
+            }
+            $scope.selectRow = function () {
+                return $scope.gridApi.selection.getSelectedRows();
+            };
+
+            $scope.toggleFiltering = function () {
+                $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+            };
+
+            $scope.addNew = function () {
+                $scope.addMode = true;
+                //$scope.item = new Object();
+                //$scope.items.unshift($scope.item);
+                //$scope.focusFirstCell();
+
+                if ($scope.filterOptions.filterBonLivraison != undefined && typeof $scope.filterOptions.filterBonLivraison === 'object') {
+
+                    window.open("@Url.Action("PopUpArticle", "Administration")", "MesProduits", "width=950, height=650,top=0, left=0");
+
+                } else {
+                    notificationFactory.warning("Choisissez un bon de livraison", "Attention");
+
+                }
+
+            }
+
+            $scope.update = function (e, item) {
+                //console.log(item)
+
+                if (item.Qte == undefined || item.Pu == undefined || item.TotalHT == undefined || item.Qte == null ||
+                    item.Pu == null || item.TotalHT == null || item.Qte == "" || item.Pu == "" || item.TotalHT == "") {
+                    notificationFactory.warning("Remplissez tous les informations S.V.P !", "Attention");
+                    return;
+                }
+
+                delete item["Article"]
+                delete item["BonLivraison"]
+
+                item.TotalHT = item.Qte * item.Pu;
+                if (item.Id == null) {
+                    item.Id = breeze.core.getUuid();
+                    crudGridDataFactory($scope.table).save(item, saveSucceeded, saveFailed);
+                }
+                else {
+                    crudGridDataFactory($scope.table).update({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                }
+            }
+
+
+            $scope.delete = function (e, item) {
+                //console.log(item)
+                if (confirm("Voulez-vous supprimer cet article ?")) {
+
+                    if (item.Id != null) {
+                        $scope.deleteMode = true;
+                        crudGridDataFactory($scope.table).remove({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                    } else {
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                    }
+                }
+
+            }
+
+            /*region generique*/
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            function itemsQuerySucceeded(data) {
+                $scope.items = data.value;
+                $scope.gridOptions.data = $scope.items;
+
+                //$scope.totalServerItems = data["odata.count"];
+                //if ($scope.items.length > 0) {
+                //    if ($scope.item) {
+                //        for (i = 0; i < $scope.items.length; i++) {
+                //            if ($scope.items[i].Id == $scope.item.Id)
+                //                $scope.dataGrid.selectedItem = $scope.items[i];
+                //        }
+                //    }
+                //    if ($scope.dataGrid.selectedItem == null) {
+                //        $scope.dataGrid.selectedItem = $scope.items[0];
+                //    }
+
+                //    $scope.setItem($scope.dataGrid.selectedItem);
+                //}
+
+                //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+                totals = 0;
+                nbr = 0;
+                for (var i = 0; i < $scope.items.length; i++) {
+                    var x = $scope.items[i].TotalHT;
+                    totals += x;
+                    nbr+=1;
+                }
+                totals = totals.toFixed(2);
+            }
+
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            saveSucceeded = function (saveResult) {
+
+                //notificationFactory.success();
+                $scope.getPagedDataAsync();
+                totals = 0;
+                nbr = 0;
+                for (var i = 0; i < $scope.items.length; i++) {
+                    var x = $scope.items[i].TotalHT;
+                    totals += x;
+                    nbr+=1;
+                }
+                totals = totals.toFixed(2);
+                //matayl79ch lhna
+
+                if($scope.client != "SUIV" && $scope.client != 'SBCIT'){
+                        $http.post('/Statistique/updatePaiement/',{IdBonLivraison : $scope.filterOptions.filterBonLivraison.Id})
+                     .success(function (data) {
+                         notificationFactory.success();
+                     }).error(function(){
+                         notificationFactory.error("Erreur", "Query failed");
+                     });
+                }
+
+
+                $http.get('/Statistique/getSoldeByClient/', { params: { IdClient: $scope.filterOptions.filterClient.Id } })
+                          .success(function (data) {
+                              $scope.solde = data.solde;
+                              //notificationFactory.info($scope.solde, "Solde");
+
+                          }).error(function(){
+                              notificationFactory.error("Erreur de calcul du solde", "Query failed");
+
+                          });
+                if($scope.search)
+                {
+                    setTimeout(function(){
+                        $("#rechercher2").focus();
+                    },40);
+                }else
+                {
+                    setTimeout(function(){
+                        $("#rechercher").focus();
+                    },40);
+                }
+            }
+
+            saveFailed = function (error) {
+                var reason = error.statusText;
+                var detail = error.data["odata.error"];
+                if (detail) {
+                    reason += detail.innererror.message;
+                }
+                if (error.config["method"] == "POST")
+                    $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                notificationFactory.error(
+                   "Impossible d'enregistrer les modifications. " + reason +
+               " Il faut actualiser la page.");
+                $scope.getPagedDataAsync();
+                /*
+                var entityErrors = error.entityErrors;
+
+                if (entityErrors && entityErrors.length) {
+                    handleSaveValidationError(entityErrors);
+                    return;
+                }
+                if (detail && detail.ExceptionType &&
+                    detail.ExceptionType.indexOf('OptimisticConcurrencyException') !== -1) {
+                    // Concurrency error
+                    reason =
+                        "Another user, perhaps the server, may have deleted one or all of the same entities.";
+                }
+                */
+
+            };
+            //$scope.gridOptions.data = $scope.table;
+        }]);
+        angular.bootstrap(document, ['AdminModule']);
+
+    });
+    </script>
+}

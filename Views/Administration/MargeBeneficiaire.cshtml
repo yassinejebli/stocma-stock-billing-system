@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Marge bénéficiaire";
+}
+<div class="row">
+    <div class="col-lg-2 col-lg-offset-0">
+        <label>Date début</label>
+
+        <input ng-model="dateDebut" type="date" class="validate">
+    </div>
+    <div class="col-lg-2 col-lg-offset-0">
+        <label>Date fin</label>
+
+        <input ng-model="dateFin" type="date" class="validate">
+    </div>
+    <div class="col-lg-2 col-lg-offset-0">
+
+        <a class="waves-effect waves-light cyan btn" style="margin-top:35px;text-decoration:none !important;width:250px !important;" ng-click="calculer()">Calculer la marge</a>
+    </div>
+</div>
+<div ng-show="!marges">Chargement ...</div>
+<div class="row margin-top-20">
+    <table class="striped">
+        <thead>
+            <tr>
+                <th data-field="id">Période</th>
+                <th data-field="name">Marge bénéficiaire</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="i in marges">
+                <td>{{i.Key.Month}}/{{i.Key.Year}}</td>
+                <td>{{i.marge.toFixed(2)}} DH</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="row" style="padding-bottom:200px;margin-top:40px;margin-left:-20px !important;">
+    <div class="col-lg-2 col-lg-offset-0">
+        <input style="font-weight:bold;" value="Total : {{totals.toFixed(2)}} DH" type="text" readonly>
+    </div>
+</div>
+
+@section Scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope', '$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope, $http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+                $scope.totals = 0;
+                $http.get('/Statistique/getMarges')
+                  .success(function (data) {
+                      $scope.marges = data;
+                      angular.forEach(data, function (value, key) {
+                          $scope.totals += value["marge"];
+                      });
+                  });
+                
+
+                $scope.calculer = function()
+                {
+                    if ($scope.dateDebut == undefined || $scope.dateFin == undefined) {
+                        notificationFactory.warning("Remplissez les deux dates S.V.P !", "Attention");
+                        return;
+                    }
+                    $http.get('/Statistique/getMargebyDates/', { params: { dateDebut: $scope.dateDebut, dateFin: $scope.dateFin } })
+                        .success(function (data) {
+                            $scope.marge = data;
+                            notificationFactory.info($scope.marge.toFixed(2) + " DH", "Marge bénéficiaire est :\n");
+
+                        });
+
+                }
+
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

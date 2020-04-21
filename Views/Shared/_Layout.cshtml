@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+    @{
+        var pageName = ViewContext.RouteData.GetRequiredString("action").ToLower() + ".png";
+    }
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap" />
+
+    <!-- Favicons-->
+
+    <link rel="icon" href="~/Content/@pageName" sizes="32x32" />
+
+    <style>
+        body{
+            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+            margin-bottom: 80px;
+        }
+        input{
+            font-family: 'Roboto', sans-serif;
+        }
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+        -moz-appearance: textfield;
+        }
+        .MuiAutocomplete-noOptions{
+            display: none;
+        }
+    </style>
+
+
+</head>
+<body>
+    @RenderBody()
+    <script src="~/Scripts/dist/Home/react/bundle.js"></script>
+ <script id="__bs_script__">//<![CDATA[
+    document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>".replace("HOST", location.hostname));
+//]]></script>
+</body>
+</html>

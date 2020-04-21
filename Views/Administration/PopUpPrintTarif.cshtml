@@ -1,0 +1,518 @@
+﻿@{
+    ViewBag.Title = "Gestion des Tarifs";
+    //Layout = "~/Views/Shared/_LayoutPopUPArticle.cshtml";
+}
+
+
+<div class="card-panel">
+    <div class="row">
+
+        <div class="row">
+      
+            <!--  (table, field, text, expand, vide, limit, wheres) -->
+            <input type="date" readonly id="datePicker" placeholder="Choisissez une date" ng-model="filterOptions.filterDate" style="width:130px !important;margin-right:15px !important;" class="pull-right">
+            <div class="col-lg-4" style="width:320px !important;">
+                <div class="form-group-inline">
+
+
+                    <div class="input-field col s12">
+                        <input utocomplete="off" ng-model="filterOptions.filterTarif" placeholder="choisissez une Tarif"
+                               typeahead="v as v.Ref for v  in lookupFactory.getExpand('Tarifs', 'Ref', $viewValue,'TarifItems',null,'oui',null)"
+                               typeahead-wait-ms=" 100" id="name2" type="text">
+                        <label for="first_name" class="active">Tarif </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div ui-grid-selection ui-grid-exporter ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+
+
+        <div style="bottom: 45px; left: 24px;position:fixed" ng-show="check()">
+            <a class="btn-floating btn-large orange" ng-click="SupprimerBon()">
+                <i class="large mdi-action-delete"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<div style="bottom: 45px; left: 90px;position:fixed" ng-show="check()">
+    <a class="btn-floating btn-large green" ng-click="printTarif()">
+        <i class="large mdi-action-print"></i>
+    </a>
+</div>
+
+
+@section Scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope', '$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope, $http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+                $scope.showAdd = true;
+                var getTypeTableau = '@StatistiqueController.getTypeTableau()';
+                $scope.afficherHT = '@StatistiqueController.afficherHT()';
+
+                if(getTypeTableau == 1){
+                    typeTableau = "headerLineOnly";
+                }else if(getTypeTableau == 3){
+                    typeTableau = {hLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 2 : 1;
+                    },
+                        vLineWidth: function(i, node) {
+                            return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+                        },
+                        hLineColor: function(i, node) {
+                            return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+                        },
+                        vLineColor: function(i, node) {
+                            return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+                        }};
+                }else if(getTypeTableau == 4){
+                    typeTableau = undefined;
+
+                }
+                else
+                {
+                    typeTableau = "lightHorizontalLines";
+                }
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                //$scope.$scope = $scope;
+                $scope.table = "TarifItems";
+                $scope.lookupFactory = lookupFactory;
+                $scope.bon = 'TarifList';
+                $scope.filterOptions = {
+                    filterText: "",
+                    filterVisible: null,
+                    useExternalFilter: true
+                };
+                //$scope.pagingOptions = {
+                //    pageSizes: [5, 10, 30],
+                //    pageSize: 5,
+                //    totalServerItems: 0,
+                //    currentPage: 1
+                //};
+                $scope.deleteMode = false;
+                $scope.focusFirstCell = function () {
+                    //$scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+                }
+                //console.log("ok")
+                $scope.header = '@StatistiqueController.getHeader()';
+                $scope.footer = '@StatistiqueController.getFooter()';
+                $scope.onDblClickRow = function (rowItem) {
+
+                    console.log("dbClick")
+                };
+                $scope.gridOptions = {
+                    showColumnFooter: true,
+                    enableRowSelection: true,
+                    enableRowHeaderSelection: false,
+                    showGridFooter: true,
+                    enableFiltering: false,
+                    //paginationPageSizes: [5, 10, 30],
+                    //paginationPageSize: 5,
+                    enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                    enableColumnResizing: true,
+                    rowHeight: 40,
+                    //enableCellEditOnFocus : true,
+                    /*export*/
+                    //enableGridMenu: true,
+                    exporterPdfDefaultStyle: { fontSize: 13 },
+                    exporterPdfTableStyle: { margin: [-18, 25, 3, 5] },
+                    exporterPdfTableHeaderStyle: { fontSize: 14, bold: true, italics: false, color: 'black' },
+                    exporterPdfFooter: function (currentPage, pageCount) {
+
+                        return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                    },
+                    exporterPdfCustomFormatter: function (docDefinition) {
+                        docDefinition.watermark = "@User.Identity.Name.Split('@')[1].Split('.')[0]";
+
+                        docDefinition.pageMargins = [32, 60, 50, 20];
+
+                        docDefinition.styles.headerStyle = { fontSize: 12, bold: true, };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 370 };
+                        //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                        docDefinition.content[0].layout = typeTableau;
+
+                        //docDefinition.content = docDefinition.content.concat([{ width:400,decoration: 'underline', text: "TOTAL : " + totals + " DH", marginLeft: 270, fontSize: 10, bold: true, marginTop: 13 }]);
+                        return docDefinition;
+                    },
+                    exporterPdfOrientation: 'landscape',
+                    exporterPdfPageSize: 'LETTER',
+                    exporterPdfMaxGridWidth: 345,
+                    exporterSuppressColumns: [' ', '\'','Article.Ref'],
+                    exporterFieldCallback: function (grid, row, col, input) {
+                        if (col.name == 'Pu') {
+                            return input.toFixed(2);
+                        } else {
+                            return input.toUpperCase();
+                        }
+                    },
+
+                };
+              
+                $scope.print = function () {
+                    //if($scope.footer == "" || $scope.header == "")
+                    //{
+
+                    //    notificationFactory.warning("Vous devez mettre une entete + pied page avant d'imprimer le bon !", "Attention");
+                    //    return;
+                    //}
+                    for (var i = 0; i < $scope.items.length; i++) {
+                        myItem = $scope.items[i];
+                        if(myItem.Id == null)
+                        {
+                            notificationFactory.warning("Enregistrez tous les lignes !", "Attention");
+                            return;
+                        }
+                    }
+                    if ($scope.filterOptions.filterTarif != undefined && typeof $scope.filterOptions.filterTarif === 'object') {
+                        window.open("ExportTarif?IdTarif="+$scope.filterOptions.filterTarif.Id,'_blank');
+                        
+                        //window.close();
+
+                    }
+
+                }
+
+                $scope.gridOptions.multiSelect = false;
+                $scope.gridOptions.modifierKeysToMultiSelect = false;
+                $scope.gridOptions.noUnselect = true;
+                $scope.$watch('filterOptions.filterArticle', function (oldValue, newValue) {
+                    if(oldValue == newValue) return;
+                    if ($scope.filterOptions.filterArticle != undefined && typeof $scope.filterOptions.filterArticle === 'object') {
+                            var a = $scope.filterOptions.filterArticle;
+                                  $scope.items.unshift(new Object({ IdTarif: $scope.filterOptions.filterTarif.Id, Article: a, IdArticle: a.Id, Pu: a.PVD }));
+                                  setTimeout(function(){
+                                      //$scope.myLogo = a.Logo;
+                                      $scope.filterOptions.filterArticle = null;
+                                      $scope.scrollToFocus(0,3);
+
+                                  },100);
+
+                    }
+
+                });
+                $scope.scrollToFocus = function( rowIndex, colIndex ) {
+                    $scope.gridApi.cellNav.scrollToFocus( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+                };
+                $scope.items = [];
+                var headerTemplateAdd = '<a style="margin-left:15px !important;" title="{{row.entity.Article.PA+10}}" ng-click="grid.appScope.update($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-content-save"></i></a>';
+
+                var CellTemplateDelete = '<a style="margin-left:15px !important;" title="{{row.entity.Article.PA+10}}"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+                    $scope.gridOptions.columnDefs = [
+                              { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click=""><span class="icon-refresh"></span></button>', name: ' ', cellTemplate: headerTemplateAdd, sortable: false },
+
+                { name: 'Article.Ref', visible: true, enableHiding: true, displayName: 'Ref', width: "140", enableCellEdit: false },
+                { name: 'Article.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+                { name: 'Pu', displayName: 'Prix de vente', width: "400", type: "number", enableCellEditOnFocus: false, exporterPdfAlign: 'left', cellFilter: 'currency:dh' },
+
+               { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: CellTemplateDelete, sortable: false },
+
+                    ];
+              
+
+
+
+                setTimeout(function () {
+                    if (window.myBon != undefined) {
+                        $scope.filterOptions.filterTarif = window.myBon;
+
+                    }
+
+
+                },100);
+                $scope.filterOptions = {
+                    filterText: '',
+                    filterTarif: '',
+                }
+                $scope.getPagedDataAsync = function () {
+                    crudGridDataFactory($scope.table, $scope.filterOptions.filterText, 'Tarif,Article').query(itemsQuerySucceeded, queryFailed);
+                };
+                //$scope.getPagedDataAsync();
+                function convertDate(today) {
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    return today;
+                }
+
+                $scope.printTarif = function()
+                {
+
+                        window.open("ExportTarif?IdTarif="+$scope.filterOptions.filterTarif.Id,'_blank');
+                        return;
+                    //if($scope.footer == "" || $scope.header == "")
+                    //{
+
+                    //    notificationFactory.warning("Vous devez mettre une entete + pied page avant d'imprimer le bon !", "Attention");
+                    //    return;
+                    //}
+                    $scope.gridOptions.exporterPdfDefaultStyle = { fontSize: 11 };
+                    $scope.gridOptions.exporterPdfTableStyle = { margin: [-18, 20, 3, 5] };
+                    $scope.gridOptions.exporterPdfTableHeaderStyle = { fontSize: 11, bold: true, italics: false, color: 'black' };
+                    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                        //return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                        var footer = [{text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' }/*,{ image: $scope.footer, width: 605,marginTop:-19,marginLeft:18,height:40} */];
+
+
+                        return footer;
+                    },
+                    $scope.gridOptions.exporterPdfCustomFormatter = function (docDefinition) {
+                        docDefinition.watermark = "@User.Identity.Name.Split('@')[1].Split('.')[0]";
+
+                        docDefinition.pageMargins = [40, 70, 50,20];
+                        docDefinition.styles.headerStyle = { fontSize: 10, bold: true };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 557, marginTop: 0 };
+                        //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                        docDefinition.content[0].layout = typeTableau;
+                        //docDefinition.content = docDefinition.content.concat([{ decoration: 'underline', text: "TOTAL :  " + totals + " DH", marginLeft: 385, bold: true, marginTop: 50, fontSize: 14 }]);
+
+                        //if ($scope.tel != undefined && $scope.tel != "")
+
+                        //docDefinition.content = docDefinition.content.concat([{ text: "solde  : " + (parseFloat($scope.solde)).toFixed(2) + " DH", marginLeft: -15, fontSize: 12, bold: true, marginTop: 10 }]);
+
+                        return docDefinition;
+                    },
+                    $scope.gridOptions.exporterPdfOrientation = 'portrait';
+                    $scope.gridOptions.exporterPdfPageSize = 'LETTER';
+                    $scope.gridOptions.exporterPdfMaxGridWidth = 530;
+                    //$scope.gridOptions.exporterPdfHeader.content =   $scope.gridOptions.exporterPdfHeader.content.concat({text:"dfdgdfgd"});
+
+                    $scope.gridOptions.exporterPdfHeader = {
+
+                        marginLeft:120,marginTop:30,table: {
+                            // headers are automatically repeated if the table spans over multiple pages
+                            // you can declare how many rows should be treated as headers
+                            headerRows: 1,
+                            widths: [ 130,  180],
+
+                            body: [
+                              [ { fillColor:'#ccc',text: convertDate(new Date()),alignment:'center' , bold: true,fontSize:16 } ,{alignment:'center',text :'TARIF : '+$scope.filterOptions.filterTarif.Ref,fontSize:16,bold:true}],
+
+
+                            ]
+                        }}
+                    $scope.gridApi.exporter.pdfExport('all', 'all');
+
+                }
+
+
+
+                $scope.$watch('filterOptions', function (oldValue, newValue) {
+                    var oldfilter = $scope.filterOptions.filterText;
+                    $scope.filterOptions.filterText = '';
+
+
+                    if ($scope.filterOptions.filterTarif != undefined && typeof $scope.filterOptions.filterTarif === 'object') {
+                        if ($scope.filterOptions.filterTarif['Ref'] != '' && $scope.filterOptions.filterTarif['Ref'] != undefined) {
+                            $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'Tarif/Id eq guid\'' + $scope.filterOptions.filterTarif.Id + '\'';
+                            $scope.filterOptions.filterDate = new Date($scope.filterOptions.filterTarif.Date);
+
+                            //$scope.gridOptions.exporterPdfHeader = { columns: [{ decoration: 'underline',
+                            //marginTop: 100,fontSize:14, marginLeft: 25, alignment: 'left', text: ($scope.filterOptions.filterTarif == undefined) ? '' : "Tarif   N° : "
+                            //+ $scope.filterOptions.filterTarif.Ref }, { alignment: 'center', marginTop: 140, text: "CLIENT : " +
+                            //$scope.filterOptions.filterTarif.Client.Name.toUpperCase(), decoration: 'underline' ,fontSize:14},
+                            //{ alignment: 'right', text: convertDate(new Date($scope.filterOptions.filterTarif.Date)), marginTop: 100, marginRight: 25, decoration: 'underline',fontSize:14 }] };
+
+
+                        }
+                    }
+
+                    if (($scope.filterOptions.filterText == '' /*|| flagWorkUnit == false || flagExercice == false*/)) {
+                        $scope.filterOptions.filterText = 'indexof(Tarif/Ref,\'\') gt -1';
+                    }
+                    if (oldfilter != $scope.filterOptions.filterText) {
+
+                        $scope.getPagedDataAsync();
+
+                    }
+                }, true);
+                $scope.check = function () {
+                    var ok = false;
+                    if ($scope.filterOptions.filterTarif != undefined && typeof $scope.filterOptions.filterTarif === 'object') {
+                        ok = true;
+                    }
+                    return ok;
+                }
+
+                $scope.SupprimerBon = function () {
+                    if ($scope.filterOptions.filterTarif != undefined && typeof $scope.filterOptions.filterTarif === 'object') {
+                        if (confirm("Voulez-vous supprimer cet Tarif ?")) {
+                            crudGridDataFactory('Tarifs').remove({ key: 'guid\'' + $scope.filterOptions.filterTarif.Id + '\'' }, $scope.filterOptions.filterTarif, saveSucceeded, saveFailed);
+                        }
+                    }
+                    else {
+                        notificationFactory.warning("Choisissez une Tarif pour la supprimer !", "Attention");
+                    }
+
+                }
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+                    gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+                        if (rowEntity.Pu <= rowEntity.Article.PA) {
+                            notificationFactory.warning("le prix de vente doit être supérieur que le prix d'achat ", "Attention");
+                            //rowEntity.Pu = "";
+                        }
+                      
+                        $scope.$apply();
+                    });
+                    gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                        row.isNew = true;
+                    });
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+                }
+                $scope.selectRow = function () {
+                    return $scope.gridApi.selection.getSelectedRows();
+                };
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+
+                $scope.addNew = function () {
+                    $scope.addMode = true;
+                    //$scope.item = new Object();
+                    //$scope.items.unshift($scope.item);
+                    //$scope.focusFirstCell();
+                    if ($scope.filterOptions.filterTarif != undefined && typeof $scope.filterOptions.filterTarif === 'object') {
+
+                        window.open("@Url.Action("PopUpArticle", "Administration")", "MesProduits", "width=950, height=650,top=0, left=0");
+
+                    } else {
+                        notificationFactory.warning("Choisissez une Tarif", "Attention");
+
+                    }
+
+                }
+
+                $scope.update = function (e, item) {
+                    //console.log(item)
+
+                    if ( item.Pu == undefined || item.Pu == null ||  item.Pu == "") {
+                        notificationFactory.warning("Remplissez tous les informations S.V.P !", "Attention");
+                        return;
+                    }
+
+                    if (item.Id == null) {
+                        item.Id = breeze.core.getUuid();
+
+                        delete item["Article"]
+                        delete item["Tarif"]
+                        crudGridDataFactory($scope.table).save(item, saveSucceeded, saveFailed);
+
+                    }
+                    else {
+
+                        delete item["Article"];
+                        delete item["Tarif"];
+                        crudGridDataFactory($scope.table).update({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                    }
+                }
+
+
+                $scope.delete = function (e, item) {
+                    //console.log(item)
+                    if (confirm("Voulez-vous supprimer cet enregistrement ?")) {
+
+                        if (item.Id != null) {
+                            $scope.deleteMode = true;
+                            crudGridDataFactory($scope.table).remove({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                            $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                        } else {
+                            $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                        }
+                    }
+
+                }
+
+                /*region generique*/
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                function itemsQuerySucceeded(data) {
+                    $scope.items = data.value;
+                    $scope.gridOptions.data = $scope.items;
+
+                    //$scope.totalServerItems = data["odata.count"];
+                    //if ($scope.items.length > 0) {
+                    //    if ($scope.item) {
+                    //        for (i = 0; i < $scope.items.length; i++) {
+                    //            if ($scope.items[i].Id == $scope.item.Id)
+                    //                $scope.dataGrid.selectedItem = $scope.items[i];
+                    //        }
+                    //    }
+                    //    if ($scope.dataGrid.selectedItem == null) {
+                    //        $scope.dataGrid.selectedItem = $scope.items[0];
+                    //    }
+
+                    //    $scope.setItem($scope.dataGrid.selectedItem);
+                    //}
+
+                    //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+
+                  
+                }
+
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                saveSucceeded = function (saveResult) {
+
+                    notificationFactory.success();
+                    $scope.getPagedDataAsync();
+                  
+
+                }
+
+                saveFailed = function (error) {
+                    var reason = error.statusText;
+                    var detail = error.data["odata.error"];
+                    if (detail) {
+                        reason += detail.innererror.message;
+                    }
+                    if (error.config["method"] == "POST")
+                        $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                    notificationFactory.error(
+                       "Impossible d'enregistrer les modifications. " + reason +
+                   " Il faut actualiser la page.");
+                    $scope.getPagedDataAsync();
+
+
+                };
+
+
+
+
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

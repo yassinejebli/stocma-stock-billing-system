@@ -1,0 +1,1299 @@
+﻿@{
+    ViewBag.Title = "Tableau de bord";
+}
+
+
+
+<div id="main">
+    <!-- START WRAPPER -->
+    <div class="wrapper">
+
+
+        <!-- //////////////////////////////////////////////////////////////////////////// -->
+        <!-- START CONTENT -->
+        <section id="content">
+
+            <!--start container-->
+            <div class="container">
+
+                <!--chart dashboard start-->
+                <div id="chart-dashboard">
+                    <div class="row">
+                        <div class="col s12 m8 l8">
+                            <div class="card">
+                                <div class="card-move-up waves-effect waves-block waves-light">
+                                    <div class="move-up cyan darken-1">
+                                        <div>
+                                            <span class="chart-title white-text">
+                                                Revenus (Espèce)
+
+                                                
+                                            </span>
+                                           
+                                            <div class="switch chart-revenue-switch right">
+                                                <label class="cyan-text text-lighten-5">
+                                                    Jour
+                                                    <input type="checkbox" ng-model="especePar">
+                                                    <span class="lever"></span> Mois
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="trending-line-chart-wrapper" id="graph-container">
+                                            @*<canvas id="trending-line-chart" height="192" width="824" style="width: 824px; height: 192px;"></canvas>*@
+                                            <canvas id="myChartCaisse" style="width: 824px; height: 192px;" height="192" width="824"></canvas>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <a class="btn-floating btn-move-up waves-effect waves-light darken-2 right"><i class="mdi-content-add activator"></i></a>
+                                        <ul class="doughnut-chart-legend list-inline">
+                                            <li class="lgray ultra-small" style="width:200px !important;"><span>Les revenus</span></li>
+                                            <li class="mobile ultra-small" style="width:200px !important;"><span>Les charges</span></li>
+                                            <li class="lgreen ultra-small" style="width:200px !important;"><span>Le reste</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+
+                                    <span class="chart-title active">LES ARTICLES LES PLUS VENDUS DE LA PERIODE : @DateTime.Now.Month / @DateTime.Now.Year </span>
+                                        @*<canvas id="trending-radar-chart" height="159" width="421" style="width: 421px; height: 159px;"></canvas>*@
+                                        <canvas id="myChartArticles" style="width:350px;height:80px;margin-left:-20px;" height="80" width="350"></canvas>
+
+                                </div>
+                                <div class="card-content">
+
+                                    <div class="col-md-4">
+                                        <label>Top 3 Clients</label>
+
+                                        <ul class="doughnut-chart-legend">
+                                            <li class="mobile ultra-small" style="width:300px !important;" ng-repeat="i in getTopClients"><span></span>{{i.Key.Name}}</li>
+
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Top 3 Articles</label>
+
+                                        <ul class="doughnut-chart-legend">
+                                            <li class="mobile ultra-small" style="width:300px !important;" ng-repeat="i in getTopArticles"><span></span>{{i.Key.Designation}}</li>
+
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Articles à commander</label>
+
+                                        <ul class="doughnut-chart-legend">
+                                            <li class="mobile ultra-small" style="width:300px !important;" ng-repeat="i in getTopArticlesACommande"><span></span>{{i}}</li>
+
+                                        </ul>
+                                    </div>
+                                    <div class="col s12 m5 l6">
+                                        <div class="trending-bar-chart-wrapper">
+                                            <canvas id="trending-bar-chart" height="118" width="396" style="width: 396px; height: 118px;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-reveal">
+                                    <span class="card-title grey-text text-darken-4">Bons de Livraison d'aujourd'hui <i class="mdi-navigation-close right"></i></span>
+                                    <table class="responsive-table">
+                                        <thead>
+                                            <tr>
+                                                <th data-field="id">Numéro BL</th>
+                                                <th data-field="month">Client</th>
+                                                <th data-field="item-sold">Date</th>
+                                                <th data-field="total-profit">TOTAL</th>
+                                                <th data-field="total-profit">Marge</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in totalVentes">
+                                                <td>{{i.Key.NumBon}}</td>
+                                                <td>{{i.Key.Name}}</td>
+                                                <td>@DateTime.Now.ToShortDateString()</td>
+                                                <td>{{i.Sum.toFixed(2) | number}} DH</td>
+                                                <td>{{i.marge.toFixed(2) | number}} DH</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="col s12 m4 l4">
+                            <div class="card">
+                                <div class="card-move-up  cyan darken-3 waves-effect waves-block waves-light darken-2">
+                                    <div class=" move-up">
+                                        <p class="margin white-text">Solde par client (Dh)</p>
+                                        @*<canvas id="trending-radar-chart" height="159" width="421" style="width: 421px; height: 159px;"></canvas>*@
+                                        <canvas id="myChart" style="width:350px;height:200px;margin-left:-20px;" height="200" width="350"></canvas>
+
+                                    </div>
+                                </div>
+                                <div class="card-content waves-light" style="background:#f44336 !important">
+                                    <a class="btn-floating btn-move-up waves-effect waves-light darken-2 right"><i class="mdi-content-add activator"></i></a>
+                                    <div class="line-chart-wrapper">
+                                        <p class="margin white-text">
+                                            <ul class="doughnut-chart-legend">
+                                                <li class="lwhite ultra-small white-text" style="width:300px !important;"><span>Les ventes</span></li>
+                                                <li class="lblue ultra-small white-text" style="width:300px !important;"><span>Les marges (net)</span></li>
+                                            </ul>
+                                        </p>
+                                        <canvas id="myChartMarge" height="400" width="700" style="width: 700px; height: 400px;"></canvas>
+                                    </div>
+                                </div>
+                                <div class="card-reveal">
+                                    <span class="card-title grey-text text-darken-4">Solde par Client <i class="mdi-navigation-close right"></i></span>
+                                    <table class="responsive-table">
+                                        <thead>
+                                            <tr>
+
+                                                <th data-field="item-sold">Client</th>
+                                                <th data-field="total-profit">Solde</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in getSoldeAllClients">
+                                                <td>{{i.Key.Name}}</td>
+                                                <td>{{i.Sum.toFixed(2) | number}} DH</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--chart dashboard end-->
+                <!-- //////////////////////////////////////////////////////////////////////////// -->
+                <!--card stats start-->
+                <div id="card-stats">
+                    <div class="row">
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content  green white-text">
+                                    <p class="card-stats-title"><i class="mdi-social-group-add"></i> Nombre de Bl </p>
+                                    <h4 class="card-stats-number">{{nbrBLMois}}</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-up"></i> <span class="green-text text-lighten-5">Ce Mois</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  green darken-2">
+                                    <div id="clients-bar"><canvas width="290" height="25" style="display: inline-block; width: 290px; height: 25px; vertical-align: top;"></canvas></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content blue darken-1 white-text">
+                                    <p class="card-stats-title"><i class="mdi-action-trending-up"></i> Nombre de factures</p>
+                                    <h4 class="card-stats-number">{{nbrFactureMois}} </h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-up"></i><span class="blue-grey-text text-lighten-5">Ce Mois</span>
+                                    </p>
+                                </div>
+                                <div class="card-action blue darken-2">
+                                    <div id="invoice-line"><canvas width="282" height="25" style="display: inline-block; width: 282px; height: 25px; vertical-align: top;"></canvas></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content purple white-text">
+                                    <p class="card-stats-title"><i class=""></i>Total des ventes (BL)</p>
+                                    <h4 class="card-stats-number">{{sumVentes.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-up"></i> <span class="purple-text text-lighten-5">Aujourd'hui</span>
+                                    </p>
+                                </div>
+                                <div class="card-action purple darken-2">
+                                    <div id="sales-compositebar"><canvas id="" width="286" height="25" style="display: inline-block; width: 286px; height: 25px; vertical-align: top;"></canvas></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content pink lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Total des factures</p>
+                                    <h4 class="card-stats-number">{{totalFactures.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5">Ce Mois</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  pink darken-2">
+                                    <div id="profit-tristate"><canvas width="290" height="25" style="display: inline-block; width: 290px; height: 25px; vertical-align: top;"></canvas></div>
+
+                                </div>
+                            </div>
+                        </div>
+                       
+                      
+                        @*<div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content blue-grey white-text">
+                                    <p class="card-stats-title"><i class="mdi-action-trending-up"></i> Nombre de BL</p>
+                                    <h4 class="card-stats-number">{{totalVentes.length}} </h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-up"></i><span class="blue-grey-text text-lighten-5">Aujourd'hui</span>
+                                    </p>
+                                </div>
+                                <div class="card-action blue-grey darken-2">
+                                    <div id="invoice-line"><canvas width="282" height="25" style="display: inline-block; width: 282px; height: 25px; vertical-align: top;"></canvas></div>
+
+                                </div>
+                            </div>
+                        </div>*@
+                    
+                       
+                        @*<div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content pink lighten-1 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Nombre de factures</p>
+                                    <h4 class="card-stats-number">{{getTotalFactures.length}}</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5">Aujourd'hui</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  pink darken-2">
+                                </div>
+                            </div>
+                        </div>*@
+
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content pink lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Montant à la caisse</p>
+                                    <h4 class="card-stats-number">{{caisse.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5">Aujourd'hui</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  pink darken-2">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col s12 m6 l3" title="Clients">
+                            <div class="card">
+                                <div class="card-content cyan lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Montant Chéques et Effets</p>
+                                    <h4 class="card-stats-number">{{totalCheques.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5">Aujourd'hui</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  cyan darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3" title="Fournisseurs">
+                            <div class="card">
+                                <div class="card-content cyan lighten-1 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Mes effets/Chéques signés</p>
+                                    <h4 class="card-stats-number">{{totalChequesFournisseurs.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5"></span>
+                                    </p>
+                                </div>
+                                <div class="card-action  cyan darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3" title="Fournisseurs">
+                            <div class="card">
+                                <div class="card-content cyan lighten-1 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Effets/Chéques signés/mois</p>
+                                    <h4 class="card-stats-number">{{totalChequesFournisseursMois.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5"></span>
+                                    </p>
+                                </div>
+                                <div class="card-action  cyan darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content green lighten-1 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Marge bénéficiaire</p>
+                                    <h4 class="card-stats-number">{{marge.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5">Aujourd'hui</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  green darken-1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content green lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Marge bénéficiaire Net</p>
+                                    <h4 class="card-stats-number">{{(marge.toFixed(2) - depenses.toFixed(2)).toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5">Aujourd'hui</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  green darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content red lighten-1 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Les dépenses</p>
+                                    <h4 class="card-stats-number">{{depensesMonth.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5">Ce Mois</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  red darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content red lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Les dépenses</p>
+                                    <h4 class="card-stats-number">{{depenses.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5">Aujourd'hui</span>
+                                    </p>
+                                </div>
+                                <div class="card-action  red darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content blue lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Solde Clients</p>
+                                    <h4 class="card-stats-number">{{soldeClients.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5"></span>
+                                    </p>
+                                </div>
+                                <div class="card-action  blue darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content orange lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> Solde Fournisseurs</p>
+                                    <h4 class="card-stats-number">{{soldeFournisseurs.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5"></span>
+                                    </p>
+                                </div>
+                                <div class="card-action  orange darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content blue lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> C.A/Client {{date.getFullYear()}}</p>
+                                    <h4 class="card-stats-number">{{chiffreAffaireThisYear.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5"></span>
+                                    </p>
+                                </div>
+                                <div class="card-action  blue darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content blue lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> C.A/Fournisseur {{date.getFullYear()}}</p>
+                                    <h4 class="card-stats-number">{{chiffreAffaireThisYearFournisseur.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5"></span>
+                                    </p>
+                                </div>
+                                <div class="card-action  blue darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content purple lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> C.A/Fournisseur {{date.getFullYear() - 1}}</p>
+                                    <h4 class="card-stats-number">{{chiffreAffaireLastYearFournisseur.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5"></span>
+                                    </p>
+                                </div>
+                                <div class="card-action  purple darken-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l3">
+                            <div class="card">
+                                <div class="card-content green lighten-2 white-text">
+                                    <p class="card-stats-title"><i class="mdi-editor-insert-drive-file"></i> C.A/Client {{date.getFullYear() - 1}}</p>
+                                    <h4 class="card-stats-number">{{chiffreAffaireLastYear.toFixed(2) | number}} DH</h4>
+                                    <p class="card-stats-compare">
+                                        <i class="mdi-hardware-keyboard-arrow-down"></i> <span class="deep-purple-text text-lighten-5"></span>
+                                    </p>
+                                </div>
+                                <div class="card-action  green darken-2">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!--card stats end-->
+                <!-- //////////////////////////////////////////////////////////////////////////// -->
+                <!--card widgets start-->
+                <!--end container-->
+            </div>
+        </section>
+        <div class="row">
+            <canvas id="myChartMargeClient" style="width:350px;height:200px;margin-left:-20px;" height="200" width="350"></canvas>
+        </div>
+        <!-- END CONTENT -->
+        <!-- //////////////////////////////////////////////////////////////////////////// -->
+        <!-- START RIGHT SIDEBAR NAV-->
+        @*<aside id="right-sidebar-nav">
+            <ul id="chat-out" class="side-nav rightside-navigation right-aligned ps-container ps-active-y" style="width: 300px; right: -310px; height: 727px;">
+                <li class="li-hover">
+                    <a href="#" data-activates="chat-out" class="chat-close-collapse right"><i class="mdi-navigation-close"></i></a>
+                    <div id="right-search" class="row">
+                        <form class="col s12">
+                            <div class="input-field">
+                                <i class="mdi-action-search prefix"></i>
+                                <input id="icon_prefix" type="text" class="validate">
+                                <label for="icon_prefix">Search</label>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+                <li class="li-hover">
+                    <ul class="chat-collapsible" data-collapsible="expandable">
+                        <li class="active">
+                            <div class="collapsible-header teal white-text active"><i class="mdi-social-whatshot"></i>Recent Activity</div>
+                            <div class="collapsible-body recent-activity" style="display: block;">
+                                <div class="recent-activity-list chat-out-list row">
+                                    <div class="col s3 recent-activity-list-icon">
+                                        <i class="mdi-action-add-shopping-cart"></i>
+                                    </div>
+                                    <div class="col s9 recent-activity-list-text">
+                                        <a href="#">just now</a>
+                                        <p>Jim Doe Purchased new equipments for zonal office.</p>
+                                    </div>
+                                </div>
+                                <div class="recent-activity-list chat-out-list row">
+                                    <div class="col s3 recent-activity-list-icon">
+                                        <i class="mdi-device-airplanemode-on"></i>
+                                    </div>
+                                    <div class="col s9 recent-activity-list-text">
+                                        <a href="#">Yesterday</a>
+                                        <p>Your Next flight for USA will be on 15th August 2015.</p>
+                                    </div>
+                                </div>
+                                <div class="recent-activity-list chat-out-list row">
+                                    <div class="col s3 recent-activity-list-icon">
+                                        <i class="mdi-action-settings-voice"></i>
+                                    </div>
+                                    <div class="col s9 recent-activity-list-text">
+                                        <a href="#">5 Days Ago</a>
+                                        <p>Natalya Parker Send you a voice mail for next conference.</p>
+                                    </div>
+                                </div>
+                                <div class="recent-activity-list chat-out-list row">
+                                    <div class="col s3 recent-activity-list-icon">
+                                        <i class="mdi-action-store"></i>
+                                    </div>
+                                    <div class="col s9 recent-activity-list-text">
+                                        <a href="#">Last Week</a>
+                                        <p>Jessy Jay open a new store at S.G Road.</p>
+                                    </div>
+                                </div>
+                                <div class="recent-activity-list chat-out-list row">
+                                    <div class="col s3 recent-activity-list-icon">
+                                        <i class="mdi-action-settings-voice"></i>
+                                    </div>
+                                    <div class="col s9 recent-activity-list-text">
+                                        <a href="#">5 Days Ago</a>
+                                        <p>Natalya Parker Send you a voice mail for next conference.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="active">
+                            <div class="collapsible-header light-blue white-text active"><i class="mdi-editor-attach-money"></i>Sales Repoart</div>
+                            <div class="collapsible-body sales-repoart" style="display: block;">
+                                <div class="sales-repoart-list  chat-out-list row">
+                                    <div class="col s8">Target Salse</div>
+                                    <div class="col s4">
+                                        <span id="sales-line-1"><canvas width="33" height="30" style="display: inline-block; width: 33px; height: 30px; vertical-align: top;"></canvas></span>
+                                    </div>
+                                </div>
+                                <div class="sales-repoart-list chat-out-list row">
+                                    <div class="col s8">Payment Due</div>
+                                    <div class="col s4">
+                                        <span id="sales-bar-1"><canvas width="32" height="25" style="display: inline-block; width: 32px; height: 25px; vertical-align: top;"></canvas></span>
+                                    </div>
+                                </div>
+                                <div class="sales-repoart-list chat-out-list row">
+                                    <div class="col s8">Total Delivery</div>
+                                    <div class="col s4">
+                                        <span id="sales-line-2"><canvas width="33" height="30" style="display: inline-block; width: 33px; height: 30px; vertical-align: top;"></canvas></span>
+                                    </div>
+                                </div>
+                                <div class="sales-repoart-list chat-out-list row">
+                                    <div class="col s8">Total Progress</div>
+                                    <div class="col s4">
+                                        <span id="sales-bar-2"><canvas width="32" height="25" style="display: inline-block; width: 32px; height: 25px; vertical-align: top;"></canvas></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header red white-text"><i class="mdi-action-stars"></i>Favorite Associates</div>
+                            <div class="collapsible-body favorite-associates">
+                                <div class="favorite-associate-list chat-out-list row">
+                                    <div class="col s4">
+                                        <img src="images/avatar.jpg" alt="" class="circle responsive-img online-user valign profile-image">
+                                    </div>
+                                    <div class="col s8">
+                                        <p>Eileen Sideways</p>
+                                        <p class="place">Los Angeles, CA</p>
+                                    </div>
+                                </div>
+                                <div class="favorite-associate-list chat-out-list row">
+                                    <div class="col s4">
+                                        <img src="images/avatar.jpg" alt="" class="circle responsive-img online-user valign profile-image">
+                                    </div>
+                                    <div class="col s8">
+                                        <p>Zaham Sindil</p>
+                                        <p class="place">San Francisco, CA</p>
+                                    </div>
+                                </div>
+                                <div class="favorite-associate-list chat-out-list row">
+                                    <div class="col s4">
+                                        <img src="images/avatar.jpg" alt="" class="circle responsive-img offline-user valign profile-image">
+                                    </div>
+                                    <div class="col s8">
+                                        <p>Renov Leongal</p>
+                                        <p class="place">Cebu City, Philippines</p>
+                                    </div>
+                                </div>
+                                <div class="favorite-associate-list chat-out-list row">
+                                    <div class="col s4">
+                                        <img src="images/avatar.jpg" alt="" class="circle responsive-img online-user valign profile-image">
+                                    </div>
+                                    <div class="col s8">
+                                        <p>Weno Carasbong</p>
+                                        <p>Tokyo, Japan</p>
+                                    </div>
+                                </div>
+                                <div class="favorite-associate-list chat-out-list row">
+                                    <div class="col s4">
+                                        <img src="images/avatar.jpg" alt="" class="circle responsive-img offline-user valign profile-image">
+                                    </div>
+                                    <div class="col s8">
+                                        <p>Nusja Nawancali</p>
+                                        <p class="place">Bangkok, Thailand</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 3px;"><div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div></div>
+                <div class="ps-scrollbar-y-rail" style="top: 0px; height: 667px; right: 3px;"><div class="ps-scrollbar-y" style="top: 0px; height: 611px;"></div></div>
+            </ul>
+        </aside>*@
+        <!-- LEFT RIGHT SIDEBAR NAV-->
+
+    </div>
+    <!-- END WRAPPER -->
+
+</div>
+
+
+@section Scripts
+{
+    <script src="~/Scripts/Chart.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope', '$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope, $http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+                $scope.data = [];
+                $scope.date = new Date();
+                $scope.labels = [];
+                $http.get('/Statistique/getSoldeTopClients')
+               .success(function (data) {
+                   data = data.solde;
+                   for (var i = 0; i < data.length; i++) {
+                       $scope.labels.push(data[i].Key.Name.substring(0, 10)+"..");
+                       $scope.data.push(data[i].Sum);
+                   }
+                   $scope.chart();
+                  // $scope.chartMargeClient();
+               });
+
+
+                Chart.defaults.global.responsive = true;
+
+
+
+                $scope.chartMargeClient = function () {
+                    $scope.data_ = {
+                        //client
+                        labels: $scope.labels,
+                        datasets: [
+                            {
+                                label: "Solde par client",
+                                fillColor: "rgba(220,220,220,0.5)",
+                                strokeColor: "rgba(220,220,220,0.8)",
+                                highlightFill: "rgba(220,220,220,0.75)",
+                                highlightStroke: "rgba(220,220,220,1)",
+                                data: $scope.data // sumCredit
+                            }
+                        ]
+                    };
+
+
+
+                    var ctx = document.getElementById("myChartMargeClient").getContext("2d");
+                    var myBarChart = new Chart(ctx).Bar($scope.data_);
+                    var myBarChartMargeClient = new Chart(ctx, {
+                    type: 'bar',
+                    data: $scope.data_,
+                    options: options
+                });
+
+
+                }
+
+        /////////////////
+
+
+                $scope.chart = function () {
+                    $scope.data_ = {
+                        //client
+                        labels: $scope.labels,
+                        datasets: [
+                            {
+                                label: "Solde par client",
+                                fillColor: "rgba(220,220,220,0.5)",
+                                strokeColor: "rgba(220,220,220,0.8)",
+                                highlightFill: "rgba(220,220,220,0.75)",
+                                highlightStroke: "rgba(220,220,220,1)",
+                                data: $scope.data // sumCredit
+                            }
+                        ]
+                    };
+
+
+                    options = {
+                        //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+                        scaleBeginAtZero: true,
+
+                        //Boolean - Whether grid lines are shown across the chart
+                        scaleShowGridLines: true,
+
+                        //String - Colour of the grid lines
+                        scaleGridLineColor: "rgba(255,255,255,0.4)",
+
+                        //Number - Width of the grid lines
+                        scaleGridLineWidth: 1,
+
+                        //Boolean - Whether to show horizontal lines (except X axis)
+                        scaleShowHorizontalLines: true,
+                        scaleFontColor: "#fff",
+
+                        //Boolean - Whether to show vertical lines (except Y axis)
+                        scaleShowVerticalLines: true,
+
+                        //Boolean - If there is a stroke on each bar
+                        barShowStroke: true,
+
+                        //Number - Pixel width of the bar stroke
+                        barStrokeWidth: 2,
+
+                        //Number - Spacing between each of the X value sets
+                        barValueSpacing: 5,
+
+                        //Number - Spacing between data sets within X values
+                        barDatasetSpacing: 1,
+                        tooltipTemplate: "<%if (label){%><%=label%> : <%}%><%= value+' DH' %>",
+
+                        // String - Template string for multiple tooltips
+                        multiTooltipTemplate: "<%= value.toFixed(2)+ ' DH' %>",
+
+                        //String - A legend template
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+
+                    };
+                    var ctx = document.getElementById("myChart").getContext("2d");
+                    var myBarChart = new Chart(ctx).Bar($scope.data_, options);
+
+
+                }
+                $scope.dataMarge = [];
+                $scope.dataBl = [];
+                $scope.labelsMarge = [];
+                $scope.chartMarge = function () {
+
+                    $scope.data___ = {
+                        labels: $scope.labelsMarge,
+                        datasets: [
+                            {
+                                label: "BL",
+                                backgroundColor: "rgba(179,181,198,0.2)",
+                                borderColor: "rgba(179,181,198,1)",
+                                pointBackgroundColor: "rgba(179,181,198,1)",
+                                pointBorderColor: "#fff",
+                                pointHoverBackgroundColor: "#fff",
+                                pointHoverBorderColor: "rgba(179,181,198,1)",
+
+                                data: $scope.dataBl
+                            },
+                             {
+                                 label: "Marges",
+                                 fillColor: "rgba(56,162,255,1)",
+                                 strokeColor: "rgba(2,86,160,1)",
+                                 pointColor: "rgba(2,86,160,1)",
+                                 pointStrokeColor: "",
+                                 pointHighlightFill: "white",
+                                 pointHighlightStroke: "rgba(151,187,205,1)",
+
+                                 data: $scope.dataMarge
+                             },
+                        ]
+                    };
+
+
+                    optionsMarge = {
+                        //Boolean - Whether to show lines for each scale point
+                        scaleShowLine: true,
+
+                        //Boolean - Whether we show the angle lines out of the radar
+                        angleShowLineOut: true,
+
+                        //Boolean - Whether to show labels on the scale
+                        scaleShowLabels: false,
+                        // Boolean - Whether the scale should begin at zero
+                        scaleBeginAtZero: true,
+
+                        //String - Colour of the angle line
+                        angleLineColor: "rgba(255,255,255,.7)",
+
+                        //Number - Pixel width of the angle line
+                        angleLineWidth: 3,
+
+                        //String - Point label font declaration
+                        pointLabelFontFamily: "'Arial'",
+
+                        //String - Point label font weight
+                        pointLabelFontStyle: "normal",
+                        scaleFontColor: "#fff",
+
+                        //Number - Point label font size in pixels
+                        pointLabelFontSize: 15,
+
+                        //String - Point label font colour
+                        pointLabelFontColor: "#fff",
+
+                        //Boolean - Whether to show a dot for each point
+                        pointDot: true,
+
+                        //Number - Radius of each point dot in pixels
+                        pointDotRadius: 5,
+
+                        //Number - Pixel width of point dot stroke
+                        pointDotStrokeWidth: 5,
+
+                        //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+                        pointHitDetectionRadius: 12,
+
+                        //Boolean - Whether to show a stroke for datasets
+                        datasetStroke: true,
+                        borderColor: "#fff",
+
+                        //Number - Pixel width of dataset stroke
+                        datasetStrokeWidth: 5,
+
+                        //Boolean - Whether to fill the dataset with a colour
+                        datasetFill: true,
+                        tooltipTemplate: "<%if (label){%><%=label%> : <%}%><%= value+' DH' %>",
+                        multiTooltipTemplate: "<%= value.toFixed(2)+ ' DH' %>",
+                        //String - A legend template
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+
+                    }
+                    var ctx = document.getElementById("myChartMarge").getContext("2d");
+                    var myChartMarge = new Chart(ctx).Radar($scope.data___, optionsMarge);
+
+
+                }
+
+
+
+
+                $scope.data__ = [];
+                $scope.chartArticles = function () {
+
+                    options_ = {
+                        //Boolean - Whether we should show a stroke on each segment
+                        segmentShowStroke: true,
+
+                        //String - The colour of each segment stroke
+                        segmentStrokeColor: "#fff",
+
+                        //Number - The width of each segment stroke
+                        segmentStrokeWidth: 2,
+
+                        //Number - The percentage of the chart that we cut out of the middle
+                        percentageInnerCutout: 50, // This is 0 for Pie charts
+
+                        //Number - Amount of animation steps
+                        animationSteps: 100,
+
+                        //String - Animation easing effect
+                        animationEasing: "easeOutBounce",
+
+                        //Boolean - Whether we animate the rotation of the Doughnut
+                        animateRotate: true,
+
+                        //Boolean - Whether we animate scaling the Doughnut from the centre
+                        animateScale: false,
+                        tooltipTemplate: "<%if (label){%><%=label%> : <%}%><%= value %>",
+
+
+                        //String - A legend template
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+
+                    }
+                    var ctx = document.getElementById("myChartArticles").getContext("2d");
+                    var myChartArticles = new Chart(ctx).Pie($scope.data__, options_);
+
+
+                }
+                $scope.chartArticles();
+                $scope.dataDifference = [];
+                $scope.chartCaisse = function () {
+
+                    $scope.dataCaisse_ = {
+                        //client
+                        labels: $scope.labelsCaisse,
+                        datasets: [
+                            {
+                                label: "Le montant à la caisse",
+                                fillColor: "rgba(220,220,220,0.2)",
+                                strokeColor: "rgba(220,220,220,1)",
+                                pointColor: "rgba(220,220,220,1)",
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: $scope.dataCaisse
+                            },
+
+
+                           {
+                               label: "Le montant à la caisse",
+                               fillColor: "rgba(255,0,0,0.2)",
+                               strokeColor: "rgba(255,0,0,1)",
+                               pointColor: "rgba(255,0,0,1)",
+                               pointStrokeColor: "#fff",
+                               pointHighlightFill: "red",
+                               pointHighlightStroke: "rgba(255,0,0,1)",
+                               data: $scope.dataDepense
+                           },
+                            {
+                                label: "La Difference",
+                                fillColor: "rgba(55,204,55,0.2)",
+                                strokeColor: "rgba(55,204,55,1)",
+                                pointColor: "rgba(55,204,55,0.5)",
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "green",
+                                pointHighlightStroke: "rgba(255,0,0,1)",
+                                data: $scope.dataDifference
+                            }
+                        ],
+                    };
+
+
+                    optionsCaisse = {
+
+                        ///Boolean - Whether grid lines are shown across the chart
+                        scaleShowGridLines: true,
+
+                        //String - Colour of the grid lines
+                        scaleGridLineColor: "rgba(255,255,255,.5)",
+
+                        //Number - Width of the grid lines
+                        scaleGridLineWidth: 1,
+
+                        //Boolean - Whether to show horizontal lines (except X axis)
+                        scaleShowHorizontalLines: true,
+
+                        //Boolean - Whether to show vertical lines (except Y axis)
+                        scaleShowVerticalLines: true,
+
+                        //Boolean - Whether the line is curved between points
+                        bezierCurve: true,
+
+                        //Number - Tension of the bezier curve between points
+                        bezierCurveTension: 0.4,
+
+                        //Boolean - Whether to show a dot for each point
+                        pointDot: true,
+
+                        //Number - Radius of each point dot in pixels
+                        pointDotRadius: 4,
+
+                        //Number - Pixel width of point dot stroke
+                        pointDotStrokeWidth: 1,
+
+                        //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+                        pointHitDetectionRadius: 20,
+
+                        //Boolean - Whether to show a stroke for datasets
+                        datasetStroke: true,
+                        scaleFontColor: "#fff" ,
+
+                        //Number - Pixel width of dataset stroke
+                        datasetStrokeWidth: 2,
+                        tooltipTemplate: "<%if (label){%><%=label%> : <%}%><%= value+' DH' %>",
+
+                        // String - Template string for multiple tooltips
+                        multiTooltipTemplate: "<%= value.toFixed(2)+ ' DH' %>",
+                        //Boolean - Whether to fill the dataset with a colour
+                        datasetFill: true,
+                        //String - A legend template
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+
+                    }
+                    $('#myChartCaisse').remove(); // this is my <canvas> element
+                    $('#graph-container').append('<canvas id="myChartCaisse" style="width: 824px; height: 192px;" height="192" width="824"><canvas>');
+                    var ctxCaisse = document.getElementById("myChartCaisse").getContext("2d");
+                    var myBarChartCaisse = new Chart(ctxCaisse).Line($scope.dataCaisse_, optionsCaisse);// new Chart(ctx).Line(data, options);
+
+
+                }
+
+                $scope.$watch('especePar', function (oldValue, newValue) {
+                    if (oldValue == newValue) return;
+                    if ($scope.especePar) {//par mois
+
+                        $scope.dataDifference = [];
+                        $scope.dataCaisse = [];
+                        $scope.dataDepense = [];
+                        $scope.labelsCaisse = [];
+                        $http.get('/Statistique/estimationEspeceCaisseMois')
+                       .success(function (data) {
+                           for (var i = 0; i < data.liste.length; i++) {
+                               data_ = data.liste[i];
+                               $scope.labelsCaisse.push(data_.Date);
+                               $scope.dataCaisse.push(data_.totalCredit);
+                               $scope.dataDifference.push(data_.difference);
+                               $scope.dataDepense.push(data_.totalDepense);
+                           }
+                           $scope.chartCaisse();
+                       }).error(function () {
+
+                           notificationFactory.error("Il y'a un erreur", "Attention");
+
+                       });
+                    } else {
+                        $scope.dataDepense = [];
+                        $scope.dataCaisse = [];
+                        $scope.labelsCaisse = [];
+                        $scope.dataDifference = [];
+                        $http.get('/Statistique/estimationEspeceCaisse')
+                       .success(function (data) {
+                           for (var i = 0; i < data.liste.length; i++) {
+                               data_ = data.liste[i];
+                               $scope.labelsCaisse.push(data_.Date);
+                               $scope.dataCaisse.push(data_.totalCredit);
+                               $scope.dataDifference.push(data_.difference);
+                               $scope.dataDepense.push(data_.totalDepense);
+                           }
+                           $scope.chartCaisse();
+                       }).error(function () {
+
+                           notificationFactory.error("Il y'a un erreur", "Attention");
+
+                       });
+                    }
+
+                });
+
+                $http.get('/Statistique/getTopArticlesChart')
+                    .success(function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            //$scope.data__
+                            var color = 'rgba(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256));
+                            $scope.data__.push({
+                                value: data[i].nbr,
+                                color: color+ ',1)',
+                                highlight: color + ',0.7)',
+                                label: data[i].Key.Designation
+                            });
+                        }
+                        $scope.chartArticles();
+                    }).error(function () {
+
+                        notificationFactory.error("Il y'a un erreur", "Attention");
+
+                    });
+
+
+                $http.get('/Statistique/getMargesThisYear')
+                  .success(function (data) {
+                      for (var i = 0; i < data.length; i++) {
+                          d = data[i];
+                          if (d.Mois == 1) d.Mois = "Janvier";
+                          if (d.Mois == 2) d.Mois = "Février";
+                          if (d.Mois == 3) d.Mois = "Mars";
+                          if (d.Mois == 4) d.Mois = "Avril";
+                          if (d.Mois == 5) d.Mois = "Mai";
+                          if (d.Mois == 6) d.Mois = "Juin";
+                          if (d.Mois == 7) d.Mois = "Juillet";
+                          if (d.Mois == 8) d.Mois = "Août";
+                          if (d.Mois == 9) d.Mois = "Septembre";
+                          if (d.Mois == 10) d.Mois = "Octobre";
+                          if (d.Mois == 11) d.Mois = "Novembre";
+                          if (d.Mois == 12) d.Mois = "Décembre";
+                          $scope.labelsMarge.push(d.Mois);
+                          $scope.dataMarge.push(d.margeBL);
+                          $scope.dataBl.push(d.somme);
+                      }
+                      $scope.chartMarge();
+                  }).error(function () {
+
+                      notificationFactory.error("Il y'a un erreur", "Attention");
+
+                  });
+
+                $scope.newClients = [];
+                $scope.totalVentes = [];
+                $scope.sumVentes = 0;
+                $scope.sumVentesF = 0;
+                $scope.getTotalFactures = [];
+                $scope.getTopClients = [];
+                $scope.getTopArticles = [];
+                $scope.getTopArticlesACommande = [];
+                $http.get('/Statistique/getNewClients')
+                     .success(function (data) {
+                         $scope.newClients = data;
+
+                     });
+
+
+                $scope.soldeClients = 0;
+                $http.get('/Statistique/getTotalSoldeClient')
+                   .success(function (data) {
+                       $scope.soldeClients = data;
+
+                   });
+                $scope.totalFactures = 0;
+                $http.get('/Statistique/getTotalFacturesMois')
+                   .success(function (data) {
+                       $scope.totalFactures = data;
+
+                   });
+
+                $scope.chequeAEncaisse = [];
+                $http.get('/Statistique/chequeAEncaisse')
+                   .success(function (data) {
+                       $scope.chequeAEncaisse = data;
+                       if ($scope.chequeAEncaisse > 0) {
+                           notificationFactory.warning("<a href='@Url.Action("ChequeNonEncaisse","Administration")'>Il y'a <b>" + $scope.chequeAEncaisse + "</b> chéques et effets doivent étre encaissés </a>", "Attention");
+
+                       }
+
+                   }).error(function () {
+                       notificationFactory.error("Il y'a un erreur", "Attention");
+                   });
+
+                $scope.clientsSurPlafond = [];
+                $http.get('/Statistique/getClientUpPlafond')
+                   .success(function (data) {
+                       $scope.clientsSurPlafond = data;
+                       if ($scope.clientsSurPlafond.length > 0) {
+                           notificationFactory.warning("<a href='@Url.Action("ClientsUpPlafond","Administration")'>Il y'a <b>" + $scope.clientsSurPlafond.length + "</b> clients ont dépassé le plafond </a>", "Attention");
+                       }
+
+                   }).error(function () {
+                       notificationFactory.error("Il y'a un erreur", "Attention");
+                   });
+                $scope.chequeAEncaisseF = 0;
+                $http.get('/Statistique/chequeAEncaisseF')
+                   .success(function (data) {
+                       $scope.chequeAEncaisseF = data;
+                       if ($scope.chequeAEncaisseF > 0) {
+                           notificationFactory.error("<a href='@Url.Action("ChequeNonEncaisseF","Administration")'>Il y'a <b>" + $scope.chequeAEncaisseF + "</b> chéques et effets données aux fournisseurs doivent étre payés</a>", "Attention");
+
+                       }
+
+                   }).error(function () {
+                       notificationFactory.error("Il y'a un erreur", "Attention");
+                   });
+                $scope.soldeFournisseurs = 0;
+                $http.get('/Statistique/getTotalSoldeFournisseur')
+                   .success(function (data) {
+                       $scope.soldeFournisseurs = data;
+
+                   });
+                $scope.depenses = 0;
+                $http.get('/Statistique/getTotalDepensesToday')
+                   .success(function (data) {
+                       $scope.depenses = data;
+
+                   });
+                $scope.depensesMonth = 0;
+                $http.get('/Statistique/getTotalDepensesThisMonth')
+                   .success(function (data) {
+                       $scope.depensesMonth = data;
+
+                   });
+                $http.get('/Statistique/getTotalVentes')
+                  .success(function (data) {
+                      $scope.totalVentes = data;
+                      for (var i = 0; i < $scope.totalVentes.length; i++) {
+                          $scope.sumVentes += $scope.totalVentes[i].Sum;
+                      }
+                  });
+                $scope.nbrFactureMois = 0;
+                $http.get('/Statistique/getNbrFactureMois')
+                  .success(function (data) {
+                      $scope.nbrFactureMois = data;
+                  }).error(function () {
+                      notificationFactory.error("Il y'a un erreur", "Attention");
+                  });
+                $scope.nbrBLMois = 0;
+                $http.get('/Statistique/getNbrBLMois')
+                  .success(function (data) {
+                      $scope.nbrBLMois = data;
+                  }).error(function(){
+                         notificationFactory.error("Il y'a un erreur", "Attention");
+                      });
+                $scope.getSoldeAllClients = [];
+                $http.get('/Statistique/getSoldeAllClients')
+                  .success(function (data) {
+                      $scope.getSoldeAllClients = data;
+                  });
+
+                $http.get('/Statistique/getTotalCheques')
+                    .success(function (data) {
+                        $scope.totalCheques = data;
+                    });
+                $scope.totalChequesFournisseurs = 0;
+                $http.get('/Statistique/getTotalChequesToFournisseurs')
+                  .success(function (data) {
+                      $scope.totalChequesFournisseurs = data;
+                    });
+                $scope.totalChequesFournisseursMois = 0;
+                $http.get('/Statistique/getMesChequeEffetFournisseurThisMonth')
+                    .success(function (data) {
+                        $scope.totalChequesFournisseursMois = data;
+                    });
+                $scope.dataCaisse = [];
+                $scope.dataDepense = [];
+                $scope.labelsCaisse = [];
+                $http.get('/Statistique/estimationEspeceCaisse')
+               .success(function (data) {
+                   for (var i = 0; i < data.liste.length; i++) {
+                       data_ = data.liste[i];
+                       $scope.labelsCaisse.push(data_.Date);
+                       $scope.dataCaisse.push(data_.totalCredit);
+                       $scope.dataDifference.push(data_.difference);
+                       $scope.dataDepense.push(data_.totalDepense);
+                   }
+
+
+                   $scope.chartCaisse();
+               }).error(function () {
+
+                   notificationFactory.error("Il y'a un erreur", "Attention");
+
+               });;
+
+                $http.get('/Statistique/getTotalFactures')
+                  .success(function (data) {
+                      $scope.getTotalFactures = data;
+
+                  });
+                $http.get('/Statistique/getTopArticles')
+            .success(function (data) {
+                $scope.getTopArticles = data;
+
+            });
+                $http.get('/Statistique/getTopArticlesACommande')
+       .success(function (data) {
+           $scope.getTopArticlesACommande = data;
+
+       });
+
+                $http.get('/Statistique/getTopClients')
+                 .success(function (data) {
+                     $scope.getTopClients = data;
+
+                 });
+                $scope.marge = 0;
+                $http.get('/Statistique/getMargeToday')
+                .success(function (data) {
+                    $scope.marge = data;
+
+                });
+
+                $scope.caisse = 0;
+                $http.get('/Statistique/estimationCaisseToday')
+               .success(function (data) {
+                   $scope.caisse = data.caisse;
+
+               });
+
+                $scope.chiffreAffaireThisYear = 0;
+                $scope.chiffreAffaireThisYearFournisseur = 0;
+                $scope.chiffreAffaireLastYear = 0;
+                $scope.chiffreAffaireLastYearFournisseur = 0;
+                $http.get('/Statistique/SoldeByChiffreAffaireThisYearFournisseur')
+                   .success(function (data) {
+                       $scope.chiffreAffaireThisYearFournisseur = parseFloat(data);
+                   });
+        $http.get('/Statistique/SoldeByChiffreAffaireThisYear')
+                     .success(function (data) {
+                         $scope.chiffreAffaireThisYear = parseFloat(data);
+                         console.log($scope.chiffreAffaireThisYear);
+                     });
+
+                $http.get('/Statistique/SoldeByChiffreAffaireLastYear')
+                   .success(function (data) {
+                       $scope.chiffreAffaireLastYear = parseFloat(data);
+
+                   });
+
+          $http.get('/Statistique/SoldeByChiffreAffaireLastYearFournisseur')
+                   .success(function (data) {
+                       $scope.chiffreAffaireLastYearFournisseur = parseFloat(data);
+
+                   });
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+
+        });
+
+
+
+    </script>
+}

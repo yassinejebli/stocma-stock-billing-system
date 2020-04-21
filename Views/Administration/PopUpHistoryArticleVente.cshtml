@@ -1,0 +1,404 @@
+﻿@{
+    ViewBag.Title = "Historique des ventes";
+    Layout = "~/Views/Shared/_LayoutPopUPArticle.cshtml";
+}
+
+
+<div class="card-panel">
+    <div class="row">
+
+        <div class="row">
+            @*<div style="margin-left:20px !important;" class="pull-left">
+                    <div class="form-group">
+                        <input autocomplete="off" readonly placeholder="Filter par un Client" id="disabled" type="text" class="validate "
+                               ng-model="filterOptions.filterClient" typeahead-wait-ms=" 100"
+                               typeahead="v as v.Name for v  in lookupFactory.get('Clients', 'Name', $viewValue)">
+                    </div>
+                </div>*@
+            <!--  (table, field, text, expand, vide, limit, wheres) -->
+            @*<input type="date" readonly id="datePicker" placeholder="Choisissez une date" ng-model="filterOptions.filterDate" style="width:130px !important;margin-right:15px !important;" class="pull-right">*@
+            <div class="col-lg-4 col-lg-offset-4" style="width:350px !important;">
+
+                <div class="form-group-inline">
+
+
+                    <div class="input-field col s12">
+                        <input readonly autocomplete="off" ng-model="filterOptions.filterArticle" placeholder="choisissez un article"
+                               typeahead="v as v.Ref for v  in lookupFactory.getExpand('Articles', 'Ref', $viewValue,'BonLivraisonItems/BonLivraison/Client',null,null,null)"
+                               typeahead-wait-ms=" 100" id="name2" type="text">
+                        <label for="first_name" class="active">Article </label>
+                    </div>
+                    <label>L'année</label>
+                    <select ng-model="filterOptions.filterYear" class="browser-default" style="border:1px solid #ccc !important">
+                        <option ng-repeat="i in years" value="{{i}}">{{i}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <div ui-grid-selection ui-grid-exporter ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+
+
+
+    </div>
+</div>
+
+
+@*<img src="https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg" crossorigin="anonymous"  />*@
+@*<img src="~/img/image.png" id="imageid" ng-hide="false"  />
+    <canvas style="margin-left:300px!important" id="imgCanvas" ng-hide="false"/>*@
+
+
+@section Scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+                $scope.showAdd = true;
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                //$scope.$scope = $scope;
+                $scope.table = "BonLivraisonItems";
+                $scope.lookupFactory = lookupFactory;
+                //$scope.bon = 'DevisList';
+                var base64 = "";
+                $scope.filterOptions = {
+                    filterText: "",
+                    filterVisible: null,
+                    useExternalFilter: true
+                };
+                $scope.years = [];
+
+                for (var i = 2014; i <= new Date().getFullYear() ; i++) {
+                    $scope.years.push(i);
+                }
+
+                //$scope.pagingOptions = {
+                //    pageSizes: [5, 10, 30],
+                //    pageSize: 5,
+                //    totalServerItems: 0,
+                //    currentPage: 1
+                //};
+                $scope.deleteMode = false;
+                $scope.focusFirstCell = function () {
+                    //$scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+                }
+                //console.log("ok")
+
+                $scope.onDblClickRow = function (rowItem) {
+
+                    console.log("dbClick")
+                };
+                $scope.gridOptions = {
+                    showColumnFooter: true,
+                    enableRowSelection: true,
+                    enableRowHeaderSelection: false,
+                    showGridFooter: true,
+                    enableFiltering: false,
+                    //paginationPageSizes: [5, 10, 30],
+                    //paginationPageSize: 5,
+                    enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                    enableColumnResizing: true,
+                    rowHeight: 40,
+                    //enableCellEditOnFocus : true,
+                    /*export*/
+                    //enableGridMenu: true,
+                    exporterPdfDefaultStyle: { fontSize: 14 },
+                    exporterPdfTableStyle: { margin: [-18, 40, 3, 5] },
+                    exporterPdfTableHeaderStyle: { fontSize: 14, bold: true, italics: true, color: 'black', },
+                    exporterPdfFooter: function (currentPage, pageCount) {
+
+                        return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                    },
+                    exporterPdfCustomFormatter: function (docDefinition) {
+                        docDefinition.pageMargins = [40, 210, 50, 130];
+                        docDefinition.styles.headerStyle = { fontSize: 13, bold: true };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 557, marginTop: 50 };
+                        //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);//convertDate(new Date($scope.filterOptions.filterArticle.Date))
+                        //docDefinition.content = [{decoration: 'underline', text: "CLIENT : " + $scope.filterOptions.filterArticle.Client.Name.toUpperCase(), marginLeft: 180, fontSize: 17, marginTop: 30, bold: true }].concat(docDefinition.content);
+                        //docDefinition.content = [{ columns: [{ text: "Devis N° :  " + $scope.filterOptions.filterArticle.Ref, fontSize: 13, marginTop: 7,marginLeft:-15, bold: true, decoration: 'underline' }, { text: convertDate(new Date($scope.filterOptions.filterArticle.Date)), alignment: 'right', marginTop: 7, decoration: 'underline' }] }].concat(docDefinition.content);
+
+                        //docDefinition.content = [{ image: encodedBase, width: 593, height: 170, marginLeft: -60,marginTop:-25 }].concat(docDefinition.content);
+                        //  docDefinition.content = docDefinition.content.concat([{ text: "", marginTop: 100 }]);
+
+
+                        docDefinition.content[0].layout = 'lightHorizontalLines';
+                        docDefinition.content = docDefinition.content.concat([{ decoration: 'underline', text: "TOTAL HT    :   " + totals + "                                          ", marginLeft: 360, fontSize: 12, bold: true, marginTop: 10 }]);
+                        //docDefinition.content[3].layout = 'lightHorizontalLines'
+                        //{
+                        //    //hLineWidth: function(i, node) {
+                        //    //  return (i === 0 || i === node.table.body.length) ? 2 : 1;
+                        //    //},
+                        //    //vLineWidth: function(i, node) {
+                        //    //  return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+                        //    //},
+                        //    hLineColor: function (i, node) {
+                        //        return'blue';
+                        //    },
+                        //    vLineColor: function (i, node) {
+                        //        return 'blue';
+                        //    },
+                        //    paddingLeft: function (i, node) { return 40; },
+                        //    paddingRight: function (i, node) { return 40; },
+                        //    paddingTop: function (i, node) { return 20; },
+                        //    paddingBottom: function (i, node) { return 20; }
+                        //}
+                        docDefinition.content = docDefinition.content.concat([{ decoration: 'underline', text: "TVA               :   20%                                           ", marginLeft: 360, fontSize: 12, bold: true, marginTop: 0 }]);
+                        docDefinition.content = docDefinition.content.concat([{ decoration: 'underline', text: "TOTAL TTC  :   " + (parseFloat(totals) * 1.2).toFixed(2) + "                                        ", marginLeft: 360, fontSize: 12, bold: true, marginTop: 0 }]);
+                        return docDefinition;
+                    },
+                    exporterPdfOrientation: 'portrait',
+                    exporterPdfPageSize: 'LETTER',
+                    exporterPdfMaxGridWidth: 500,
+                    exporterSuppressColumns: [' ', 'Article.Ref', '\''],
+                    exporterFieldCallback: function (grid, row, col, input) {
+                        if (col.name == 'Qte' || col.name == 'Pu' || col.name == 'TotalHT') {
+                            return input.toFixed(2);
+                        } else {
+                            return input.toUpperCase();
+                        }
+                    },
+                };
+
+                $scope.gridOptions.multiSelect = false;
+                $scope.gridOptions.modifierKeysToMultiSelect = false;
+                $scope.gridOptions.noUnselect = true;
+
+                $scope.items = [];
+
+
+                $scope.gridOptions.columnDefs = [
+
+                 { name: 'Article.Ref', visible: true, enableHiding: true, displayName: 'Ref', width: "100", enableCellEdit: false },
+                 { name: 'Article.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+                 { name: 'BonLivraison.Date', displayName: 'Date', width: "*", enableCellEdit: false, cellFilter: 'date:\'dd/MM/yyyy\'', filterCellFiltered: true, },
+                 { name: 'Pu', displayName: 'Prix Vente', width: "110", enableCellEdit: false, cellFilter: 'number:2' },
+                 { name: 'BonLivraison.Client.Name', displayName: 'Client', width: "*", enableCellEdit: false, },
+                 { name: 'BonLivraison.NumBon', displayName: 'Numero BR', width: "80", enableCellEdit: false, },
+                { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: '<span></span>', sortable: false },
+
+
+                ];
+
+
+                //var can = document.getElementById("imgCanvas");
+                //var img = document.getElementById("imageid");
+                //var ctx = can.getContext("2d");
+
+                //if (img.complete) {
+
+                //    ctx.drawImage(img, 10, 10, 700, 600);
+                //    var encodedBase = can.toDataURL();
+                //} else {
+                //    img.onload = function () {
+                //        ctx.drawImage(img, 10, 10, 700, 600);
+                //        var encodedBase = can.toDataURL();
+                //    };
+                //}
+                var encodedBase;
+
+                //setTimeout(function () {
+
+                //    var img = document.getElementById('imageid');
+                //    var canvas = document.getElementById('imgCanvas');
+                //    var ctx = canvas.getContext("2d");
+                //    var callback = function (image) {
+                //        if (!image) image = this;
+                //        canvas.width = img.width;
+                //        canvas.height = img.height;
+                //        ctx.drawImage(image, 0, 0);
+                //        encodedBase = canvas.toDataURL();
+
+                //    }
+
+                //    if (img.complete) { //check if image was already loaded by the browser
+                //        callback(img);
+                //    } else {
+                //        img.onload = callback;
+                //    }
+
+                //},1000);
+
+
+                setTimeout(function () {
+                    if (window.myArticle != undefined) {
+                        $scope.filterOptions.filterArticle = window.myArticle;
+
+                    }
+
+
+                }), 100;
+                $scope.filterOptions = {
+                    filterText: '',
+                    filterArticle: '',
+                    //filterClient: ''
+                }
+                $scope.getPagedDataAsync = function () {
+                    crudGridDataFactory($scope.table, $scope.filterOptions.filterText, 'BonLivraison/Client,Article').query(itemsQuerySucceeded, queryFailed);
+                };
+                //$scope.getPagedDataAsync();
+                function convertDate(today) {
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    return today;
+                }
+                var totals = 0;
+                $scope.$watch('filterOptions', function (oldValue, newValue) {
+                    var oldfilter = $scope.filterOptions.filterText;
+                    $scope.filterOptions.filterText = '';
+
+
+                    if ($scope.filterOptions.filterArticle != undefined && typeof $scope.filterOptions.filterArticle === 'object') {
+                        if ($scope.filterOptions.filterArticle['Ref'] != '' && $scope.filterOptions.filterArticle['Ref'] != undefined) {
+                            $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'indexof(Article/Ref,\'' + $scope.filterOptions.filterArticle['Ref'].replace("'", "''") + '\') gt -1 and year(BonLivraison/Date) eq ' + window.year + ' and BonLivraison/IdClient eq guid\'' + window.IdClient + '\'';
+                            //$scope.filterOptions.filterClient = $scope.filterOptions.filterArticle.Client;
+                            //$scope.filterOptions.filterDate = new Date($scope.filterOptions.filterArticle.Date);
+                            //$scope.gridOptions.exporterPdfHeader = { columns: [{ decoration: 'underline', marginTop: 130, marginLeft: 25, alignment: 'left', text: ($scope.filterOptions.filterArticle == undefined) ? '' : "Devis   N° : " + $scope.filterOptions.filterArticle.Ref }, { alignment: 'center', marginTop: 170, text: "CLIENT : " + $scope.filterOptions.filterArticle.Client.Name.toUpperCase(), decoration: 'underline' }, { alignment: 'right', text: convertDate(new Date($scope.filterOptions.filterArticle.Date)), marginTop: 130, marginRight: 25, decoration: 'underline' }] };
+                            //console.log($scope.filterOptions.filterArticle.BonLivraisonItems[0].BonLivraison.Client.Name)
+                        }
+                    }
+
+                    if (($scope.filterOptions.filterText == '' /*|| flagWorkUnit == false || flagExercice == false*/)) {
+                        $scope.filterOptions.filterText = 'indexof(Article/Ref,\'\') gt -1';
+                    }
+
+                    if ($scope.filterOptions.filterYear != '' && $scope.filterOptions.filterYear != undefined) {
+                        $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'year(BonLivraison/Date) eq ' + $scope.filterOptions.filterYear + ' and BonLivraison/IdClient eq guid\'' + window.IdClient + '\'';
+                        //$scope.filterOptions.filterClient = $scope.filterOptions.filterArticle.Client;
+                        //$scope.filterOptions.filterDate = new Date($scope.filterOptions.filterArticle.Date);
+                        //$scope.gridOptions.exporterPdfHeader = { columns: [{ decoration: 'underline', marginTop: 130, marginLeft: 25, alignment: 'left', text: ($scope.filterOptions.filterArticle == undefined) ? '' : "Devis   N° : " + $scope.filterOptions.filterArticle.Ref }, { alignment: 'center', marginTop: 170, text: "CLIENT : " + $scope.filterOptions.filterArticle.Client.Name.toUpperCase(), decoration: 'underline' }, { alignment: 'right', text: convertDate(new Date($scope.filterOptions.filterArticle.Date)), marginTop: 130, marginRight: 25, decoration: 'underline' }] };
+                        //console.log($scope.filterOptions.filterArticle.BonLivraisonItems[0].BonLivraison.Client.Name)
+                    }
+
+                    if (oldValue != newValue) {
+
+                        $scope.getPagedDataAsync();
+
+                    }
+                }, true);
+                $scope.check = function () {
+                    var ok = false;
+                    if ($scope.filterOptions.filterArticle != undefined && typeof $scope.filterOptions.filterArticle === 'object') {
+                        ok = true;
+                    }
+                    return ok;
+                }
+
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+
+
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+                }
+                $scope.selectRow = function () {
+                    return $scope.gridApi.selection.getSelectedRows();
+                };
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+
+
+
+
+                /*region generique*/
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                function itemsQuerySucceeded(data) {
+                    $scope.items = data.value;
+                    $scope.gridOptions.data = $scope.items;
+
+                    //$scope.totalServerItems = data["odata.count"];
+                    //if ($scope.items.length > 0) {
+                    //    if ($scope.item) {
+                    //        for (i = 0; i < $scope.items.length; i++) {
+                    //            if ($scope.items[i].Id == $scope.item.Id)
+                    //                $scope.dataGrid.selectedItem = $scope.items[i];
+                    //        }
+                    //    }
+                    //    if ($scope.dataGrid.selectedItem == null) {
+                    //        $scope.dataGrid.selectedItem = $scope.items[0];
+                    //    }
+
+                    //    $scope.setItem($scope.dataGrid.selectedItem);
+                    //}
+
+                    //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+                    totals = 0;
+                    for (var i = 0; i < $scope.items.length; i++) {
+                        var x = $scope.items[i].TotalHT;
+                        totals += x;
+                    }
+                    totals = totals.toFixed(2);
+                }
+
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                saveSucceeded = function (saveResult) {
+
+                    notificationFactory.success();
+                    $scope.getPagedDataAsync();
+
+                }
+
+                saveFailed = function (error) {
+                    var reason = error.statusText;
+                    var detail = error.data["odata.error"];
+                    if (detail) {
+                        reason += detail.innererror.message;
+                    }
+                    if (error.config["method"] == "POST")
+                        $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                    notificationFactory.error(
+                       "Impossible d'enregistrer les modifications. " + reason +
+                   " Il faut actualiser la page.");
+                    $scope.getPagedDataAsync();
+                    /*
+                    var entityErrors = error.entityErrors;
+
+                    if (entityErrors && entityErrors.length) {
+                        handleSaveValidationError(entityErrors);
+                        return;
+                    }
+                    if (detail && detail.ExceptionType &&
+                        detail.ExceptionType.indexOf('OptimisticConcurrencyException') !== -1) {
+                        // Concurrency error
+                        reason =
+                            "Another user, perhaps the server, may have deleted one or all of the same entities.";
+                    }
+                    */
+
+                };
+                $scope.year = $scope.years[$scope.years.length - 1];
+                //$scope.gridOptions.data = $scope.table;
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

@@ -1,0 +1,401 @@
+﻿@{
+    ViewBag.Title = "Nouvelle Facture d'achat";
+}
+
+<div class="switch">
+    Rechercher par :
+    <label>
+        Designation
+        <input type="checkbox" ng-model="search">
+        <span class="lever"></span> Ref
+    </label>
+</div>
+
+
+<div class="row">
+
+    <div>
+        <div class="card-panel">
+            <div class="row">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label>Numéro Facture</label>
+
+                            <input type="text" ng-model="item.NumBon" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label>Importer un BR </label>
+
+                            <input type="text" autocomplete="off" ng-model="filterOptions.filterBonReception" placeholder="Numéro du BR"
+                                   typeahead="v as v.NumBon for v  in lookupFactory.getExpand('BonReceptions', 'NumBon', $viewValue,'BonReceptionItems/Article,Fournisseur,FactureF',null,'oui',null)"
+                                   typeahead-wait-ms="100"
+                                   class="" />
+                        </div>
+                        <a onclick='javascript:window.open(" @Url.Action("PopUpBonReception", "Administration") ", "BonReception", "width=730, height=650,top=0, left=0" );' class="btn-floating waves-effect waves-light cyan right" style="margin-right:-45px !important;margin-top:-50px;"><i class="mdi-content-add"></i></a>
+
+                    </div>
+                    <div class="col-lg-3 col-lg-offset-2">
+                        <div class="form-group">
+                            <label>Entrez un Fournisseur </label>
+
+                            <input type="text" autocomplete="off" ng-model="filterOptions.filterFournisseur" placeholder="Nom du Fournisseur"
+                                   typeahead="v as v.Name for v  in lookupFactory.get('Fournisseurs', 'Name', $viewValue)"
+                                   typeahead-wait-ms=" 100"
+                                   class="" />
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-lg-offset-3">
+                        <label>Date </label>
+                        <input type="date" id="" placeholder="Choisissez une date" ng-model="item.Date">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:8px;">
+                        <div class="flex">
+                                <div ng-repeat="x in item.BonReceptions" style="display:inline">
+                                    <div class="tag">
+                                        <div class="numBon">{{x.NumBon}}</div>
+                                        <div class="remove" ng-click="deleteBonReception(x)">X</div>
+                                    </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="row">
+                    <div ui-grid-selection ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="fixed-action-btn" style="right:100px !important;">
+    <a ng-click="save()" class="btn-floating waves-effect waves-light btn-large cyan">
+        <i class="large mdi-content-save"></i>
+    </a>
+</div>
+
+<style>
+    .flex {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+        margin-left: 16px;
+    }
+    .tag{
+        display: flex;
+        margin-top: 4px;
+        margin-left: 4px;
+        padding: 6px;
+        border-radius: 6px;
+        align-items: center;
+        background-color: dodgerblue;
+        color: white;
+        font-weight: 500;
+        width: auto;
+        font-size: 12px;
+        min-width: 120px;
+        justify-content: space-between;
+    }
+
+    .remove{
+        cursor: pointer;
+    }
+</style>
+
+@section Scripts
+{
+
+    <script>
+
+    $(document).ready(function () {
+
+
+        app.controller("AdminCtrl", ['$http', '$scope', '$element', 'Animations',
+            'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory',
+            'notificationFactory', 'lookupFactory',
+            function ($http, $scope, $element, Animations, uiGridConstants, $timeout,
+                $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+            $scope.animation = Animations.opacity;
+            $scope.Client = '@StatistiqueController.getCompanyName().ToUpper()';
+            $scope.tags = [
+                { text: 'Tag1' },
+                { text: 'Tag2' },
+                { text: 'Tag3' }
+            ];
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            $scope.table = "FactureFs";
+            $scope.lookupFactory = lookupFactory;
+            var saved = false;
+            $scope.bon = 'FactureF';
+            $scope.pay = new Object({ Id: breeze.core.getUuid() })
+            $scope.pay2 = new Object({ Id: breeze.core.getUuid() })
+            $scope.filterOptions = {
+                filterText: "",
+                filterVisible: null,
+                useExternalFilter: true,
+                filterFournisseur: ""
+            };
+            $scope.item = new Object({ Id: breeze.core.getUuid(), FactureFItems: [], BonReceptions: [] });
+            $scope.item.Date = new Date();
+
+          
+
+
+            $scope.deleteMode = false;
+
+            $scope.gridOptions = {
+                showColumnFooter: true,
+                enableRowSelection: true,
+                enableRowHeaderSelection: false,
+                showGridFooter: true,
+                enableFiltering: false,
+                enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                enableColumnResizing: true,
+                rowHeight: 40,
+            };
+            Date.prototype.toDateInputValue = (function () {
+                var local = new Date(this);
+                local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+                return local.toJSON().slice(0, 10);
+            });
+            $('#datePicker').val(new Date().toDateInputValue());
+
+            $scope.gridOptions.multiSelect = false;
+            $scope.gridOptions.noUnselect = true;
+            var CellTemplateDelete = '';
+
+
+
+         
+
+            $scope.gridOptions.columnDefs = [
+            { name: 'Article.Ref', visible: true, enableHiding: true, displayName: 'Ref', width: "140", enableCellEdit: false },
+            { name: 'Article.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+            { name: 'Qte', displayName: 'Qte', width: "120", type: "number", enableCellEdit: false, enableCellEditOnFocus: false, cellFilter: 'number: 2' },
+            { name: 'Pu', displayName: 'P.U H.T', width: "120", enableCellEdit: false, type: "number", enableCellEditOnFocus: false, cellFilter: 'currency:dh' },
+            { name: 'TotalHT', displayName: 'TOTAL H.T', width: "92", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%', cellFilter: 'currency:dh' },
+
+
+            ];
+
+            if($scope.Client == 'SUIV' || $scope.Client == 'SBCIT'){
+                $scope.gridOptions.columnDefs.splice(6, 0, { name: 'NumBR', displayName: 'BR N°', width: "140", enableCellEdit: false });
+            }
+            $scope.gridOptions.data = $scope.item.FactureFItems;
+
+            $scope.deleteBonReception = function (x) {
+                for (var i = 0; i < x.BonReceptionItems.length; i++) {
+                    $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(x.BonReceptionItems[i]), 1);
+                }
+                $scope.item.BonReceptions.splice($scope.item.BonReceptions.indexOf(x), 1);
+            }
+            $scope.check = function () {
+                var yes = false;
+
+                if (saved) {
+                    yes = true;
+                }
+                return yes;
+            }
+            $scope.gridOptions.data = [];
+
+            $scope.gridOptions.onRegisterApi = function (gridApi) {
+                $scope.gridApi = gridApi;
+                gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+                    rowEntity.TotalHT = rowEntity.Pu * rowEntity.Qte;
+                    if (isNaN(rowEntity.TotalHT))
+                        rowEntity.TotalHT = "";
+                    if($scope.search)
+                    {
+                        setTimeout(function(){
+                            $("#rechercher2").focus();
+                        },150);
+                    }else
+                    {
+                        setTimeout(function(){
+                            $("#rechercher").focus();
+                        },150);
+                    }
+                    $scope.$apply();
+                });
+                gridApi.selection.on.rowSelectionChanged($scope, function (row) {
+                    $scope.setItem(row.entity);
+                });
+                gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                    row.isNew = true;
+                });
+                gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                    $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                });
+            }
+            $scope.selectRow = function () {
+                return $scope.gridApi.selection.getSelectedRows();
+            };
+
+            $scope.toggleFiltering = function () {
+                $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+            };
+            $scope.scrollTo = function( rowIndex, colIndex ) {
+                $scope.gridApi.cellNav.scrollTo( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+            };
+
+            $scope.scrollToFocus = function( rowIndex, colIndex ) {
+                $scope.gridApi.cellNav.scrollToFocus( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+            };
+
+            $scope.save = function () {
+                if (!$scope.item.NumBon) {
+                    notificationFactory.warning("Saisissez le numero de la facture S.V.P", "Attention");
+                    return;
+                }
+
+                    if ($scope.item.Date == undefined || $scope.item.Date == "") {
+                        notificationFactory.warning("Saisissez une date valide S.V.P", "Attention");
+                        return;
+                    }
+                    if ($scope.filterOptions.filterFournisseur == "" || typeof $scope.filterOptions.filterFournisseur != 'object') {
+                        notificationFactory.warning("Choisissez un Fournisseur S.V.P", "Attention");
+                        return;
+                    }
+                    if ($scope.item.FactureFItems.length == 0) {
+                        notificationFactory.warning("Remplissez les piéces du bon S.V.P", "Attention");
+                        return;
+                    }
+
+                    if (lookupFactory.getLastId("FactureFs", "Ref") != undefined && lookupFactory.getLastId("FactureFs", "Ref") != null && lookupFactory.getLastId("FactureFs", "Ref").length != 0)
+                        $scope.item.Ref = lookupFactory.getLastId("FactureFs", "Ref")[0].Ref + 1;
+                    else
+                        $scope.item.Ref = 1;
+                    const bonReceptions = getBonReceptions($scope.item);
+                    delete $scope.item['FactureFItems'];
+                    delete $scope.item['BonReceptions'];
+                    $scope.item.IdFournisseur = $scope.filterOptions.filterFournisseur.Id;
+                    $scope.item.User = '@User.Identity.Name.Split('@')[0]';
+
+                    crudGridDataFactory($scope.table).save($scope.item, () => {
+                        console.log('bonReceptions', bonReceptions);
+                        bonReceptions.map((x, i) => {
+                            crudGridDataFactory('BonReceptions').update({ key: 'guid\'' + x.Id + '\'' }, {
+                                ...x, $$hashKey: undefined,
+                                BonReceptionsItems: undefined, Fournisseur: undefined, FactureF: undefined
+                            }, null, saveFailed);
+                            if (i === bonReceptions.length - 1) 
+                                saveSucceeded();
+                        });
+                    }, saveFailed);
+            }
+
+            getBonReceptions = (item) => {
+                return item.BonReceptions.map(x => ({ ...x, BonReceptionItems: undefined }));
+            }
+
+            Date.prototype.addHours = function (h) {
+                this.setHours(this.getHours() + h);
+                return this;
+            }
+            var articles = new Object({});
+            beforeSave = function (item) {
+                articles = new Object({ items: item });
+            }
+
+            $scope.delete = function (e, item) {
+                $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+            }
+
+            $scope.$watch('filterOptions.filterBonReception', function (oldValue, newValue) {
+                var oldfilter = $scope.filterOptions.filterText;
+                $scope.filterOptions.filterText = '';
+                if ($scope.filterOptions.filterBonReception != undefined && typeof $scope.filterOptions.filterBonReception === 'object') {
+                    if ($scope.filterOptions.filterBonReception['NumBon'] != '' && $scope.filterOptions.filterBonReception['NumBon'] != undefined) {
+                        var dateBon = new Date($scope.filterOptions.filterBonReception.Date);
+                        NumBon = $scope.filterOptions.filterBonReception.NumBon +"   DU "+("0" + dateBon.getDate()).slice(-2)+"/"+("0" + (dateBon.getMonth() + 1)).slice(-2)+"/"+dateBon.getFullYear().toString().substr(2,2);
+                        for (var i = 0; i < $scope.filterOptions.filterBonReception.BonReceptionItems.length; i++) {
+                            var myItem = $scope.filterOptions.filterBonReception.BonReceptionItems[i];
+                            $scope.item.FactureFItems.unshift({
+                                Id: breeze.core.getUuid(), IdFactureF: $scope.item.Id, IdArticle: myItem.IdArticle,
+                                Article: myItem.Article,
+                                Ref: myItem.Ref, Designation: myItem.Designation,
+                                Qte: myItem.Qte, Pu: myItem.Pu, TotalHT: myItem.TotalHT, NumBL: NumBon, NumBR: NumBon
+                            });
+                        }
+                        $scope.gridOptions.data = $scope.item.FactureFItems;
+                        $scope.filterOptions.filterFournisseur = $scope.filterOptions.filterBonReception.Fournisseur;
+                        // fill selected BonReceptions
+                        $scope.item.BonReceptions.push({ ...$scope.filterOptions.filterBonReception, IdFactureF: $scope.item.Id });
+                        $scope.filterOptions.filterBonReception = '';
+                    }
+                } else {
+                    $scope.gridOptions.data = $scope.item.FactureFItems;
+                }
+            }, true);
+
+
+
+            $scope.setItem = function (item) {
+                $scope.myItem = item;
+
+            }
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            function itemsQuerySucceeded(data) {
+                $scope.items = data.value;
+                $scope.gridOptions.data = $scope.item.items;
+               
+            }
+
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+            $scope.clear = function () {
+                $scope.gridOptions.data = [];
+
+                $scope.item = new Object({ Id: breeze.core.getUuid(), FactureFItems: [], BonReceptions: [] });
+                $scope.gridOptions.data = $scope.item.FactureFItems;
+                $scope.filterOptions.filterFournisseur = "";
+                $scope.item.Date = new Date();
+            }
+            $scope.Client = '@StatistiqueController.getCompanyName().ToUpper()';
+
+            saveSucceeded = function (saveResult) {
+                notificationFactory.success();
+                if($scope.Client == 'SUIV' || $scope.Client == 'SBCIT'){
+                    $http.post('/Statistique/updatePaiementFactureFournisseur/',{IdFactureF : $scope.item.Id})
+                    .success(function (data) {
+                        notificationFactory.success();
+                    }).error(function(){
+                        notificationFactory.error("Erreur", "Query failed");
+                    });
+                }
+                $scope.clear();
+            }
+
+            savePay2Succeeded = function (saveResult) {
+                notificationFactory.success();
+
+            }
+
+            saveFailed = function (error) {
+                var reason = error.statusText;
+                var detail = error.data["odata.error"];
+                if (detail) {
+                    reason += detail.innererror.message;
+                }
+                notificationFactory.error(
+                   "Impossible d'enregistrer les modifications. " + reason +
+               " Il faut actualiser la page.");
+            };
+        }]);
+        angular.bootstrap(document, ['AdminModule']);
+
+    });
+    </script>
+}

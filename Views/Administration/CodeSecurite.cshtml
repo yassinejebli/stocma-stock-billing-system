@@ -1,0 +1,33 @@
+﻿@*@using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl }))*@
+<div class="input-field col s10" style="margin-bottom:500px;">
+    <input type="password" id="textarea" ng-model="codeSecurite" />
+    <label for="textarea" class="">Entrez le code de securité</label>
+</div>
+
+@section Scripts
+{
+    <script>
+
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope', '$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope, $http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+
+                $scope.verifier = function () {
+                    $http.post('/Statistique/verifyCodeSecurite/', { CodeSecurite: $scope.codeSecurite})
+                     .success(function (data) {
+                         //notificationFactory.success();
+
+                     }).error(function () {
+                         notificationFactory.error("Erreur", "il y'a un erreur !");
+
+                     });
+                }
+
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

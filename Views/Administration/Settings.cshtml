@@ -1,0 +1,301 @@
+﻿@{
+    ViewBag.Title = "Mes paramétres";
+}
+
+
+<div ui-grid-selection ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+<div class="col s12 m8 l9">
+
+    <ul class="collapsible collapsible-accordion" data-collapsible="expandable">
+        <li class="">
+            <div class="collapsible-header cyan white-text"><i class="mdi-action-print"></i> Type Tableau (Impression)</div>
+            <div class="collapsible-body lighten-5" style="display: none;">
+                <div class="row" style="margin-top:10px;">
+                    <div class="col s4">
+                        <div class="center promo promo-example">
+                            <img src="~/img/t1.png" class="responsive-img" />
+                            <p class="promo-caption"><input ng-change="changeTypeImpression()" ng-value="1" ng-model="myValueImpression" class="with-gap" name="group1" type="radio" id="test3"> <label for="test3"></label></p>
+                        </div>
+                    </div>
+                    <div class="col s4">
+                        <div class="center promo promo-example">
+                            <img src="~/img/t2.png" class="responsive-img" />
+                            <p class="promo-caption"><input class="with-gap" ng-change="changeTypeImpression()" ng-value="2" ng-model="myValueImpression" name="group1" type="radio" id="test4"> <label for="test4"></label></p>
+                        </div>
+                    </div>
+                    <div class="col s4">
+                        <div class="center promo promo-example">
+                            <img src="~/img/t3.png" class="responsive-img" />
+                            <p class="promo-caption"><input class="with-gap" ng-change="changeTypeImpression()" ng-value="3" ng-model="myValueImpression" name="group1" type="radio" id="test5"> <label for="test5"></label></p>
+                        </div>
+                    </div>
+
+                    <div class="col s4">
+                        <div class="center promo promo-example">
+                            <img src="~/img/t5.png" class="responsive-img" />
+                            <p class="promo-caption"><input class="with-gap" ng-change="changeTypeImpression()" ng-value="4" ng-model="myValueImpression" name="group1" type="radio" id="test6"> <label for="test6"></label></p>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </li>
+    </ul>
+
+</div>
+
+
+
+@section Scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope','$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope,$http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+                $scope.showAdd = true;
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                //$scope.$scope = $scope;
+                $scope.table = "Settings";
+                $scope.lookupFactory = lookupFactory;
+                $scope.myValueImpression = @StatistiqueController.getTypeTableau();
+                $scope.filterOptions = {
+                    filterText: "",
+                    filterVisible: null,
+                    useExternalFilter: true
+                };
+                //$scope.pagingOptions = {
+                //    pageSizes: [5, 10, 30],
+                //    pageSize: 5,
+                //    totalServerItems: 0,
+                //    currentPage: 1
+                //};
+                $scope.deleteMode = false;
+                $scope.focusFirstCell = function () {
+                    $scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+                }
+                //console.log("ok")
+
+                $scope.onDblClickRow = function (rowItem) {
+
+                    console.log("dbClick")
+                };
+                $scope.gridOptions = {
+                    showColumnFooter: true,
+                    enableRowSelection: true,
+                    enableRowHeaderSelection: false,
+                    showGridFooter: true,
+                    rowHeight: 40,
+                    enableFiltering: false,
+                    //paginationPageSizes: [5, 10, 30],
+                    //paginationPageSize: 5,
+                    enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                    enableColumnResizing: true,
+                };
+
+                $scope.changeTypeImpression = function(){
+                    $http.post('/Statistique/updateTypeTableauImpression/',{type : $scope.myValueImpression})
+                     .success(function (data) {
+                         notificationFactory.success();
+
+                     }).error(function(){
+                         notificationFactory.error("Erreur", "il y'a un erreur !");
+                          
+                     });
+                }
+                $scope.gridOptions.multiSelect = false;
+                $scope.gridOptions.modifierKeysToMultiSelect = false;
+                $scope.gridOptions.noUnselect = true;
+
+                $scope.items = [];
+                var headerTemplateAdd = '<a style="margin-left:15px !important;" ng-click="grid.appScope.update($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-content-save"></i></a>';
+                //var headerTemplateDelete = '<a style="margin-left:15px !important;"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+                var headerTemplateDelete = '';
+                $scope.gridOptions.columnDefs = [
+                { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ><span class="icon-refresh"></span></button>', name: ' ', cellTemplate: headerTemplateAdd, sortable: false },
+                { enableCellEdit: false, name: 'Name', displayName: 'Paramétre', width: "*", resizable: true, enableCellEditOnFocus: false, },
+                { name: 'Afficher', displayName: 'Valeur', width: "*", resizable: true, enableCellEditOnFocus: false, type:'number' },
+                { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: headerTemplateDelete, sortable: false },
+                ];
+
+
+                $scope.getPagedDataAsync = function () {
+                    crudGridDataFactory($scope.table, '').query(itemsQuerySucceeded, queryFailed);
+                };
+                $scope.getPagedDataAsync();
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+
+                    gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                        row.isNew = true;
+                    });
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+                }
+                $scope.selectRow = function () {
+                    return $scope.gridApi.selection.getSelectedRows();
+                };
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+
+                $scope.addNew = function () {
+                    //$scope.addMode = true;
+                    //$scope.item = new Object();
+                    //$scope.items.unshift($scope.item);
+                    //$scope.focusFirstCell();
+                }
+
+                $scope.update = function (e, item) {
+
+                    if (item.Code == "1")
+                    {
+                        if (item.Afficher == 0 || item.Afficher == 1) {
+                            crudGridDataFactory($scope.table).update({ key: item.Id }, item, saveSucceeded, saveFailed);
+
+                        } else {
+                            notificationFactory.warning("Entrez :\n0 : pour désactiver \n1 : pour activer", "Attention");
+                            return;
+                        }
+                    }else if(item.Code == "5"){
+                        if (item.Afficher == 1 || item.Afficher == 2 || item.Afficher == 3 || item.Afficher == 4) {
+                            crudGridDataFactory($scope.table).update({ key: item.Id }, item, saveSucceeded, saveFailed);
+
+                        } else {
+                            notificationFactory.warning("Entrez :\n0 : Tableau sans bordure \n1 : Tableau avec des lignes seulement \n3 : Tableau avec bordure", "Attention");
+                            return;
+                        }
+                    }else if(item.Code == "6"){
+                        if (item.Afficher == 0 || item.Afficher == 1) {
+                            crudGridDataFactory($scope.table).update({ key: item.Id }, item, saveSucceeded, saveFailed);
+
+                        } else {
+                            notificationFactory.warning("Entrez :\n0 : pour désactiver \n1 : pour activer", "Attention");
+                            return;
+                        }
+
+                    }else if(item.Code == "7"){
+                        if (item.Afficher == 0 || item.Afficher == 1) {
+                            crudGridDataFactory($scope.table).update({ key: item.Id }, item, saveSucceeded, saveFailed);
+
+                        } else {
+                            notificationFactory.warning("Entrez :\n0 : pour petit format \n1 : pour grand format", "Attention");
+                            return;
+                        }
+
+                    }
+                    else
+                    {
+                        crudGridDataFactory($scope.table).update({ key: item.Id }, item, saveSucceeded, saveFailed);
+                    }
+
+
+                }
+
+
+                //$scope.delete = function (e, item) {
+                //    //console.log(item)
+                //    if (confirm("Voulez-vous supprimer cet enregistrement ?")) {
+
+                //        if (item.Id != null) {
+                //            $scope.deleteMode = true;
+                //            crudGridDataFactory($scope.table).remove({ key: 'int\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                //            $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                //        } else {
+                //            $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                //        }
+                //    }
+
+                //}
+
+                /*region generique*/
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                function itemsQuerySucceeded(data) {
+                    $scope.items = data.value;
+                    $scope.gridOptions.data = $scope.items;
+                    $timeout(function () {
+                        if ($scope.gridApi.selection.selectRow) {
+                            $scope.gridApi.selection.selectRow($scope.gridOptions.data[0]);
+                        }
+                    });
+                    //$scope.totalServerItems = data["odata.count"];
+                    //if ($scope.items.length > 0) {
+                    //    if ($scope.item) {
+                    //        for (i = 0; i < $scope.items.length; i++) {
+                    //            if ($scope.items[i].Id == $scope.item.Id)
+                    //                $scope.dataGrid.selectedItem = $scope.items[i];
+                    //        }
+                    //    }
+                    //    if ($scope.dataGrid.selectedItem == null) {
+                    //        $scope.dataGrid.selectedItem = $scope.items[0];
+                    //    }
+
+                    //    $scope.setItem($scope.dataGrid.selectedItem);
+                    //}
+
+                    //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+                }
+
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                saveSucceeded = function (saveResult) {
+
+                    notificationFactory.success();
+                    //$scope.getPagedDataAsync();
+
+                }
+
+                saveFailed = function (error) {
+                    var reason = error.statusText;
+                    var detail = error.data["odata.error"];
+                    if (detail) {
+                        reason += detail.innererror.message;
+                    }
+                    if (error.config["method"] == "POST")
+                        $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                    notificationFactory.error(
+                       "Impossible d'enregistrer les modifications. " + reason +
+                   " Il faut actualiser la page.");
+                    $scope.getPagedDataAsync();
+                    /*
+                    var entityErrors = error.entityErrors;
+
+                    if (entityErrors && entityErrors.length) {
+                        handleSaveValidationError(entityErrors);
+                        return;
+                    }
+                    if (detail && detail.ExceptionType &&
+                        detail.ExceptionType.indexOf('OptimisticConcurrencyException') !== -1) {
+                        // Concurrency error
+                        reason =
+                            "Another user, perhaps the server, may have deleted one or all of the same entities.";
+                    }
+                    */
+
+                };
+                //$scope.gridOptions.data = $scope.table;
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

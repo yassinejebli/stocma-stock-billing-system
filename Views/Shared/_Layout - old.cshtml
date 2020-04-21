@@ -1,0 +1,730 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+   @{
+       var pageName = ViewContext.RouteData.GetRequiredString("action").ToLower()+".png";
+}
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/ui-grid-unstable.min.css" rel="stylesheet" />
+    <link href="~/Scripts/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <!-- Favicons-->
+   
+    <link rel="icon" href="~/Content/@pageName" sizes="32x32" />
+  
+    <link href="~/Content/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="~/Content/css/flipclock.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="~/Content/css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="~/Content/css/style-fullscreen.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <!-- Custome CSS-->
+    <link href="~/Content/css/custom-style.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="~/Content/css/style-fullscreen.css" type="text/css" rel="stylesheet" media="screen,projection">
+
+    <link href="~/Content/js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="~/Content/js/plugins/jvectormap/jquery-jvectormap.css" type="text/css" rel="stylesheet" media="screen,projection">
+
+    <style text="text/css">
+         .clock-builder-output{
+                zoom: 0.3;
+                -moz-transform: scale(0.3)
+            }
+    </style>
+
+</head>
+
+<body ng-controller="AdminCtrl" id="ctrl">
+    <!-- Start Page Loading -->
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+    <!-- End Page Loading -->
+    <!-- START HEADER -->
+    <header id="header" class="page-topbar">
+        <!-- start header nav-->
+        <div class="navbar-fixed">
+            <nav class="cyan">
+                <div class="nav-wrapper">
+
+                    <ul class="left">
+                        <li class="no-hover"><a href="#" data-activates="slide-out" class="menu-sidebar-collapse btn-floating btn-flat btn-medium waves-effect waves-light cyan"><i class="mdi-navigation-menu"></i></a></li>
+
+                    </ul>
+                    <div class="header-search-wrapper hide-on-med-and-down">
+                        <i class="mdi-action-search"></i>
+                        <input ng-show="isArticleFacture" autocomplete="off" id="rechercher1" ng-model="filterOptions.filterArticleFacture" class="header-search-input barcode" placeholder="Rechercher un article"
+                               typeahead="v as v.Designation+ ' [ ' + v.QteStock+' ]    ' for v  in lookupFactory.getArticles('ArticleFactures', 'Designation', $viewValue) | filter:{Designation:$viewValue}"
+                               typeahead-wait-ms=" 100" type="text" />
+
+                        <input ng-hide="search || isArticleFacture" autocomplete="off" id="rechercher" ng-model="filterOptions.filterArticle" class="header-search-input barcode" placeholder="Rechercher un article ..."
+                               typeahead="v as v.Designation+ ' [ ' + v.QteStock+' ]    ' for v  in lookupFactory.getArticles('Articles', 'Designation', $viewValue) | filter:{Designation:$viewValue}"
+                               typeahead-wait-ms="100" type="text" />
+                        <input ng-hide="!search || isArticleFacture" autocomplete="off" id="rechercher2" ng-model="filterOptions.filterArticle" class="header-search-input " placeholder="Rechercher un article ..."
+                               typeahead="v as v.Designation+ ' [ ' + v.QteStock+' ]    ' for v  in lookupFactory.getArticles('Articles', 'Ref', $viewValue) | filter:{Ref:$viewValue}"
+                               typeahead-wait-ms=" 100" type="text" />
+
+
+
+
+                    </div>
+                    <ul class="right hide-on-med-and-down" style="margin-top:10px;">
+                        <li class="clock-builder-output">
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <!-- end header nav-->
+    </header>
+    <!-- END HEADER -->
+    <!-- START MAIN -->
+    <div id="main">
+        <!-- START WRAPPER -->
+        <div class="wrapper">
+            <!-- START LEFT SIDEBAR NAV-->
+            <aside id="left-sidebar-nav">
+                <ul id="slide-out" class="side-nav leftside-navigation">
+                    <li class="user-details cyan darken-2">
+                        <div class="row">
+                            <div class="col col s4 m4 l4">
+                                <img src="~/Content/images/'@StatistiqueController.getCompanyName()'.jpg" alt="" class="circle responsive-img valign profile-image">
+                            </div>
+                            <div class="col col s12 m12 l12">
+                                <ul id="profile-dropdown" class="dropdown-content">
+
+                                    <li>
+                                        <a href="@Url.Action("Reglage", "Administration") "><i class="mdi-action-settings"></i> Societé</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Settings", "Administration") "><i class="mdi-action-settings"></i> Réglage</a>
+                                    </li>
+                                    @if (!User.Identity.Name.Contains("cmp"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("ResetPassword", "Account") "><i class="mdi-action-settings"></i> Mot de passe</a>
+                                        </li>
+                                    }
+                                    <li class="divider"></li>
+                                    <li>
+                                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+
+
+                                            <a href="javascript:document.getElementById('logoutForm').submit()"><i class="mdi-action-lock-outline"></i> Sortir</a>
+                                        }
+                                    </li>
+                                </ul>
+                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">@User.Identity.Name.Split('@')[0]<i class="mdi-navigation-arrow-drop-down right"></i></a>
+                                <p class="user-roal">Utilisateur</p>
+                            </div>
+                        </div>
+                    </li>
+                    @if (!User.Identity.Name.Contains("cmp") && !User.Identity.Name.Contains("comptabilite"))
+                    {
+                        <li class="bold">
+                            <a href="@Url.Action("Index", "Administration") " class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> TABLEAU DE BORD</a>
+                        </li>
+                    }
+
+
+                    <li class="no-padding">
+
+                        <ul class="collapsible collapsible-accordion">
+                            @if (!User.Identity.Name.Contains("cmp") && !User.Identity.Name.Contains("comptabilite"))
+                            {
+                                <li class="bold">
+                                    <a class="collapsible-header waves-effect waves-cyan"><i class="mdi-social-person-add"></i> GESTION CLIENT/FOUR.</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            <li>
+                                                <a href="@Url.Action("Client", "Administration") ">Clients</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Fournisseur", "Administration") ">Fournisseurs</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Revendeur", "Administration") ">Représentants</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-image-grid-on"></i> GESTION DE STOCK</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            <li>
+                                                <a href="@Url.Action("Article", "Administration") ">Gestion des articles</a>
+                                            </li>
+                                            @if (StatistiqueController.getCompanyName().ToUpper() == "EAS" || StatistiqueController.getCompanyName().ToUpper() == "TSR" || StatistiqueController.getCompanyName().ToUpper() == "AQK")
+                                            {
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("ArticleFacture", "Administration") ">Articles/Facture</a>
+                                                </li>
+                                            }
+                                            @if (StatistiqueController.getCompanyName().ToUpper() == "SUIV")
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ArticleGaz", "Administration") ">Emballages/Gaz</a>
+                                                </li>
+                                            }
+                                            @*<li>
+                                                    <a href="@Url.Action("Famille", "Administration") ">Catégories</a>
+                                                </li>*@
+                                            <li>
+                                                <a href="@Url.Action("ProduitsMoinsVendus", "Administration") ">Articles moins vendus</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ProductInAlertStatus", "Administration") ">Articles en cas d'alerte</a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                if (StatistiqueController.getCompanyName().ToUpper() == "SUIV")
+                                {
+                                    <li class="bold">
+                                        <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-editor-insert-chart"></i> Statistiques - Bouteilles</a>
+                                        <div class="collapsible-body">
+                                            <ul>
+                                                <li>
+                                                    <a href="@Url.Action("BouteillesClients", "Administration") ">Par Client</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("BouteillesFournisseurs", "Administration") ">Par Fournisseur</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                }
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-action-search"></i> SUIVI DES ARTICLES</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            <li>
+                                                <a href="@Url.Action("SuiviProduitClients", "Administration") ">Par Client</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("SuiviProduitFournisseurs", "Administration") ">Par Fournisseur</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-editor-border-color"></i> ÉDITER UN DOC.</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            <li>
+                                                <a href="@Url.Action("BonReception", "Administration") ">Bon Réception</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("BonLivraison", "Administration") ">Bon Livraison</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Facture", "Administration") ">Facture</a>
+                                            </li>
+                                            @if (StatistiqueController.getCompanyName().ToUpper() == "EAS" || StatistiqueController.getCompanyName().ToUpper() == "TSR" || StatistiqueController.getCompanyName().ToUpper() == "AQK")
+                                            {
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("FakeFacture", "Administration") ">Facture</a>
+                                                </li>
+
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("FakeFactureF", "Administration") ">Facture Achat</a>
+                                                </li>
+                                            }
+                                            @if (StatistiqueController.getCompanyName().ToUpper() == "SUIV" || StatistiqueController.getCompanyName().ToUpper() == "SBCIT")
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("FactureFournisseur", "Administration") ">Facture Achat</a>
+                                                </li>
+                                            }                                            @if (StatistiqueController.getCompanyName().ToUpper() == "SUIV")
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("DGB", "Administration") ">DGB / Client</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("RDB", "Administration") ">RDB / Client</a>
+                                                </li>
+
+
+                                                <li>
+                                                    <a href="@Url.Action("DGBF", "Administration") ">DGB / Fournisseur</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("RDBF", "Administration") ">RDB / Fournisseur</a>
+                                                </li>
+
+                                            }
+                                            <li>
+                                                <a href="@Url.Action("BonAvoirC", "Administration") ">Bon Avoir Client</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("BonAvoir", "Administration") ">Bon Avoir Fournisseur</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("BonCommande", "Administration") ">Bon Commande</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Devis", "Administration") ">Devis</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Tarif", "Administration") ">Tarif</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-action-list"></i> LISTE DES DOC.</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            <li>
+                                                <a href="@Url.Action("ListBonReception", "Administration") ">Liste Bons Réçeption</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ListBonLivraison", "Administration")">Liste Bons Livraison</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ListFacture", "Administration") ">Liste Factures</a>
+                                            </li>
+                                            @if (StatistiqueController.getCompanyName().ToUpper() == "SBCIT" || StatistiqueController.getCompanyName().ToUpper() == "SUIV")
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ListFactureAchat", "Administration") ">Liste Factures Achat</a>
+                                                </li>
+                                            }
+                                            @if (StatistiqueController.getCompanyName().ToUpper() == "EAS" || StatistiqueController.getCompanyName().ToUpper() == "TSR" || StatistiqueController.getCompanyName().ToUpper() == "AQK")
+                                            {
+
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("ListFakeFacture", "Administration") ">Liste Factures</a>
+                                                </li>
+
+
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("ListFakeFactureF", "Administration") ">Liste Factures Achat</a>
+                                                </li>
+                                            }
+                                            @if (StatistiqueController.getCompanyName().ToUpper() == "SUIV")
+                                            {
+
+                                                <li>
+                                                    <a href="@Url.Action("ListDGB", "Administration") ">Liste DGB / Client</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("ListRDB", "Administration") ">Liste RDB / Client</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("ListDGBF", "Administration") ">Liste DGB / Four.</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("ListRDBF", "Administration") ">Liste RDB / Four.</a>
+                                                </li>
+                                            }
+                                            <li>
+                                                <a href="@Url.Action("ListBonAvoirC", "Administration") ">Liste Bons Avoir Client</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ListBonAvoir", "Administration") ">Liste Bons Avoir Fourn</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ListDevis", "Administration") ">Liste Devis</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ListBonCommande", "Administration") ">Liste Bons Commande</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ListTarif", "Administration") ">Liste des tarifs</a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-editor-attach-money"></i> COMPTABILITÉ</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+
+                                            <li>
+                                                <a class="collapsible-header  waves-effect waves-cyan" href="@Url.Action("CompteClient", "Administration")">Comptes clients</a>
+                                            </li>
+                                            <li>
+                                                <a class="collapsible-header  waves-effect waves-cyan" href="@Url.Action("CompteFournisseur", "Administration")">Comptes fournisseurs</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Depense", "Administration") ">Dépenses</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("TypeDepense", "Administration") ">Types dépense</a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-editor-attach-money"></i> SITUATION</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+
+                                            <li>
+                                                <a class="collapsible-header  waves-effect waves-cyan" href="@Url.Action("SituationGlobalClient", "Administration")">Clients</a>
+                                            </li>
+                                            <li>
+                                                <a class="collapsible-header  waves-effect waves-cyan" href="@Url.Action("SituationGlobalFournisseur", "Administration")">Fournisseurs</a>
+                                            </li>
+                                            <li>
+                                                <a class="collapsible-header  waves-effect waves-cyan" href="@Url.Action("SituationParDate", "Administration")">Ventes</a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </li>
+
+
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-editor-attach-money"></i> MARGE BÉNÉFICIAIRE</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            @*<li>
+                                                    <a href="@Url.Action("MargeBeneficiaire", "Administration") ">Marge par période</a>
+                                                </li>*@
+                                            <li>
+                                                <a href="@Url.Action("MargeParBL","Administration")">Marge par client</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-editor-insert-chart"></i> CHÉQUES/EFFETS</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            <li>
+                                                <a href="@Url.Action("ChequeNonEnCaisse", "Administration") ">Par Client</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ChequeNonEnCaisseF", "Administration") ">Par Fournisseur</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("MesChequeEffetFournisseur", "Administration") ">Mes Cheques/Effet</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan" href="@Url.Action("JournalConnexion", "Administration")"><i class="mdi-action-pageview"></i> JOURNAL CONNEXIONS</a>
+                                </li>
+                            }
+                            else
+                            {
+
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-editor-border-color"></i> ÉDITER UN DOC.</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            @if ((StatistiqueController.getCompanyName().ToUpper() == "TSR" || StatistiqueController.getCompanyName().ToUpper() == "AQK") && User.Identity.Name.Contains("comptabilite"))
+                                            {
+
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("FakeFacture", "Administration") ">Facture</a>
+                                                </li>
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("FakeFactureF", "Administration") ">Facture Achat</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("BonReception", "Administration") ">Bon Reception</a>
+                                                </li>
+                                            }
+                                            <li>
+                                                <a href="@Url.Action("BonLivraison", "Administration") ">Bon Livraison</a>
+                                            </li>
+                                            @*<li>
+                                                    <a href="@Url.Action("Facture", "Administration") ">Facture</a>
+                                                </li>*@
+                                            <li>
+                                                <a href="@Url.Action("BonAvoirC", "Administration") ">Bon Avoir Client</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Devis", "Administration") ">Devis</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-action-list"></i> LISTE DE BONS</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            @if ((StatistiqueController.getCompanyName().ToUpper() == "TSR" || StatistiqueController.getCompanyName().ToUpper() == "AQK") && User.Identity.Name.Contains("comptabilite"))
+                                            {
+
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("ListFakeFacture", "Administration") ">Liste Factures</a>
+                                                </li>
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("ListFakeFactureF", "Administration") ">Liste Factures Achat</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("ListBonReception", "Administration") ">Liste Bons Réceptions</a>
+                                                </li>
+                                            }
+                                            <li>
+                                                <a href="@Url.Action("ListBonLivraison", "Administration")">Liste Bons Livraison</a>
+                                            </li>
+                                            @*<li>
+                                                    <a href="@Url.Action("ListFacture", "Administration") ">Liste Factures</a>
+                                                </li>*@
+                                            <li>
+                                                <a href="@Url.Action("ListBonAvoirC", "Administration") ">Liste Bons Avoir Client</a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ListDevis", "Administration") ">Liste Devis</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="bold">
+                                    <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-image-grid-on"></i> GESTION DE STOCK</a>
+                                    <div class="collapsible-body">
+                                        <ul>
+                                            @if ((StatistiqueController.getCompanyName().ToUpper() == "TSR" || StatistiqueController.getCompanyName().ToUpper() == "AQK") && User.Identity.Name.Contains("comptabilite"))
+                                            {
+                                                <li style="background-color:yellow;">
+                                                    <a href="@Url.Action("ArticleFacture", "Administration") ">Articles/Facture</a>
+                                                </li>
+                                            }
+                                            <li>
+                                                <a href="@Url.Action("Article", "Administration") ">Gestion des articles</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                if (StatistiqueController.getCompanyName().ToUpper() == "SUIV" || StatistiqueController.getCompanyName().ToUpper() == "SBCIT" || StatistiqueController.getCompanyName().ToUpper() == "AQK")
+                                {
+                                    <li class="bold">
+                                        <a class="collapsible-header  waves-effect waves-cyan"><i class="mdi-editor-attach-money"></i> COMPTABILITÉ</a>
+                                        <div class="collapsible-body">
+                                            <ul>
+                                                <li>
+                                                    <a class="collapsible-header  waves-effect waves-cyan" href="@Url.Action("CompteClient", "Administration")">Comptes clients</a>
+                                                </li>
+                                                <li>
+                                                    <a class="collapsible-header  waves-effect waves-cyan" href="@Url.Action("CompteFournisseur", "Administration")">Comptes fournisseurs</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+
+                    <li class="li-hover"><div class="divider"></div></li>
+
+            </aside>
+            <!-- END LEFT SIDEBAR NAV-->
+            <!-- //////////////////////////////////////////////////////////////////////////// -->
+            <!-- START CONTENT -->
+            <section id="content">
+
+                <!--breadcrumbs start-->
+                <div id="breadcrumbs-wrapper" class=" grey lighten-3">
+                    <!-- Search for small screen -->
+                    <div class="header-search-wrapper grey hide-on-large-only">
+                        <i class="mdi-action-search active"></i>
+                        <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="">
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col s12 m12 l12">
+                                <ol class="breadcrumb">
+                                    <li><a href="#">Administration</a></li>
+                                    <li class="active">@ViewBag.Title</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--breadcrumbs end-->
+                <!--start container-->
+                <div class="container">
+                    <div class="section">
+                        @*  <p class="caption">A Simple Blank Page to use it for your custome design and elements.</p>*@
+                        @*<div class="divider"></div>*@
+
+
+                        @RenderBody()
+
+                        <br /><br /><br /><br />
+                    </div>
+                    <!-- Floating Action Button -->
+
+                    <div class="fixed-action-btn ">
+                        @*click-to-toggle*@
+                        <a class="btn-floating btn-large red">
+                            <i class="large mdi-editor-mode-edit"></i>
+                        </a>
+                        <ul class="">
+                            @if (!User.Identity.Name.Contains("cmp"))
+                            {
+                                <li><a href="#" onclick='javascript:window.open(" @Url.Action("PopUpFournisseur", "Administration") ", "Fournisseurs", "width=800, height=650,top=0, left=0" );' class="btn-floating orange"><i class="mdi-social-person-outline"></i></a></li>
+                                <li><a href="#" onclick='javascript:window.open(" @Url.Action("PopUpClient", "Administration") ", "Clients", "width=800, height=650,top=0, left=0" );' class="btn-floating cyan"><i class="mdi-social-person-outline"></i></a></li>
+                                <li><a href="@Url.Action("Facture", "Administration") " class="btn-floating pink"><i>FA</i></a></li>
+
+                            }
+
+
+                            @if (!User.Identity.Name.Contains("cmp"))
+                            {
+
+                                <li><a href="@Url.Action("CompteFournisseur", "Administration") " class="btn-floating red"><i>CF</i></a></li>
+                                <li><a href="@Url.Action("CompteClient", "Administration") " class="btn-floating blue"><i>CC</i></a></li>
+
+                            }
+                            <li><a href="@Url.Action("BonAvoirC", "Administration") " class="btn-floating green"><i>BA</i></a></li>
+
+                            @if (!User.Identity.Name.Contains("cmp"))
+                            {
+                                <li><a href="@Url.Action("BonReception", "Administration") " class="btn-floating orange"><i>BR</i></a></li>
+                            }
+                            <li><a href="@Url.Action("BonLivraison", "Administration") " class="btn-floating cyan"><i>BL</i></a></li>
+
+                        </ul>
+                    </div>
+
+
+
+                    <!-- Floating Action Button -->
+                </div>
+                <!--end container-->
+            </section>
+           
+        </div>
+        <!-- END WRAPPER -->
+    </div>
+    <!-- END MAIN -->
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+    <!-- START FOOTER -->
+
+    <footer class="page-footer" style="margin-top:350px">
+        <div class="footer-copyright">
+            <div class="container">
+                <span>Copyright © @DateTime.Now.Year <a class="grey-text text-lighten-4" href="#">Yandi Gestion Commerciale</a> All rights reserved.</span>
+                <span class="right"> Developed by <a class="grey-text text-lighten-4" href="http://Yandiweb.com/">YandiWeb</a></span>
+            </div>
+        </div>
+    </footer>
+    <!-- END FOOTER -->
+    <!-- ================================================
+    Scripts
+    ================================================ -->
+    <!-- jQuery Library -->
+
+    <script type="text/javascript" src="~/Content/js/jquery-1.11.2.min.js"></script>
+    <!--materialize js-->
+    <script type="text/javascript" src="~/Content/js/materialize.js"></script>
+    <!--scrollbar-->
+    <script type="text/javascript" src="~/Content/js/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
+
+    <!-- chartist -->
+    <script type="text/javascript" src="~/Content/js/plugins/chartist-js/chartist.min.js"></script>
+
+    <!-- chartjs -->
+    @*<script type="text/javascript" src="~/Content/js/plugins/chartjs/chart.min.js"></script>
+        <script type="text/javascript" src="~/Content/js/plugins/chartjs/chart-script.js"></script>*@
+
+    <!-- sparkline -->
+    <script type="text/javascript" src="~/Content/js/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <script type="text/javascript" src="~/Content/js/plugins/sparkline/sparkline-script.js"></script>
+
+    <!-- google map api -->
+    <!--jvectormap-->
+    <script type="text/javascript" src="~/Content/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script type="text/javascript" src="~/Content/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <script type="text/javascript" src="~/Content/js/plugins/jvectormap/vectormap-script.js"></script>
+
+
+    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+    <script type="text/javascript" src="~/Content/js/plugins.js"></script>
+    <!-- Toast Notification -->
+    <!--common script for all pages-->
+    <link href="~/Content/toastr.css" rel="stylesheet" />
+
+    <!--script for this page only-->
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-touch.min.js"></script>
+    <script src="~/Scripts/angular-resource.min.js"></script>
+    <script src="~/Scripts/angular-animate.min.js"></script>
+    <script src="~/Scripts/angular-ui/ui-bootstrap.min.js"></script>
+    <script src="~/Scripts/angular-ui/ui-bootstrap-tpls.min.js"></script>
+    <script src="~/Scripts/i18n/angular-locale_fr-ma.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/angular-file-upload.min.js"></script>
+    <script src="~/Scripts/breeze.min.js"></script>
+    <script src="~/Scripts/ui-grid-unstable.min.js"></script>
+    <script src="~/Scripts/App/app.js"></script>
+    <script src="~/Scripts/pdfMake.js"></script>
+    <script src="~/Scripts/fontPdfMake.js"></script>
+    <script type="text/javascript" src="~/Content/js/flipclock.min.js"></script>
+    <script src="~/Scripts/Home/react/bundle.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            /*  FlipClock.Lang.Custom = { days: 'Days', hours: 'Hours', minutes: 'Minutes', seconds: 'Seconds' };
+              var opts = {
+                  clockFace: 'TwentyFourHourClock',
+                  countdown: true,
+                  language: 'Custom'
+              };
+              opts.classes = {
+                  active: 'flip-clock-active',
+                  before: 'flip-clock-before',
+                  divider: 'flip-clock-divider',
+                  dot: 'flip-clock-dot',
+                  label: 'flip-clock-label',
+                  flip: 'flip',
+                  play: 'play',
+                  wrapper: 'flip-clock-small-wrapper'
+              };
+              $('.clock-builder-output').FlipClock(opts);
+              */
+
+            var opts = {
+                clockFace: 'TwentyFourHourClock',
+                language: 'Custom',
+                autoPlay: true,
+                autoStart: true,
+            };
+
+            var clock = $('.clock-builder-output').FlipClock(opts);
+            setTimeout(function () {
+
+                $('.form-group').find('input:visible:first').focus();
+
+            }, 500);
+
+        });
+
+    </script>
+    @RenderSection("scripts", required: false)
+    <script id="__bs_script__">
+        //<![CDATA[
+        document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>".replace("HOST", location.hostname));
+//]]></script>
+</body>
+<!-- Mirrored from demo.geekslabs.com/materialize/v2.1/layout02/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 19 Jul 2015 18:11:33 GMT -->
+</html>

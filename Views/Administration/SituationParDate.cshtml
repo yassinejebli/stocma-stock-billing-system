@@ -1,0 +1,529 @@
+﻿@{
+    ViewBag.Title = "Situations";
+}
+
+
+<div class="card-panel">
+  
+    <div class="row">
+        <div class="col s6 m8 L3">
+
+            <ul class="collapsible collapsible-accordion" data-collapsible="expandable">
+                <li class="">
+                    <div class="collapsible-header cyan white-text"><i class="mdi-action-print"></i> Situation journalière</div>
+                    <div class="collapsible-body lighten-5" style="display: none;">
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-lg-9">
+
+                                <div class="form-group">
+
+                                    <label>Date</label>
+                                    <input type="date" ng-model="filterOptions.date" />
+
+                                </div>
+                              
+                                </div>
+                            <div class="col-lg-3">
+
+                                <a class="btn-floating btn-large green" ng-click="print()">
+                                    <i class="large mdi-action-print"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col s6 m8 L3">
+
+            <ul class="collapsible collapsible-accordion" data-collapsible="expandable">
+                <li class="">
+                    <div class="collapsible-header cyan white-text"><i class="mdi-action-print"></i> Etat des BL</div>
+                    <div class="collapsible-body lighten-5" style="display: none;">
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-lg-9">
+
+                                <div class="form-group">
+
+                                    <label>Date</label>
+                                    <input type="date" ng-model="filterOptions.dateEtatBL" />
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-3">
+
+                                <a class="btn-floating btn-large green" ng-click="printEtatBL()">
+                                    <i class="large mdi-action-print"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    @if (StatistiqueController.getCompanyName() != "SUIV" && StatistiqueController.getCompanyName() != "SBCIT")
+    {
+    <div class="row">
+        <div class="col s6 m8 L3">
+
+            <ul class="collapsible collapsible-accordion" data-collapsible="expandable">
+                <li class="">
+                    <div class="collapsible-header cyan white-text"><i class="mdi-action-print"></i> Situation Périodique (BL)</div>
+                    <div class="collapsible-body lighten-5" style="display: none;">
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-lg-5">
+
+                                <div class="form-group">
+
+                                    <label>Date Début</label>
+                                    <input type="date" ng-model="filterOptions.dateDebutBL" />
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-5">
+
+                                <div class="form-group">
+
+                                    <label>Date Fin</label>
+                                    <input type="date" ng-model="filterOptions.dateFinBL" />
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-2">
+
+                                <a class="btn-floating btn-large green" ng-click="printByDatesBL()">
+                                    <i class="large mdi-action-print"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+    }
+
+
+    <div class="row">
+        <div class="col s6 m8 L3">
+
+            <ul class="collapsible collapsible-accordion" data-collapsible="expandable">
+                <li class="">
+                    <div class="collapsible-header cyan white-text"><i class="mdi-action-print"></i> Situation Périodique (Facture)</div>
+                    <div class="collapsible-body lighten-5" style="display: none;">
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-lg-5">
+
+                                <div class="form-group">
+
+                                    <label>Date Début</label>
+                                    <input type="date" ng-model="filterOptions.dateDebutFA" />
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-5">
+
+                                <div class="form-group">
+
+                                    <label>Date Fin</label>
+                                    <input type="date" ng-model="filterOptions.dateFinFA" />
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-2">
+
+                                <a class="btn-floating btn-large green" ng-click="printByDatesFA()">
+                                    <i class="large mdi-action-print"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col s6 m8 L3">
+
+            <ul class="collapsible collapsible-accordion" data-collapsible="expandable">
+                <li class="">
+                    <div class="collapsible-header cyan white-text"><i class="mdi-action-print"></i> Situation Client / Représentant </div>
+                    <div class="collapsible-body lighten-5" style="display: none;">
+                        <div class="row" style="margin-top:10px;">
+
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>Représentant</label>
+
+                                    <input type="text" tabindex="1" autocomplete="off" ng-model="filterOptions.filterRevendeur" placeholder="Choisissez un représentant"
+                                           typeahead="v as v.Name for v  in lookupFactory.get('Revendeurs', 'Name', $viewValue)"
+                                           @*typeahead-input-formatter="lookupFactory.format($model,'Name')"
+                                        typeahead-on-select="lookupFactory.format($model,'Name')"*@
+                                           typeahead-wait-ms=" 100"
+                                           class="" />
+
+                                </div>
+
+
+                            </div>
+                            <div class="col-lg-3">
+
+                                <div class="form-group">
+
+                                    <label>Date Début</label>
+                                    <input type="date" ng-model="filterOptions.dateDebutRevendeur" />
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-3">
+
+                                <div class="form-group">
+
+                                    <label>Date Fin</label>
+                                    <input type="date" ng-model="filterOptions.dateFinRevendeur" />
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-2">
+
+                                <a class="btn-floating btn-large green" ng-click="printByDatesRevendeur()">
+                                    <i class="large mdi-action-print"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+@section Scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope','$http', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope,$http, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+                $scope.showAdd = true;
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                //$scope.$scope = $scope;
+                $scope.table = "Paiements";
+                $scope.lookupFactory = lookupFactory;
+                //$scope.bon = 'BonAvoirCList';
+                dt = new Date();
+                $scope.filterOptions = {
+                    filterText: 'year(Date) eq ' + dt.getFullYear()+' and month(Date) eq '+ (dt.getMonth()+1)+' and day(Date) eq '+dt.getDay(),
+                    filterVisible: null,
+                    useExternalFilter: true,
+                    filterRevendeur: ""
+
+                };
+
+                //$scope.pagingOptions = {
+                //    pageSizes: [5, 10, 30],
+                //    pageSize: 5,
+                //    totalServerItems: 0,
+                //    currentPage: 1
+                //};
+                $scope.deleteMode = false;
+                $scope.focusFirstCell = function () {
+                    //$scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+                }
+                //console.log("ok")
+                $scope.filterOptions.date = new Date();
+
+                $scope.onDblClickRow = function (rowItem) {
+
+                    console.log("dbClick")
+                };
+                $scope.gridOptions = {
+                    showColumnFooter: true,
+                    enableRowSelection: true,
+                    enableRowHeaderSelection: false,
+                    showGridFooter: false,
+                    enableFiltering: false,
+                    enablePaginationControls: false,
+                    paginationPageSize: 10,
+                    enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                    enableColumnResizing: true,
+                    rowHeight: 40,
+                    //enableCellEditOnFocus : true,
+                    /*export*/
+                    //enableGridMenu: true,
+
+                };
+                $scope.print = function () {
+                    if(typeof $scope.filterOptions.date === "object")
+                            window.open("ExportSituationByDate?dt="+formatDate($scope.filterOptions.date),'_blank');
+                }
+
+                $scope.printByDatesBL = function () {
+                    if(typeof $scope.filterOptions.dateDebutBL === "object" && typeof $scope.filterOptions.dateFinBL === "object")
+                        window.open("ExportSituationBLByDates?dateDebut="+formatDate($scope.filterOptions.dateDebutBL)+"&dateFin="+formatDate($scope.filterOptions.dateFinBL),'_blank');
+                }
+                $scope.client = '@StatistiqueController.getCompanyName().ToUpper()';
+                $scope.printByDatesFA = function () {
+                    if (typeof $scope.filterOptions.dateDebutFA === "object" && typeof $scope.filterOptions.dateFinFA === "object") {
+                        window.open(($scope.client == "EAS" ?"ExportSituationFakeFAByDates":"ExportSituationFAByDates")+"?dateDebut=" + formatDate($scope.filterOptions.dateDebutFA) + "&dateFin=" + formatDate($scope.filterOptions.dateFinFA), '_blank');
+                    }
+                }
+
+                $scope.printEtatBL = function () {
+                    if (typeof $scope.filterOptions.dateEtatBL === "object" && typeof $scope.filterOptions.dateEtatBL === "object")
+                        window.open("ExportEtatBonLivraisons?Date=" + formatDate($scope.filterOptions.dateEtatBL), '_blank');
+                }
+
+                $scope.printByDatesRevendeur = function () {
+                    if(typeof $scope.filterOptions.dateDebutRevendeur === "object" && typeof $scope.filterOptions.dateFinRevendeur === "object" && typeof $scope.filterOptions.filterRevendeur === "object")
+                        window.open("ExportSituationRevendeur?IdRevendeur=" +$scope.filterOptions.filterRevendeur.Id+"&dateDebut="+formatDate($scope.filterOptions.dateDebutRevendeur)+"&dateFin="+formatDate($scope.filterOptions.dateFinRevendeur),'_blank');
+                }
+                Date.prototype.addHours = function (h) {
+                    if (this.getHours() == 00)
+                        return this;
+                    else {
+                        this.setHours(this.getHours() + h);
+                        return this;
+                    }
+
+                }
+                $scope.gridOptions.multiSelect = false;
+                $scope.gridOptions.modifierKeysToMultiSelect = false;
+                $scope.gridOptions.noUnselect = true;
+
+                $scope.items = [];
+                //var headerTemplateAdd = '<a style="margin-left:15px !important;" ng-click="grid.appScope.view($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-action-visibility"></i></a><a style="margin-left:15px !important;" ng-click="grid.appScope.update($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-content-save"></i></a>';
+
+                var CellTemplateDelete = '<a style="margin-left:15px !important;"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+
+                $scope.gridOptions.columnDefs = [
+
+                 { name: 'Client.Name', displayName: 'Client', width: "*",enableCellEdit: false, enableCellEditOnFocus: false },
+                 { name: 'Date', displayName: 'Date',visible: true, width: "120", type: "date", enableCellEditOnFocus: false, cellFilter: 'date:\'dd/MM/yyyy\'', filterCellFiltered: true, },
+                 { name: 'Debit', displayName: 'Débit', width: "120", type: "number", enableCellEditOnFocus: false, cellFilter: 'currency:dh', aggregationType: uiGridConstants.aggregationTypes.sum },
+                 { name: 'Credit', displayName: 'Crédit', width: "120", type: "number", enableCellEditOnFocus: false, cellFilter: 'currency:dh', aggregationType: uiGridConstants.aggregationTypes.sum },
+                 { name: 'TypePaiement.Name', visible: true, enableHiding: true, displayName: 'Type', width: "100", enableCellEdit: false },
+                 { name: 'DateEcheance',visible: true, displayName: 'Echéance', width: "120", type: "date", enableCellEditOnFocus: false, cellFilter: 'date:\'dd/MM/yyyy\'', filterCellFiltered: true, },
+                 { name: 'Comment', displayName: 'Commentaire', width: "260", enableCellEdit: true, enableCellEditOnFocus: false },
+
+                { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: "", sortable: false },
+
+                ];
+
+
+                $scope.getPagedDataAsync = function () {
+                    //crudGridDataFactory($scope.table, $scope.filterOptions.filterText, 'BonAvoirCItems,Client').query(itemsQuerySucceeded, queryFailed);
+                /*    $http.get('/Statistique/getSituationByDate?dt='+$scope.date.toISOString())
+                 .success(function (data) {
+                     $scope.items = data;
+                     $scope.gridOptions.data = $scope.items;
+                 });
+                 */
+
+                    crudGridDataFactory($scope.table, $scope.filterOptions.filterText, 'TypePaiement,Client,BonLivraison,Facture','Date').query(itemsQuerySucceeded, queryFailed);
+
+                };
+
+
+                $scope.$watch('filterOptions', function (oldValue, newValue) {
+                    //if(oldValue == newValue) return;
+                    var oldfilter = $scope.filterOptions.filterText;
+                    $scope.filterOptions.filterText = '';
+
+                    if ($scope.filterOptions.date != undefined && typeof $scope.filterOptions.date === 'object') {
+                                $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'year(Date) eq ' + $scope.filterOptions.date.getFullYear()+' and month(Date) eq '+ ($scope.filterOptions.date.getMonth()+1)+' and day(Date) eq '+$scope.filterOptions.date.getDay();
+                            }
+
+                    if (oldfilter != $scope.filterOptions.filterText) {
+                        $scope.getPagedDataAsync();
+                    }
+                }, true);
+
+                function formatDate(d) {
+                        month = '' + (d.getMonth() + 1),
+                        day = '' + d.getDate(),
+                        year = d.getFullYear();
+
+                    if (month.length < 2) month = '0' + month;
+                    if (day.length < 2) day = '0' + day;
+
+                    return [year, month, day].join('-');
+                }
+                $scope.getPagedDataAsync();
+                function convertDate(today) {
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm
+                    }
+                    var today = yyyy + '-' + mm + '-' + dd;
+                    return today;
+                }
+
+
+
+
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+
+                    gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                        row.isNew = true;
+                    });
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+                }
+                $scope.selectRow = function () {
+                    return $scope.gridApi.selection.getSelectedRows();
+                };
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+
+                $scope.reset = function () {
+                    //$scope.getPagedDataAsync();
+
+                }
+
+
+                $scope.view = function (e, item) {
+
+                    myWindow = window.open("@Url.Action("PopUpPrintBonAvoirC", "Administration")", "");
+                    myWindow.myBon = item;
+                    myWindow.myBon.Client = item.Client;
+
+                }
+
+                $scope.delete = function (e, item) {
+                    //console.log(item)
+                    if (confirm("Voulez-vous supprimer cet enregistrement ?")) {
+
+                        if (item.Id != null) {
+                            $scope.deleteMode = true;
+                            crudGridDataFactory($scope.table).remove({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                            $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                        } else {
+                            $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                        }
+                    }
+
+                }
+
+                /*region generique*/
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                function itemsQuerySucceeded(data) {
+                    $scope.items = [];
+                    $scope.items = data.value;
+                    $scope.gridOptions.data = $scope.items;
+
+                    //$scope.totalServerItems = data["odata.count"];
+                    //if ($scope.items.length > 0) {
+                    //    if ($scope.item) {
+                    //        for (i = 0; i < $scope.items.length; i++) {
+                    //            if ($scope.items[i].Id == $scope.item.Id)
+                    //                $scope.dataGrid.selectedItem = $scope.items[i];
+                    //        }
+                    //    }
+                    //    if ($scope.dataGrid.selectedItem == null) {
+                    //        $scope.dataGrid.selectedItem = $scope.items[0];
+                    //    }
+
+                    //    $scope.setItem($scope.dataGrid.selectedItem);
+                    //}
+
+                    //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+
+                }
+
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                saveSucceeded = function (saveResult) {
+
+                    notificationFactory.success();
+                    $scope.getPagedDataAsync();
+
+                }
+
+                saveFailed = function (error) {
+                    var reason = error.statusText;
+                    var detail = error.data["odata.error"];
+                    if (detail) {
+                        reason += detail.innererror.message;
+                    }
+                    if (error.config["method"] == "POST")
+                        $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                    notificationFactory.error(
+                       "Impossible d'enregistrer les modifications. " + reason +
+                   " Il faut actualiser la page.");
+                    $scope.getPagedDataAsync();
+                    /*
+                    var entityErrors = error.entityErrors;
+
+                    if (entityErrors && entityErrors.length) {
+                        handleSaveValidationError(entityErrors);
+                        return;
+                    }
+                    if (detail && detail.ExceptionType &&
+                        detail.ExceptionType.indexOf('OptimisticConcurrencyException') !== -1) {
+                        // Concurrency error
+                        reason =
+                            "Another user, perhaps the server, may have deleted one or all of the same entities.";
+                    }
+                    */
+
+                };
+                //$scope.gridOptions.data = $scope.table;
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

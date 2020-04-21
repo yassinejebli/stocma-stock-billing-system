@@ -1,0 +1,432 @@
+﻿@{
+    ViewBag.Title = "Nouveau Bon d'Avoir/Fournisseur";
+}
+
+
+
+<div class="switch">
+    Rechercher par :
+    <label>
+        Designation
+        <input type="checkbox" ng-model="search">
+        <span class="lever"></span> Ref
+    </label>
+</div>
+
+
+<div class="row">
+    <!-- BEGIN EXAMPLE TABLE widget-->
+
+
+    <div>
+        <div class="card-panel">
+            <div class="row">
+
+                <div class="row">
+                    <div class="col-lg-2 col-lg-offset-0">
+                        <div class="form-group">
+                            <label>Fournisseur </label>
+
+                            <input type="text" ng-model="filterOptions.filterBonReception.Fournisseur.Name" readonly placeholder="Fournisseur" class="" />
+                        </div>
+                    </div>
+      
+                    <div class="col-lg-3 col-lg-offset-2">
+                        <div class="form-group">
+                            <label>Entrez un BR </label>
+
+                            <input type="text" autocomplete="off" ng-model="filterOptions.filterBonReception" placeholder="Numéro du BR"
+                                   typeahead="v as v.NumBon for v  in lookupFactory.getExpand('BonReceptions', 'NumBon', $viewValue,'BonReceptionItems/Article,Fournisseur',null,'oui',null)"
+                                   @*typeahead-input-formatter="lookupFactory.format($model,'Name')"
+                                        typeahead-on-select="lookupFactory.format($model,'Name')"*@
+                                   typeahead-wait-ms=" 100"
+                                   class="" />
+                        </div>
+                        <a onclick='javascript:window.open(" @Url.Action("PopUpBonReception", "Administration") ", "BonLivraison", "width=730, height=650,top=0, left=0" );' class="btn-floating waves-effect waves-light cyan right" style="margin-right:-45px !important;margin-top:-50px;"><i class="mdi-content-add"></i></a>
+
+                    </div>
+                    <div class="col-lg-2 col-lg-offset-3">
+                        <label>Date </label>
+                        <input type="date" id="datePicker" placeholder="Choisissez une date" ng-model="item.Date" >
+                    </div>
+                    </div>
+                <div class="row">
+                    <div ui-grid-selection ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+
+                </div>
+
+                @*<div class="row">
+                    <div class="input-field col s12">
+                        <button ng-click="save()" class="btn cyan waves-effect waves-light right" name="action">
+                            Valider
+                            <i class="mdi-content-send right"></i>
+                        </button>
+                    </div>
+                </div>*@
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="fixed-action-btn" style="right:100px !important;">
+    <a ng-click="save()" class="btn-floating waves-effect waves-light btn-large cyan">
+        <i class="large mdi-content-save"></i>
+    </a>
+</div>
+
+
+@*<div class="dataTables_filter"><label>Date: <input ng-model="item.Date" type="date" id="datePicker" aria-controls="editable-sample" class="medium"></label></div>
+        <div style="margin-left:350px;" class="span6">
+            <label> Fournisseur :
+                <input type="text" autocomplete="off" ng-model="filterOptions.filterBonReception" placeholder="choisissez un Fournisseur" id=""
+                       typeahead="v as v.Name for v  in lookupFactory.get('Fournisseurs', 'Name', $viewValue)"
+                       @*typeahead-input-formatter="lookupFactory.format($model,'Name')"
+        typeahead-on-select="lookupFactory.format($model,'Name')"
+                       typeahead-wait-ms=" 100"
+                       class="form-control">
+
+            </label>
+
+        </div>
+        <div ui-grid-selection ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+    <button class="btn btn-large btn-primary" ng-click="save()" type="button">VALIDER</button>*@<!-- END EXAMPLE TABLE widget-->
+@section Scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$http','$scope', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($http,$scope, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+                $scope.animation = Animations.opacity;
+                $("body").css("fontSize", @StatistiqueController.getPolice());
+                //$scope.$scope = $scope;
+                $scope.table = "BonAvoirs";
+                $scope.lookupFactory = lookupFactory;
+                $scope.bon = 'BonAvoirF';
+                $scope.filterOptions = {
+                    filterText: "",
+                    filterVisible: null,
+                    useExternalFilter: true,
+                    filterBonReception: ""
+                };
+                //$scope.pagingOptions = {
+                //    pageSizes: [5, 10, 30],
+                //    pageSize: 5,
+                //    totalServerItems: 0,
+                //    currentPage: 1
+                //};
+                $scope.deleteMode = false;
+                $scope.focusFirstCell = function () {
+                    $scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+                }
+                //console.log("ok")
+
+                $scope.onDblClickRow = function (rowItem) {
+
+                    console.log("dbClick")
+                };
+                $scope.gridOptions = {
+                    showColumnFooter: true,
+                    enableRowSelection: true,
+                    enableRowHeaderSelection: false,
+                    showGridFooter: true,
+                    enableFiltering: false,
+                    //paginationPageSizes: [5, 10, 30],
+                    //paginationPageSize: 5,
+                    enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                    enableColumnResizing: true,
+                    rowHeight: 40,
+                    //enableCellEditOnFocus : true,
+                };
+                Date.prototype.toDateInputValue = (function () {
+                    var local = new Date(this);
+                    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+                    return local.toJSON().slice(0, 10);
+                });
+                $('#datePicker').val(new Date().toDateInputValue());
+
+                $scope.gridOptions.multiSelect = false;
+                //$scope.gridOptions.modifierKeysToMultiSelect = false;
+                $scope.gridOptions.noUnselect = true;
+                var CellTemplateDelete = '<a style="margin-left:15px !important;" title="{{row.entity.Article.PA+10}}"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+
+
+
+                $scope.item = new Object({ Id: breeze.core.getUuid(), BonAvoirItems: [] });
+                $scope.item.Date = new Date();
+                $scope.gridOptions.columnDefs = [
+                { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.addNew()"><span class="icon-plus"></span></button>', name: ' ', cellTemplate: CellTemplateDelete, sortable: false },
+                { name: 'Article.Ref', displayName: 'Ref', width: "130", enableCellEdit: false },
+                { name: 'Article.Designation', displayName: 'Désignation', width: "*", enableCellEdit: false },
+                { name: 'Qte', displayName: 'Qte', width: "105", type: "number", enableCellEditOnFocus: false, },
+                { name: 'Pu', displayName: 'P.U', width: "105", type: "number", enableCellEditOnFocus: false, },
+                { field: 'TotalHT', displayName: 'TOTAL', width: "110", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%' },
+
+
+                ];
+                Date.prototype.addHours = function (h) {
+                    this.setHours(this.getHours() + h);
+                    return this;
+                }
+                $scope.scrollTo = function( rowIndex, colIndex ) {
+                    $scope.gridApi.cellNav.scrollTo( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+                };
+
+                $scope.scrollToFocus = function( rowIndex, colIndex ) {
+                    $scope.gridApi.cellNav.scrollToFocus( $scope.gridOptions.data[rowIndex], $scope.gridOptions.columnDefs[colIndex]);
+                };
+
+                $scope.$watch('filterOptions.filterArticle', function (oldValue, newValue) {
+                    if ($scope.filterOptions.filterArticle != undefined && typeof $scope.filterOptions.filterArticle === 'object') {
+                        if ($scope.filterOptions.filterBonReception != undefined && typeof $scope.filterOptions.filterBonReception === 'object') {
+                            var a = $scope.filterOptions.filterArticle;
+                            $scope.item.BonAvoirItems.unshift(new Object({ Id: breeze.core.getUuid(), IdBonAvoir: $scope.item.Id, Article: a, IdArticle: a.Id, Pu: a.PA }));
+                            setTimeout(function(){
+                                $scope.filterOptions.filterArticle = null;
+                                $scope.scrollToFocus(0,3);
+                            },100);
+
+                        }else
+                        {
+
+                            notificationFactory.warning("Choisissez un fournisseur ! ", "Attention");
+                        }
+                    }
+
+                });
+                $scope.$watch('filterOptions.filterBonReception', function (oldValue, newValue) {
+                    var oldfilter = $scope.filterOptions.filterText;
+                    $scope.filterOptions.filterText = '';
+
+
+                    if ($scope.filterOptions.filterBonReception != undefined && typeof $scope.filterOptions.filterBonReception === 'object') {
+                        if ($scope.filterOptions.filterBonReception['NumBon'] != '' && $scope.filterOptions.filterBonReception['NumBon'] != undefined) {
+                            //$scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'indexof(BonReception/NumBon,\'' + $scope.filterOptions.filterBonReception['NumBon'].replace("'", "''") + '\') gt -1';
+                            //$scope.filterOptions.filterFournisseur = $scope.filterOptions.filterBonReception.Fournisseur;
+                            //$scope.filterOptions.filterDate = new Date($scope.filterOptions.filterBonReception.Date);
+                            //$scope.gridOptions.exporterPdfHeader = { columns: [{ decoration: 'underline', marginTop: 130, marginLeft: 25, alignment: 'left', text: ($scope.filterOptions.filterBonReception == undefined) ? '' : "Devis   N° : " + $scope.filterOptions.filterBonReception.Ref }, { alignment: 'center', marginTop: 170, text: "Fournisseur : " + $scope.filterOptions.filterBonReception.Fournisseur.Name.toUpperCase(), decoration: 'underline' }, { alignment: 'right', text: convertDate(new Date($scope.filterOptions.filterBonReception.Date)), marginTop: 130, marginRight: 25, decoration: 'underline' }] };
+                            //console.log($scope.filterOptions.filterBonReception.BonReceptionItems[0].BonReception.Fournisseur.Name)
+
+                            for (var i = 0; i < $scope.filterOptions.filterBonReception.BonReceptionItems.length; i++) {
+                                var myItem = $scope.filterOptions.filterBonReception.BonReceptionItems[i];
+
+                                $scope.item.BonAvoirItems.unshift({ Id: breeze.core.getUuid(), IdBonAvoir: $scope.item.Id ,IdArticle:myItem.IdArticle,Article:myItem.Article,Ref:myItem.Ref,Designation:myItem.Designation,Qte:myItem.Qte,Pu:myItem.Pu,TotalHT:myItem.TotalHT});
+                            }
+
+                            $scope.gridOptions.data = $scope.item.BonAvoirItems;
+                            $scope.item.Date = new Date();
+
+
+                        }
+                    }else
+                    {
+                        $scope.item.BonAvoirItems = [];
+                        $scope.gridOptions.data = $scope.item.BonAvoirItems;
+                    }
+
+
+                }, true);
+
+                $scope.gridOptions.data = [];
+                //angular.forEach($scope.gridOptions.data.BonAvoirItems, function (row) {
+                //    row.getTOTAL = function () {
+                //        return this.Ref;
+                //    }
+                //});
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+                    gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+                        rowEntity.TotalHT = rowEntity.Pu * rowEntity.Qte;
+                        if (isNaN(rowEntity.TotalHT))
+                            rowEntity.TotalHT = "";
+                        if($scope.search)
+                        {
+                            setTimeout(function(){
+                                $("#rechercher2").focus();
+                            },150);
+                        }else
+                        {
+                            setTimeout(function(){
+                                $("#rechercher").focus();
+                            },150);
+                        }
+                        $scope.$apply();
+                    });
+                    gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                        row.isNew = true;
+                    });
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+                }
+                $scope.selectRow = function () {
+                    return $scope.gridApi.selection.getSelectedRows();
+                };
+
+
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+            
+                $scope.addNew = function () {
+                    //$scope.addMode = true;
+                    //$scope.item.BonAvoirItems.unshift(new Object({ Id: breeze.core.getUuid(), IdBonAvoir: $scope.item.Id }));
+                    //$scope.focusFirstCell();
+                    window.open("@Url.Action("PopUpArticle", "Administration")", "MesProduits", "width=950, height=650,top=0, left=0");
+                }
+
+                $scope.save = function () {
+
+                 
+
+                    if ($scope.item.Date == undefined || $scope.item.Date == "") {
+                        notificationFactory.warning("Saisissez une date valide S.V.P", "Attention");
+                        return;
+                    }
+                    if ($scope.filterOptions.filterBonReception == "" || typeof $scope.filterOptions.filterBonReception != 'object') {
+                        notificationFactory.warning("Choisissez un bon de  réçeption S.V.P", "Attention");
+                        return;
+                    }
+                    if ($scope.item.BonAvoirItems.length == 0) {
+                        notificationFactory.warning("Remplissez les piéces de bon S.V.P", "Attention");
+                        return;
+                    }
+                    var error = false;
+                    for (var i = 0; i < $scope.item.BonAvoirItems.length ; i++) {
+                        var brItem = $scope.item.BonAvoirItems[i];
+                        if (brItem.Qte == undefined || brItem.Pu == undefined || brItem.TotalHT == undefined || brItem.Qte == null || brItem.Pu == null || brItem.TotalHT == null || brItem.Qte == "" || brItem.Pu == "" || brItem.TotalHT == "") {
+                            error = true;
+                        }
+                    }
+                    if (error) {
+                        notificationFactory.warning("Remplissez tous les lignes S.V.P !", "Attention");
+                        return;
+                    }
+                    //delete $scope.item["Fournisseur"];
+                    if (lookupFactory.getLastId("BonAvoirs", "Ref") != undefined && lookupFactory.getLastId("BonAvoirs", "Ref") != null && lookupFactory.getLastId("BonAvoirs", "Ref").length != 0)
+                        $scope.item.Ref = lookupFactory.getLastId("BonAvoirs", "Ref")[0].Ref + 1;
+                    else
+                        $scope.item.Ref = 1;
+
+
+                    $scope.item.Date = new Date($scope.item.Date).addHours(3);
+                    $scope.item.NumBon = $scope.item.Ref.toString() + '/' + new Date().getFullYear();
+
+                    /*                                                                                                                    */
+
+                    $scope.item.IdFournisseur = $scope.filterOptions.filterBonReception.Fournisseur.Id
+                    $scope.item.IdBonReception = $scope.filterOptions.filterBonReception.Id;
+
+                    for (var i = 0; i < $scope.item.BonAvoirItems.length; i++) {
+                        //$scope.item.BonAvoirItems.IdBonAvoir = $scope.item.Id;
+                        delete $scope.item.BonAvoirItems[i]["Article"];
+                    }
+                    crudGridDataFactory($scope.table).save($scope.item, saveSucceeded, saveFailed);
+
+                }
+                var article;
+                beforeSave = function (item) {
+                    article = $scope.item.BonAvoirItems.Article;
+                }
+
+                $scope.delete = function (e, item) {
+
+                    $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+
+                }
+                $scope.gridOptions.data = $scope.item.BonAvoirItems;
+                /*region generique*/
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+             
+
+                function queryFailed(error) {
+                    notificationFactory.error(error.message, "Query failed");
+                }
+
+                saveSucceeded = function (saveResult) {
+                    //$scope.item.BonAvoirItems.length = 0;
+                    //$scope.item = {};
+                    notificationFactory.success();
+
+
+                    var totals = 0;
+                    for (var i = 0; i < $scope.item.BonAvoirItems.length; i++) {
+                        var x = $scope.item.BonAvoirItems[i].TotalHT;
+                        totals += x;
+                    }
+                    totals = totals.toFixed(2);
+                    //$scope.getPagedDataAsync();
+                    $scope.pay = new Object({ Id: breeze.core.getUuid() });
+                    $scope.pay.IdTypePaiement = '399d159e-9ce0-4fcc-957a-08a65bbeecb8';
+                    $scope.pay.Date = $scope.item.Date;
+                    $scope.pay.Comment = 'Avoir N° : ' + $scope.item.NumBon;
+                    $scope.pay.Credit = totals;
+                    $scope.pay.Debit = 0;
+                    $scope.pay.IdFournisseur = $scope.item.IdFournisseur;
+                    crudGridDataFactory("PaiementFs").save($scope.pay, savePaySucceeded, saveFailed);
+
+                    $scope.clear();
+                    
+
+                    
+                  
+                }
+                $scope.clear = function () {
+                    $scope.gridOptions.data = [];
+
+                    $scope.item = new Object({ Id: breeze.core.getUuid(), BonAvoirItems: [] });
+                    $scope.gridOptions.data = $scope.item.BonAvoirItems;
+                    $scope.filterOptions.filterBonReception = "";
+
+                }
+                savePaySucceeded = function (saveResult) {
+                    notificationFactory.success();
+
+
+                }
+                saveFailed = function (error) {
+                    var reason = error.statusText;
+                    var detail = error.data["odata.error"];
+                    if (detail) {
+                        reason += detail.innererror.message;
+                    }
+                    //if (error.config["method"] == "POST")
+                    //    $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                    notificationFactory.error(
+                       "Impossible d'enregistrer les modifications. " + reason +
+                   " Il faut actualiser la page.");
+                    /*
+                    var entityErrors = error.entityErrors;
+
+                    if (entityErrors && entityErrors.length) {
+                        handleSaveValidationError(entityErrors);
+                        return;
+                    }
+                    if (detail && detail.ExceptionType &&
+                        detail.ExceptionType.indexOf('OptimisticConcurrencyException') !== -1) {
+                        // Concurrency error
+                        reason =
+                            "Another user, perhaps the server, may have deleted one or all of the same entities.";
+                    }
+                    */
+
+                };
+                //$scope.gridOptions.data = $scope.table;
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

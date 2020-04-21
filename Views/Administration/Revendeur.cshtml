@@ -1,0 +1,275 @@
+﻿@{
+    ViewBag.Title = "Gestion des représentants";
+}
+
+
+
+                    <div ui-grid-pagination ui-grid-selection ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+                  
+
+
+
+@section Scripts
+{
+
+    <script>
+
+    $(document).ready(function () {
+
+
+        app.controller("AdminCtrl", ['$scope', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactoryPage', 'notificationFactory', 'lookupFactory', function ($scope, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactoryPage, notificationFactory, lookupFactory) {
+            $scope.showAdd = true;
+            $scope.state = { sortField: 'Name', sortDirection: uiGridConstants.ASC };
+            $scope.paginationOptions = {
+                pageNumber: 1,
+                pageSize: 10,
+                sort: null,
+                totalServerItems: 0,
+            };
+            $scope.animation = Animations.opacity;
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            //$scope.$scope = $scope;
+            $scope.table = "Revendeurs";
+            $scope.lookupFactory = lookupFactory;
+
+            $scope.filterOptions = {
+                filterText: "",
+                filterVisible: null,
+                useExternalFilter: true
+            };
+            $("#addNew").click(function () {
+                $scope.addNew
+            });
+            //$scope.pagingOptions = {
+            //    pageSizes: [5, 10, 30],
+            //    pageSize: 5,
+            //    totalServerItems: 0,
+            //    currentPage: 1
+            //};
+            $scope.deleteMode = false;
+            $scope.focusFirstCell = function () {
+                $scope.gridApi.selection.toggleRowSelection($scope.gridOptions.data[0]);
+            }
+            //console.log("ok")
+
+            $scope.onDblClickRow = function (rowItem) {
+
+                console.log("dbClick")
+            };
+            $scope.gridOptions = {paginationPageSizes: [10, 50, 100,500,1000,10000],paginationPageSize: $scope.paginationOptions.pageSize, useExternalFiltering: true,useExternalPagination: true,
+                showColumnFooter: true,
+                enableRowSelection: true,
+                enableRowHeaderSelection: false,
+                showGridFooter: true,
+                enableFiltering: false,
+                enablePaginationControls: true,
+                //paginationPageSizes: [5, 10, 30],
+                //paginationPageSize: 5,
+                enableVerticalScrollbar : uiGridConstants.scrollbars.WHEN_NEEDED,
+                enableColumnResizing: true,
+                rowHeight: 39
+
+            };
+
+
+            $scope.gridOptions.multiSelect = false;
+            //$scope.gridOptions.modifierKeysToMultiSelect = false;
+            $scope.gridOptions.noUnselect = true;
+
+            $scope.items = [];
+            //<a class="btn-floating btn-flat waves-effect waves-light pink accent-2 white-text"><i class="mdi-content-content-cut"></i></a>
+            //<button class="btn btn-danger btn-xs btn-block" ng-click="grid.appScope.delete($event, row.entity)"><span class="icon-trash"></span></button>
+            var headerTemplateAdd = '<a style="margin-left:15px !important;" ng-click="grid.appScope.update($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-content-save"></i></a>';
+            var headerTemplateDelete = '<a style="margin-left:15px !important;"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+            $scope.gridOptions.columnDefs = [
+            { enableCellEdit: false, width: "76", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.addNew()"><span class="icon-plus"></span></button>', name: ' ', cellTemplate: headerTemplateAdd, sortable: false },
+            { name: 'Name', displayName: 'Représentant', width: "*",filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><input type="text" class="ui-grid-filter-input ui-grid-filter-input-0 ng-touched" ng-model="grid.appScope.filterOptions.filterName"/></div>', resizable: true },
+            { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: headerTemplateDelete, sortable: false },
+
+
+            ];
+
+
+            $scope.getPagedDataAsync = function () {
+                crudGridDataFactoryPage($scope.table,$scope.paginationOptions.pageSize, $scope.paginationOptions.pageNumber, $scope.filterOptions.filterText,$scope.state.sortField, $scope.state.sortDirection,  '').query(itemsQuerySucceeded, queryFailed);
+            };
+            $scope.getPagedDataAsync();
+
+            $scope.gridOptions.onRegisterApi = function (gridApi) {
+                $scope.gridApi = gridApi;
+                gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                    $scope.paginationOptions.pageNumber = newPage;
+                    $scope.paginationOptions.pageSize = pageSize;
+                    $scope.getPagedDataAsync();
+                });
+                $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
+                    if (sortColumns.length == 0) {
+                        $scope.paginationOptions.sort = null;
+                    } else {
+                        $scope.state.sortField = sortColumns[0].field;
+                        $scope.state.sortDirection = sortColumns[0].sort.direction;
+                    }
+                    $scope.getPagedDataAsync();
+                });
+
+                gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                    row.isNew = true;
+                });
+                gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                    $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                });
+            }
+            $scope.selectRow = function () {
+               return $scope.gridApi.selection.getSelectedRows();
+            };
+
+            $scope.toggleFiltering = function () {
+                $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+            };
+
+            $scope.addNew = function () {
+                $scope.addMode = true;
+                $scope.item = new Object({});
+                $scope.items.unshift($scope.item);
+                $scope.focusFirstCell();
+            }
+
+            $scope.update = function (e,item) {
+                //console.log(item)
+                if (item.Id == null) {
+                    item.Id = breeze.core.getUuid();
+                    crudGridDataFactoryPage($scope.table).save(item, saveSucceeded, saveFailed);
+
+                }
+                else {
+                    crudGridDataFactoryPage($scope.table).update({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                }
+            }
+            $scope.$watch('filterOptions', function (oldValue,newValue) {
+                if(oldValue == newValue) return;
+                var oldfilter = $scope.filterOptions.filterText;
+                $scope.filterOptions.filterText = '';
+                if ($scope.filterOptions.filterName != '' && $scope.filterOptions.filterName != undefined) {
+                    $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'indexof(Name,\'' + $scope.filterOptions.filterName + '\') gt -1';
+                }
+                if ($scope.filterOptions.filterCode != '' && $scope.filterOptions.filterCode != undefined) {
+                    $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'Code eq ' + $scope.filterOptions.filterCode;
+                }
+                if ($scope.filterOptions.filterAdresse != '' && $scope.filterOptions.filterAdresse != undefined) {
+                    $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'indexof(Adresse,\'' + $scope.filterOptions.filterAdresse + '\') gt -1';
+                }
+                if ($scope.filterOptions.filterPlafond != '' && $scope.filterOptions.filterPlafond != undefined) {
+                    $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'Plafond eq ' + $scope.filterOptions.filterPlafond;
+                }
+                if ($scope.filterOptions.filterEmail != '' && $scope.filterOptions.filterEmail != undefined) {
+                    $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'indexof(Email,\'' + $scope.filterOptions.filterEmail + '\') gt -1';
+                }
+                if ($scope.filterOptions.filterTel != '' && $scope.filterOptions.filterTel != undefined) {
+                    $scope.filterOptions.filterText += ($scope.filterOptions.filterText == '' ? '' : ' and ') + 'indexof(Tel,\'' + $scope.filterOptions.filterTel + '\') gt -1';
+                }
+               
+                
+
+                if (oldfilter != $scope.filterOptions.filterText)
+                    $scope.getPagedDataAsync();
+                //console.log('filterOptions ', $scope.filterOptions);
+            }, true);
+
+
+            $scope.delete = function (e, item) {
+                //console.log(item)
+                if (confirm("Voulez-vous supprimer cet enregistrement ?")) {
+
+                    if (item.Id != null) {
+                        $scope.deleteMode = true;
+                        crudGridDataFactoryPage($scope.table).remove({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                    }else
+                    {
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(item), 1);
+
+                    }
+                }
+
+            }
+
+            /*region generique*/
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            function itemsQuerySucceeded(data) {
+                $scope.items = data.value;
+                $scope.gridOptions.data = $scope.items;
+                $scope.gridOptions.totalItems = data["odata.count"];
+
+                //$scope.totalServerItems = data["odata.count"];
+                //if ($scope.items.length > 0) {
+                //    if ($scope.item) {
+                //        for (i = 0; i < $scope.items.length; i++) {
+                //            if ($scope.items[i].Id == $scope.item.Id)
+                //                $scope.dataGrid.selectedItem = $scope.items[i];
+                //        }
+                //    }
+                //    if ($scope.dataGrid.selectedItem == null) {
+                //        $scope.dataGrid.selectedItem = $scope.items[0];
+                //    }
+
+                //    $scope.setItem($scope.dataGrid.selectedItem);
+                //}
+
+                //notificationFactory.success("Fetched " + data.value.length + " " + $scope.table);
+            }
+
+            function queryFailed(error) {
+                notificationFactory.error(error.message, "Query failed");
+            }
+
+            saveSucceeded = function (saveResult) {
+
+                notificationFactory.success();
+                //$scope.getPagedDataAsync();
+
+            }
+
+            saveFailed = function (error) {
+                var reason = error.statusText;
+                var detail = error.data["odata.error"];
+                if (detail) {
+                    reason += detail.innererror.message;
+                }
+                if (error.config["method"] == "POST")
+                    $scope.item.Id = null; //on affecte null pour permetre d'ajouter a nouveau le meme item
+
+                notificationFactory.error(
+                   "Impossible d'enregistrer les modifications. " + reason +
+               " Il faut actualiser la page.");
+                $scope.getPagedDataAsync();
+                /*
+                var entityErrors = error.entityErrors;
+
+                if (entityErrors && entityErrors.length) {
+                    handleSaveValidationError(entityErrors);
+                    return;
+                }
+                if (detail && detail.ExceptionType &&
+                    detail.ExceptionType.indexOf('OptimisticConcurrencyException') !== -1) {
+                    // Concurrency error
+                    reason =
+                        "Another user, perhaps the server, may have deleted one or all of the same entities.";
+                }
+                */
+
+            };
+            //$scope.gridOptions.data = $scope.table;
+        }]);
+        angular.bootstrap(document, ['AdminModule']);
+
+    });
+    </script>
+
+}

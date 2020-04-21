@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Choisir une période";
+    Layout = "~/Views/Shared/_LayoutPopUPArticle.cshtml";
+}
+<div style="width:100%;">
+    <label>Choisissez une période : </label><br />
+    <select ng-model="year" class="browser-default" style="border:1px solid #ccc !important">
+        <option ng-repeat="i in years" value="{{i}}">{{i}}</option>
+    </select>
+    <div style="margin-top:60px;">
+        <button class="waves-effect waves-light btn teal" ng-click="viewHistoryVente()">
+            Historique Vente
+        </button>
+
+        <button class="waves-effect waves-light btn teal" ng-click="viewHistoryAchat()">
+            Historique Achat
+        </button>
+    </div>
+</div>
+
+@section Scripts
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            app.controller("AdminCtrl", ['$scope', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+
+                $scope.years = [];
+
+                for (var i = 2014; i <= new Date().getFullYear() ; i++) {
+                    $scope.years.push(i);
+                }
+                $scope.viewHistoryAchat = function () {
+                    if ($scope.year != undefined) {
+
+                        var myWindowA = window.open("@Url.Action("PopUpHistoryArticleAchat", "Administration")", "Historique Achat", "width=800, height=650,top=0, left=0");
+
+                        myWindowA.myArticle = window.myArticle;
+                        myWindowA.year = $scope.year;
+                        window.close();
+                    }
+                    else
+                    {
+                        notificationFactory.warning("Choisissez une période S.V.P", "Attention");
+
+                    }
+
+                }
+
+
+                $scope.viewHistoryVente = function () {
+                    if ($scope.year != undefined) {
+
+                        var myWindowV = window.open("@Url.Action("PopUpHistoryArticleVente", "Administration")", "Historique Vente", "width=800, height=650,top=0, left=650");
+
+                        myWindowV.myArticle = window.myArticle;
+                        myWindowV.year = $scope.year;
+                        window.close();
+                    }else
+                    {
+                        notificationFactory.warning("Choisissez une période S.V.P", "Attention");
+
+
+                    }
+
+
+                }
+
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "Situation Globale des Fournisseurs";
+}
+
+
+<div ui-grid-selection ui-grid-exporter ui-grid-auto-resize ui-grid-move-columns ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-cellnav class="grid"></div>
+
+<div style="bottom: 25px; left: 15px;position:fixed">
+    <a class="btn-floating btn-large green" ng-click="print()">
+        <i class="large mdi-action-print"></i>
+    </a>
+</div>
+
+
+
+
+
+
+@section Scripts
+{
+
+    <script>
+
+    $(document).ready(function () {
+
+
+        app.controller("AdminCtrl", ['$scope','$http','myService', '$element', 'Animations', 'uiGridConstants', '$timeout', '$interval', '$attrs', 'crudGridDataFactory', 'notificationFactory', 'lookupFactory', function ($scope,$http,myService, $element, Animations, uiGridConstants, $timeout, $interval, $attrs, crudGridDataFactory, notificationFactory, lookupFactory) {
+            $scope.showAdd = true;
+            $scope.myService = myService;
+            $scope.item = new Object();
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            $("body").css("fontSize", @StatistiqueController.getPolice());
+            //$scope.$scope = $scope;
+            $scope.table = "Articles";
+            $scope.lookupFactory = lookupFactory;
+            var getTypeTableau = '@StatistiqueController.getTypeTableau()';
+            if(getTypeTableau == 1){
+                typeTableau = "headerLineOnly";
+            }else if(getTypeTableau == 3){
+                typeTableau = {hLineWidth: function(i, node) {
+                    return (i === 0 || i === node.table.body.length) ? 2 : 1;
+                },
+                    vLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+                    },
+                    hLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+                    },
+                    vLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+                    }};
+            }else if(getTypeTableau == 4){
+                typeTableau = undefined;
+
+            }
+            else
+            {
+                typeTableau = "lightHorizontalLines";
+            }
+
+            $scope.filterOptions = {
+                filterText: "",
+                filterVisible: null,
+                useExternalFilter: true
+            };
+            //$scope.pagingOptions = {
+            //    pageSizes: [5, 10, 30],
+            //    pageSize: 5,
+            //    totalServerItems: 0,
+            //    currentPage: 1
+            //};
+            $scope.deleteMode = false;
+            function convertDate(today) {
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+
+                var yyyy = today.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+                var today = dd + '/' + mm + '/' + yyyy;
+                return today;
+            }
+            //console.log("ok")
+
+            $scope.onDblClickRow = function (rowItem) {
+
+                console.log("dbClick")
+            };
+            $scope.gridOptions = {
+                showColumnFooter: true,
+                enableRowSelection: true,
+                enableRowHeaderSelection: false,
+                showGridFooter: true,
+                enableFiltering: false,
+                //paginationPageSizes: [5, 10, 30],
+                //paginationPageSize: 5,
+                enableVerticalScrollbar: uiGridConstants.scrollbars.WHEN_NEEDED,
+                enableColumnResizing: true,
+                rowHeight: 40,
+                //enableCellEditOnFocus : true,
+                /*export*/
+                //enableGridMenu: true,
+                exporterPdfDefaultStyle: { fontSize: 13 },
+                exporterPdfTableStyle: { margin: [-18, 25, 3, 5] },
+                exporterPdfTableHeaderStyle: { fontSize: 14, bold: true, italics: false, color: 'black' },
+                exporterPdfFooter: function (currentPage, pageCount) {
+
+                    return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                },
+                exporterPdfCustomFormatter: function (docDefinition) {
+                    docDefinition.watermark = "@User.Identity.Name.Split('@')[1].Split('.')[0]";
+
+                        docDefinition.pageMargins = [32, 60, 50, 20];
+
+                        docDefinition.styles.headerStyle = { fontSize: 12, bold: true, };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 370 };
+                        //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                        docDefinition.content[0].layout = typeTableau;
+
+                        //docDefinition.content = docDefinition.content.concat([{ width:400,decoration: 'underline', text: "TOTAL : " + totals + " DH", marginLeft: 270, fontSize: 10, bold: true, marginTop: 13 }]);
+                        return docDefinition;
+                    },
+                    exporterPdfOrientation: 'landscape',
+                    exporterPdfPageSize: 'LETTER',
+                    exporterPdfMaxGridWidth: 345,
+                    exporterSuppressColumns: [' ', '\''],
+                    exporterFieldCallback: function (grid, row, col, input) {
+                        if (col.name == 'Solde') {
+                            return input.toFixed(2);
+                        } else {
+                            return input.toUpperCase();
+                        }
+                    },
+
+                };
+
+                $scope.print = function()
+                {
+
+                    window.open("ExportSituationGlobalFournisseurs",'_blank');
+                    return;
+                    $scope.gridOptions.exporterPdfDefaultStyle = { fontSize: 11 };
+                    $scope.gridOptions.exporterPdfTableStyle = { margin: [-18, 20, 3, 5] };
+                    $scope.gridOptions.exporterPdfTableHeaderStyle = { fontSize: 12, bold: true, italics: false, color: 'black' };
+                    $scope.gridOptions.exporterPdfFooter = function (currentPage, pageCount) {
+
+                        //return { text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' };
+                        var footer = [{text: currentPage.toString() + ' / ' + pageCount.toString(), style: 'footerStyle' }/*,{ image: $scope.footer, width: 605,marginTop:-19,marginLeft:18,height:40} */];
+
+
+                        return footer;
+                    },
+                    $scope.gridOptions.exporterPdfCustomFormatter = function (docDefinition) {
+                        docDefinition.watermark = "@User.Identity.Name.Split('@')[1].Split('.')[0]";
+
+                        docDefinition.pageMargins = [40, 70, 50,20];
+                        docDefinition.styles.headerStyle = { fontSize: 10, bold: true };
+                        docDefinition.styles.footerStyle = { fontSize: 10, bold: true, marginLeft: 557, marginTop: 0 };
+                        //docDefinition.content = [{ text: "BL N° : 132/2015", marginLeft: 125, fontSize: 12 }].concat(docDefinition.content);
+                        docDefinition.content[0].layout = typeTableau;
+                        //docDefinition.content = docDefinition.content.concat([{ decoration: 'underline', text: "TOTAL :  " + totals + " DH", marginLeft: 385, bold: true, marginTop: 50, fontSize: 14 }]);
+
+                        //if ($scope.tel != undefined && $scope.tel != "")
+
+                        //docDefinition.content = docDefinition.content.concat([{ text: "solde  : " + (parseFloat($scope.solde)).toFixed(2) + " DH", marginLeft: -15, fontSize: 12, bold: true, marginTop: 10 }]);
+
+                        return docDefinition;
+                    },
+                    $scope.gridOptions.exporterPdfOrientation = 'portrait';
+                    $scope.gridOptions.exporterPdfPageSize = 'LETTER';
+                    $scope.gridOptions.exporterPdfMaxGridWidth = 530;
+                    //$scope.gridOptions.exporterPdfHeader.content =   $scope.gridOptions.exporterPdfHeader.content.concat({text:"dfdgdfgd"});
+
+                    $scope.gridOptions.exporterPdfHeader = {
+
+                        marginLeft:120,marginTop:30,table: {
+                            // headers are automatically repeated if the table spans over multiple pages
+                            // you can declare how many rows should be treated as headers
+                            headerRows: 1,
+                            widths: [ 130,  220],
+
+                            body: [
+                              [ { fillColor:'#ccc',text: convertDate(new Date()),alignment:'center' , bold: true,fontSize:13 } ,{alignment:'center',text :'Situation globale des fournisseurs',fontSize:13,bold:true}],
+
+
+                            ]
+                        }}
+                    $scope.gridApi.exporter.pdfExport('all', 'all');
+                }
+                $scope.gridOptions.multiSelect = true;
+                setTimeout(function () {
+                    var s = window.opener.angular.element('#ctrl').scope();
+
+                    if (s.bon.indexOf("List") != -1) {
+                        $scope.gridOptions.multiSelect = false;
+
+                    }
+                }, 100);
+
+
+                //$scope.gridOptions.modifierKeysToMultiSelect = false;
+                //$scope.gridOptions.noUnselect = false;
+                //$scope.gridApi.selection.setMultiSelect(true);
+                $scope.items = [];
+                var headerTemplateAdd = '<a style="margin-left:15px !important;" ng-click="grid.appScope.view($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-action-visibility"></i></a><a style="margin-left:15px !important;" ng-click="grid.appScope.update($event, row.entity)"class="btn-floating btn-flat waves-effect waves-light red accent-2 btnGrid"><i class="mdi-content-save"></i></a>';
+
+                var CellTemplateDelete = '<a style="margin-left:15px !important;"  ng-click="grid.appScope.delete($event, row.entity)" class="btn-floating btnGrid waves-effect btn-flat waves-effect waves-light waves-light red"><i class="mdi-action-delete""></i></a>';
+
+                $scope.gridOptions.columnDefs = [
+                { enableCellEdit: false, visible: true, enableHiding: true, width: "80", allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block"><span class="icon-refresh"></span></button>', name: ' ', cellTemplate: '', sortable: false },
+
+                 { name: 'Key.Name', displayName: 'Fournisseur', width: "*", enableCellEdit: false },
+                 { name: 'Solde', displayName: 'Solde', width: "250", enableCellEditOnFocus: false, cellFilter: 'number: 2' , filterCellFiltered: true,enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, },
+                 //{ name: 'TotalHT', displayName: 'TOTAL', width: "92", enableCellEdit: false, aggregationType: uiGridConstants.aggregationTypes.sum, width: '14%',  cellFilter: 'currency:dh' },
+
+                { enableCellEdit: false, width: "76", name: '\'', allowCellFocus: false, headerCellTemplate: '<button class="btn cyan btn-xs btn-block" ng-click="grid.appScope.toggleFiltering()"><span class="icon-filter"></span></button>', cellTemplate: "", sortable: false },
+
+                ];
+
+
+                $scope.getPagedDataAsync = function () {
+                    $http.get('/Statistique/getSituationGlobaleFournisseurs')
+                     .success(function (data) {
+                         $scope.items = data;
+                         $scope.gridOptions.data = $scope.items;
+
+                     });
+                };
+                $scope.getPagedDataAsync();
+
+                $scope.gridOptions.onRegisterApi = function (gridApi) {
+                    $scope.gridApi = gridApi;
+                    //$scope.gridApi.selection.setMultiSelect(true);
+
+                    gridApi.grid.registerRowBuilder(function (row, gridOptions) {
+                        row.isNew = true;
+                    });
+                    gridApi.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+                        $scope.gridApi.selection.selectRow(newRowCol.row.entity);
+                    });
+
+                }
+
+                //$scope.gridApi.selection.setMultiSelect(true);
+
+
+                $scope.toggleFiltering = function () {
+                    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+                    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                    //$scope.gridApi.core.notifyDataChange($scope.gridApi.grid, uiGridConstants.dataChange.ALL);
+
+                };
+
+
+
+
+
+
+
+
+                //$scope.gridOptions.data = $scope.table;
+            }]);
+            angular.bootstrap(document, ['AdminModule']);
+
+        });
+    </script>
+}

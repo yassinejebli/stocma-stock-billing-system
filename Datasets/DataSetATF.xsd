@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSetATF" targetNamespace="http://tempuri.org/DataSetATF.xsd" xmlns:mstns="http://tempuri.org/DataSetATF.xsd" xmlns="http://tempuri.org/DataSetATF.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSetATF" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSetATF" msprop:Generator_UserDSName="DataSetATF">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Facture" msprop:Generator_TableClassName="FactureDataTable" msprop:Generator_TableVarName="tableFacture" msprop:Generator_TablePropName="Facture" msprop:Generator_RowDeletingName="FactureRowDeleting" msprop:Generator_RowChangingName="FactureRowChanging" msprop:Generator_RowEvHandlerName="FactureRowChangeEventHandler" msprop:Generator_RowDeletedName="FactureRowDeleted" msprop:Generator_UserTableName="Facture" msprop:Generator_RowChangedName="FactureRowChanged" msprop:Generator_RowEvArgName="FactureRowChangeEvent" msprop:Generator_RowClassName="FactureRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="NumBon" msprop:Generator_ColumnVarNameInTable="columnNumBon" msprop:Generator_ColumnPropNameInRow="NumBon" msprop:Generator_ColumnPropNameInTable="NumBonColumn" msprop:Generator_UserColumnName="NumBon" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" msprop:Generator_ColumnVarNameInTable="columnDate" msprop:Generator_ColumnPropNameInRow="Date" msprop:Generator_ColumnPropNameInTable="DateColumn" msprop:Generator_UserColumnName="Date" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Client" msprop:Generator_ColumnVarNameInTable="columnClient" msprop:Generator_ColumnPropNameInRow="Client" msprop:Generator_ColumnPropNameInTable="ClientColumn" msprop:Generator_UserColumnName="Client" type="xs:string" minOccurs="0" />
+              <xs:element name="Ref" msprop:Generator_ColumnVarNameInTable="columnRef" msprop:Generator_ColumnPropNameInRow="Ref" msprop:Generator_ColumnPropNameInTable="RefColumn" msprop:Generator_UserColumnName="Ref" type="xs:string" minOccurs="0" />
+              <xs:element name="Designation" msprop:Generator_ColumnVarNameInTable="columnDesignation" msprop:Generator_ColumnPropNameInRow="Designation" msprop:Generator_ColumnPropNameInTable="DesignationColumn" msprop:Generator_UserColumnName="Designation" type="xs:string" minOccurs="0" />
+              <xs:element name="Qte" msprop:Generator_ColumnVarNameInTable="columnQte" msprop:Generator_ColumnPropNameInRow="Qte" msprop:Generator_ColumnPropNameInTable="QteColumn" msprop:Generator_UserColumnName="Qte" type="xs:double" minOccurs="0" />
+              <xs:element name="PU" msprop:Generator_ColumnVarNameInTable="columnPU" msprop:Generator_ColumnPropNameInRow="PU" msprop:Generator_ColumnPropNameInTable="PUColumn" msprop:Generator_UserColumnName="PU" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalHT" msprop:Generator_ColumnVarNameInTable="columnTotalHT" msprop:Generator_ColumnPropNameInRow="TotalHT" msprop:Generator_ColumnPropNameInTable="TotalHTColumn" msprop:Generator_UserColumnName="TotalHT" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Article" msprop:Generator_TableClassName="ArticleDataTable" msprop:Generator_TableVarName="tableArticle" msprop:Generator_TablePropName="Article" msprop:Generator_RowDeletingName="ArticleRowDeleting" msprop:Generator_RowChangingName="ArticleRowChanging" msprop:Generator_RowEvHandlerName="ArticleRowChangeEventHandler" msprop:Generator_RowDeletedName="ArticleRowDeleted" msprop:Generator_UserTableName="Article" msprop:Generator_RowChangedName="ArticleRowChanged" msprop:Generator_RowEvArgName="ArticleRowChangeEvent" msprop:Generator_RowClassName="ArticleRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Ref" msprop:Generator_ColumnVarNameInTable="columnRef" msprop:Generator_ColumnPropNameInRow="Ref" msprop:Generator_ColumnPropNameInTable="RefColumn" msprop:Generator_UserColumnName="Ref" type="xs:string" minOccurs="0" />
+              <xs:element name="Designation" msprop:Generator_ColumnVarNameInTable="columnDesignation" msprop:Generator_ColumnPropNameInRow="Designation" msprop:Generator_ColumnPropNameInTable="DesignationColumn" msprop:Generator_UserColumnName="Designation" type="xs:string" minOccurs="0" />
+              <xs:element name="Qte" msprop:Generator_ColumnVarNameInTable="columnQte" msprop:Generator_ColumnPropNameInRow="Qte" msprop:Generator_ColumnPropNameInTable="QteColumn" msprop:Generator_UserColumnName="Qte" type="xs:double" minOccurs="0" />
+              <xs:element name="Unite" msprop:Generator_ColumnVarNameInTable="columnUnite" msprop:Generator_ColumnPropNameInRow="Unite" msprop:Generator_ColumnPropNameInTable="UniteColumn" msprop:Generator_UserColumnName="Unite" type="xs:string" minOccurs="0" />
+              <xs:element name="BarCode" msprop:Generator_ColumnVarNameInTable="columnBarCode" msprop:Generator_ColumnPropNameInRow="BarCode" msprop:Generator_ColumnPropNameInTable="BarCodeColumn" msprop:Generator_UserColumnName="BarCode" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
