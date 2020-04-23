@@ -75,7 +75,7 @@ const FournisseurForm = ({data, onSuccess}) => {
     return (
         <div>
             <Loader loading={loading} />
-            <TitleIcon title="Fournisseur" Icon={GroupAddOutlinedIcon} />
+            <TitleIcon title={editMode ? 'Modifier les infos du fournisseur' : 'Ajouter un fournisseur'} Icon={GroupAddOutlinedIcon} />
             <TextField
                 name="Name"
                 label="Nom du fournisseur"

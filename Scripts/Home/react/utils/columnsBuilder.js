@@ -128,8 +128,11 @@ export const getClientColumns = () => ([
         align: 'right'
     },
     {
+        id: 'Plafond',
         Header: 'Plafond',
-        accessor: 'Plafond',
+        accessor: (props) => {
+            return props.Plafond ? formatMoney(props.Plafond) : ''
+        },        
         type: inputTypes.text.description,
         align: 'right'
     },

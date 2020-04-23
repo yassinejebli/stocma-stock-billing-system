@@ -34,6 +34,7 @@ const Input = ({ inTable,
     readOnly,
     type = 'text',
     align,
+    style,
     ...props }) => {
     const classes = useInputStyles({ align });
     
@@ -49,7 +50,8 @@ const Input = ({ inTable,
                 type,
                 margin: 'normal',
                 readOnly,
-                tabIndex
+                tabIndex,
+                style
             }}
 
         />

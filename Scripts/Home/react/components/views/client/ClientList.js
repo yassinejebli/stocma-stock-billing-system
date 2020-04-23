@@ -13,21 +13,28 @@ import ClientForm from '../../elements/forms/ClientForm'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined';
 import { TextField } from '@material-ui/core'
+import useDebounce from '../../../hooks/useDebounce'
 
 const TABLE = 'Clients';
-
-const defaultPageSize = 10;
 
 const ClientList = () => {
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
+    const debouncedSearchText = useDebounce(searchText);
+    const filters = React.useMemo(() => {
+        return [
+            {
+                field: 'Name',
+                value: debouncedSearchText
+            }
+        ]
+    }, [debouncedSearchText]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
     const [selectedRow, setSelectedRow] = React.useState();
     const [pageCount, setTotalCount] = React.useState(0);
-    const [pageIndex, setPageIndex] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
         () => getClientColumns(),
@@ -35,7 +42,7 @@ const ClientList = () => {
     )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideModal}>
-            <ClientForm onSuccess={()=>{
+            <ClientForm onSuccess={() => {
                 refetchData();
                 hideModal();
             }} data={selectedRow} />
@@ -46,19 +53,9 @@ const ClientList = () => {
         setTitle('Clients')
     }, []);
 
-    React.useEffect(()=>{
-        refetchData();
-        //reset page inex after filtering
-        setPageIndex(0);
-    }, [searchText]);
 
     const refetchData = () => {
-        getData(TABLE, {
-            $skip: pageIndex * defaultPageSize
-        },[{
-            field: 'Name',
-            value: searchText
-        }]).then((response) => {
+        getData(TABLE, {}, filters).then((response) => {
             setData(response.data);
             setTotalItems(response.totalItems);
         }).catch((err) => {
@@ -66,7 +63,7 @@ const ClientList = () => {
         })
     }
 
-    const deleteRow = async (id) => {
+    const deleteRow = React.useCallback(async (id) => {
         setLoading(true);
         const response = await deleteData(TABLE, id);
         console.log({ response });
@@ -80,34 +77,26 @@ const ClientList = () => {
             });
         }
         setLoading(false);
-    }
+    },[]);
 
-    const updateRow = async (row) => {
+    const updateRow = React.useCallback(async (row) => {
         setSelectedRow(row);
         showModal();
-    }
+    },[]);
 
 
-    const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+    const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {
         const fetchId = ++fetchIdRef.current;
-        setLoading(true);
-        setPageIndex(pageIndex);
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
-            // const endRow = startRow + pageSize
             getData(TABLE, {
                 $skip: startRow
-            },[{
-                field: 'Name',
-                value: searchText
-            }]).then((response) => {
+            }, filters).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
-                setLoading(false);
             }).catch((err) => {
                 console.log({ err });
-                setLoading(false);
             });
         }
     }, [])
@@ -120,7 +109,7 @@ const ClientList = () => {
                     <TitleIcon noBorder title="Liste des clients" Icon={PeopleAltOutlinedIcon} />
                     <TextField
                         value={searchText}
-                        onChange={({target: {value}}) => {
+                        onChange={({ target: { value } }) => {
                             setSearchText(value);
                         }}
                         placeholder="Rechercher..."
@@ -138,7 +127,7 @@ const ClientList = () => {
                         totalItems={totalItems}
                         pageCount={pageCount}
                         fetchData={fetchData}
-                        pageIndex={pageIndex}
+                        filters={filters}
                     />
                 </Box>
             </Paper>

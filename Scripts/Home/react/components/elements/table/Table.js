@@ -7,6 +7,7 @@ import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import { useSite } from '../../providers/SiteProvider';
 
 const border = '1px solid #d8d8d8';
 
@@ -47,6 +48,7 @@ function Table({
     filters,
     totalItems }) {
     const classes = useStyles();
+    const {siteId} = useSite();
     const {
         getTableProps,
         getTableBodyProps,
@@ -79,29 +81,22 @@ function Table({
             manualPagination: Boolean(serverPagination),
             manualFilters: Boolean(serverPagination),
             pageCount: _pageCount,
-            // useControlledState: state => {
-            //     return React.useMemo(
-            //       () => ({
-            //         ...state,
-            //         pageIndex: controlledPageIndex,
-            //       }),
-            //       [state, controlledPageIndex]
-            //     )
-            //   },
+            siteId
         },
         usePagination
     );
     const myData = serverPagination ? page : rows;
-    const onFetchDataDebounced = useAsyncDebounce(fetchData, 200)
+    const onFetchDataDebounced = useAsyncDebounce(fetchData, 300);
 
     React.useEffect(() => {
         if(serverPagination&&fetchData){
-            onFetchDataDebounced({ pageIndex, pageSize });
+            onFetchDataDebounced({ pageIndex, pageSize, filters });
         }
-    }, [onFetchDataDebounced, pageIndex, pageSize])
+    }, [onFetchDataDebounced, pageIndex, pageSize, filters])
 
     React.useEffect(()=>{
-        gotoPage(0);
+        if(pageIndex !== 0)
+            gotoPage(0);
     },[filters])
 
     return (
@@ -125,12 +120,12 @@ function Table({
                 </thead>
                 <tbody {...getTableBodyProps()}>
                     {myData.map((row, i) => {
-
-                        prepareRow(row)
+                        prepareRow(row);
+                        const disabled = row?.original?.Disabled;
                         return (
                             <tr key={i} {...row.getRowProps()}>
                                 {row.cells.map((cell, index) => {
-                                    return <td key={index} {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                    return <td key={index} style={{color: disabled ? 'rgb(172, 174, 176)':'#000'}} {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                 })}
                             </tr>
                         )
@@ -162,12 +157,12 @@ function Table({
 // Create an editable cell renderer
 const EditableCell = ({
     value: initialValue,
-    row: { index },
+    row: { index, original },
     column: { id, editable, type = 'text', align },
     updateMyData, // This is a custom function that we supplied to our table instance
 }) => {
 
-
+    const disabled = original?.Disabled;
     // We need to keep and update the state of the cell normally
     const [value, setValue] = React.useState(initialValue)
 
@@ -195,7 +190,9 @@ const EditableCell = ({
         onChange={onChange}
         onBlur={onBlur}
         type={type}
-    // tabIndex={id === 'TotalHT'?-1:null}
+        style={{
+            color: disabled ? 'rgb(172, 174, 176)' : '#000'
+        }}
     />
 }
 

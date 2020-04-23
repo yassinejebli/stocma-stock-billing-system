@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using WebApplication1.DATA;
@@ -22,9 +23,33 @@ namespace WebApplication1.Migrations
 
         protected override void Seed(MySaniSoftContext context)
         {
-            if (!context.Familles.Any<Famille>())
+            //article sites
+            if (context.Sites.FirstOrDefault() == null)
             {
-                context.Familles.AddRange((IEnumerable<Famille>) new Famille[1]
+                var mainSite = new Site
+                {
+                    Id = 1,
+                    Name = "Magasin 1",
+                    ArticleSites = new List<ArticleSite>()
+                };
+
+                foreach (var article in context.Articles)
+                {
+                    mainSite.ArticleSites.Add(new ArticleSite
+                    {
+                        Article = article,
+                        QteStock = article.QteStock,
+                        Site = mainSite
+                    });
+                }
+
+                context.Sites.Add(mainSite);
+                context.SaveChanges();
+            }
+
+            if (!context.Familles.Any())
+            {
+                context.Familles.AddRange((IEnumerable<Famille>)new Famille[1]
                 {
                     new Famille()
                     {
@@ -36,7 +61,7 @@ namespace WebApplication1.Migrations
             }
             if (!context.Companies.Any<Company>())
             {
-                context.Companies.AddRange((IEnumerable<Company>) new Company[1]
+                context.Companies.AddRange((IEnumerable<Company>)new Company[1]
                 {
                     new Company() {Id = Guid.NewGuid()}
                 });
@@ -44,7 +69,7 @@ namespace WebApplication1.Migrations
             }
             if (!context.Clients.Any<Client>())
             {
-                context.Clients.AddRange((IEnumerable<Client>) new Client[1]
+                context.Clients.AddRange((IEnumerable<Client>)new Client[1]
                 {
                     new Client()
                     {
@@ -57,7 +82,7 @@ namespace WebApplication1.Migrations
             }
             if (!context.TypeDepences.Any<TypeDepence>())
             {
-                context.TypeDepences.AddRange((IEnumerable<TypeDepence>) new TypeDepence[4]
+                context.TypeDepences.AddRange((IEnumerable<TypeDepence>)new TypeDepence[4]
                 {
                     new TypeDepence()
                     {
@@ -84,7 +109,7 @@ namespace WebApplication1.Migrations
             }
             if (!context.Settings.Any<Setting>())
             {
-                context.Settings.AddRange((IEnumerable<Setting>) new Setting[2]
+                context.Settings.AddRange((IEnumerable<Setting>)new Setting[2]
                 {
                     new Setting()
                     {
@@ -104,10 +129,10 @@ namespace WebApplication1.Migrations
             else
             {
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "2"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "2"))
                         .FirstOrDefault<Setting>() == null)
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -119,10 +144,10 @@ namespace WebApplication1.Migrations
                     context.SaveChanges();
                 }
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "3"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "3"))
                         .FirstOrDefault<Setting>() == null)
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -134,10 +159,10 @@ namespace WebApplication1.Migrations
                     context.SaveChanges();
                 }
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "5"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "5"))
                         .FirstOrDefault<Setting>() == null)
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -149,9 +174,9 @@ namespace WebApplication1.Migrations
                     context.SaveChanges();
                 }
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "6"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "6"))
                         .FirstOrDefault<Setting>() == null)
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -161,10 +186,10 @@ namespace WebApplication1.Migrations
                         }
                     });
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "7"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "7"))
                         .FirstOrDefault<Setting>() == null)
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -176,10 +201,10 @@ namespace WebApplication1.Migrations
                     context.SaveChanges();
                 }
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "8"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "8"))
                         .FirstOrDefault<Setting>() == null)
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -191,10 +216,10 @@ namespace WebApplication1.Migrations
                     context.SaveChanges();
                 }
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "9"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "9"))
                         .FirstOrDefault<Setting>() == null)
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -206,10 +231,10 @@ namespace WebApplication1.Migrations
                     context.SaveChanges();
                 }
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "10"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "10"))
                         .FirstOrDefault<Setting>() == null)
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -222,10 +247,10 @@ namespace WebApplication1.Migrations
                     context.SaveChanges();
                 }
                 if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>) (x => x.Code == "11"))
+                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "11"))
                         .FirstOrDefault<Setting>() == null)
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>) new Setting[1]
+                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
                     {
                         new Setting()
                         {
@@ -239,7 +264,7 @@ namespace WebApplication1.Migrations
             }
             if (!context.TypePaiements.Any<TypePaiement>())
             {
-                context.TypePaiements.AddRange((IEnumerable<TypePaiement>) new TypePaiement[11]
+                context.TypePaiements.AddRange((IEnumerable<TypePaiement>)new TypePaiement[11]
                 {
                     new TypePaiement()
                     {
@@ -307,7 +332,7 @@ namespace WebApplication1.Migrations
                         (x => x.Id == new Guid("399d159e-9ce0-4fcc-957a-08a65bbeece1"))).FirstOrDefault<TypePaiement>() ==
                     null)
                 {
-                    context.TypePaiements.AddRange((IEnumerable<TypePaiement>) new TypePaiement[1]
+                    context.TypePaiements.AddRange((IEnumerable<TypePaiement>)new TypePaiement[1]
                     {
                         new TypePaiement()
                         {
@@ -323,7 +348,7 @@ namespace WebApplication1.Migrations
                         (x => x.Id == new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4"))).FirstOrDefault<TypePaiement>() !=
                     null)
                     return;
-                context.TypePaiements.AddRange((IEnumerable<TypePaiement>) new TypePaiement[1]
+                context.TypePaiements.AddRange((IEnumerable<TypePaiement>)new TypePaiement[1]
                 {
                     new TypePaiement()
                     {
@@ -349,9 +374,11 @@ namespace WebApplication1.Migrations
                     });
                 }
 
-
                 context.SaveChanges();
             }
+
+
+
         }
     }
 }

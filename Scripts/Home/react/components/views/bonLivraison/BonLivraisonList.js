@@ -9,7 +9,7 @@ import { getData, deleteData } from '../../../queries/crudBuilder'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
-import { TextField, FormControlLabel, Switch } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import useDebounce from '../../../hooks/useDebounce'
 import { useModal } from 'react-modal-hook'
@@ -18,18 +18,27 @@ import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 const DOCUMENT = 'BonLivraisons'
 const EXPAND = ['Client', 'BonLivraisonItems']
 
-const defaultPageSize = 10
-
 const BonLivraisonList = () => {
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
-    const [filters,setFilters] = React.useState([]);
+    const debouncedSearchText = useDebounce(searchText);
+    const filters = React.useMemo(()=>{
+        return [
+            {
+                field: 'Client/Name',
+                value: debouncedSearchText
+            },
+            {
+                field: 'NumBon',
+                value: debouncedSearchText
+            }
+        ]
+    },[debouncedSearchText]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
-    const [pageIndex, setPageIndex] = React.useState(0);
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
     const history = useHistory();
     const fetchIdRef = React.useRef(0);
@@ -55,27 +64,9 @@ const BonLivraisonList = () => {
         setTitle('Bon de livraison')
     }, []);
 
-    React.useEffect(() => {
-        // refetchData();
-        // //reset page index after filtering
-        // setPageIndex(0);
-        setFilters([
-            {
-                field: 'Client/Name',
-                value: searchText
-            },
-            {
-                field: 'Client/Name',
-                value: searchText
-            }
-        ]);
-    }, [searchText]);
-
     const refetchData = () => {
-        getData(DOCUMENT, {
-            $skip: pageIndex * defaultPageSize
-        },
-           filters, EXPAND).then((response) => {
+        getData(DOCUMENT,{},
+        filters, EXPAND).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
             }).catch((err) => {
@@ -83,7 +74,7 @@ const BonLivraisonList = () => {
             })
     }
 
-    const deleteRow = async (id) => {
+    const deleteRow = React.useCallback(async (id) => {
         setLoading(true);
         const response = await deleteData(DOCUMENT, id);
         console.log({ response });
@@ -93,20 +84,19 @@ const BonLivraisonList = () => {
         } else {
             showSnackBar({
                 error: true,
-                text: 'Impossible de supprimer le client sélectionné !'
+                text: 'Impossible de supprimer le document sélectionné !'
             });
         }
         setLoading(false);
-    }
+    },[])
 
-    const updateRow = async (id) => {
+    const updateRow = React.useCallback(async (id) => {
         history.push(`BonLivraison?BonLivraisonId=${id}`);
-    }
+    },[]);
 
 
-    const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+    const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {
         const fetchId = ++fetchIdRef.current;
-        setLoading(true);
         // setPageIndex(pageIndex);
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
@@ -117,18 +107,16 @@ const BonLivraisonList = () => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
-                setLoading(false);
             }).catch((err) => {
                 console.log({ err });
-                setLoading(false);
             });
         }
-    }, [searchText, filters])
+    }, [])
 
-    const print = (document) => {
+    const print = React.useCallback((document) => {
         setDocumentToPrint(document);
         showModal();
-    }
+    },[])
 
     return (
         <>
@@ -158,7 +146,6 @@ const BonLivraisonList = () => {
                         pageCount={pageCount}
                         fetchData={fetchData}
                         filters={filters}
-                        // pageIndex={pageIndex}
                     />
                 </Box>
             </Paper>

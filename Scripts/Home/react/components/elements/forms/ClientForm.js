@@ -79,7 +79,7 @@ const ClientForm = ({data, onSuccess}) => {
     return (
         <div>
             <Loader loading={loading} />
-            <TitleIcon title="Client" Icon={GroupAddOutlinedIcon} />
+            <TitleIcon title={editMode ? 'Modifier les infos du client' : 'Ajouter un client'} Icon={GroupAddOutlinedIcon} />
             <TextField
                 name="Name"
                 label="Nom du client"

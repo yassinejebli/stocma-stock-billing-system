@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace WebApplication1.DATA
 {
@@ -35,8 +36,17 @@ namespace WebApplication1.DATA
         [DefaultValue(0)]
         public float? MaxStock { get; set; }
 
+        //transferer
         [DefaultValue(0)]
         public float QteStock { get; set; }
+
+        [NotMapped]
+        public float QteStockSum { 
+            get
+            {
+                return this.ArticleSites.Sum(x => x.QteStock);
+            }
+        }
 
         [DefaultValue(0)]
         public float? QteEmballageVide { get; set; }//for suiv qtevide
@@ -77,6 +87,7 @@ namespace WebApplication1.DATA
         public virtual Categorie Categorie { get; set; }
 
         public virtual ICollection<BonReceptionItem> BonReceptionItems { get; set; }
+        public virtual ICollection<ArticleSite> ArticleSites { get; set; }
 
         public virtual ICollection<BonLivraisonItem> BonLivraisonItems { get; set; }
 

@@ -13,7 +13,7 @@ const Loader = ({loading}) => {
 
     return (
         <Backdrop className={classes.root} open={loading}>
-            <CircularProgress thickness={5} style={{color: 'rgb(66, 135, 245)'}} />
+            <CircularProgress size={76} style={{color: 'rgb(66, 135, 245)'}} />
         </Backdrop>
     )
 }

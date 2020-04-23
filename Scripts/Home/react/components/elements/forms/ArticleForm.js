@@ -1,47 +1,12 @@
 import React from 'react';
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import { TextField, Button, Box, Avatar } from '@material-ui/core';
-import { saveData } from '../../../queries/crudBuilder';
 import { v4 as uuidv4 } from 'uuid'
 import Loader from '../loaders/Loader';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import SuccessSnackBar from '../snack-bars/SuccessSnackBar';
-
-const border = '1px solid #d8d8d8';
-
-export const useStyles = makeStyles(theme => ({
-    item: {
-        display: 'flex',
-        alignItems: 'center',
-        paddingBottom: 16,
-        borderBottom: border,
-        marginBottom: 16,
-        cursor: 'pointer',
-        '&:hover .MuiAvatar-root': {
-            backgroundColor: '#22496f'
-        }
-    },
-    content: {
-        marginLeft: 12,
-        maxWidth: 400
-    },
-    title: {
-        fontWeight: 500
-    },
-    description: {
-        marginTop: 6,
-        opacity: 0.8
-    },
-    avatar: {
-        height: 50,
-        width: 50,
-        backgroundColor: '#7290af'
-    },
-    icon: {
-        height: 20,
-        width: 20
-    }
-}));
+import { saveArticle } from '../../../queries/articleQueries';
+import {useSite} from '../../providers/SiteProvider';
+import { useSnackBar } from '../../providers/SnackBarProvider';
+import TitleIcon from '../misc/TitleIcon';
 
 const initialState = {
     designation: '',
@@ -51,14 +16,14 @@ const initialState = {
     unite: 'U',
     qteStock: 0
 }
-const TABLE = 'Articles';
 
-const ArticleForm = () => {
+const ArticleForm = ({data}) => {
+    const {siteId} = useSite();
+    const {showSnackBar} = useSnackBar();
+    const editMode = Boolean(data);
     const [formState, setFormState] = React.useState(initialState);
     const [formErrors, setFormErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
-    const [success, setSuccess] = React.useState(false);
-    const classes = useStyles();
 
     const onFieldChange = ({ target }) => setFormState(_formState => ({ ..._formState, [target.name]: target.value }));
 
@@ -84,7 +49,7 @@ const ArticleForm = () => {
         const preparedData = {
             Id: uuidv4(),
             Designation: formState.designation,
-            QteStock: formState.qteStock,
+            QteStock: 0,
             PVD: formState.pvd,
             TVA: formState.tva,
             PA: formState.pa,
@@ -93,26 +58,22 @@ const ArticleForm = () => {
         }
 
         setLoading(true);
-        const response = await saveData(TABLE, preparedData);
+        const response = await saveArticle(preparedData, formState.qteStock, siteId);
         setLoading(false);
         if (response?.Id) {
             setFormState({ ...initialState });
-            setSuccess(true);
+            showSnackBar();
+        }else{
+            showSnackBar({
+                error: true
+            });
         }
     }
 
     return (
         <div>
             <Loader loading={loading} />
-            <SuccessSnackBar open={success} onClose={()=>setSuccess(false)}/>
-            <div className={classes.item}>
-                <Avatar className={classes.avatar}>
-                    <AddShoppingCartIcon className={classes.icon} />
-                </Avatar>
-                <div className={classes.content}>
-                    <div className={classes.title}>Ajouter un article</div>
-                </div>
-            </div>
+            <TitleIcon title={editMode ? 'Modifier l\'article': 'Ajouter un article'} Icon={AddShoppingCartIcon} />
             <TextField
                 name="designation"
                 label="Désignation"

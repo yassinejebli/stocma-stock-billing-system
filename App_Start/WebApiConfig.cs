@@ -106,6 +106,8 @@ namespace WebApplication1
             conventionModelBuilder.EntitySet<Revendeur>("Revendeurs");
             conventionModelBuilder.EntitySet<FactureF>("FactureFs");
             conventionModelBuilder.EntitySet<FactureFItem>("FactureFItems");
+            conventionModelBuilder.EntitySet<Site>("Sites");
+            conventionModelBuilder.EntitySet<ArticleSite>("ArticleSites");
 
             conventionModelBuilder.EntitySet<FakeFactureF>("FakeFactureFs");
             conventionModelBuilder.EntitySet<FakeFactureFItem>("FakeFactureFItems");
@@ -118,6 +120,9 @@ namespace WebApplication1
             conventionModelBuilder.StructuralTypes
                 .First(t => t.ClrType == typeof(Client))
                 .AddProperty(typeof(Client).GetProperty("Solde"));
+            conventionModelBuilder.StructuralTypes
+                .First(t => t.ClrType == typeof(Article))
+                .AddProperty(typeof(Article).GetProperty("QteStockSum"));
             ///
 
             return conventionModelBuilder.GetEdmModel();

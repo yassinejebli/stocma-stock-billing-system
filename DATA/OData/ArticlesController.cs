@@ -6,7 +6,6 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.OData;
@@ -15,25 +14,7 @@ using WebApplication1.DATA;
 
 namespace WebApplication1.DATA.OData
 {
-    /*
-    La classe WebApiConfig peut exiger d'autres modifications pour ajouter un itinéraire à ce contrôleur. Fusionnez ces instructions dans la méthode Register de la classe WebApiConfig, le cas échéant. Les URL OData sont sensibles à la casse.
 
-    using System.Web.Http.OData.Builder;
-    using System.Web.Http.OData.Extensions;
-    using WebApplication1.DATA;
-    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<Article>("Articles");
-    builder.EntitySet<BonAvoirCItem>("BonAvoirCItems"); 
-    builder.EntitySet<BonAvoirItem>("BonAvoirItems"); 
-    builder.EntitySet<BonCommandeItem>("BonCommandeItems"); 
-    builder.EntitySet<BonLivraisonItem>("BonLivraisonItems"); 
-    builder.EntitySet<BonReceptionItem>("BonReceptionItems"); 
-    builder.EntitySet<Categorie>("Categories"); 
-    builder.EntitySet<DevisItem>("DevisItems"); 
-    builder.EntitySet<FactureItem>("FactureItems"); 
-    builder.EntitySet<TarifItem>("TarifItems"); 
-    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-    */
     public class ArticlesController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
@@ -59,7 +40,7 @@ namespace WebApplication1.DATA.OData
         }
 
         // PUT: odata/Articles(5)
-        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<Article> patch)
+        public IHttpActionResult Put([FromODataUri] Guid key, Delta<Article> patch, float QteStock, int IdSite = 1)
         {
             Validate(patch.GetEntity());
 
@@ -68,17 +49,19 @@ namespace WebApplication1.DATA.OData
                 return BadRequest(ModelState);
             }
 
-            Article article = await db.Articles.FindAsync(key);
+            Article article = db.Articles.Find(key);
             if (article == null)
             {
                 return NotFound();
             }
 
+            var articleSite = db.ArticleSites.Where(x => x.IdSite == IdSite && x.IdArticle == key).FirstOrDefault();
+            articleSite.QteStock = QteStock;
             patch.Put(article);
 
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -96,18 +79,27 @@ namespace WebApplication1.DATA.OData
         }
 
         // POST: odata/Articles
-        public async Task<IHttpActionResult> Post(Article article)
+        public IHttpActionResult Post(Article article, float QteStock, int IdSite = 1)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            foreach(Site site in db.Sites)
+            {
+                db.ArticleSites.Add(new ArticleSite
+                {
+                    IdArticle = article.Id,
+                    IdSite = site.Id,
+                    QteStock = site.Id != IdSite ? 0 : QteStock
+                });
+            }
             db.Articles.Add(article);
 
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -126,7 +118,7 @@ namespace WebApplication1.DATA.OData
 
         // PATCH: odata/Articles(5)
         [AcceptVerbs("PATCH", "MERGE")]
-        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Article> patch)
+        public IHttpActionResult Patch([FromODataUri] Guid key, Delta<Article> patch)
         {
             Validate(patch.GetEntity());
 
@@ -135,7 +127,7 @@ namespace WebApplication1.DATA.OData
                 return BadRequest(ModelState);
             }
 
-            Article article = await db.Articles.FindAsync(key);
+            Article article = db.Articles.Find(key);
             if (article == null)
             {
                 return NotFound();
@@ -145,7 +137,7 @@ namespace WebApplication1.DATA.OData
 
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -163,18 +155,25 @@ namespace WebApplication1.DATA.OData
         }
 
         // DELETE: odata/Articles(5)
-        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
+        public IHttpActionResult Delete([FromODataUri] Guid key)
         {
-            Article article = await db.Articles.FindAsync(key);
+            Article article = db.Articles.Find(key);
             if (article == null)
             {
                 return NotFound();
             }
 
             db.Articles.Remove(article);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // GET: odata/Articles(5)/ArticleSites
+        [EnableQuery]
+        public IQueryable<ArticleSite> GetArticleSites([FromODataUri] Guid key)
+        {
+            return db.Articles.Where(m => m.Id == key).SelectMany(m => m.ArticleSites);
         }
 
         // GET: odata/Articles(5)/BonAvoirCItems
@@ -226,11 +225,46 @@ namespace WebApplication1.DATA.OData
             return db.Articles.Where(m => m.Id == key).SelectMany(m => m.DevisItems);
         }
 
+        // GET: odata/Articles(5)/DgbFItems
+        [EnableQuery]
+        public IQueryable<DgbFItem> GetDgbFItems([FromODataUri] Guid key)
+        {
+            return db.Articles.Where(m => m.Id == key).SelectMany(m => m.DgbFItems);
+        }
+
+        // GET: odata/Articles(5)/DgbItems
+        [EnableQuery]
+        public IQueryable<DgbItem> GetDgbItems([FromODataUri] Guid key)
+        {
+            return db.Articles.Where(m => m.Id == key).SelectMany(m => m.DgbItems);
+        }
+
+        // GET: odata/Articles(5)/FactureFItems
+        [EnableQuery]
+        public IQueryable<FactureFItem> GetFactureFItems([FromODataUri] Guid key)
+        {
+            return db.Articles.Where(m => m.Id == key).SelectMany(m => m.FactureFItems);
+        }
+
         // GET: odata/Articles(5)/FactureItems
         [EnableQuery]
         public IQueryable<FactureItem> GetFactureItems([FromODataUri] Guid key)
         {
             return db.Articles.Where(m => m.Id == key).SelectMany(m => m.FactureItems);
+        }
+
+        // GET: odata/Articles(5)/RdbFItems
+        [EnableQuery]
+        public IQueryable<RdbFItem> GetRdbFItems([FromODataUri] Guid key)
+        {
+            return db.Articles.Where(m => m.Id == key).SelectMany(m => m.RdbFItems);
+        }
+
+        // GET: odata/Articles(5)/RdbItems
+        [EnableQuery]
+        public IQueryable<RdbItem> GetRdbItems([FromODataUri] Guid key)
+        {
+            return db.Articles.Where(m => m.Id == key).SelectMany(m => m.RdbItems);
         }
 
         // GET: odata/Articles(5)/TarifItems

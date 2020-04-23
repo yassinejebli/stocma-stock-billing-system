@@ -13,28 +13,33 @@ import ClientList from './components/views/client/clientList';
 import SnackBarProvider from './components/providers/SnackBarProvider';
 import SupplierList from './components/views/fournisseur/SupplierList';
 import BonLivraisonList from './components/views/bonLivraison/BonLivraisonList';
+import SiteProvider from './components/providers/SiteProvider';
+import ArticleList from './components/views/articles/ArticleList';
 
 const App = () => {
     return (
-        <ThemeProvider>
-            <SnackBarProvider>
-                <ModalProvider rootComponent={TransitionGroup}>
-                    <TitleProvider>
-                        <Router>
-                            <TopBar />
-                            <Switch>
-                                <Route exact path="/" component={Dashboard} />
-                                <Route path="/BonLivraison" component={BonLivraison} />
-                                <Route path="/BonLivraisonList" component={BonLivraisonList} />
-                                <Route path="/ClientList" component={ClientList} />
-                                <Route path="/SupplierList" component={SupplierList} />
-                            </Switch>
-                            <NavigationMenu />
-                        </Router>
-                    </TitleProvider>
-                </ModalProvider>
-            </SnackBarProvider>
-        </ThemeProvider>
+        <SiteProvider>
+            <ThemeProvider>
+                <SnackBarProvider>
+                    <ModalProvider rootComponent={TransitionGroup}>
+                        <TitleProvider>
+                            <Router>
+                                <TopBar />
+                                <Switch>
+                                    <Route exact path="/" component={Dashboard} />
+                                    <Route path="/BonLivraison" component={BonLivraison} />
+                                    <Route path="/BonLivraisonList" component={BonLivraisonList} />
+                                    <Route path="/ArticleList" component={ArticleList} />
+                                    <Route path="/ClientList" component={ClientList} />
+                                    <Route path="/SupplierList" component={SupplierList} />
+                                </Switch>
+                                <NavigationMenu />
+                            </Router>
+                        </TitleProvider>
+                    </ModalProvider>
+                </SnackBarProvider>
+            </ThemeProvider>
+        </SiteProvider>
     )
 }
 

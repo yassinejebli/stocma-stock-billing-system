@@ -854,6 +854,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DataSetSoly.xsd</DependentUpon>
     </Compile>
+    <Compile Include="DATA\ArticleSite.cs" />
+    <Compile Include="DATA\OData\ArticlesController.cs" />
+    <Compile Include="DATA\OData\SitesController.cs" />
+    <Compile Include="DATA\Site.cs" />
     <Compile Include="DATA\Categorie.cs" />
     <Compile Include="DATA\Article.cs" />
     <Compile Include="DATA\ArticleFacture.cs" />
@@ -907,7 +911,6 @@
     <Compile Include="DATA\JournalConnexion.cs" />
     <Compile Include="DATA\MySaniSoftContext.cs" />
     <Compile Include="DATA\OData\ArticleFacturesController.cs" />
-    <Compile Include="DATA\OData\ArticlesController.cs" />
     <Compile Include="DATA\OData\BonAvoirCItemsController.cs" />
     <Compile Include="DATA\OData\BonAvoirCsController.cs" />
     <Compile Include="DATA\OData\BonAvoirItemsController.cs" />
@@ -1107,6 +1110,10 @@
     <Compile Include="Migrations\202004181226485_Datetime_null.cs" />
     <Compile Include="Migrations\202004181226485_Datetime_null.Designer.cs">
       <DependentUpon>202004181226485_Datetime_null.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004211056101_sites.cs" />
+    <Compile Include="Migrations\202004211056101_sites.Designer.cs">
+      <DependentUpon>202004211056101_sites.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3782,6 +3789,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004181226485_Datetime_null.resx">
       <DependentUpon>202004181226485_Datetime_null.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004211056101_sites.resx">
+      <DependentUpon>202004211056101_sites.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

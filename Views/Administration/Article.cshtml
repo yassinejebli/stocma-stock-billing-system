@@ -514,16 +514,17 @@
                 }
 
                 item.DateModification = new Date();
-
+                    delete item["Famille"];
+                    //TODO:
+                    delete item["QteStockSum"];
                 if (item.Id == null) {
                     item.Id = breeze.core.getUuid();
 
-                    delete item["Famille"];
+                    
                     crudGridDataFactoryPage($scope.table).save(item, saveSucceeded, saveFailed);
 
                 }
                 else {
-                    delete item["Famille"];
                     crudGridDataFactoryPage($scope.table).update({ key: 'guid\'' + item.Id + '\'' }, item, saveSucceeded, saveFailed);
                 }
             }
