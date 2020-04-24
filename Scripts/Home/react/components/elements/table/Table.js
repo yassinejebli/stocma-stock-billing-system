@@ -14,7 +14,7 @@ const border = '1px solid #d8d8d8';
 const useStyles = makeStyles(theme => ({
     root: {
         '& tbody, textarea':{
-            fontSize: '14px !important'
+            fontSize: '13px !important'
         },
         '& thead th': {
             paddingBottom: 14,

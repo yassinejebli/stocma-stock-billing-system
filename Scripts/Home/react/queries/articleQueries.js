@@ -38,12 +38,13 @@ export const getLastPriceSale = async (articleId, clientId) => {
 
 export const updateArticle = async (article, id, qteStock, idSite) => {
     const parsedParams = new URLSearchParams({
-        qteStock: qteStock,
+        QteStock: qteStock,
         IdSite: idSite
     }).toString();
 
-    const URL = TABLE + `(guid'${id}')` + '?' + parsedParams;
+    const URL = ODATA_URL + TABLE + `(guid'${id}')` + '?' + parsedParams;
     delete article['QteStockSum'];
+    delete article['ArticleSites'];
     try {
         const res = await (await fetch(URL, {
             method: 'PUT',

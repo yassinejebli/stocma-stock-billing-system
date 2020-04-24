@@ -43,7 +43,8 @@ const ClientAutocomplete = ({ errorText, ...props }) => {
       loading={loading}
       loadingText="Chargement..."
       disableClearable
-      freeSolo
+      popupIcon={null}
+      // freeSolo
       style={{ minWidth: 240 }}
       options={clients}
       classes={{

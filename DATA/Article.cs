@@ -18,10 +18,12 @@ namespace WebApplication1.DATA
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required]
         [Index(IsUnique = false)]
         [StringLength(200)]
         public string Ref { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int RefAuto { get; set; }
 
         [Required]
         [Index(IsUnique = true)]
@@ -39,6 +41,8 @@ namespace WebApplication1.DATA
         //transferer
         [DefaultValue(0)]
         public float QteStock { get; set; }
+
+        public bool Disabled { get; set; } = false;
 
         [NotMapped]
         public float QteStockSum { 
@@ -79,6 +83,7 @@ namespace WebApplication1.DATA
         public string Logo2 { get; set; }
 
         public string Logo3 { get; set; }
+        public string Image { get; set; }
 
         public string BarCode { get; set; }
 

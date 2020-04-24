@@ -39,8 +39,9 @@ namespace WebApplication1.DATA.OData
             return SingleResult.Create(db.Articles.Where(article => article.Id == key));
         }
 
+        //[EnableQuery]
         // PUT: odata/Articles(5)
-        public IHttpActionResult Put([FromODataUri] Guid key, Delta<Article> patch, float QteStock, int IdSite = 1)
+        public IHttpActionResult Put([FromODataUri] Guid key, float QteStock, int IdSite, Delta<Article> patch)
         {
             Validate(patch.GetEntity());
 
@@ -95,6 +96,7 @@ namespace WebApplication1.DATA.OData
                     QteStock = site.Id != IdSite ? 0 : QteStock
                 });
             }
+            article.Ref = String.Format("A{0:000000}", article.RefAuto);
             db.Articles.Add(article);
 
             try

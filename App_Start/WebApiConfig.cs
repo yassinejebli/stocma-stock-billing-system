@@ -5,6 +5,7 @@
 // Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
 
 using Microsoft.Data.Edm;
+using System;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.OData.Builder;
@@ -27,7 +28,7 @@ namespace WebApplication1
 
         public static IEdmModel GetModel()
         {
-            ODataConventionModelBuilder conventionModelBuilder = new ODataConventionModelBuilder();
+            var conventionModelBuilder = new ODataConventionModelBuilder();
 
 
             string str = "";
@@ -123,7 +124,8 @@ namespace WebApplication1
             conventionModelBuilder.StructuralTypes
                 .First(t => t.ClrType == typeof(Article))
                 .AddProperty(typeof(Article).GetProperty("QteStockSum"));
-            ///
+            /////////
+           
 
             return conventionModelBuilder.GetEdmModel();
         }

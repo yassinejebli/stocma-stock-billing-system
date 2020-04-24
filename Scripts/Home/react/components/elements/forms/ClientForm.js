@@ -26,8 +26,6 @@ const ClientForm = ({data, onSuccess}) => {
     const [loading, setLoading] = React.useState(false);
     
     React.useEffect(()=>{
-        console.log({data});
-        
         if(editMode)
             setFormState({...data})
     }, [])

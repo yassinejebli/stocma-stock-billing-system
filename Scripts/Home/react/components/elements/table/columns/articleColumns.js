@@ -13,15 +13,9 @@ export const articleColumns = () => ([
         type: inputTypes.text.description,
         width: 140
     },
-    // {
-    //     Header: 'Qte Total',
-    //     accessor: 'QteStockSum',
-    //     type: inputTypes.text.description,
-    //     align: 'right'
-    // },
     {
         id: 'QteStock',
-        Header: 'Qte en stock',
+        Header: 'Qte de stock',
         Cell: ({ row: { original }, siteId }) => {
             const articleSite = original.ArticleSites?.find(x => x.IdSite = siteId);
             return (<div style={{textAlign: 'right'}}>
@@ -72,7 +66,7 @@ export const articleColumns = () => ([
         Cell: ({ row: { original }, updateRow, deleteRow }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
-                    <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original.Id)}>
+                    <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
                         <EditOutlinedIcon />
                     </IconButton>
                     <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
