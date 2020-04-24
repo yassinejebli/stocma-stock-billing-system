@@ -43,6 +43,7 @@ function Table({
     fetchData,
     pageCount: _pageCount,
     addNewRow,
+    showImage,
     print,
     owner,
     filters,
@@ -74,6 +75,7 @@ function Table({
             updateMyData,
             addNewRow,
             deleteRow,
+            showImage,
             updateRow,
             print,
             owner,
@@ -86,7 +88,7 @@ function Table({
         usePagination
     );
     const myData = serverPagination ? page : rows;
-    const onFetchDataDebounced = useAsyncDebounce(fetchData, 300);
+    const onFetchDataDebounced = useAsyncDebounce(fetchData, 100);
 
     React.useEffect(() => {
         if(serverPagination&&fetchData){

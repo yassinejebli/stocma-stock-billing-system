@@ -5,6 +5,8 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { Box } from '@material-ui/core';
 import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
+import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
+import { getImageURL } from '../../../../utils/urlBuilder';
 
 export const articleColumns = () => ([
     {
@@ -18,7 +20,7 @@ export const articleColumns = () => ([
         Header: 'Qte de stock',
         Cell: ({ row: { original }, siteId }) => {
             const articleSite = original.ArticleSites?.find(x => x.IdSite = siteId);
-            return (<div style={{textAlign: 'right'}}>
+            return (<div style={{ textAlign: 'right' }}>
                 {formatMoney(articleSite?.QteStock)}
             </div>)
         },
@@ -63,9 +65,12 @@ export const articleColumns = () => ([
     {
         id: 'actions',
         Header: '',
-        Cell: ({ row: { original }, updateRow, deleteRow }) => {
+        Cell: ({ row: { original }, updateRow, deleteRow, showImage }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
+                    {original.Image && <IconButton tabIndex={-1} size="small" onClick={() => showImage(original.Image)}>
+                        <ImageOutlinedIcon />
+                    </IconButton>}
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
                         <EditOutlinedIcon />
                     </IconButton>

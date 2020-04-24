@@ -1,7 +1,6 @@
 import React from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Dialog from '@material-ui/core/Dialog';
-import { Box } from '@material-ui/core';
 
 export const useStyles = makeStyles(theme => ({
     root: {

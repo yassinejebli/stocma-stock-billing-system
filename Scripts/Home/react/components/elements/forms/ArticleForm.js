@@ -10,8 +10,10 @@ import TitleIcon from '../misc/TitleIcon';
 import FilePicker from '../button/FilePicker';
 import { toBase64 } from '../../../utils/imageUtils';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { uploadArticleImage } from '../../../queries/fileUploader';
 
 const initialState = {
+    Id: uuidv4(),
     Designation: '',
     PVD: '',
     PA: '',
@@ -48,6 +50,7 @@ const ArticleForm = ({ data, onSuccess }) => {
     const classes = useStyles();
     const [formState, setFormState] = React.useState(initialState);
     const [formErrors, setFormErrors] = React.useState({});
+    const [base64, setBase64] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
 
     React.useEffect(() => {
@@ -62,8 +65,6 @@ const ArticleForm = ({ data, onSuccess }) => {
         const _errors = [];
         if (!formState.Designation)
             _errors['Designation'] = 'Ce champs est obligatoire.'
-        // if (!formState.QteStock)
-        //     _errors['qteStock'] = 'Ce champs est obligatoire.'
         if (!formState.PVD)
             _errors['PVD'] = 'Ce champs est obligatoire.'
         if (!formState.PA)
@@ -96,7 +97,7 @@ const ArticleForm = ({ data, onSuccess }) => {
         } else {
             const response = await saveArticle(preparedData, formState.QteStock, siteId);
             if (response?.Id) {
-                setFormState({ ...initialState });
+                setFormState({ ...initialState, Id: uuidv4() });
                 showSnackBar();
                 if (onSuccess) onSuccess();
             } else {
@@ -195,21 +196,30 @@ const ArticleForm = ({ data, onSuccess }) => {
             />
             <Box my={2}>
                 <Box my={2}>
-                    {formState.Image && <div className={classes.image} style={{
-                        backgroundImage: `url(${formState.Image})`
+                    {base64 && <div className={classes.image} style={{
+                        backgroundImage: `url(${base64})`
                     }}>
                         <div className={classes.removeIcon}
-                            onClick={() => setFormState(_formState => ({ ..._formState, Image: null }))}>
+                            onClick={() => {
+                                setFormState(_formState => ({ ..._formState, Image: null }));
+                                setBase64(null);
+                            }}>
                             <CancelIcon color="primary" />
                         </div>
                     </div>}
                 </Box>
                 <FilePicker
                     onChange={async ({ target }) => {
-                        const base64 = await toBase64(target.files?.[0]);
-                        setFormState(_formState => ({
-                            ..._formState, Image: base64
-                        }));
+                        const file = target.files?.[0];
+                        if (file) {
+                            const res = uploadArticleImage(formState.Id, file);
+                            console.log({ res });
+                            const _base64 = await toBase64(target.files?.[0]);
+                            setBase64(_base64);
+                            setFormState(_formState => ({
+                                ..._formState, Image: formState.Id + '.' + file.name?.split('.').pop()
+                            }));
+                        }
                     }}
                 />
             </Box>

@@ -1,9 +1,6 @@
 import React from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import PhotoCameraOutlinedIcon from '@material-ui/icons/PhotoCameraOutlined';
-import { Avatar, Box } from '@material-ui/core';
-import { toBase64 } from '../../../utils/imageUtils';
-
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 export const useStyles = makeStyles(theme => ({
     input: {
         display: 'none'
@@ -18,8 +15,8 @@ export const useStyles = makeStyles(theme => ({
     },
     icon: {
         color: '#FFF',
-        width: 32,
-        height: 32
+        width: 26,
+        height: 26
     }
 }));
 
@@ -32,11 +29,14 @@ const FilePicker = (props) => {
             id="contained-button-file"
             multiple
             type="file"
+            onClick={event=> { 
+                event.target.value = null
+           }}
             {...props}
         />
         <label htmlFor="contained-button-file">
             <div className={classes.wrapper}>
-                <PhotoCameraOutlinedIcon className={classes.icon} />
+                <AddAPhotoIcon className={classes.icon} />
             </div>
         </label>
     </>

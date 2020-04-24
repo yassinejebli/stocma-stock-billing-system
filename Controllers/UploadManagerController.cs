@@ -13,34 +13,32 @@ namespace WebApplication1.Controllers
     //[SiteConfig]
     public class UploadManagerController : Controller
     {
-        public string userfiles { get; set; }
+        public string files { get; set; }
         private MySaniSoftContext db = new MySaniSoftContext();
         //
         // GET: /Upload/
         public UploadManagerController()
         {
-            userfiles = System.Configuration.ConfigurationManager.AppSettings["Filemanager_RootPath"];
-            if (string.IsNullOrEmpty(userfiles))
-                userfiles = "/UserFiles/";
-            //="/UserFiles/";
-            if (!userfiles.EndsWith("/"))
-                userfiles += "/";
+            files = System.Configuration.ConfigurationManager.AppSettings["Filemanager_RootPath"];
+            if (string.IsNullOrEmpty(files))
+                files = "/UserFiles/";
+            if (!files.EndsWith("/"))
+                files += "/";
         }
         public ActionResult Index()
         {
             var model = new FileManagerModel()
             {
-                CurrentDir = new DirectoryInfo(Server.MapPath("~" + userfiles)),
-                Directories = Directory.GetDirectories(Server.MapPath("~" + userfiles)).Select(q => new DirectoryInfo(q)).ToList(),
-                Files = Directory.GetFiles(Server.MapPath("~" + userfiles)).Select(q => new FileInfo(q)).ToList()
+                CurrentDir = new DirectoryInfo(Server.MapPath("~" + files)),
+                Directories = Directory.GetDirectories(Server.MapPath("~" + files)).Select(q => new DirectoryInfo(q)).ToList(),
+                Files = Directory.GetFiles(Server.MapPath("~" + files)).Select(q => new FileInfo(q)).ToList()
             };
             return View(model);
         }
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult UploadImage(HttpPostedFileBase file, string dbtype = null, string id = null)
+        public ActionResult UploadImage(HttpPostedFileBase file, string type = null, string id = null)
         {
-            string url; // url to return
-            //string message; // message to display (optional)
+            string url;
 
             string fileName = file.FileName;
             if (fileName.IndexOf("\\") > -1)
@@ -48,29 +46,13 @@ namespace WebApplication1.Controllers
                 fileName = fileName.Substring(fileName.LastIndexOf("\\") + 1);
             }
             fileName = fileName.Replace("\\", "/");
-            url = "~" + userfiles + fileName;
+            url = "~" + files + fileName;
             var fii = new FileInfo(Server.MapPath(url));
-            switch (dbtype)
+            switch (type)
             {
-                case "Employee":
+                case "Articles":
                     fileName = id.ToString() + fii.Extension;
-                    url = "~" + userfiles + "/catalog/employee/" + fileName;
-                    break;
-                case "Article":
-                    fileName = id.ToString() + fii.Extension;
-                    url = "~" + userfiles + "/catalog/article/" + fileName;
-                    break;
-                case "Product":
-                    fileName = id.ToString() + fii.Extension;
-                    url = "~" + userfiles + "/catalog/product/" + fileName;
-                    break;
-                case "Category":
-                    fileName = id.ToString() + fii.Extension;
-                    url = "~" + userfiles + "/catalog/category/" + fileName;
-                    break;
-                case "Component":
-                    fileName = id.ToString() + fii.Extension;
-                    url = "~" + userfiles + "/catalog/component/" + fileName;
+                    url = "~" + files + "/images/articles/" + fileName;
                     break;
                 default:
                     break;
@@ -82,11 +64,9 @@ namespace WebApplication1.Controllers
                 fi.Directory.Create();
             if (fi.Exists)
                 fi.Delete();
-            file.SaveAs(fileName);
-            //message = "Image was saved correctly";
 
-            // since it is an ajax request it requires this string
-            //string output = @"<html><body><script>window.parent.CKEDITOR.tools.callFunction("+CKEditorFuncNum+", \""+url+"\", \""+message+"\");</script></body></html>";
+            file.SaveAs(fileName);
+
             return Content(url.Substring(1));
         }
 

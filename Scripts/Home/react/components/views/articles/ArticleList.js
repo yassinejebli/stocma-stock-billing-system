@@ -11,9 +11,10 @@ import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog'
 import ArticleForm from '../../elements/forms/ArticleForm'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined'
-import { TextField } from '@material-ui/core'
+import { TextField, Dialog } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import { articleColumns } from '../../elements/table/columns/articleColumns'
+import { getImageURL } from '../../../utils/urlBuilder'
 
 const TABLE = 'Articles';
 const EXPAND = ['ArticleSites'];
@@ -36,6 +37,7 @@ const ArticleList = () => {
     const [totalItems, setTotalItems] = React.useState(0);
     const [selectedRow, setSelectedRow] = React.useState();
     const [pageCount, setTotalCount] = React.useState(0);
+    const [selectedImage, setSelectedImage] = React.useState(null);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
         () => articleColumns(),
@@ -49,6 +51,26 @@ const ArticleList = () => {
             }} data={selectedRow} />
         </SideDialogWrapper>
     ), [selectedRow]);
+    const [showModalImage, hideModalImage] = useModal(({ in: open, onExited }) => {
+        return (
+            <Dialog
+                onExited={onExited}
+                open={open}
+                maxWidth="md"
+                onClose={()=>{
+                    setSelectedImage(null);
+                    hideModalImage();
+                }}
+            >
+                <img style={{
+                    width: '100%',
+                    height: 'auto',
+                    // backgroundImage: `url(${}`,
+                    // backgroundSize: 'contain',
+                }} src={getImageURL(selectedImage)}/>
+            </Dialog>)
+    }, [selectedImage]);
+
 
     React.useEffect(() => {
         setTitle('Articles')
@@ -78,13 +100,17 @@ const ArticleList = () => {
             });
         }
         setLoading(false);
-    },[]);
+    }, []);
 
     const updateRow = React.useCallback(async (row) => {
         setSelectedRow(row);
         showModal();
-    },[]);
+    }, []);
 
+    const showImage = React.useCallback(async (image) => {
+        setSelectedImage(image);
+        showModalImage();
+    }, []);
 
     const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {
         const fetchId = ++fetchIdRef.current;
@@ -124,6 +150,7 @@ const ArticleList = () => {
                         data={data}
                         deleteRow={deleteRow}
                         updateRow={updateRow}
+                        showImage={showImage}
                         serverPagination
                         totalItems={totalItems}
                         pageCount={pageCount}

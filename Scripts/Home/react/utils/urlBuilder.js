@@ -8,3 +8,6 @@ export const getPrintBonLivraisonURL = (params) => {
     return `/Print/BL?${parsedParams}`
 }
 
+export const getImageURL = (fileName) => {
+    return `/UserFiles/images/articles/${fileName}`;
+};
