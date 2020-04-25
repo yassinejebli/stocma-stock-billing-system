@@ -55,6 +55,11 @@ namespace WebApplication1.DATA.OData
             bonLivraison.ModificationDate = DateTime.Now;
             bonLivraison.Ref = newBonLivraison.Ref;
             bonLivraison.NumBon = newBonLivraison.NumBon;
+            foreach (var bi in bonLivraison.BonLivraisonItems)
+            {
+                var article = db.Articles.Find(bi.IdArticle);
+                bi.PA = article.PA;
+            }
 
             try
             {
@@ -87,6 +92,11 @@ namespace WebApplication1.DATA.OData
             var lastDoc = db.BonLivraisons.Where(x=>x.Date.Year == currentYear).OrderByDescending(x => x.Ref).FirstOrDefault();
             var lastRef = lastDoc != null ? lastDoc.Ref : 1;
             bonLivraison.Ref = lastRef + 1;
+            foreach(var bi in bonLivraison.BonLivraisonItems)
+            {
+                var article = db.Articles.Find(bi.IdArticle);
+                bi.PA = article.PA;
+            }
             bonLivraison.NumBon = numBonGenerator.getNumDocByCompany(lastRef, userCompanyName, bonLivraison.Date);
             this.db.BonLivraisons.Add(bonLivraison);
             try

@@ -6,7 +6,6 @@ import { Box } from '@material-ui/core';
 import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
-import { getImageURL } from '../../../../utils/urlBuilder';
 
 export const articleColumns = () => ([
     {
@@ -17,14 +16,15 @@ export const articleColumns = () => ([
     },
     {
         id: 'QteStock',
-        Header: 'Qte de stock',
+        Header: 'Qte en stock',
         Cell: ({ row: { original }, siteId }) => {
+            2
             const articleSite = original.ArticleSites?.find(x => x.IdSite = siteId);
             return (<div style={{ textAlign: 'right' }}>
                 {formatMoney(articleSite?.QteStock)}
             </div>)
         },
-        type: inputTypes.number.description,
+        type: inputTypes.text.description,
         align: 'right'
     },
     {
@@ -81,5 +81,51 @@ export const articleColumns = () => ([
             )
         },
         width: 24
+    },
+])
+
+
+export const articlesMarginColumns = () => ([
+    {
+        Header: 'Article',
+        accessor: 'Article',
+        type: inputTypes.text.description,
+        width: 140
+    },
+    {
+        id: 'QteStock',
+        Header: 'Qte en stock',
+        accessor: (props) => {
+            return formatMoney(props.QteStock);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        id: 'PA',
+        Header: 'Prix d\'achat',
+        accessor: (props) => {
+            return formatMoney(props.PA);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        id: 'QteSold',
+        Header: 'Qte vendues',
+        accessor: (props) => {
+            return formatMoney(props.QteSold);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        Id: 'Marge',
+        Header: 'Marge',
+        accessor: (props) => {
+            return formatMoney(props.Marge);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
     },
 ])

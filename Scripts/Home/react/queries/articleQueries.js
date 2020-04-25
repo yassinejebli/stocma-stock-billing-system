@@ -85,3 +85,37 @@ export const saveArticle = async (article, qteStock, idSite) => {
         console.log(e);
     }
 }
+
+export const getLowStockCount = async (IdSite) => {
+    const URL = '/Statistics/LowStockArticles?IdSite='+IdSite;
+    try {
+        const res = await (await fetch(URL)).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}
+
+export const getTotalStock = async (IdSite) => {
+    const URL = '/Statistics/TotalStock?IdSite='+IdSite;
+    try {
+        const res = await (await fetch(URL)).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}
+
+export const getMarginArticles = async (IdSite) => {
+    const URL = '/Statistics/ArticlesWithMargin?IdSite='+IdSite
+    try {
+        const res = await (await fetch(URL)).json();
+        console.log({res})
+        return res;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}

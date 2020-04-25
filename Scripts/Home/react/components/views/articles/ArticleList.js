@@ -15,6 +15,7 @@ import { TextField, Dialog } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import { articleColumns } from '../../elements/table/columns/articleColumns'
 import { getImageURL } from '../../../utils/urlBuilder'
+import ArticlesStatistics from '../../elements/statistics/ArticlesStatistics'
 
 const TABLE = 'Articles';
 const EXPAND = ['ArticleSites'];
@@ -57,7 +58,7 @@ const ArticleList = () => {
                 onExited={onExited}
                 open={open}
                 maxWidth="md"
-                onClose={()=>{
+                onClose={() => {
                     setSelectedImage(null);
                     hideModalImage();
                 }}
@@ -65,9 +66,7 @@ const ArticleList = () => {
                 <img style={{
                     width: '100%',
                     height: 'auto',
-                    // backgroundImage: `url(${}`,
-                    // backgroundSize: 'contain',
-                }} src={getImageURL(selectedImage)}/>
+                }} src={getImageURL(selectedImage)} />
             </Dialog>)
     }, [selectedImage]);
 
@@ -131,6 +130,9 @@ const ArticleList = () => {
     return (
         <>
             <Loader loading={loading} />
+            <Box my={2} display="flex" justifyContent="center">
+                <ArticlesStatistics />
+            </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <TitleIcon noBorder title="Liste des articles" Icon={LocalMallOutlinedIcon} />

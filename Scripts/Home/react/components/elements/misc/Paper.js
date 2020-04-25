@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme=>({
 
 const Paper = ({children, ...props}) => {
     const classes = useStyles();
-    return <MuiPaper {...props} className={classes.root}>
+    return <MuiPaper className={classes.root} {...props}>
         {children}
     </MuiPaper>
 }

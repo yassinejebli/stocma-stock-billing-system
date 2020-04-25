@@ -16,12 +16,12 @@ namespace WebApplication1.PaimentManager
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb6";
             var bonLivraison = db.BonLivraisons.Find(Id);
             var Total = bonLivraison.BonLivraisonItems.Sum(x => x.Qte * x.Pu);
-            var paimentObject = db.Paiements.Where((x => x.BonLivraison.Id == bonLivraison.Id)).FirstOrDefault();
-            if (paimentObject != null)
+            var paymentObject = db.Paiements.Where((x => x.BonLivraison.Id == bonLivraison.Id)).FirstOrDefault();
+            if (paymentObject != null)
             {
-                paimentObject.Debit = Total;
-                paimentObject.Date = bonLivraison.Date;
-                paimentObject.Comment = "BL " + bonLivraison.NumBon;
+                paymentObject.Debit = Total;
+                paymentObject.Date = bonLivraison.Date;
+                paymentObject.Comment = "BL " + bonLivraison.NumBon;
             }
             else
             {

@@ -2,7 +2,7 @@ import React from 'react';
 import IframeDialog from '../IframeDialog';
 import { Box, FormControlLabel, Switch } from '@material-ui/core';
 import { getPrintBonLivraisonURL } from '../../../../utils/urlBuilder';
-import PaimentClientForm from '../../forms/PaimentClientForm';
+import PaiementClientForm from '../../forms/PaiementClientForm';
 
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
 
@@ -58,7 +58,7 @@ const PrintBL = ({document, onClose, onExited, open}) => {
                             </div>
                             {showForm &&
                                 <Box mt={2}>
-                                    <PaimentClientForm
+                                    <PaiementClientForm
                                         amount={document[DOCUMENT_ITEMS]?.reduce((sum, curr) => (
                                             sum += curr.Pu * curr.Qte
                                         ), 0)}

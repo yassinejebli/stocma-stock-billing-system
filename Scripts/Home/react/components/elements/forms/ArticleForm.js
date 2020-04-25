@@ -11,6 +11,7 @@ import FilePicker from '../button/FilePicker';
 import { toBase64 } from '../../../utils/imageUtils';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { uploadArticleImage } from '../../../queries/fileUploader';
+import { getImageURL } from '../../../utils/urlBuilder';
 
 const initialState = {
     Id: uuidv4(),
@@ -130,7 +131,7 @@ const ArticleForm = ({ data, onSuccess }) => {
             />
             <TextField
                 name="QteStock"
-                label="Quantité de stock"
+                label="Quantité en stock"
                 variant="outlined"
                 size="small"
                 fullWidth
@@ -196,8 +197,8 @@ const ArticleForm = ({ data, onSuccess }) => {
             />
             <Box my={2}>
                 <Box my={2}>
-                    {base64 && <div className={classes.image} style={{
-                        backgroundImage: `url(${base64})`
+                    {formState.Image && <div className={classes.image} style={{
+                        backgroundImage: `url(${getImageURL(formState.Image)})`
                     }}>
                         <div className={classes.removeIcon}
                             onClick={() => {

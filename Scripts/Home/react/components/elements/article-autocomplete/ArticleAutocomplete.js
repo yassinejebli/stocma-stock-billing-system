@@ -42,7 +42,7 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       renderOption={option => (
         <div>
           <div>{option.Designation}</div>
-          <div className={classes.qte}>quantité de stock: {option.QteStock}</div>
+          <div className={classes.qte}>quantité en stock: {option.QteStock}</div>
         </div>
       )}
       renderInput={(params) => (

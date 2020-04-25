@@ -3,9 +3,12 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Drawer, Avatar } from '@material-ui/core';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
+import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
+import StorefrontOutlinedIcon from '@material-ui/icons/StorefrontOutlined';
 import ArticleForm from '../forms/ArticleForm';
 import ClientForm from '../forms/ClientForm';
 import FournisseurForm from '../forms/FournisseurForm';
+import PaiementClientForm from '../forms/PaiementClientForm';
 
 const border = '1px solid #d8d8d8';
 
@@ -13,7 +16,10 @@ const border = '1px solid #d8d8d8';
 const items = {
     article: 'article',
     fournisseur: 'fournisseur',
-    client: 'client'
+    client: 'client',
+    paiementClient: 'paiementClient',
+    paiementFournisseur: 'paiementFournisseur',
+    site: 'site',
 }
 
 export const useStyles = makeStyles(theme => ({
@@ -74,6 +80,8 @@ const SideWrapperDialog = (props) => {
                 return <ClientForm />;
             case items.fournisseur:
                 return <FournisseurForm />;
+            case items.paiementClient:
+                return <PaiementClientForm />;
             default:
                 null;
         }
@@ -128,6 +136,30 @@ const Menu = ({ open }) => {
                 </Avatar>
                 <div className={classes.content}>
                     <div className={classes.title}>Fournisseur</div>
+                </div>
+            </div>
+            <div className={classes.item} onClick={() => open(items.paiementClient)}>
+                <Avatar className={classes.avatar}>
+                    <AccountBalanceWalletOutlinedIcon className={classes.icon} />
+                </Avatar>
+                <div className={classes.content}>
+                    <div className={classes.title}>Paiement (Client)</div>
+                </div>
+            </div>
+            <div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
+                <Avatar className={classes.avatar}>
+                    <AccountBalanceWalletOutlinedIcon className={classes.icon} />
+                </Avatar>
+                <div className={classes.content}>
+                    <div className={classes.title}>Paiement (Fournisseur)</div>
+                </div>
+            </div>
+            <div className={classes.item} onClick={() => open(items.site)}>
+                <Avatar className={classes.avatar}>
+                    <StorefrontOutlinedIcon className={classes.icon} />
+                </Avatar>
+                <div className={classes.content}>
+                    <div className={classes.title}>Dépôt/Magasin</div>
                 </div>
             </div>
         </>
