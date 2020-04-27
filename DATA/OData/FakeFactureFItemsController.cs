@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
-using System.Web.Http.OData;
+using System.Web.OData;
 using System.Web.Http.OData.Routing;
 using WebApplication1.DATA;
 
@@ -47,7 +47,7 @@ namespace WebApplication1.DATA.OData
         // PUT: odata/FakeFactureFItems(5)
         public IHttpActionResult Put([FromODataUri] Guid key, Delta<FakeFactureFItem> patch)
         {
-            Validate(patch.GetEntity());
+            
 
             if (!ModelState.IsValid)
             {
@@ -114,7 +114,7 @@ namespace WebApplication1.DATA.OData
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] Guid key, Delta<FakeFactureFItem> patch)
         {
-            Validate(patch.GetEntity());
+            
 
             if (!ModelState.IsValid)
             {

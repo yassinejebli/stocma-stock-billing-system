@@ -4,35 +4,42 @@ import Paper from '../../elements/misc/Paper'
 import Table from '../../elements/table/Table'
 import Loader from '../../elements/loaders/Loader'
 import { useTitle } from '../../providers/TitleProvider'
-import { getData, deleteData } from '../../../queries/crudBuilder'
+import { getData } from '../../../queries/crudBuilder'
+import { deleteArticle } from '../../../queries/articleQueries'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { useModal } from 'react-modal-hook'
 import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog'
 import ArticleForm from '../../elements/forms/ArticleForm'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined'
-import { TextField, Dialog } from '@material-ui/core'
+import { TextField, Dialog, FormControlLabel, Checkbox } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import { articleColumns } from '../../elements/table/columns/articleColumns'
 import { getImageURL } from '../../../utils/urlBuilder'
 import ArticlesStatistics from '../../elements/statistics/ArticlesStatistics'
+import { useSite } from '../../providers/SiteProvider'
 
-const TABLE = 'Articles';
-const EXPAND = ['ArticleSites'];
+const TABLE = 'ArticleSites';
+const EXPAND = ['Article'];
 
 const ArticleList = () => {
+    const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
+    const [showDisabledArticles, setShowDisabledArticles] = React.useState(false);
     const debouncedSearchText = useDebounce(searchText);
     const filters = React.useMemo(() => {
-        return [
-            {
-                field: 'Designation',
-                value: debouncedSearchText
-            }
-        ]
-    }, [debouncedSearchText]);
+        return {
+            IdSite: siteId,
+            or: {
+                'Article/Designation': {
+                    contains: debouncedSearchText
+                }
+            },
+            Disabled: !showDisabledArticles ? false : undefined
+        }
+    }, [debouncedSearchText, showDisabledArticles, siteId]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
@@ -75,6 +82,9 @@ const ArticleList = () => {
         setTitle('Articles')
     }, []);
 
+    React.useEffect(() => {
+        refetchData();
+    }, [siteId])
 
     const refetchData = () => {
         getData(TABLE, {}, filters, EXPAND).then((response) => {
@@ -85,9 +95,9 @@ const ArticleList = () => {
         })
     }
 
-    const deleteRow = React.useCallback(async (id) => {
+    const deleteRow = React.useCallback(async (row) => {
         setLoading(true);
-        const response = await deleteData(TABLE, id);
+        const response = await deleteArticle(row.IdSite, row.IdArticle);
         console.log({ response });
         if (response.ok) {
             showSnackBar();
@@ -144,6 +154,12 @@ const ArticleList = () => {
                         placeholder="Rechercher..."
                         variant="outlined"
                         size="small"
+                    />
+                </Box>
+                <Box mt={2}>
+                    <FormControlLabel
+                        control={<Checkbox checked={showDisabledArticles} color="primary" onChange={event=>setShowDisabledArticles(event.target.checked)} />}
+                        label="Afficher les articles désactivés"
                     />
                 </Box>
                 <Box mt={4}>

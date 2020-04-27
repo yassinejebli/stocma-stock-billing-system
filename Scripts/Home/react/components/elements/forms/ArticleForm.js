@@ -56,8 +56,20 @@ const ArticleForm = ({ data, onSuccess }) => {
 
     React.useEffect(() => {
         console.log({ data })
-        if (editMode)
-            setFormState({ ...data })
+        if (editMode){
+            const {Article, QteStock, Disabled} = data;
+            setFormState({
+                Id: Article.Id,
+                QteStock,
+                Designation: Article.Designation,
+                PVD: Article.PVD,
+                PA: Article.PA,
+                TVA: Article.TVA,
+                Unite: Article.Unite,
+                Disabled: Disabled,
+                Image: Article.Image
+            });
+        }
     }, [])
 
     const onFieldChange = ({ target }) => setFormState(_formState => ({ ..._formState, [target.name]: target.value }));
@@ -79,13 +91,11 @@ const ArticleForm = ({ data, onSuccess }) => {
 
     const save = async () => {
         if (!isFormValid()) return;
-        const preparedData = {
-            ...formState
-        }
+        const {Disabled, ...preparedData} = formState;
 
         setLoading(true);
         if (editMode) {
-            const response = await updateArticle({ ...preparedData, Id: formState.Id }, formState.Id, formState.QteStock, siteId);
+            const response = await updateArticle({ ...preparedData, Id: formState.Id }, formState.Id, formState.QteStock, siteId, Disabled);
             if (response?.ok) {
                 setFormState({ ...initialState });
                 showSnackBar();

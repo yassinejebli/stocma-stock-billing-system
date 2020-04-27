@@ -77,7 +77,7 @@ const BonLivraison = () => {
         //load bon de livraison
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_ITEMS + '/' + 'Article', DOCUMENT_OWNER])
+            getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
                 .then(response => {
                     setClient(response.Client);
                     setDate(response.Date);

@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
-using System.Web.Http.OData;
+using System.Web.OData;
 using System.Web.Http.OData.Routing;
 using WebApplication1.DATA;
 
@@ -51,7 +51,7 @@ namespace WebApplication1.DATA.OData
         // PUT: odata/BonReceptions(5)
         public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<BonReception> patch)
         {
-            Validate(patch.GetEntity());
+            
 
             if (!ModelState.IsValid)
             {
@@ -118,7 +118,7 @@ namespace WebApplication1.DATA.OData
         [AcceptVerbs("PATCH", "MERGE")]
         public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonReception> patch)
         {
-            Validate(patch.GetEntity());
+            
 
             if (!ModelState.IsValid)
             {

@@ -36,18 +36,19 @@ export const getLastPriceSale = async (articleId, clientId) => {
     }
 }
 
-export const updateArticle = async (article, id, qteStock, idSite) => {
+export const updateArticle = async (article, id, qteStock, idSite, disabled) => {
     const parsedParams = new URLSearchParams({
         QteStock: qteStock,
-        IdSite: idSite
+        IdSite: idSite,
+        Disabled: disabled
     }).toString();
 
-    const URL = ODATA_URL + TABLE + `(guid'${id}')` + '?' + parsedParams;
+    const URL = ODATA_URL + TABLE + `(${id})` + '?' + parsedParams;
     delete article['QteStockSum'];
     delete article['ArticleSites'];
     try {
         const res = await (await fetch(URL, {
-            method: 'PUT',
+            method: 'PATCH',
             cache: 'no-cache',
             headers: {
                 'Accept': 'application/json',
@@ -58,6 +59,19 @@ export const updateArticle = async (article, id, qteStock, idSite) => {
         return res;
     } catch (e) {
         console.log(e);
+    }
+}
+
+export const deleteArticle = async (IdSite, IdArticle) => {
+    const URL = ODATA_URL + 'ArticleSites' + `(IdArticle=${IdArticle},IdSite=${IdSite})`
+    try {
+        const res = await (await fetch(URL, {
+            method: 'DELETE',
+            cache: 'no-cache'
+        }));
+        return res;
+    } catch (e) {
+        console.error(e);
     }
 }
 

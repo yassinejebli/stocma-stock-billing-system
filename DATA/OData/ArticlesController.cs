@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
-using System.Web.Http.OData;
+using System.Web.OData;
 using System.Web.Http.OData.Routing;
 using WebApplication1.DATA;
 
@@ -41,9 +41,9 @@ namespace WebApplication1.DATA.OData
 
         //[EnableQuery]
         // PUT: odata/Articles(5)
-        public IHttpActionResult Put([FromODataUri] Guid key, float QteStock, int IdSite, Delta<Article> patch)
+        public IHttpActionResult Put([FromODataUri] Guid key, float QteStock, int IdSite, bool Disabled, Delta<Article> patch)
         {
-            Validate(patch.GetEntity());
+            
 
             if (!ModelState.IsValid)
             {
@@ -58,6 +58,7 @@ namespace WebApplication1.DATA.OData
 
             var articleSite = db.ArticleSites.Where(x => x.IdSite == IdSite && x.IdArticle == key).FirstOrDefault();
             articleSite.QteStock = QteStock;
+            articleSite.Disabled = Disabled;
             patch.Put(article);
 
             try
@@ -96,7 +97,7 @@ namespace WebApplication1.DATA.OData
                     QteStock = site.Id != IdSite ? 0 : QteStock
                 });
             }
-            article.Ref = String.Format("A{0:000000}", article.RefAuto);
+            article.Ref = String.Format("A{0:00000}", article.RefAuto);
             db.Articles.Add(article);
 
             try
@@ -120,9 +121,9 @@ namespace WebApplication1.DATA.OData
 
         // PATCH: odata/Articles(5)
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] Guid key, Delta<Article> patch)
+        public IHttpActionResult Patch([FromODataUri] Guid key, Delta<Article> patch, float QteStock, bool Disabled, int IdSite = 1)
         {
-            Validate(patch.GetEntity());
+            
 
             if (!ModelState.IsValid)
             {
@@ -130,6 +131,10 @@ namespace WebApplication1.DATA.OData
             }
 
             Article article = db.Articles.Find(key);
+            var articleSite = db.ArticleSites.Where(x => x.IdSite == IdSite && x.IdArticle == key).FirstOrDefault();
+            articleSite.QteStock = QteStock;
+            articleSite.Disabled = Disabled;
+
             if (article == null)
             {
                 return NotFound();

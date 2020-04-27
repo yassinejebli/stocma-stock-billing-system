@@ -23,18 +23,18 @@ const BonLivraisonList = () => {
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
     const debouncedSearchText = useDebounce(searchText);
-    const filters = React.useMemo(()=>{
-        return [
-            {
-                field: 'Client/Name',
-                value: debouncedSearchText
-            },
-            {
-                field: 'NumBon',
-                value: debouncedSearchText
+    const filters = React.useMemo(() => {
+        return {
+            or:{
+                'Client/Name': {
+                    contains: debouncedSearchText
+                },
+                'NumBon': {
+                    contains: debouncedSearchText
+                }
             }
-        ]
-    },[debouncedSearchText]);
+        }
+    }, [debouncedSearchText]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
@@ -65,8 +65,8 @@ const BonLivraisonList = () => {
     }, []);
 
     const refetchData = () => {
-        getData(DOCUMENT,{},
-        filters, EXPAND).then((response) => {
+        getData(DOCUMENT, {},
+            filters, EXPAND).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
             }).catch((err) => {
@@ -88,11 +88,11 @@ const BonLivraisonList = () => {
             });
         }
         setLoading(false);
-    },[])
+    }, [])
 
     const updateRow = React.useCallback(async (id) => {
         history.push(`BonLivraison?BonLivraisonId=${id}`);
-    },[]);
+    }, []);
 
 
     const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {
@@ -116,7 +116,7 @@ const BonLivraisonList = () => {
     const print = React.useCallback((document) => {
         setDocumentToPrint(document);
         showModal();
-    },[])
+    }, [])
 
     return (
         <>

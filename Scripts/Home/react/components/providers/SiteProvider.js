@@ -1,8 +1,10 @@
 import React from 'react';
+import { getAllData } from '../../queries/crudBuilder';
 
 const SiteContext = React.createContext({
     siteId: 1,
-    siteName: 'Magasin 1'
+    siteName: 'Magasin 1',
+    sites: []
 });
 
 export const useSite = () => {
@@ -13,20 +15,32 @@ export const useSite = () => {
     return context
 }
 
-
-const SiteProvider = ({children}) => {
+//use localstorage to save the selected site
+const SiteProvider = ({ children }) => {
     const [siteId, setSiteId] = React.useState(1);
     const [siteName, setSiteName] = React.useState('Magasin 1');
+    const [sites, setSites] = React.useState([]);
+
+    React.useEffect(() => {
+        getAllData('Sites')
+            .then(res => setSites(res))
+            .catch(err => console.error(err));
+    }, []);
 
     const setSite = (site) => {
-        setIdSite(site)
+        if (site) {
+            setSiteId(site.Id)
+            setSiteName(site.Name)
+        }
     }
 
     return (
         <SiteContext.Provider value={{
             siteId,
             siteName,
-            setSite
+            setSite,
+            sites,
+            setSites
         }}>
             {children}
         </SiteContext.Provider>)

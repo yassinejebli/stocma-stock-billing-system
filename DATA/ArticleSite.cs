@@ -17,8 +17,12 @@ namespace WebApplication1.DATA
         public virtual Article Article { get; set; }
         public virtual Site Site { get; set; }
 
+        [Key, Column(Order = 0)]
         public Guid IdArticle { get; set; }
+
+        [Key, Column(Order = 1)]
         public int IdSite { get; set; }
+        public bool Disabled { get; set; } = false;
 
 
 

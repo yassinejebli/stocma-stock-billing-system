@@ -10,19 +10,15 @@ import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
 export const articleColumns = () => ([
     {
         Header: 'Article',
-        accessor: 'Designation',
+        accessor: 'Article.Designation',
         type: inputTypes.text.description,
         width: 140
     },
     {
         id: 'QteStock',
         Header: 'Qte en stock',
-        Cell: ({ row: { original }, siteId }) => {
-            2
-            const articleSite = original.ArticleSites?.find(x => x.IdSite = siteId);
-            return (<div style={{ textAlign: 'right' }}>
-                {formatMoney(articleSite?.QteStock)}
-            </div>)
+        accessor: (props) => {
+            return formatMoney(props.QteStock);
         },
         type: inputTypes.text.description,
         align: 'right'
@@ -31,7 +27,7 @@ export const articleColumns = () => ([
         id: 'PA',
         Header: 'Prix d\'achat',
         accessor: (props) => {
-            return formatMoney(props.PA);
+            return formatMoney(props.Article.PA);
         },
         type: inputTypes.text.description,
         align: 'right'
@@ -40,7 +36,7 @@ export const articleColumns = () => ([
         id: 'PVD',
         Header: 'Prix de vente',
         accessor: (props) => {
-            return formatMoney(props.PVD);
+            return formatMoney(props.Article.PVD);
         },
         type: inputTypes.text.description,
         align: 'right'
@@ -49,7 +45,7 @@ export const articleColumns = () => ([
         id: 'TVA',
         Header: 'T.V.A',
         accessor: (props) => {
-            return props.TVA + '%';
+            return props.Article.TVA + '%';
         },
         type: inputTypes.text.description,
         align: 'right',
@@ -57,7 +53,7 @@ export const articleColumns = () => ([
     },
     {
         Header: 'Unité',
-        accessor: 'Unite',
+        accessor: 'Article.Unite',
         type: inputTypes.text.description,
         align: 'center',
         width: 26
@@ -68,15 +64,15 @@ export const articleColumns = () => ([
         Cell: ({ row: { original }, updateRow, deleteRow, showImage }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
-                    {original.Image && <IconButton tabIndex={-1} size="small" onClick={() => showImage(original.Image)}>
+                    {original.Article.Image && <IconButton tabIndex={-1} size="small" onClick={() => showImage(original.Article.Image)}>
                         <ImageOutlinedIcon />
                     </IconButton>}
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
                         <EditOutlinedIcon />
                     </IconButton>
-                    <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
+                    {/* <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original)}>
                         <DeleteForeverOutlinedIcon />
-                    </IconButton>
+                    </IconButton> */}
                 </Box>
             )
         },

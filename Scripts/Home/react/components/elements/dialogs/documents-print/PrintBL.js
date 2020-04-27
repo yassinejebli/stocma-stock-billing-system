@@ -65,7 +65,7 @@ const PrintBL = ({document, onClose, onExited, open}) => {
                                         document={document}
                                         onSuccess={() => {
                                             //a workaround to refresh document
-                                            const iframe = document.getElementById('iframe-dialog');
+                                            const iframe = window.document.getElementById('iframe-dialog');
                                             iframe.src = iframe.src;
                                             setShowForm(false);
                                         }}

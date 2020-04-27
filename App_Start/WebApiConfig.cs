@@ -8,25 +8,35 @@ using Microsoft.Data.Edm;
 using System;
 using System.Linq;
 using System.Web.Http;
-using System.Web.Http.OData.Builder;
-using System.Web.Http.OData.Extensions;
+using Microsoft.OData.Edm;
+using System.Web.OData.Builder;
+using System.Web.OData.Extensions;
+using System.Web.OData.Routing;
 using WebApplication1.DATA;
 
 namespace WebApplication1
 {
-  public static class WebApiConfig
-  {
-    public static void Register(HttpConfiguration config)
+    public static class WebApiConfig
     {
-      config.MapHttpAttributeRoutes();
-      config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}",  new
-      {
-        id = RouteParameter.Optional
-      });
-      config.Routes.MapODataServiceRoute("odata", "odata", WebApiConfig.GetModel());
-    }
+        public static void Register(HttpConfiguration config)
+        {
+            config.Select().Expand().Filter().OrderBy().MaxTop(null).Count();
+            config.MapHttpAttributeRoutes();
+            config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}", new
+            {
+                id = RouteParameter.Optional
+            });
+            config.MapODataServiceRoute("odata", "odata", GetModel());
 
-        public static IEdmModel GetModel()
+            /*config.MapHttpAttributeRoutes();
+            config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}", new
+            {
+                id = RouteParameter.Optional
+            });
+            config.Routes.MapODataServiceRoute("odata", "odata", WebApiConfig.GetModel());*/
+        }
+
+        public static Microsoft.OData.Edm.IEdmModel GetModel()
         {
             var conventionModelBuilder = new ODataConventionModelBuilder();
 
@@ -109,12 +119,11 @@ namespace WebApplication1
             conventionModelBuilder.EntitySet<FactureFItem>("FactureFItems");
             conventionModelBuilder.EntitySet<Site>("Sites");
             conventionModelBuilder.EntitySet<ArticleSite>("ArticleSites");
-
             conventionModelBuilder.EntitySet<FakeFactureF>("FakeFactureFs");
             conventionModelBuilder.EntitySet<FakeFactureFItem>("FakeFactureFItems");
 
             /////////
-            conventionModelBuilder.Entity<Article>().Collection.Action("ArticlesGaz");
+            //conventionModelBuilder.Entity<Article>().Collection.Action("ArticlesGaz");
 
 
             /////////
@@ -125,9 +134,9 @@ namespace WebApplication1
                 .First(t => t.ClrType == typeof(Article))
                 .AddProperty(typeof(Article).GetProperty("QteStockSum"));
             /////////
-           
+
 
             return conventionModelBuilder.GetEdmModel();
         }
-  }
+    }
 }

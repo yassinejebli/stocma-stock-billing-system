@@ -16,6 +16,7 @@ import BonLivraisonList from './components/views/bonLivraison/BonLivraisonList';
 import SiteProvider from './components/providers/SiteProvider';
 import ArticleList from './components/views/articles/ArticleList';
 import ArticlesMarginList from './components/views/articles/ArticlesMarginList';
+import SiteList from './components/views/sites/SiteList';
 
 const App = () => {
     return (
@@ -31,6 +32,7 @@ const App = () => {
                                     <Route path="/BonLivraison" component={BonLivraison} />
                                     <Route path="/BonLivraisonList" component={BonLivraisonList} />
                                     <Route path="/ArticleList" component={ArticleList} />
+                                    <Route path="/SiteList" component={SiteList} />
                                     <Route path="/ArticlesMarginList" component={ArticlesMarginList} />
                                     <Route path="/ClientList" component={ClientList} />
                                     <Route path="/SupplierList" component={SupplierList} />

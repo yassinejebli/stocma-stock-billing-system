@@ -12,14 +12,14 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.OData;
-using System.Web.UI.WebControls;
+using System.Web.OData;
 using WebApplication1.Generators;
 using WebApplication1.Managers;
 using WebApplication1.PaimentManager;
 
 namespace WebApplication1.DATA.OData
 {
+    [Authorize]
     public class BonLivraisonsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
@@ -45,27 +45,51 @@ namespace WebApplication1.DATA.OData
             BonLivraison bonLivraison = await this.db.BonLivraisons.FindAsync(key);
             if (bonLivraison == null)
                 return NotFound();
-            
-            bonLivraison.Date = newBonLivraison.Date;
-            bonLivraison.TypeReglement = newBonLivraison.TypeReglement;
-            bonLivraison.User = newBonLivraison.User;
-            bonLivraison.Note = newBonLivraison.Note;
+
+            /////////////////////////////////////////////
+            //-----------------------------------------------Updating document items
             db.BonLivraisonItems.RemoveRange(bonLivraison.BonLivraisonItems);
-            bonLivraison.BonLivraisonItems = newBonLivraison.BonLivraisonItems;
-            bonLivraison.ModificationDate = DateTime.Now;
+            db.BonLivraisonItems.AddRange(newBonLivraison.BonLivraisonItems);
+
+            //bonLivraison.BonLivraisonItems = patch..GetInstance().BonLivraisonItems;
+            newBonLivraison.ModificationDate = DateTime.Now;
             bonLivraison.Ref = newBonLivraison.Ref;
             bonLivraison.NumBon = newBonLivraison.NumBon;
-            foreach (var bi in bonLivraison.BonLivraisonItems)
+            foreach (var bi in newBonLivraison.BonLivraisonItems)
             {
                 var article = db.Articles.Find(bi.IdArticle);
                 bi.PA = article.PA;
             }
 
+            //-----------------------------------------------Updating payment
+            var payment = db.Paiements.FirstOrDefault(x => x.IdBonLivraison == bonLivraison.Id);
+            var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb6";
+            var Total = newBonLivraison.BonLivraisonItems.Sum(x => x.Qte * x.Pu);
+            if (payment != null)
+            {
+                payment.Debit = Total;
+                payment.Date = newBonLivraison.Date;
+                payment.Comment = "BL " + newBonLivraison.NumBon;
+            }
+            else
+            {
+                Paiement paiement = new Paiement()
+                {
+                    Id = Guid.NewGuid(),
+                    IdBonLivraison = bonLivraison.Id,
+                    IdClient = newBonLivraison.IdClient,
+                    Debit = Total,
+                    IdTypePaiement = new Guid(ACHAT_PAIEMENT_TYPE_ID),
+                    Date = newBonLivraison.Date
+                };
+                db.Paiements.Add(paiement);
+            }
+            ////////////////////////////////////////////
+
+
             try
             {
                 await this.db.SaveChangesAsync();
-                await pm.UpdatePaiementBL(key);
-                await mm.UpdateMarginBL(key); 
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -99,11 +123,36 @@ namespace WebApplication1.DATA.OData
             }
             bonLivraison.NumBon = numBonGenerator.getNumDocByCompany(lastRef, userCompanyName, bonLivraison.Date);
             this.db.BonLivraisons.Add(bonLivraison);
+
+            //-----------------------------------------------Updating payment
+            var payment = db.Paiements.FirstOrDefault(x => x.IdBonLivraison == bonLivraison.Id);
+            var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb6";
+            var Total = bonLivraison.BonLivraisonItems.Sum(x => x.Qte * x.Pu);
+            if (payment != null)
+            {
+                payment.Debit = Total;
+                payment.Date = bonLivraison.Date;
+                payment.Comment = "BL " + bonLivraison.NumBon;
+            }
+            else
+            {
+                Paiement paiement = new Paiement()
+                {
+                    Id = Guid.NewGuid(),
+                    IdBonLivraison = bonLivraison.Id,
+                    IdClient = bonLivraison.IdClient,
+                    Debit = Total,
+                    IdTypePaiement = new Guid(ACHAT_PAIEMENT_TYPE_ID),
+                    Date = bonLivraison.Date
+                };
+                db.Paiements.Add(paiement);
+            }
+
+
+
             try
             {
                 int num = await this.db.SaveChangesAsync();
-                await pm.UpdatePaiementBL(bonLivraison.Id);
-                await mm.UpdateMarginBL(bonLivraison.Id);
             }
             catch (DbUpdateException ex)
             {
@@ -115,29 +164,6 @@ namespace WebApplication1.DATA.OData
             return Content(HttpStatusCode.Created, SingleResult.Create(bonLivraisonWithItems));
 
             //return (IHttpActionResult)this.Created(bonLivraisonWithItems);
-        }
-
-        [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
-        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonLivraison> patch)
-        {
-            this.Validate<BonLivraison>(patch.GetEntity());
-            if (!this.ModelState.IsValid)
-                return (IHttpActionResult)this.BadRequest(this.ModelState);
-            BonLivraison bonLivraison = await this.db.BonLivraisons.FindAsync((object)key);
-            if (bonLivraison == null)
-                return (IHttpActionResult)this.NotFound();
-            patch.Patch(bonLivraison);
-            try
-            {
-                int num = await this.db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!this.BonLivraisonExists(key))
-                    return (IHttpActionResult)this.NotFound();
-                throw;
-            }
-            return (IHttpActionResult)this.Updated<BonLivraison>(bonLivraison);
         }
 
         public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)

@@ -42,8 +42,6 @@ namespace WebApplication1.DATA
         [DefaultValue(0)]
         public float QteStock { get; set; }
 
-        public bool Disabled { get; set; } = false;
-
         [NotMapped]
         public float QteStockSum { 
             get

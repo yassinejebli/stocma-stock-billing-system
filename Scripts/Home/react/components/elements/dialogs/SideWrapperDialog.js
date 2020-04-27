@@ -9,6 +9,7 @@ import ArticleForm from '../forms/ArticleForm';
 import ClientForm from '../forms/ClientForm';
 import FournisseurForm from '../forms/FournisseurForm';
 import PaiementClientForm from '../forms/PaiementClientForm';
+import SiteForm from '../forms/SiteForm';
 
 const border = '1px solid #d8d8d8';
 
@@ -82,6 +83,8 @@ const SideWrapperDialog = (props) => {
                 return <FournisseurForm />;
             case items.paiementClient:
                 return <PaiementClientForm />;
+            case items.site:
+                return <SiteForm />;
             default:
                 null;
         }

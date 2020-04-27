@@ -6,9 +6,10 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
-using System.Web.Http.OData;
+using System.Web.OData;
 using System.Web.Http.OData.Routing;
 using WebApplication1.DATA;
 
@@ -44,16 +45,16 @@ namespace WebApplication1.DATA.OData
         }
 
         // PUT: odata/Sites(5)
-        public IHttpActionResult Put([FromODataUri] int key, Delta<Site> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] int key, Delta<Site> patch)
         {
-            Validate(patch.GetEntity());
+            
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Site site = db.Sites.Find(key);
+            Site site = await db.Sites.FindAsync(key);
             if (site == null)
             {
                 return NotFound();
@@ -63,7 +64,7 @@ namespace WebApplication1.DATA.OData
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -81,36 +82,31 @@ namespace WebApplication1.DATA.OData
         }
 
         // POST: odata/Sites
-        public IHttpActionResult Post(Site site)
+        public async Task<IHttpActionResult> Post(Site site)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            site.ArticleSites = db.Articles.Select(x=> new ArticleSite
-            {
-                IdArticle = x.Id,
-                IdSite = site.Id,
-                QteStock = 0
-            }).ToList();
+
             db.Sites.Add(site);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Created(site);
         }
 
         // PATCH: odata/Sites(5)
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<Site> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] int key, Delta<Site> patch)
         {
-            Validate(patch.GetEntity());
+            
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Site site = db.Sites.Find(key);
+            Site site = await db.Sites.FindAsync(key);
             if (site == null)
             {
                 return NotFound();
@@ -120,7 +116,7 @@ namespace WebApplication1.DATA.OData
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -138,16 +134,16 @@ namespace WebApplication1.DATA.OData
         }
 
         // DELETE: odata/Sites(5)
-        public IHttpActionResult Delete([FromODataUri] int key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] int key)
         {
-            Site site = db.Sites.Find(key);
+            Site site = await db.Sites.FindAsync(key);
             if (site == null)
             {
                 return NotFound();
             }
 
             db.Sites.Remove(site);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return StatusCode(HttpStatusCode.NoContent);
         }

@@ -9,6 +9,8 @@ import AddIcon from '@material-ui/icons/Add';
 import { useModal } from 'react-modal-hook';
 import SideWrapperDialog from '../dialogs/SideWrapperDialog';
 import { useTitle } from '../../providers/TitleProvider';
+import SiteSelect from '../site-select/SiteSelect';
+import { useSite } from '../../providers/SiteProvider';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,7 +54,7 @@ export default function TopBar() {
                         {title}
                     </div>
                 </div>
-
+                <SiteSelect />
                 <div>
                     <IconButton onClick={showModal} color="inherit">
                         <AddIcon />

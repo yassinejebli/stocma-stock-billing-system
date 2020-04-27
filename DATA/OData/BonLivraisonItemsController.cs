@@ -11,7 +11,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.OData;
+using System.Web.OData;
 using WebApplication1.PaimentManager;
 
 namespace WebApplication1.DATA.OData
@@ -35,7 +35,6 @@ namespace WebApplication1.DATA.OData
 
         public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<BonLivraisonItem> patch)
         {
-            this.Validate<BonLivraisonItem>(patch.GetEntity());
             if (!this.ModelState.IsValid)
                 return (IHttpActionResult)this.BadRequest(this.ModelState);
             BonLivraisonItem bonLivraisonItem = await this.db.BonLivraisonItems.FindAsync((object)key);
@@ -79,7 +78,6 @@ namespace WebApplication1.DATA.OData
         [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
         public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonLivraisonItem> patch)
         {
-            this.Validate<BonLivraisonItem>(patch.GetEntity());
             if (!this.ModelState.IsValid)
                 return (IHttpActionResult)this.BadRequest(this.ModelState);
             BonLivraisonItem bonLivraisonItem = await this.db.BonLivraisonItems.FindAsync((object)key);
