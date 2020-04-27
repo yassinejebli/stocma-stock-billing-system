@@ -36,13 +36,13 @@ namespace WebApplication1.DATA.OData
         [EnableQuery]
         public SingleResult<BonLivraison> GetBonLivraison([FromODataUri] Guid key)
         {
-            return SingleResult.Create(this.db.BonLivraisons.Where<BonLivraison>((Expression<Func<BonLivraison, bool>>)(bonLivraison => bonLivraison.Id == key)));
+            return SingleResult.Create(db.BonLivraisons.Where<BonLivraison>((Expression<Func<BonLivraison, bool>>)(bonLivraison => bonLivraison.Id == key)));
         }
 
         [EnableQuery]
         public async Task<IHttpActionResult> Put([FromODataUri] Guid key, BonLivraison newBonLivraison)
         {
-            BonLivraison bonLivraison = await this.db.BonLivraisons.FindAsync(key);
+            BonLivraison bonLivraison = await db.BonLivraisons.FindAsync(key);
             if (bonLivraison == null)
                 return NotFound();
 

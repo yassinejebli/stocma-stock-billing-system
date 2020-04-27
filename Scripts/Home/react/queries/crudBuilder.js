@@ -62,19 +62,6 @@ export const getData = async (table, params, filters, expand) => {
         skip: params.$skip||0,
         expand: expand?.join(',')
     })
-    console.log({allParams})
-    // const nonEmptyFilters = filters?.filter(x=>x.value);
-    // if(nonEmptyFilters?.length > 0){
-    //     const site = nonEmptyFilters.find(x=>x.field.includes('IdSite'));
-    //     allParams['$filter'] = nonEmptyFilters.filter(x=>!x.field.includes('IdSite'))
-    //     .map(x=> 'indexof(' + x.field + ',\'' + x.value + '\') gt -1').join(' or ');
-
-    //     if(site){
-    //         allParams['$filter'] += site.field+' eq '+site.value;
-            
-    //     }
-    // }
-
 
     const URL = ODATA_URL + table + allParams;
 
@@ -101,14 +88,13 @@ export const getSingleData = async (table, id,expand) => {
     }
 }
 
-export const getAllData = async (table,expand) => {
-    const params = {};
-    if(expand){
-        params['$expand']= expand?.join(',');
-    }
-
-    const parsedParams = '?'+new URLSearchParams(params).toString();
-    const URL = ODATA_URL + table + parsedParams;
+export const getAllData = async (table, filters,expand) => {
+    const allParams = buildQuery({ 
+        filter: filters, 
+        expand: expand?.join(',')
+    })
+    
+    const URL = ODATA_URL + table + allParams;
 
     try {
         const res = await (await fetch(URL)).json();

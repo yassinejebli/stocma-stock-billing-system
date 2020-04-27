@@ -15,6 +15,7 @@ using WebApplication1.DATA;
 namespace WebApplication1.DATA.OData
 {
 
+    [Authorize]
     public class ArticlesController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
@@ -162,19 +163,19 @@ namespace WebApplication1.DATA.OData
         }
 
         // DELETE: odata/Articles(5)
-        public IHttpActionResult Delete([FromODataUri] Guid key)
-        {
-            Article article = db.Articles.Find(key);
-            if (article == null)
-            {
-                return NotFound();
-            }
+        //public IHttpActionResult Delete([FromODataUri] Guid key)
+        //{
+        //    Article article = db.Articles.Find(key);
+        //    if (article == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            db.Articles.Remove(article);
-            db.SaveChanges();
+        //    db.Articles.Remove(article);
+        //    db.SaveChanges();
 
-            return StatusCode(HttpStatusCode.NoContent);
-        }
+        //    return StatusCode(HttpStatusCode.NoContent);
+        //}
 
         // GET: odata/Articles(5)/ArticleSites
         [EnableQuery]

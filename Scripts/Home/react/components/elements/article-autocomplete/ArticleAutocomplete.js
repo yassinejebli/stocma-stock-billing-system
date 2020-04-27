@@ -4,22 +4,29 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { getArticles } from '../../../queries/articleQueries';
 import { grey } from '@material-ui/core/colors';
 import Input from '../input/Input';
+import { useSite } from '../../providers/SiteProvider';
 
 const useStyles = makeStyles({
   qte: {
     fontSize: 12,
     color: grey[700]
   }
-
 });
 
 
 const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
+  const { siteId } = useSite(); 
   const classes = useStyles();
   const [articles, setArticles] = React.useState([]);
 
   const onChangeHandler = async ({ target: { value } }) => {
-    const data = await getArticles('Designation', value);
+    const data = await getArticles({
+      'Article/Designation': value ? {
+        contains: value
+      }:undefined,
+      IdSite: siteId,
+      Disabled: false
+    });
     setArticles(data);
   }
 
@@ -30,7 +37,6 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       noOptionsText=""
       forcePopupIcon={false}
       disableClearable
-      // freeSolo
       style={{ width: '100%' }}
       options={articles}
       classes={{
@@ -38,10 +44,10 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       }}
       autoHighlight
       size="small"
-      getOptionLabel={(option) => option?.Designation}
+      getOptionLabel={(option) => option?.Article.Designation}
       renderOption={option => (
         <div>
-          <div>{option.Designation}</div>
+          <div>{option.Article.Designation}</div>
           <div className={classes.qte}>quantité en stock: {option.QteStock}</div>
         </div>
       )}

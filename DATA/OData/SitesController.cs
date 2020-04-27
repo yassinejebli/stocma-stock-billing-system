@@ -47,7 +47,7 @@ namespace WebApplication1.DATA.OData
         // PUT: odata/Sites(5)
         public async Task<IHttpActionResult> Put([FromODataUri] int key, Delta<Site> patch)
         {
-            
+
 
             if (!ModelState.IsValid)
             {
@@ -99,7 +99,7 @@ namespace WebApplication1.DATA.OData
         [AcceptVerbs("PATCH", "MERGE")]
         public async Task<IHttpActionResult> Patch([FromODataUri] int key, Delta<Site> patch)
         {
-            
+
 
             if (!ModelState.IsValid)
             {
@@ -142,7 +142,8 @@ namespace WebApplication1.DATA.OData
                 return NotFound();
             }
 
-            db.Sites.Remove(site);
+            //db.Sites.Remove(site);
+            site.Disabled = true;
             await db.SaveChangesAsync();
 
             return StatusCode(HttpStatusCode.NoContent);

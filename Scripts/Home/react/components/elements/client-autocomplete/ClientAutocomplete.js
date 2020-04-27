@@ -27,7 +27,12 @@ const ClientAutocomplete = ({ errorText, ...props }) => {
 
   React.useEffect(() => {
     setLoading(true);
-    getClients('Name', debouncedSearchText?.toUpperCase()).then(response => {
+    getClients({
+      Name: debouncedSearchText?{
+        contains: debouncedSearchText
+      }:undefined,
+      Disabled: false
+    }).then(response => {
       setLoading(false);
       setClients(response);
     });
@@ -44,6 +49,7 @@ const ClientAutocomplete = ({ errorText, ...props }) => {
       loadingText="Chargement..."
       disableClearable
       popupIcon={null}
+      forcePopupIcon={false}
       // freeSolo
       style={{ minWidth: 240 }}
       options={clients}
@@ -54,10 +60,10 @@ const ClientAutocomplete = ({ errorText, ...props }) => {
       size="small"
       getOptionLabel={(option) => option?.Name}
       renderOption={option => {
-        const soldeColor = (option.Solde > option?.Plafond && option?.Plafond !== 0) ? 'red' :grey[700];
+        const soldeColor = (option.Solde > option?.Plafond && option?.Plafond !== 0) ? 'red' : grey[700];
         return (<div>
           <div>{option?.Name}</div>
-          <div style={{color: soldeColor}} className={classes.solde}>Solde: {formatMoney(option?.Solde || 0)}</div>
+          <div style={{ color: soldeColor }} className={classes.solde}>Solde: {formatMoney(option?.Solde || 0)}</div>
         </div>)
       }}
       renderInput={(params) => (

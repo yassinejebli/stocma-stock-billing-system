@@ -70,9 +70,9 @@ export const articleColumns = () => ([
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
                         <EditOutlinedIcon />
                     </IconButton>
-                    {/* <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original)}>
+                    <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original)}>
                         <DeleteForeverOutlinedIcon />
-                    </IconButton> */}
+                    </IconButton>
                 </Box>
             )
         },

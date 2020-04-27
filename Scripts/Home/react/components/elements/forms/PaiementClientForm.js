@@ -126,6 +126,8 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess }) => {
 
     const isFormValid = () => {
         const _errors = [];
+        if (!formState.client)
+            _errors['client'] = 'Ce champs est obligatoire.'
         if (!formState.amount || formState.amount <= 0)
             _errors['amount'] = 'Ce champs est obligatoire.'
         if (!formState.type)

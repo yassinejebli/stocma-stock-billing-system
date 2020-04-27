@@ -1,14 +1,19 @@
+import buildQuery from 'odata-query'
+
 const TABLE = 'Articles';
 const ODATA_URL = '/Odata/'
 
-export const getArticles = async (field, text) => {
-    let filterText = '';
-    if (!text)
-        return [];
+export const getArticles = async (filters) => {
+    if(!filters['Article/Designation']) return [];
 
-    filterText = '&$filter=indexof(' + field + ',\'' + text + '\') gt -1 and Ref ne \'-\'';
+    const allParams = buildQuery({ 
+        expand: 'Article',
+        filter: filters, 
+        top: 20, 
+        skip: 0,
+    })
 
-    const URL = '/Odata/' + TABLE + '?&$top=20' + filterText;
+    const URL = '/Odata/' + 'ArticleSites' + allParams;
 
     try {
         const res = await (await fetch(URL)).json();

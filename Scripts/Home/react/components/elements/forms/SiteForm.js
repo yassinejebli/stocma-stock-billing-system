@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from '@material-ui/core';
+import { Box, Button, TextField, FormControlLabel, Switch } from '@material-ui/core';
 import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
 import React from 'react';
 import { saveData, updateData, getAllData } from '../../../queries/crudBuilder';
@@ -9,7 +9,8 @@ import { useSite } from '../../providers/SiteProvider';
 
 const initialState = {
     Name: '',
-    Address: ''
+    Address: '',
+    Disabled: false
 }
 const TABLE = 'Sites';
 
@@ -103,6 +104,16 @@ const SiteForm = ({data, onSuccess}) => {
                 rows={3}
                 onChange={onFieldChange}
                 value={formState.Address||''}
+            />
+            <FormControlLabel
+                control={<Switch
+                    checked={!formState.Disabled}
+                    onChange={(_, checked) => setFormState(_formState => ({
+                        ...formState,
+                        Disabled: !checked
+                    })
+                    )} />}
+                label="Actif"
             />
             <Box my={4} display="flex" justifyContent="flex-end">
                 <Button variant="contained" color="primary" onClick={save}>

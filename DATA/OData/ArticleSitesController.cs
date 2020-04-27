@@ -46,7 +46,7 @@ namespace WebApplication1.DATA.OData
         // PUT: odata/ArticleSites(5)
         public async Task<IHttpActionResult> Put([FromODataUri] int key, Delta<ArticleSite> patch)
         {
-            
+
 
             if (!ModelState.IsValid)
             {
@@ -145,7 +145,7 @@ namespace WebApplication1.DATA.OData
             return Updated(articleSite);
         }
 
-       /*public async Task<IHttpActionResult> Delete([FromODataUri] int keyIdSite, [FromODataUri] Guid keyIdArticle)
+        public async Task<IHttpActionResult> Delete([FromODataUri] int keyIdSite, [FromODataUri] Guid keyIdArticle)
         {
             ArticleSite articleSite = await db.ArticleSites.FirstOrDefaultAsync(x => x.IdSite == keyIdSite && x.IdArticle == keyIdArticle);
             if (articleSite == null)
@@ -153,11 +153,12 @@ namespace WebApplication1.DATA.OData
                 return NotFound();
             }
 
-            db.ArticleSites.Remove(articleSite);
+            //db.ArticleSites.Remove(articleSite);
+            articleSite.Disabled = true;
             await db.SaveChangesAsync();
 
             return StatusCode(HttpStatusCode.NoContent);
-        }*/
+        }
 
         // GET: odata/ArticleSites(5)/Article
         [EnableQuery]

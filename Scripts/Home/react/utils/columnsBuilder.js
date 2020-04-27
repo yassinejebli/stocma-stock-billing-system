@@ -37,11 +37,11 @@ export const getBonLivraisonColumns = () => ([
                     onChange={(_, selectedValue) => {
                         updateMyData(index, id, selectedValue);
                         if (selectedValue && owner)
-                            getLastPriceSale(selectedValue.Id, owner.Id).then(lastPriceSale => {
+                            getLastPriceSale(selectedValue.IdArticle, owner.Id).then(lastPriceSale => {
                                 updateMyData(index, 'Pu', lastPriceSale);
                             });
                         else if (selectedValue)
-                            updateMyData(index, 'Pu', selectedValue.PVD);
+                            updateMyData(index, 'Pu', selectedValue.Article.PVD);
 
                         if (data.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
@@ -69,6 +69,7 @@ export const getBonLivraisonColumns = () => ([
         id: 'TotalHT',
         Header: 'Montant',
         accessor: (props) => {
+            console.log(props.Pu, props.Qte);
             return formatMoney(props.Pu * props.Qte);
         },
         type: inputTypes.text.description,

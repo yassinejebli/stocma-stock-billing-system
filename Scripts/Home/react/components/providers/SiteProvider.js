@@ -17,7 +17,8 @@ export const useSite = () => {
 
 //use localstorage to save the selected site
 const SiteProvider = ({ children }) => {
-    const [siteId, setSiteId] = React.useState(1);
+    const savedSiteId = localStorage.getItem('site') ?  Number(localStorage.getItem('site')) : 1;
+    const [siteId, setSiteId] = React.useState(savedSiteId);
     const [siteName, setSiteName] = React.useState('Magasin 1');
     const [sites, setSites] = React.useState([]);
 
@@ -31,6 +32,7 @@ const SiteProvider = ({ children }) => {
         if (site) {
             setSiteId(site.Id)
             setSiteName(site.Name)
+            localStorage.setItem('site', site.Id);
         }
     }
 

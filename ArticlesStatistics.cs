@@ -13,8 +13,8 @@ namespace WebApplication1
 
         public int LowStockArticlesCount(int IdSite)
         {
-            var counter = db.ArticleSites.Where(x=>!x.Disabled)
-                .Where(x => x.QteStock < 0 && x.IdSite == IdSite)
+            var counter = db.ArticleSites
+                .Where(x => x.QteStock < 0 && x.IdSite == IdSite && !x.Disabled && !x.Site.Disabled)
                 .Count();
 
             return counter;
@@ -22,8 +22,8 @@ namespace WebApplication1
 
         public float TotalStock(int IdSite)
         {
-            var counter = db.ArticleSites.Where(x=>!x.Disabled)
-                .Where(x =>x.QteStock > 0 && x.IdSite == IdSite)
+            var counter = db.ArticleSites
+                .Where(x =>x.QteStock > 0 && x.IdSite == IdSite && !x.Disabled && !x.Site.Disabled)
                 .Sum(x => (float?)(x.QteStock * x.Article.PA)) ?? 0;
 
             return counter;
@@ -33,7 +33,7 @@ namespace WebApplication1
         {
             if (!From.HasValue) From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             if (!To.HasValue) To = DateTime.Now;
-            var articlesWithMargin = db.ArticleSites.Where(x => x.IdSite == IdSite && !x.Disabled).Select(x => new
+            var articlesWithMargin = db.ArticleSites.Where(x => x.IdSite == IdSite && !x.Disabled && !x.Site.Disabled).Select(x => new
             {
                 Article = x.Article.Designation,
                 QteStock = x.QteStock,

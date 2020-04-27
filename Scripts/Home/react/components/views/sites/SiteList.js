@@ -19,7 +19,7 @@ import { useSite } from '../../providers/SiteProvider'
 const TABLE = 'Sites';
 
 const SiteList = () => {
-    const {setSites} = useSite();
+    const { setSites } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -27,8 +27,9 @@ const SiteList = () => {
     const filters = React.useMemo(() => {
         return [
             {
-                field: 'Name',
-                value: debouncedSearchText
+                Name: {
+                    contains: debouncedSearchText
+                }
             }
         ]
     }, [debouncedSearchText]);
@@ -55,9 +56,9 @@ const SiteList = () => {
         setTitle('Dépôts & Magasins')
     }, []);
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         refetchData();
-    },[setSites])
+    }, [setSites])
 
     const refetchData = () => {
         getData(TABLE, {}, filters).then((response) => {
@@ -83,7 +84,7 @@ const SiteList = () => {
             });
         }
         setLoading(false);
-    },[]);
+    }, []);
 
     const refreshSites = () => {
         getAllData('Sites')
@@ -94,7 +95,7 @@ const SiteList = () => {
     const updateRow = React.useCallback(async (row) => {
         setSelectedRow(row);
         showModal();
-    },[]);
+    }, []);
 
 
     const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {

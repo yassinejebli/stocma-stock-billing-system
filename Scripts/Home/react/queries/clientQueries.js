@@ -1,12 +1,15 @@
+import buildQuery from 'odata-query'
 const TABLE = 'Clients';
 
-export const getClients = async (field, text) => {
-    if(!text)
-        return [];
-
-    const filterText = '&$filter=indexof(' + field + ',\'' + text + '\') gt -1';
+export const getClients = async (filters) => {
+    if(!filters['Name']) return [];
+    const allParams = buildQuery({ 
+        filter: filters, 
+        top: 20, 
+        skip: 0,
+    });
   
-    const URL = '/Odata/' + TABLE + '?&$top=20' + filterText;
+    const URL = '/Odata/' + TABLE + allParams;
 
     try {
         const res = await ( await fetch(URL) ).json();
