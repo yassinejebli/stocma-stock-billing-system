@@ -1,7 +1,7 @@
 import { Box, Button, TextField, FormControlLabel, Switch } from '@material-ui/core';
-import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
+import StorefrontOutlinedIcon from '@material-ui/icons/StorefrontOutlined';
 import React from 'react';
-import { saveData, updateData, getAllData } from '../../../queries/crudBuilder';
+import { saveData, updateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import Loader from '../loaders/Loader';
 import TitleIcon from '../misc/TitleIcon';
@@ -15,7 +15,7 @@ const initialState = {
 const TABLE = 'Sites';
 
 const SiteForm = ({data, onSuccess}) => {
-    const {setSites} = useSite();
+    const {fetchSites} = useSite();
     const { showSnackBar } = useSnackBar();
     const editMode = Boolean(data);
     const [formState, setFormState] = React.useState(initialState);
@@ -30,6 +30,14 @@ const SiteForm = ({data, onSuccess}) => {
     const onFieldChange = ({ target }) => setFormState(_formState => ({ ..._formState, [target.name]: target.value }));
 
     const isFormValid = () => {
+        if(Number(localStorage.getItem('site')) === formState.Id && formState.Disabled === true){
+            showSnackBar({
+                error: true,
+                text: 'Vous devez changer le dépôt/magasin actuel pour pouvoir l\'archiver'
+            });
+            return;
+        }
+
         const _errors = [];
         if (!formState.Name)
             _errors['Name'] = 'Ce champs est obligatoire.'
@@ -67,20 +75,14 @@ const SiteForm = ({data, onSuccess}) => {
                 });
             }
         }
-        refreshSites();
+        fetchSites();
         setLoading(false);
-    }
-
-    const refreshSites = () => {
-        getAllData('Sites')
-            .then(res => setSites(res))
-            .catch(err => console.error(err));
     }
 
     return (
         <div>
             <Loader loading={loading} />
-            <TitleIcon title={editMode ? 'Modifier les infos du dépôt/magasin' : 'Ajouter un dépôt/magasin'} Icon={GroupAddOutlinedIcon} />
+            <TitleIcon title={editMode ? 'Modifier les infos du dépôt/magasin' : 'Ajouter un dépôt/magasin'} Icon={StorefrontOutlinedIcon} />
             <TextField
                 name="Name"
                 label="Nom du dépôt/magasin"

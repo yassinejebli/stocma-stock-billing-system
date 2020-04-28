@@ -26,12 +26,15 @@ namespace WebApplication1.DATA
         public DateTime? ModificationDate { get; set; }
         public Guid IdClient { get; set; }
 
+        public int? IdSite { get; set; }
+
         [DefaultValue(0)]
         public float? Marge { get; set; }
 
         public string TypeReglement { get; set; }
 
         public virtual Client Client { get; set; }
+        public virtual Site Site { get; set; }
 
         public virtual float? OldSolde { get; set; }
 

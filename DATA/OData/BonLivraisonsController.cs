@@ -47,14 +47,28 @@ namespace WebApplication1.DATA.OData
                 return NotFound();
 
             /////////////////////////////////////////////
+            //----------------------------------------------Updating QteStock
+            foreach(var biOld in bonLivraison.BonLivraisonItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonLivraison.IdSite && x.IdArticle == biOld.IdArticle);
+                articleSite.QteStock += biOld.Qte;
+            }
+            foreach (var biNew in newBonLivraison.BonLivraisonItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonLivraison.IdSite && x.IdArticle == biNew.IdArticle);
+                articleSite.QteStock -= biNew.Qte;
+            }
+
+
             //-----------------------------------------------Updating document items
             db.BonLivraisonItems.RemoveRange(bonLivraison.BonLivraisonItems);
             db.BonLivraisonItems.AddRange(newBonLivraison.BonLivraisonItems);
 
-            //bonLivraison.BonLivraisonItems = patch..GetInstance().BonLivraisonItems;
             newBonLivraison.ModificationDate = DateTime.Now;
             bonLivraison.Ref = newBonLivraison.Ref;
-            bonLivraison.NumBon = newBonLivraison.NumBon;
+            var numBonGenerator = new DocNumberGenerator();
+
+            bonLivraison.NumBon = numBonGenerator.getNumDocByCompany(newBonLivraison.Ref - 1, newBonLivraison.Date);
             foreach (var bi in newBonLivraison.BonLivraisonItems)
             {
                 var article = db.Articles.Find(bi.IdArticle);
@@ -110,18 +124,16 @@ namespace WebApplication1.DATA.OData
                 return BadRequest(this.ModelState);
             var user = db.Companies.FirstOrDefault();
             var numBonGenerator = new DocNumberGenerator();
-
-            var userCompanyName = user.Name.ToUpper();
             var currentYear = DateTime.Now.Year;
-            var lastDoc = db.BonLivraisons.Where(x=>x.Date.Year == currentYear).OrderByDescending(x => x.Ref).FirstOrDefault();
-            var lastRef = lastDoc != null ? lastDoc.Ref : 1;
+            var lastDoc = db.BonLivraisons.Where(x=>x.Date.Year == currentYear && x.IdSite == bonLivraison.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();
+            var lastRef = lastDoc != null ? lastDoc.Ref : 0;
             bonLivraison.Ref = lastRef + 1;
             foreach(var bi in bonLivraison.BonLivraisonItems)
             {
                 var article = db.Articles.Find(bi.IdArticle);
                 bi.PA = article.PA;
             }
-            bonLivraison.NumBon = numBonGenerator.getNumDocByCompany(lastRef, userCompanyName, bonLivraison.Date);
+            bonLivraison.NumBon = numBonGenerator.getNumDocByCompany(lastRef, bonLivraison.Date);
             this.db.BonLivraisons.Add(bonLivraison);
 
             //-----------------------------------------------Updating payment
@@ -148,7 +160,13 @@ namespace WebApplication1.DATA.OData
                 db.Paiements.Add(paiement);
             }
 
-
+            //-------------------------------------------updating QteStock
+            foreach(var bi in bonLivraison.BonLivraisonItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bonLivraison.IdSite);
+                articleSite.QteStock -= bi.Qte;
+            }
+            //-------------------------------------------
 
             try
             {
@@ -171,6 +189,14 @@ namespace WebApplication1.DATA.OData
             BonLivraison async = await this.db.BonLivraisons.FindAsync((object)key);
             if (async == null)
                 return (IHttpActionResult)this.NotFound();
+
+            //--------------------------updating QteStock
+            foreach (var bi in async.BonLivraisonItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == async.IdSite && x.IdArticle == bi.IdArticle);
+                articleSite.QteStock += bi.Qte;
+            }
+
             db.Paiements.RemoveRange(async.Paiements);
             db.BonLivraisonItems.RemoveRange(async.BonLivraisonItems);
             db.BonLivraisons.Remove(async);

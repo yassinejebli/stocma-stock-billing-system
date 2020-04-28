@@ -131,6 +131,7 @@ const Menu = ({ open }) => {
                 </Avatar>
                 <div className={classes.content}>
                     <div className={classes.title}>Client</div>
+                    <div className={classes.description}>Ajouter un nouveau client</div>
                 </div>
             </div>
             <div className={classes.item} onClick={() => open(items.fournisseur)}>
@@ -139,6 +140,7 @@ const Menu = ({ open }) => {
                 </Avatar>
                 <div className={classes.content}>
                     <div className={classes.title}>Fournisseur</div>
+                    <div className={classes.description}>Ajouter un nouveau fournisseur</div>
                 </div>
             </div>
             <div className={classes.item} onClick={() => open(items.paiementClient)}>
@@ -147,6 +149,7 @@ const Menu = ({ open }) => {
                 </Avatar>
                 <div className={classes.content}>
                     <div className={classes.title}>Paiement (Client)</div>
+                    <div className={classes.description}>Ajouter des paiements effectués par vos clients</div>
                 </div>
             </div>
             <div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
@@ -155,6 +158,7 @@ const Menu = ({ open }) => {
                 </Avatar>
                 <div className={classes.content}>
                     <div className={classes.title}>Paiement (Fournisseur)</div>
+                    <div className={classes.description}>Ajouter des paiements que vous avez effectués à vos fournisseurs</div>
                 </div>
             </div>
             <div className={classes.item} onClick={() => open(items.site)}>
@@ -163,6 +167,7 @@ const Menu = ({ open }) => {
                 </Avatar>
                 <div className={classes.content}>
                     <div className={classes.title}>Dépôt/Magasin</div>
+                    <div className={classes.description}>Ajouter un nouveau dépôt ou magasin</div>
                 </div>
             </div>
         </>

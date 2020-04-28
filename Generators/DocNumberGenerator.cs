@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using WebApplication1.DATA;
 
 namespace WebApplication1.Generators
 {
     public class DocNumberGenerator
     {
-
-        public string getNumDocByCompany(int lastRef, string companyName, DateTime date)
+        MySaniSoftContext db = new MySaniSoftContext();
+        public string getNumDocByCompany(int lastRef, DateTime date)
         {
+            var company = db.Companies.FirstOrDefault();
+            var companyName = company.Name.ToUpper();
+
             var newRef = lastRef + 1;
 
             if(companyName == "SUIV" || companyName == "SBCIT")

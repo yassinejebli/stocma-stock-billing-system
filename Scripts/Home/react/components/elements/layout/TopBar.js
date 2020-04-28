@@ -10,7 +10,6 @@ import { useModal } from 'react-modal-hook';
 import SideWrapperDialog from '../dialogs/SideWrapperDialog';
 import { useTitle } from '../../providers/TitleProvider';
 import SiteSelect from '../site-select/SiteSelect';
-import { useSite } from '../../providers/SiteProvider';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         alignSelf: 'center'
-    },
+    }
 }));
 
 export default function TopBar() {
-    const {title} = useTitle();
+    const { title } = useTitle();
     const classes = useStyles();
-    const [showModal, hideModal] = useModal(({ in: open, onExited })=> (
+    const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideWrapperDialog open={open} onExited={onExited} onClose={hideModal} />
     ));
 

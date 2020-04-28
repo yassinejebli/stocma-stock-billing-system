@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { saveData, updateData, getSingleData } from '../../../queries/crudBuilder'
 import { getBonLivraisonColumns } from '../../../utils/columnsBuilder'
 import AddButton from '../../elements/button/AddButton'
+import DescriptionIcon from '@material-ui/icons/Description';
 import ClientAutocomplete from '../../elements/client-autocomplete/ClientAutocomplete'
 import DatePicker from '../../elements/date-picker/DatePicker'
 import Error from '../../elements/misc/Error'
@@ -18,6 +19,7 @@ import { useSnackBar } from '../../providers/SnackBarProvider'
 import { useLocation, useHistory } from 'react-router-dom'
 import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import qs from 'qs'
+import { useSite } from '../../providers/SiteProvider'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -30,6 +32,7 @@ const emptyLine = {
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
 const BonLivraison = () => {
+    const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
@@ -155,6 +158,7 @@ const BonLivraison = () => {
         const Id = isEditMode ? BonLivraisonId : uuidv4();
         const preparedData = {
             Id: Id,
+            IdSite: siteId,
             Note: note,
             NumBon: numDoc,
             Ref: ref,
@@ -199,6 +203,16 @@ const BonLivraison = () => {
     return (
         <>
             <Loader loading={loading} />
+            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<DescriptionIcon/>}
+                    onClick={()=>history.push('/BonLivraisonList')}
+                >
+                    Liste des bons de livraison
+                </Button>
+            </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" flexWrap="wrap">
                     <ClientAutocomplete
@@ -218,6 +232,7 @@ const BonLivraison = () => {
                         />
                             <TextField
                                 value={numDoc}
+                                disabled
                                 onChange={({ target: { value } }) => setNumDoc(value)}
                                 variant="outlined"
                                 size="small"

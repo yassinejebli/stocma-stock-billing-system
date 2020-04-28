@@ -47,6 +47,17 @@ namespace WebApplication1.Migrations
                 context.SaveChanges();
             }
 
+            var bonLivraisons = context.BonLivraisons.Where(x => x.IdSite == null);
+            if(bonLivraisons.Count() > 0)
+            {
+                foreach (var b in bonLivraisons)
+                {
+                    b.IdSite = 1;
+                }
+                context.SaveChanges();
+            }
+            
+
             if (!context.Familles.Any())
             {
                 context.Familles.AddRange((IEnumerable<Famille>)new Famille[1]

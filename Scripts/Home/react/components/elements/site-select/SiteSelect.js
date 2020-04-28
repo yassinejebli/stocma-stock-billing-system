@@ -1,13 +1,20 @@
 import React from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { useSite } from '../../providers/SiteProvider';
-import { FormControl, InputBase, Select, MenuItem } from '@material-ui/core';
+import { FormControl, InputBase, Select, MenuItem, Box } from '@material-ui/core';
+import StorefrontOutlinedIcon from '@material-ui/icons/StorefrontOutlined';
 
 const useStyles = makeStyles({
   select: {
     '& .MuiSelect-icon': {
       fill: '#FFF'
     }
+  },
+  icon: {
+    color: '#FFF',
+    width: 40,
+    height: 40,
+    marginRight: 6
   }
 });
 
@@ -43,22 +50,25 @@ const SiteSelect = () => {
   if (!hasMoreThanOneSite) return null;
 
   return (
-    <FormControl className={classes.margin}>
-      <Select
-        labelId="site"
-        value={siteId}
-        onChange={handleChange}
-        input={<BootstrapInput size="small" />}
-        size="small"
-        className={classes.select}
-      >
-        {
-          sites.map(x => (
-            <MenuItem key={x.Id} value={x.Id}>{x.Name}</MenuItem>
-          ))
-        }
-      </Select>
-    </FormControl>
+    <Box display="flex" alignItems="center">
+      <StorefrontOutlinedIcon className={classes.icon} />
+      <FormControl className={classes.margin}>
+        <Select
+          labelId="site"
+          value={siteId}
+          onChange={handleChange}
+          input={<BootstrapInput size="small" />}
+          size="small"
+          className={classes.select}
+        >
+          {
+            sites.map(x => (
+              <MenuItem key={x.Id} value={x.Id}>{x.Name}</MenuItem>
+            ))
+          }
+        </Select>
+      </FormControl>
+    </Box>
   )
 }
 

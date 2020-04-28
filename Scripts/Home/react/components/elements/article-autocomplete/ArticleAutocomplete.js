@@ -27,7 +27,10 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       IdSite: siteId,
       Disabled: false
     });
-    setArticles(data);
+    setArticles(data.map(x=>({
+      ...x.Article,
+      QteStock: x.QteStock
+    })));
   }
 
   return (
@@ -44,10 +47,13 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       }}
       autoHighlight
       size="small"
-      getOptionLabel={(option) => option?.Article.Designation}
+      getOptionLabel={(option) => {
+        console.log({option});
+        
+        return option?.Designation}}
       renderOption={option => (
         <div>
-          <div>{option.Article.Designation}</div>
+          <div>{option.Designation}</div>
           <div className={classes.qte}>quantité en stock: {option.QteStock}</div>
         </div>
       )}

@@ -22,6 +22,7 @@ namespace WebApplication1.DATA
         public bool Disabled { get; set; } = false;
 
         public virtual ICollection<ArticleSite> ArticleSites { get; set; }
+        public virtual ICollection<BonLivraison> BonLivraisons { get; set; }
 
 
     }

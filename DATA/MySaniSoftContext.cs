@@ -241,6 +241,14 @@ namespace WebApplication1.DATA
 
 
 
+            ///--------------------------------------site - bl
+            modelBuilder.Entity<BonLivraison>()
+                .HasOptional(t => t.Site)
+                .WithMany(t => t.BonLivraisons)
+                .HasForeignKey(d => d.IdSite);
+            ///
+
+
             modelBuilder.Entity<FactureFItem>().HasKey<Guid>((Expression<Func<FactureFItem, Guid>>)(t => t.Id));
 
             modelBuilder.Entity<FactureFItem>()

@@ -15,7 +15,6 @@ export const useSite = () => {
     return context
 }
 
-//use localstorage to save the selected site
 const SiteProvider = ({ children }) => {
     const savedSiteId = localStorage.getItem('site') ?  Number(localStorage.getItem('site')) : 1;
     const [siteId, setSiteId] = React.useState(savedSiteId);
@@ -23,10 +22,14 @@ const SiteProvider = ({ children }) => {
     const [sites, setSites] = React.useState([]);
 
     React.useEffect(() => {
-        getAllData('Sites')
-            .then(res => setSites(res))
-            .catch(err => console.error(err));
+        fetchSites();
     }, []);
+
+    const fetchSites = () => {
+        getAllData('Sites')
+        .then(res => setSites(res.filter(x=>!x.Disabled)))
+        .catch(err => console.error(err));
+    }
 
     const setSite = (site) => {
         if (site) {
@@ -42,7 +45,7 @@ const SiteProvider = ({ children }) => {
             siteName,
             setSite,
             sites,
-            setSites
+            fetchSites
         }}>
             {children}
         </SiteContext.Provider>)

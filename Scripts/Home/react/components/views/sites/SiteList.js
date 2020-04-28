@@ -4,7 +4,7 @@ import Paper from '../../elements/misc/Paper'
 import Table from '../../elements/table/Table'
 import Loader from '../../elements/loaders/Loader'
 import { useTitle } from '../../providers/TitleProvider'
-import { getData, deleteData, getAllData } from '../../../queries/crudBuilder'
+import { getData, deleteData } from '../../../queries/crudBuilder'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { useModal } from 'react-modal-hook'
 import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog'
@@ -19,7 +19,7 @@ import { useSite } from '../../providers/SiteProvider'
 const TABLE = 'Sites';
 
 const SiteList = () => {
-    const { setSites } = useSite();
+    const { fetchSites } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -58,7 +58,7 @@ const SiteList = () => {
 
     React.useEffect(() => {
         refetchData();
-    }, [setSites])
+    }, [fetchSites])
 
     const refetchData = () => {
         getData(TABLE, {}, filters).then((response) => {
@@ -70,13 +70,22 @@ const SiteList = () => {
     }
 
     const deleteRow = React.useCallback(async (id) => {
+
+        if(Number(localStorage.getItem('site')) === id){
+            showSnackBar({
+                error: true,
+                text: 'Vous devez changer le dépôt/magasin actuel pour pouvoir l\'archiver'
+            });
+            return;
+        }
+
         setLoading(true);
         const response = await deleteData(TABLE, id);
         console.log({ response });
         if (response.ok) {
             showSnackBar();
             refetchData();
-            refreshSites();
+            fetchSites();
         } else {
             showSnackBar({
                 error: true,
@@ -85,12 +94,6 @@ const SiteList = () => {
         }
         setLoading(false);
     }, []);
-
-    const refreshSites = () => {
-        getAllData('Sites')
-            .then(res => setSites(res))
-            .catch(err => console.error(err));
-    }
 
     const updateRow = React.useCallback(async (row) => {
         setSelectedRow(row);
