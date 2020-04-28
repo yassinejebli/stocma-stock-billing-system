@@ -23,12 +23,20 @@ const ClientList = () => {
     const [searchText, setSearchText] = React.useState('');
     const debouncedSearchText = useDebounce(searchText);
     const filters = React.useMemo(() => {
-        return [
-            {
-                field: 'Name',
-                value: debouncedSearchText
-            }
-        ]
+        return {
+            or: [
+                {
+                    Name: {
+                        contains: debouncedSearchText
+                    }
+                },
+                {
+                    ICE: {
+                        contains: debouncedSearchText
+                    }
+                }
+            ]
+        }
     }, [debouncedSearchText]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
@@ -77,12 +85,12 @@ const ClientList = () => {
             });
         }
         setLoading(false);
-    },[]);
+    }, []);
 
     const updateRow = React.useCallback(async (row) => {
         setSelectedRow(row);
         showModal();
-    },[]);
+    }, []);
 
 
     const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {

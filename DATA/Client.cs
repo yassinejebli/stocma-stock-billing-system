@@ -43,7 +43,7 @@ namespace WebApplication1.DATA
         [NotMapped]
         public float Solde
         {
-            get { return this.Paiements.Sum(x => x.Debit - x.Credit); }
+            get { return (Paiements != null) ? Paiements.Sum(x => x.Debit - x.Credit) : 0; }
         }
 
         public bool Disabled { get; set; } = false;

@@ -1,6 +1,5 @@
 import Box from '@material-ui/core/Box'
 import React from 'react'
-import { getFournisseurColumns } from '../../../utils/columnsBuilder'
 import Paper from '../../elements/misc/Paper'
 import Table from '../../elements/table/Table'
 import Loader from '../../elements/loaders/Loader'
@@ -13,29 +12,45 @@ import FournisseurForm from '../../elements/forms/FournisseurForm'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined';
 import { TextField } from '@material-ui/core'
+import useDebounce from '../../../hooks/useDebounce'
+import { fournisseurColumns } from '../../elements/table/columns/fournisseurColumns'
 
 const TABLE = 'Fournisseurs';
 
-const defaultPageSize = 10;
-
-const SupplierList = () => {
+const FournisseurList = () => {
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
+    const debouncedSearchText = useDebounce(searchText);
+    const filters = React.useMemo(() => {
+        return {
+            or: [
+                {
+                    Name: {
+                        contains: debouncedSearchText
+                    }
+                },
+                {
+                    ICE: {
+                        contains: debouncedSearchText
+                    }
+                }
+            ]
+        }
+    }, [debouncedSearchText]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
     const [selectedRow, setSelectedRow] = React.useState();
     const [pageCount, setTotalCount] = React.useState(0);
-    const [pageIndex, setPageIndex] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getFournisseurColumns(),
+        () => fournisseurColumns(),
         []
     )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideModal}>
-            <FournisseurForm onSuccess={()=>{
+            <FournisseurForm onSuccess={() => {
                 refetchData();
                 hideModal();
             }} data={selectedRow} />
@@ -46,19 +61,9 @@ const SupplierList = () => {
         setTitle('Fournisseurs')
     }, []);
 
-    React.useEffect(()=>{
-        refetchData();
-        //reset page inex after filtering
-        setPageIndex(0);
-    }, [searchText]);
 
     const refetchData = () => {
-        getData(TABLE, {
-            $skip: pageIndex * defaultPageSize
-        },{
-            field: 'Name',
-            value: searchText
-        }).then((response) => {
+        getData(TABLE, {}, filters).then((response) => {
             setData(response.data);
             setTotalItems(response.totalItems);
         }).catch((err) => {
@@ -66,7 +71,7 @@ const SupplierList = () => {
         })
     }
 
-    const deleteRow = async (id) => {
+    const deleteRow = React.useCallback(async (id) => {
         setLoading(true);
         const response = await deleteData(TABLE, id);
         console.log({ response });
@@ -80,30 +85,26 @@ const SupplierList = () => {
             });
         }
         setLoading(false);
-    }
+    }, []);
 
-    const updateRow = async (row) => {
+    const updateRow = React.useCallback(async (row) => {
         setSelectedRow(row);
         showModal();
-    }
+    }, []);
 
 
-    const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+    const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {
         const fetchId = ++fetchIdRef.current;
-        setLoading(true);
-        setPageIndex(pageIndex);
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
             getData(TABLE, {
                 $skip: startRow
-            }).then((response) => {
+            }, filters).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
-                setLoading(false);
             }).catch((err) => {
                 console.log({ err });
-                setLoading(false);
             });
         }
     }, [])
@@ -116,7 +117,7 @@ const SupplierList = () => {
                     <TitleIcon noBorder title="Liste des fournisseurs" Icon={PeopleAltOutlinedIcon} />
                     <TextField
                         value={searchText}
-                        onChange={({target: {value}}) => {
+                        onChange={({ target: { value } }) => {
                             setSearchText(value);
                         }}
                         placeholder="Rechercher..."
@@ -134,7 +135,7 @@ const SupplierList = () => {
                         totalItems={totalItems}
                         pageCount={pageCount}
                         fetchData={fetchData}
-                        pageIndex={pageIndex}
+                        filters={filters}
                     />
                 </Box>
             </Paper>
@@ -142,4 +143,4 @@ const SupplierList = () => {
     )
 }
 
-export default SupplierList;
+export default FournisseurList;

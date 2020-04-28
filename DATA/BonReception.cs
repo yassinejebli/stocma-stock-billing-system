@@ -10,26 +10,30 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.DATA
 {
-  public class BonReception
-  {
-    [Key]
-    public Guid Id { get; set; }
+    public class BonReception
+    {
+        [Key]
+        public Guid Id { get; set; }
 
-    [Required]
-    public string NumBon { get; set; }
+        [Required]
+        public string NumBon { get; set; }
 
-    public DateTime Date { get; set; }
+        public DateTime Date { get; set; }
 
-    public Guid IdFournisseur { get; set; }
-    public Guid? IdFactureF { get; set; }
+        public Guid IdFournisseur { get; set; }
+        public Guid? IdFactureF { get; set; }
+        public int? IdSite { get; set; }
 
-    public virtual Fournisseur Fournisseur { get; set; }
-    public virtual FactureF FactureF { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public DateTime? ModificationDate { get; set; }
+        public virtual Fournisseur Fournisseur { get; set; }
+        public virtual FactureF FactureF { get; set; }
+        public virtual Site Site { get; set; }
 
-    public virtual ICollection<BonReceptionItem> BonReceptionItems { get; set; }
+        public virtual ICollection<BonReceptionItem> BonReceptionItems { get; set; }
 
-    public virtual ICollection<BonAvoir> BonAvoirs { get; set; }
+        public virtual ICollection<BonAvoir> BonAvoirs { get; set; }
 
-    public virtual ICollection<PaiementF> PaiementFs { get; set; }
-  }
+        public virtual ICollection<PaiementF> PaiementFs { get; set; }
+    }
 }

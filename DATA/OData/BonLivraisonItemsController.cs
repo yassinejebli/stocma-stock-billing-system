@@ -11,7 +11,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.OData;
+using Microsoft.AspNet.OData;
 using WebApplication1.PaimentManager;
 
 namespace WebApplication1.DATA.OData

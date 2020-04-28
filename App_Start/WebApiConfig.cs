@@ -8,11 +8,9 @@ using Microsoft.Data.Edm;
 using System;
 using System.Linq;
 using System.Web.Http;
-using Microsoft.OData.Edm;
-using System.Web.OData.Builder;
-using System.Web.OData.Extensions;
-using System.Web.OData.Routing;
+using Microsoft.AspNet.OData.Extensions;
 using WebApplication1.DATA;
+using Microsoft.AspNet.OData.Builder;
 
 namespace WebApplication1
 {
@@ -130,6 +128,9 @@ namespace WebApplication1
             conventionModelBuilder.StructuralTypes
                 .First(t => t.ClrType == typeof(Client))
                 .AddProperty(typeof(Client).GetProperty("Solde"));
+            conventionModelBuilder.StructuralTypes
+                .First(t => t.ClrType == typeof(Fournisseur))
+                .AddProperty(typeof(Fournisseur).GetProperty("Solde"));
             conventionModelBuilder.StructuralTypes
                 .First(t => t.ClrType == typeof(Article))
                 .AddProperty(typeof(Article).GetProperty("QteStockSum"));

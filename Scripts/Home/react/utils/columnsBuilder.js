@@ -11,7 +11,6 @@ import { getLastPriceSale } from '../queries/articleQueries';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import { Box } from '@material-ui/core';
 
-
 export const getBonLivraisonColumns = () => ([
     {
         Header: 'Article',

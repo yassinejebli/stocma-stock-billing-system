@@ -56,7 +56,16 @@ namespace WebApplication1.Migrations
                 }
                 context.SaveChanges();
             }
-            
+
+            var bonReceptions = context.BonReceptions.Where(x => x.IdSite == null);
+            if (bonReceptions.Count() > 0)
+            {
+                foreach (var b in bonReceptions)
+                {
+                    b.IdSite = 1;
+                }
+                context.SaveChanges();
+            }
 
             if (!context.Familles.Any())
             {

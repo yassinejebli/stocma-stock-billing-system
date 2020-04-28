@@ -10,24 +10,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.DATA
 {
-  public class BonAvoirItem
-  {
-    [Key]
-    public Guid Id { get; set; }
+    public class BonAvoirItem
+    {
+        [Key]
+        public Guid Id { get; set; }
 
-    public Guid IdBonAvoir { get; set; }
+        public Guid IdBonAvoir { get; set; }
 
-    public float Qte { get; set; }
+        [Range(1, float.MaxValue)]
+        public float Qte { get; set; }
 
-    [DefaultValue(0)]
-    public float Pu { get; set; }
+        [DefaultValue(0)]
+        public float Pu { get; set; }
 
-    public Guid IdArticle { get; set; }
+        public Guid IdArticle { get; set; }
 
-    public float TotalHT { get; set; }
+        public float TotalHT { get; set; }
 
-    public virtual BonAvoir BonAvoir { get; set; }
+        public virtual BonAvoir BonAvoir { get; set; }
 
-    public virtual Article Article { get; set; }
-  }
+        public virtual Article Article { get; set; }
+    }
 }

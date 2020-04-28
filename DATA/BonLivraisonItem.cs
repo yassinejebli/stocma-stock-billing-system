@@ -18,6 +18,7 @@ namespace WebApplication1.DATA
 
         public Guid IdBonLivraison { get; set; }
 
+        [Range(1, float.MaxValue)]
         public float Qte { get; set; }
 
         [DefaultValue(0)]

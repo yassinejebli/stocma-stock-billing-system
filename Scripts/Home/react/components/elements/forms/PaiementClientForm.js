@@ -111,6 +111,7 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess }) => {
             const response = await saveData(TABLE, preparedData);
             if (response?.Id) {
                 showSnackBar();
+                setFormState({...initialState});
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({

@@ -17,6 +17,8 @@ import SiteProvider from './components/providers/SiteProvider';
 import ArticleList from './components/views/articles/ArticleList';
 import ArticlesMarginList from './components/views/articles/ArticlesMarginList';
 import SiteList from './components/views/sites/SiteList';
+import BonReception from './components/views/bonReception/BonReception';
+import BonReceptionList from './components/views/bonReception/BonReceptionList';
 
 const App = () => {
     return (
@@ -29,8 +31,10 @@ const App = () => {
                                 <TopBar />
                                 <Switch>
                                     <Route exact path="/" component={Dashboard} />
+                                    <Route path="/BonReception" component={BonReception} />
                                     <Route path="/BonLivraison" component={BonLivraison} />
                                     <Route path="/BonLivraisonList" component={BonLivraisonList} />
+                                    <Route path="/BonReceptionList" component={BonReceptionList} />
                                     <Route path="/ArticleList" component={ArticleList} />
                                     <Route path="/SiteList" component={SiteList} />
                                     <Route path="/ArticlesMarginList" component={ArticlesMarginList} />

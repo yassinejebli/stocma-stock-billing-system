@@ -41,6 +41,23 @@ export const getLastPriceSale = async (articleId, clientId) => {
     }
 }
 
+export const getLastPricePurchase = async (articleId, fournisseurId) => {
+    const parsedParams = new URLSearchParams({
+        IdFournisseur: fournisseurId,
+        IdArticle: articleId
+    }).toString();
+
+    const URL = '/SalesHistory/getPriceLastPurchase?' + parsedParams;
+
+    try {
+        const res = await (await fetch(URL, {})).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+        return 0;
+    }
+}
+
 export const updateArticle = async (article, id, qteStock, idSite, disabled) => {
     const parsedParams = new URLSearchParams({
         QteStock: qteStock,

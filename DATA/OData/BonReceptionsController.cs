@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
-using System.Web.OData;
+using Microsoft.AspNet.OData;
 using System.Web.Http.OData.Routing;
 using WebApplication1.DATA;
 
@@ -49,10 +49,10 @@ namespace WebApplication1.DATA.OData
         }
 
         // PUT: odata/BonReceptions(5)
-        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<BonReception> patch)
+        [EnableQuery]
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, BonReception newBonReception)
         {
             
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -64,7 +64,50 @@ namespace WebApplication1.DATA.OData
                 return NotFound();
             }
 
-            patch.Put(bonReception);
+
+            /////////////////////////////////////////////
+            //----------------------------------------------Updating QteStock
+            foreach (var biOld in bonReception.BonReceptionItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonReception.IdSite && x.IdArticle == biOld.IdArticle);
+                articleSite.QteStock -= biOld.Qte;
+            }
+            foreach (var biNew in newBonReception.BonReceptionItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonReception.IdSite && x.IdArticle == biNew.IdArticle);
+                articleSite.QteStock += biNew.Qte;
+            }
+
+
+            //-----------------------------------------------Updating document items
+            db.BonReceptionItems.RemoveRange(bonReception.BonReceptionItems);
+            db.BonReceptionItems.AddRange(newBonReception.BonReceptionItems);
+            newBonReception.ModificationDate = DateTime.Now;
+
+            //-----------------------------------------------Updating payment
+            var payment = db.PaiementFs.FirstOrDefault(x => x.IdBonReception == bonReception.Id);
+            var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb7";
+            var Total = newBonReception.BonReceptionItems.Sum(x => x.Qte * x.Pu);
+            if (payment != null)
+            {
+                payment.Debit = Total;
+                payment.Date = newBonReception.Date;
+            }
+            else
+            {
+                PaiementF paiement = new PaiementF()
+                {
+                    Id = Guid.NewGuid(),
+                    IdBonReception = bonReception.Id,
+                    IdFournisseur = newBonReception.IdFournisseur,
+                    Debit = Total,
+                    IdTypePaiement = new Guid(ACHAT_PAIEMENT_TYPE_ID),
+                    Date = newBonReception.Date
+                };
+                db.PaiementFs.Add(paiement);
+            }
+            ////////////////////////////////////////////
+
 
             try
             {
@@ -82,10 +125,13 @@ namespace WebApplication1.DATA.OData
                 }
             }
 
-            return Updated(bonReception);
+            var bonReceptionWithItems = db.BonReceptions.Where(x => x.Id == bonReception.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(bonReceptionWithItems));
+            //return Updated(bonReception);
         }
 
         // POST: odata/BonReceptions
+        [EnableQuery]
         public async Task<IHttpActionResult> Post(BonReception bonReception)
         {
             if (!ModelState.IsValid)
@@ -93,7 +139,30 @@ namespace WebApplication1.DATA.OData
                 return BadRequest(ModelState);
             }
 
-            db.BonReceptions.Add(bonReception);
+
+            this.db.BonReceptions.Add(bonReception);
+
+            //-----------------------------------------------Updating payment
+            var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb7";
+            var Total = bonReception.BonReceptionItems.Sum(x => x.Qte * x.Pu);
+           
+            PaiementF paiement = new PaiementF()
+            {
+                Id = Guid.NewGuid(),
+                IdBonReception = bonReception.Id,
+                IdFournisseur = bonReception.IdFournisseur,
+                Debit = Total,
+                IdTypePaiement = new Guid(ACHAT_PAIEMENT_TYPE_ID),
+                Date = bonReception.Date
+            };
+            db.PaiementFs.Add(paiement);
+
+            //-------------------------------------------updating QteStock
+            foreach (var bi in bonReception.BonReceptionItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bonReception.IdSite);
+                articleSite.QteStock += bi.Qte;
+            }
 
             try
             {
@@ -111,7 +180,9 @@ namespace WebApplication1.DATA.OData
                 }
             }
 
-            return Created(bonReception);
+            var bonReceptionWithItems = db.BonReceptions.Where(x => x.Id == bonReception.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(bonReceptionWithItems));
+            //return Created(bonReception);
         }
 
         // PATCH: odata/BonReceptions(5)

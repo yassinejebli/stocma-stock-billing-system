@@ -42,10 +42,10 @@ const FournisseurForm = ({data, onSuccess}) => {
 
     const save = async () => {
         if (!isFormValid()) return;
-
+        const {Solde, ...preparedData} = formState;
         setLoading(true);
         if(editMode){
-            const response = await updateData(TABLE, formState, formState.Id);
+            const response = await updateData(TABLE, preparedData, preparedData.Id);
             if (response.ok) {
                 setFormState({ ...initialState });
                 showSnackBar();
@@ -57,7 +57,7 @@ const FournisseurForm = ({data, onSuccess}) => {
                 });
             }
         }else{
-            const response = await saveData(TABLE, formState);
+            const response = await saveData(TABLE, preparedData);
             if (response?.Id) {
                 setFormState({ ...initialState });
                 showSnackBar();

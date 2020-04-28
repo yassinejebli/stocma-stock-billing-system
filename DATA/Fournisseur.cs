@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace WebApplication1.DATA
 {
@@ -32,6 +33,11 @@ namespace WebApplication1.DATA
         public string ICE { get; set; }
         public bool Disabled { get; set; } = false;
 
+        [NotMapped]
+        public float Solde
+        {
+            get { return (PaiementFs != null) ? PaiementFs.Sum(x => x.Debit - x.Credit) : 0; }
+        }
         public virtual ICollection<BonReception> BonReceptions { get; set; }
 
         public virtual ICollection<BonAvoir> BonAvoirs { get; set; }
