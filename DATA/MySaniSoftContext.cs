@@ -255,6 +255,13 @@ namespace WebApplication1.DATA
                 .HasForeignKey(d => d.IdSite);
             ///
 
+            ///--------------------------------------site - devis
+            modelBuilder.Entity<Devis>()
+                .HasOptional(t => t.Site)
+                .WithMany(t => t.Devises)
+                .HasForeignKey(d => d.IdSite);
+            ///
+
 
             modelBuilder.Entity<FactureFItem>().HasKey<Guid>((Expression<Func<FactureFItem, Guid>>)(t => t.Id));
 

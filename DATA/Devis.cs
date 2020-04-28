@@ -20,6 +20,9 @@ namespace WebApplication1.DATA
 
         public string NumBon { get; set; }
 
+        public int? IdSite { get; set; }
+
+
         //SUIV
         public string TypeReglement { get; set; }// espece, cheque, effet, au-comptant
         public string DelaiLivrasion { get; set; }
@@ -36,6 +39,7 @@ namespace WebApplication1.DATA
         public string User { get; set; }
 
         public virtual Client Client { get; set; }
+        public virtual Site Site { get; set; }
 
         public virtual ICollection<DevisItem> DevisItems { get; set; }
     }

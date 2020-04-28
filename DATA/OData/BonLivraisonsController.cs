@@ -64,8 +64,10 @@ namespace WebApplication1.DATA.OData
             db.BonLivraisonItems.RemoveRange(bonLivraison.BonLivraisonItems);
             db.BonLivraisonItems.AddRange(newBonLivraison.BonLivraisonItems);
 
-            newBonLivraison.ModificationDate = DateTime.Now;
+            bonLivraison.ModificationDate = DateTime.Now;
+            bonLivraison.Date = newBonLivraison.Date;
             bonLivraison.Ref = newBonLivraison.Ref;
+            bonLivraison.Note = newBonLivraison.Note;
             var numBonGenerator = new DocNumberGenerator();
 
             bonLivraison.NumBon = numBonGenerator.getNumDocByCompany(newBonLivraison.Ref - 1, newBonLivraison.Date);
@@ -121,7 +123,6 @@ namespace WebApplication1.DATA.OData
         {
             if (!this.ModelState.IsValid)
                 return BadRequest(this.ModelState);
-            var user = db.Companies.FirstOrDefault();
             var numBonGenerator = new DocNumberGenerator();
             var currentYear = DateTime.Now.Year;
             var lastDoc = db.BonLivraisons.Where(x=>x.Date.Year == currentYear && x.IdSite == bonLivraison.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();

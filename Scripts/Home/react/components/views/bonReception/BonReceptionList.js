@@ -84,7 +84,6 @@ const refetchData = () => {
 const deleteRow = React.useCallback(async (id) => {
     setLoading(true);
     const response = await deleteData(DOCUMENT, id);
-    console.log({ response });
     if (response.ok) {
         showSnackBar();
         refetchData();

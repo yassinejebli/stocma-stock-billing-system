@@ -227,6 +227,7 @@
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\Print\DevisController.cs" />
     <Compile Include="Controllers\Print\BLController.cs" />
     <Compile Include="Controllers\Print\BRController.cs" />
     <Compile Include="Controllers\SalesHistoryController.cs" />
@@ -1157,6 +1158,10 @@
     <Compile Include="Migrations\202004281015526_Positive_qte.cs" />
     <Compile Include="Migrations\202004281015526_Positive_qte.designer.cs">
       <DependentUpon>202004281015526_Positive_qte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004282004494_Devis_Site.cs" />
+    <Compile Include="Migrations\202004282004494_Devis_Site.designer.cs">
+      <DependentUpon>202004282004494_Devis_Site.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3854,6 +3859,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004281015526_Positive_qte.resx">
       <DependentUpon>202004281015526_Positive_qte.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004282004494_Devis_Site.resx">
+      <DependentUpon>202004282004494_Devis_Site.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

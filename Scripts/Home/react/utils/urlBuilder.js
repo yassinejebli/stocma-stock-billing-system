@@ -15,6 +15,14 @@ export const getPrintBonReceptionURL = (params) => {
     return `/Print/BR?${parsedParams}`
 }
 
+export const getPrintDevisURL = (params) => {
+    const allParams = {
+        ...params
+    };
+    const parsedParams = new URLSearchParams(allParams).toString();
+    return `/Print/Devis?${parsedParams}`
+}
+
 export const getImageURL = (fileName) => {
     return `/UserFiles/images/articles/${fileName}`;
 };

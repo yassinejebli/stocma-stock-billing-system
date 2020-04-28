@@ -13,118 +13,140 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.AspNet.OData;
+using WebApplication1.Generators;
 
 namespace WebApplication1.DATA.OData
 {
-  public class DevisesController : ODataController
-  {
-    private MySaniSoftContext db = new MySaniSoftContext();
-
-    [EnableQuery]
-    public IQueryable<Devis> GetDevises()
+    public class DevisesController : ODataController
     {
-      return (IQueryable<Devis>) this.db.Devises;
-    }
+        private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
-    public SingleResult<Devis> GetDevis([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<Devis>(this.db.Devises.Where<Devis>((Expression<Func<Devis, bool>>) (devis => devis.Id == key)));
-    }
+        [EnableQuery]
+        public IQueryable<Devis> GetDevises()
+        {
+            return (IQueryable<Devis>)this.db.Devises;
+        }
 
-    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<Devis> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      Devis devis = await this.db.Devises.FindAsync((object) key);
-      if (devis == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Put(devis);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.DevisExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<Devis>(devis);
-    }
+        [EnableQuery]
+        public SingleResult<Devis> GetDevis([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<Devis>(this.db.Devises.Where<Devis>((Expression<Func<Devis, bool>>)(devis => devis.Id == key)));
+        }
 
-    public async Task<IHttpActionResult> Post(Devis devis)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      this.db.Devises.Add(devis);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateException ex)
-      {
-        if (this.DevisExists(devis.Id))
-          return (IHttpActionResult) this.Conflict();
-        throw;
-      }
-      return (IHttpActionResult) this.Created<Devis>(devis);
-    }
+        [EnableQuery]
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Devis newDevis)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            Devis devis = await this.db.Devises.FindAsync((object)key);
+            if (devis == null)
+                return (IHttpActionResult)this.NotFound();
+            //-----------------------------------------------Updating document items
+            db.DevisItems.RemoveRange(devis.DevisItems);
+            db.DevisItems.AddRange(newDevis.DevisItems);
 
-    [AcceptVerbs(new string[] {"PATCH", "MERGE"})]
-    public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Devis> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      Devis devis = await this.db.Devises.FindAsync((object) key);
-      if (devis == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Patch(devis);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.DevisExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<Devis>(devis);
-    }
+            devis.Ref = newDevis.Ref;
+            devis.Date = newDevis.Date;
+            devis.Note = newDevis.Note;
+            var numBonGenerator = new DocNumberGenerator();
 
-    public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
-    {
-      Devis async = await this.db.Devises.FindAsync((object) key);
-      if (async == null)
-        return (IHttpActionResult) this.NotFound();
-      this.db.Devises.Remove(async);
-      int num = await this.db.SaveChangesAsync();
-      return (IHttpActionResult) this.StatusCode(HttpStatusCode.NoContent);
-    }
+            devis.NumBon = numBonGenerator.getNumDocByCompany(newDevis.Ref - 1, newDevis.Date);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.DevisExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            var devisWithItems = db.Devises.Where(x => x.Id == devis.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(devisWithItems));
+        }
 
-    [EnableQuery]
-    public SingleResult<Client> GetClient([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<Client>(this.db.Devises.Where<Devis>((Expression<Func<Devis, bool>>) (m => m.Id == key)).Select<Devis, Client>((Expression<Func<Devis, Client>>) (m => m.Client)));
-    }
+        [EnableQuery]
+        public async Task<IHttpActionResult> Post(Devis devis)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
 
-    [EnableQuery]
-    public IQueryable<DevisItem> GetDevisItems([FromODataUri] Guid key)
-    {
-      return this.db.Devises.Where<Devis>((Expression<Func<Devis, bool>>) (m => m.Id == key)).SelectMany<Devis, DevisItem>((Expression<Func<Devis, IEnumerable<DevisItem>>>) (m => m.DevisItems));
-    }
+            var numBonGenerator = new DocNumberGenerator();
+            var currentYear = DateTime.Now.Year;
+            var lastDoc = db.Devises.Where(x => x.Date.Year == currentYear && x.IdSite == devis.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();
+            var lastRef = lastDoc != null ? lastDoc.Ref : 0;
+            devis.Ref = lastRef + 1;
+            devis.NumBon = numBonGenerator.getNumDocByCompany(lastRef, devis.Date);
+            this.db.Devises.Add(devis);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (this.DevisExists(devis.Id))
+                    return (IHttpActionResult)this.Conflict();
+                throw;
+            }
+            var devisWithItems = db.Devises.Where(x => x.Id == devis.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(devisWithItems));
+        }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing)
-        this.db.Dispose();
-      base.Dispose(disposing);
-    }
+        [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
+        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Devis> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            Devis devis = await this.db.Devises.FindAsync((object)key);
+            if (devis == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Patch(devis);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.DevisExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<Devis>(devis);
+        }
 
-    private bool DevisExists(Guid key)
-    {
-      return this.db.Devises.Count<Devis>((Expression<Func<Devis, bool>>) (e => e.Id == key)) > 0;
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
+        {
+            Devis async = await this.db.Devises.FindAsync((object)key);
+            if (async == null)
+                return (IHttpActionResult)this.NotFound();
+            db.DevisItems.RemoveRange(async.DevisItems);
+            db.Devises.Remove(async);
+            await this.db.SaveChangesAsync();
+            return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
+        }
+
+        [EnableQuery]
+        public SingleResult<Client> GetClient([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<Client>(this.db.Devises.Where<Devis>((Expression<Func<Devis, bool>>)(m => m.Id == key)).Select<Devis, Client>((Expression<Func<Devis, Client>>)(m => m.Client)));
+        }
+
+        [EnableQuery]
+        public IQueryable<DevisItem> GetDevisItems([FromODataUri] Guid key)
+        {
+            return this.db.Devises.Where<Devis>((Expression<Func<Devis, bool>>)(m => m.Id == key)).SelectMany<Devis, DevisItem>((Expression<Func<Devis, IEnumerable<DevisItem>>>)(m => m.DevisItems));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                this.db.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private bool DevisExists(Guid key)
+        {
+            return this.db.Devises.Count<Devis>((Expression<Func<Devis, bool>>)(e => e.Id == key)) > 0;
+        }
     }
-  }
 }

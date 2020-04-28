@@ -57,6 +57,16 @@ namespace WebApplication1.Migrations
                 context.SaveChanges();
             }
 
+            var devises = context.Devises.Where(x => x.IdSite == null);
+            if (devises.Count() > 0)
+            {
+                foreach (var b in devises)
+                {
+                    b.IdSite = 1;
+                }
+                context.SaveChanges();
+            }
+
             var bonReceptions = context.BonReceptions.Where(x => x.IdSite == null);
             if (bonReceptions.Count() > 0)
             {

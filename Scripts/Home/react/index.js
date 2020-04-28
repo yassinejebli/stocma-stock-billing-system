@@ -19,6 +19,8 @@ import ArticlesMarginList from './components/views/articles/ArticlesMarginList';
 import SiteList from './components/views/sites/SiteList';
 import BonReception from './components/views/bonReception/BonReception';
 import BonReceptionList from './components/views/bonReception/BonReceptionList';
+import Devis from './components/views/devis/Devis';
+import DevisList from './components/views/devis/DevisList';
 
 const App = () => {
     return (
@@ -31,10 +33,12 @@ const App = () => {
                                 <TopBar />
                                 <Switch>
                                     <Route exact path="/" component={Dashboard} />
+                                    <Route path="/Devis" component={Devis} />
                                     <Route path="/BonReception" component={BonReception} />
                                     <Route path="/BonLivraison" component={BonLivraison} />
                                     <Route path="/BonLivraisonList" component={BonLivraisonList} />
                                     <Route path="/BonReceptionList" component={BonReceptionList} />
+                                    <Route path="/DevisList" component={DevisList} />
                                     <Route path="/ArticleList" component={ArticleList} />
                                     <Route path="/SiteList" component={SiteList} />
                                     <Route path="/ArticlesMarginList" component={ArticlesMarginList} />

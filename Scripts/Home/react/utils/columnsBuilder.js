@@ -58,7 +58,7 @@ export const getBonLivraisonColumns = () => ([
         align: 'right'
     },
     {
-        Header: 'Pu.',
+        Header: 'P.U.',
         accessor: 'Pu',
         editable: true,
         type: inputTypes.number.description,

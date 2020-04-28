@@ -2,7 +2,6 @@ import React from 'react';
 import IframeDialog from '../IframeDialog';
 import { Box, FormControlLabel, Switch } from '@material-ui/core';
 import { getPrintBonReceptionURL } from '../../../../utils/urlBuilder';
-import PaiementClientForm from '../../forms/PaiementClientForm';
 import PaiementFournisseurForm from '../../forms/PaiementFournisseurForm';
 
 const DOCUMENT_ITEMS = 'BonReceptionItems'

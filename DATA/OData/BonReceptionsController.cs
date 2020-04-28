@@ -82,7 +82,8 @@ namespace WebApplication1.DATA.OData
             //-----------------------------------------------Updating document items
             db.BonReceptionItems.RemoveRange(bonReception.BonReceptionItems);
             db.BonReceptionItems.AddRange(newBonReception.BonReceptionItems);
-            newBonReception.ModificationDate = DateTime.Now;
+            bonReception.ModificationDate = DateTime.Now;
+            bonReception.Date = newBonReception.Date;
 
             //-----------------------------------------------Updating payment
             var payment = db.PaiementFs.FirstOrDefault(x => x.IdBonReception == bonReception.Id);
@@ -232,6 +233,14 @@ namespace WebApplication1.DATA.OData
                 return NotFound();
             }
 
+            foreach (var bi in bonReception.BonReceptionItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonReception.IdSite && x.IdArticle == bi.IdArticle);
+                articleSite.QteStock -= bi.Qte;
+            }
+
+            db.PaiementFs.RemoveRange(bonReception.PaiementFs);
+            db.BonReceptionItems.RemoveRange(bonReception.BonReceptionItems);
             db.BonReceptions.Remove(bonReception);
             await db.SaveChangesAsync();
 
