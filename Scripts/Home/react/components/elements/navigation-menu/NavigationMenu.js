@@ -13,15 +13,15 @@ const useStyles = makeStyles({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 70,
+    height: 64,
     borderTop: '1px solid rgba(0,0,0,0.08)',
     '& .MuiBottomNavigationAction-label':{
       fontSize: 14
     }
   },
   icon: {
-    width: 32,
-    height: 32
+    width: 28,
+    height: 28
   }
 });
 

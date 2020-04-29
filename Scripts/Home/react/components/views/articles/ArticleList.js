@@ -12,12 +12,14 @@ import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog'
 import ArticleForm from '../../elements/forms/ArticleForm'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined'
-import { TextField, Dialog, FormControlLabel, Checkbox } from '@material-ui/core'
+import { TextField, Dialog, FormControlLabel, Checkbox, Button } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import { articleColumns } from '../../elements/table/columns/articleColumns'
 import { getImageURL } from '../../../utils/urlBuilder'
 import ArticlesStatistics from '../../elements/statistics/ArticlesStatistics'
 import { useSite } from '../../providers/SiteProvider'
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import { useHistory } from 'react-router-dom'
 
 const TABLE = 'ArticleSites';
 const EXPAND = ['Article'];
@@ -29,6 +31,7 @@ const ArticleList = () => {
     const [searchText, setSearchText] = React.useState('');
     const [showDisabledArticles, setShowDisabledArticles] = React.useState(false);
     const debouncedSearchText = useDebounce(searchText);
+    const history = useHistory();
     const filters = React.useMemo(() => {
         return {
             IdSite: siteId,
@@ -142,6 +145,16 @@ const ArticleList = () => {
             <Loader loading={loading} />
             <Box my={2} display="flex" justifyContent="center">
                 <ArticlesStatistics />
+            </Box>
+            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<LocalAtmIcon/>}
+                    onClick={()=>history.push('/ArticlesMarginList')}
+                >
+                    Marge bénéficiaire par article
+                </Button>
             </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">

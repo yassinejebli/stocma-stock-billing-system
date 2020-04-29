@@ -229,7 +229,6 @@ const BonReception = () => {
                     <DatePicker
                         value={date}
                         onChange={(_date) => setDate(_date)}
-                        errorText={errors.date}
                     />
                 </Box>
                 <Box mt={4}>

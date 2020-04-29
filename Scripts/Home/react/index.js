@@ -27,9 +27,9 @@ const App = () => {
         <SiteProvider>
             <ThemeProvider>
                 <SnackBarProvider>
-                    <ModalProvider rootComponent={TransitionGroup}>
-                        <TitleProvider>
-                            <Router>
+                    <TitleProvider>
+                        <Router>
+                            <ModalProvider rootComponent={TransitionGroup}>
                                 <TopBar />
                                 <Switch>
                                     <Route exact path="/" component={Dashboard} />
@@ -46,9 +46,9 @@ const App = () => {
                                     <Route path="/SupplierList" component={SupplierList} />
                                 </Switch>
                                 <NavigationMenu />
-                            </Router>
-                        </TitleProvider>
-                    </ModalProvider>
+                            </ModalProvider>
+                        </Router>
+                    </TitleProvider>
                 </SnackBarProvider>
             </ThemeProvider>
         </SiteProvider>

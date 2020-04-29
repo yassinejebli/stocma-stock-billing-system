@@ -1,4 +1,5 @@
 import buildQuery from 'odata-query'
+import { format } from 'date-fns';
 
 const TABLE = 'Articles';
 const ODATA_URL = '/Odata/'
@@ -144,8 +145,13 @@ export const getTotalStock = async (IdSite) => {
     }
 }
 
-export const getMarginArticles = async (IdSite) => {
-    const URL = '/Statistics/ArticlesWithMargin?IdSite='+IdSite
+export const getMarginArticles = async (idSite, dateFrom, dateTo) => {
+    const parsedParams = new URLSearchParams({
+        IdSite: idSite,
+        From: dateFrom?.toISOString(),
+        To: dateTo?.toISOString()
+    }).toString();
+    const URL = '/Statistics/ArticlesWithMargin?'+parsedParams;
     try {
         const res = await (await fetch(URL)).json();
         console.log({res})

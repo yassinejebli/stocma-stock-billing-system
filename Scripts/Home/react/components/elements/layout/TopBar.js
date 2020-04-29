@@ -10,6 +10,7 @@ import { useModal } from 'react-modal-hook';
 import SideWrapperDialog from '../dialogs/SideWrapperDialog';
 import { useTitle } from '../../providers/TitleProvider';
 import SiteSelect from '../site-select/SiteSelect';
+import SideMenu from './SideMenu';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,32 +38,38 @@ export default function TopBar() {
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideWrapperDialog open={open} onExited={onExited} onClose={hideModal} />
     ));
+    const [showModalSideMenu, hideModalSideMenu] = useModal(({ in: open, onExited }) => (
+        <SideMenu open={open} onExited={onExited} onClose={hideModalSideMenu} />
+    ));
 
     return (
-        <AppBar position="sticky" className={classes.root}>
-            <Toolbar className={classes.toolbar} variant="dense">
-                <div className={classes.titleWrapper}>
-                    <IconButton
-                        edge="start"
-                        className={classes.menuButton}
-                        color="inherit"
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <div className={classes.title}>
-                        {title}
+        <>
+            <AppBar position="sticky" className={classes.root}>
+                <Toolbar className={classes.toolbar} variant="dense">
+                    <div className={classes.titleWrapper}>
+                        <IconButton
+                            edge="start"
+                            className={classes.menuButton}
+                            color="inherit"
+                            onClick={showModalSideMenu}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <div className={classes.title}>
+                            {title}
+                        </div>
                     </div>
-                </div>
-                <SiteSelect />
-                <div>
-                    <IconButton onClick={showModal} color="inherit">
-                        <AddIcon />
-                    </IconButton>
-                    <IconButton edge="end" color="inherit">
-                        <MoreIcon />
-                    </IconButton>
-                </div>
-            </Toolbar>
-        </AppBar>
+                    <SiteSelect />
+                    <div>
+                        <IconButton onClick={showModal} color="inherit">
+                            <AddIcon />
+                        </IconButton>
+                        <IconButton edge="end" color="inherit">
+                            <MoreIcon />
+                        </IconButton>
+                    </div>
+                </Toolbar>
+            </AppBar>
+        </>
     );
 }

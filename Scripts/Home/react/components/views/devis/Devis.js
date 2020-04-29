@@ -76,7 +76,7 @@ const Devis = () => {
     }, [data])
 
     React.useEffect(() => {
-        setTitle('Devis')
+        setTitle('Devis a')
         if (isEditMode) {
             setLoading(true);
             getSingleData(DOCUMENT, DevisId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
@@ -242,7 +242,6 @@ const Devis = () => {
                     <DatePicker
                         value={date}
                         onChange={(_date) => setDate(_date)}
-                        errorText={errors.date}
                     />
                 </Box>
                 <Box mt={4}>

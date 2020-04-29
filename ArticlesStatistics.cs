@@ -37,10 +37,9 @@ namespace WebApplication1
             {
                 Article = x.Article.Designation,
                 QteStock = x.QteStock,
-                QteSold = x.Article.BonLivraisonItems.Sum(y=>(int?)y.Qte) ?? 0,
+                QteSold = x.Article.BonLivraisonItems.Where(y=> y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite).Sum(y=>(int?)y.Qte) ?? 0,
                 PA = x.Article.PA,
-                //PVD = x.Article.PVD,
-                Marge = x.Article.BonLivraisonItems.Where(y=>y.BonLivraison.Date >= From && y.BonLivraison.Date <= To)
+                Marge = x.Article.BonLivraisonItems.Where(y=>y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite)
                 .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f
             }).Where(x=>x.Marge > 0).OrderByDescending(x=>x.Marge).ToList();
 

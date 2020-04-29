@@ -25,6 +25,7 @@ namespace WebApplication1
                 id = RouteParameter.Optional
             });
             config.MapODataServiceRoute("odata", "odata", GetModel());
+            config.SetTimeZoneInfo(TimeZoneInfo.Utc);
 
             /*config.MapHttpAttributeRoutes();
             config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}", new
