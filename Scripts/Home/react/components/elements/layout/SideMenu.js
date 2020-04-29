@@ -1,7 +1,5 @@
 import React from 'react';
 import { SwipeableDrawer, ListItemIcon, ListItem, List, ListItemText, Divider, makeStyles } from '@material-ui/core';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import LocalMallIcon from '@material-ui/icons/LocalMall';

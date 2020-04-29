@@ -4,14 +4,13 @@ import Paper from '../../elements/misc/Paper'
 import Table from '../../elements/table/Table'
 import Loader from '../../elements/loaders/Loader'
 import TitleIcon from '../../elements/misc/TitleIcon'
-import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined'
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import { TextField } from '@material-ui/core'
 import { articlesMarginColumns } from '../../elements/table/columns/articleColumns'
 import { useSite } from '../../providers/SiteProvider'
 import { getMarginArticles } from '../../../queries/articleQueries'
 import { useTitle } from '../../providers/TitleProvider'
 import DatePicker from '../../elements/date-picker/DatePicker'
-
 
 const ArticlesMarginList = () => {
     const today = new Date();
@@ -50,7 +49,7 @@ const ArticlesMarginList = () => {
             </Box> */}
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <TitleIcon noBorder title="Marge bénéficiaire par article" Icon={LocalMallOutlinedIcon} />
+                    <TitleIcon noBorder title="Marge bénéficiaire par article" Icon={LocalAtmIcon} />
                     <TextField
                         value={searchText}
                         onChange={({ target: { value } }) => {
