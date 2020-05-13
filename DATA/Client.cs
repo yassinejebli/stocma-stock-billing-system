@@ -46,6 +46,12 @@ namespace WebApplication1.DATA
             get { return (Paiements != null) ? Paiements.Sum(x => x.Debit - x.Credit) : 0; }
         }
 
+        [NotMapped]
+        public float SoldeFacture
+        {
+            get { return (PaiementFactures != null) ? PaiementFactures.Sum(x => x.Debit - x.Credit) : 0; }
+        }
+
         public bool Disabled { get; set; } = false;
 
         public DateTime? DateCreation { get; set; }
@@ -61,6 +67,7 @@ namespace WebApplication1.DATA
         public virtual ICollection<BonAvoirC> BonAvoirCs { get; set; }
 
         public virtual ICollection<Paiement> Paiements { get; set; }
+        public virtual ICollection<PaiementFacture> PaiementFactures { get; set; }
 
         public virtual ICollection<Facture> Factures { get; set; }
 

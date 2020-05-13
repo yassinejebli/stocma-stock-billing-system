@@ -20,7 +20,7 @@ namespace WebApplication1.Controllers.Print
             StatistiqueController statistiqueController = new StatistiqueController();
             string company = StatistiqueController.getCompanyName().ToUpper();
 
-            if(bigFormat == true)
+            if (bigFormat == true)
                 reportDocument.Load(
                     Path.Combine(
                         this.Server.MapPath("~/CrystalReports/" + company + "/BonLivraison" + company +
@@ -31,9 +31,9 @@ namespace WebApplication1.Controllers.Print
                         this.Server.MapPath("~/CrystalReports/" + company + "/MiniBonLivraisonSoldeFrancais" + company +
                                             ".rpt")));
 
-          /*  NumberFormatInfo numberFormatInfo = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
-            numberFormatInfo.NumberGroupSeparator = " ";
-            */
+            /*  NumberFormatInfo numberFormatInfo = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+              numberFormatInfo.NumberGroupSeparator = " ";
+              */
             //TODO: change this
             /*(reportDocument.ReportDefinition.ReportObjects["solde"] as TextObject).Text =
                     statistiqueController.SoldeByClient(
@@ -65,7 +65,7 @@ namespace WebApplication1.Controllers.Print
                 }
             }
             */
-            
+
 
 
             /*else
@@ -107,10 +107,10 @@ namespace WebApplication1.Controllers.Print
                     Index = x.Index ?? 0
                 }).OrderByDescending(x => x.Index).ToList()
              );
-            if(reportDocument.ParameterFields["ShowSolde"] != null)
+            if (reportDocument.ParameterFields["ShowSolde"] != null)
                 reportDocument.SetParameterValue("ShowSolde", showBalance);
             if (reportDocument.ParameterFields["Solde"] != null)
-                reportDocument.SetParameterValue("Solde", BonLivraisonById.Client.Paiements.Sum(x=>x.Debit - x.Credit));
+                reportDocument.SetParameterValue("Solde", BonLivraisonById.Client.Paiements.Sum(x => x.Debit - x.Credit));
             if (reportDocument.ParameterFields["ShowPrices"] != null)
                 reportDocument.SetParameterValue("ShowPrices", showPrices);
             /*if (reportDocument.ParameterFields["OldSolde"] != null)

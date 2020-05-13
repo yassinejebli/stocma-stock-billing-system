@@ -227,6 +227,7 @@
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\Print\FactureController.cs" />
     <Compile Include="Controllers\Print\DevisController.cs" />
     <Compile Include="Controllers\Print\BLController.cs" />
     <Compile Include="Controllers\Print\BRController.cs" />
@@ -665,14 +666,14 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\SBCIT\DevisChiffreSBCIT.cs">
-      <DependentUpon>DevisChiffreSBCIT.rpt</DependentUpon>
+    <Compile Include="CrystalReports\SBCIT\DevisSBCIT.cs">
+      <DependentUpon>DevisSBCIT.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\SBCIT\DevisSBCIT.cs">
-      <DependentUpon>DevisSBCIT.rpt</DependentUpon>
+    <Compile Include="CrystalReports\SBCIT\DevisSBCIT_.cs">
+      <DependentUpon>DevisSBCIT_.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
@@ -761,8 +762,8 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\SUIV\DevisChiffreSUIV.cs">
-      <DependentUpon>DevisChiffreSUIV.rpt</DependentUpon>
+    <Compile Include="CrystalReports\SUIV\DevisSUIV.cs">
+      <DependentUpon>DevisSUIV.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
@@ -779,8 +780,8 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\SUIV\DevisSUIV.cs">
-      <DependentUpon>DevisSUIV.rpt</DependentUpon>
+    <Compile Include="CrystalReports\SUIV\DevisChiffreSUIV.cs">
+      <DependentUpon>DevisChiffreSUIV.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
@@ -877,7 +878,9 @@
     <Compile Include="DATA\OData\ArticlesController.cs" />
     <Compile Include="DATA\OData\ArticleSitesController.cs" />
     <Compile Include="DATA\OData\BonReceptionsController.cs" />
+    <Compile Include="DATA\OData\PaiementFacturesController.cs" />
     <Compile Include="DATA\OData\SitesController.cs" />
+    <Compile Include="DATA\PaiementFacture.cs" />
     <Compile Include="DATA\Site.cs" />
     <Compile Include="DATA\Categorie.cs" />
     <Compile Include="DATA\Article.cs" />
@@ -968,6 +971,7 @@
     <Compile Include="DATA\TarifItem.cs" />
     <Compile Include="DATA\TypeDepence.cs" />
     <Compile Include="DATA\TypePaiement.cs" />
+    <Compile Include="Generators\AmountTextGenerator.cs" />
     <Compile Include="Generators\DocNumberGenerator.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1162,6 +1166,18 @@
     <Compile Include="Migrations\202004282004494_Devis_Site.cs" />
     <Compile Include="Migrations\202004282004494_Devis_Site.designer.cs">
       <DependentUpon>202004282004494_Devis_Site.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005010728494_BL_FA.cs" />
+    <Compile Include="Migrations\202005010728494_BL_FA.designer.cs">
+      <DependentUpon>202005010728494_BL_FA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005011510057_PaiementFacture.cs" />
+    <Compile Include="Migrations\202005011510057_PaiementFacture.designer.cs">
+      <DependentUpon>202005011510057_PaiementFacture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005011550148_Test__.cs" />
+    <Compile Include="Migrations\202005011550148_Test__.designer.cs">
+      <DependentUpon>202005011550148_Test__.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3590,13 +3606,13 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeSBCIT.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\DevisChiffreSBCIT.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>DevisChiffreSBCIT.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\SBCIT\DevisSBCIT.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisSBCIT.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\SBCIT\DevisSBCIT_.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DevisSBCIT_.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\SBCIT\FactureSBCIT.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -3654,9 +3670,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ReleveFactureSUIV.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\DevisChiffreSUIV.rpt">
+    <EmbeddedResource Include="CrystalReports\SUIV\DevisSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>DevisChiffreSUIV.cs</LastGenOutput>
+      <LastGenOutput>DevisSUIV.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\SUIV\BonAvoirCSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -3666,9 +3682,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureSUIV.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\DevisSUIV.rpt">
+    <EmbeddedResource Include="CrystalReports\SUIV\DevisChiffreSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>DevisSUIV.cs</LastGenOutput>
+      <LastGenOutput>DevisChiffreSUIV.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\SUIV\BonLivraisonSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -3862,6 +3878,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004282004494_Devis_Site.resx">
       <DependentUpon>202004282004494_Devis_Site.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005010728494_BL_FA.resx">
+      <DependentUpon>202005010728494_BL_FA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005011510057_PaiementFacture.resx">
+      <DependentUpon>202005011510057_PaiementFacture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005011550148_Test__.resx">
+      <DependentUpon>202005011550148_Test__.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

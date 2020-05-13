@@ -84,10 +84,10 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess }) => {
         if (isFromDocument) {
             setFormState(_formState => ({
                 ..._formState,
-                date: document.Date,
                 amount,
                 client: document.Client,
-                comment: 'BL ' + document.NumBon
+                comment: 'BL ' + document.NumBon,
+                IdBonLivraison: document.Id
             }));
         }
     }, []);

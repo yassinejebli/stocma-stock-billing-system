@@ -8,19 +8,18 @@ export const getPrintBonLivraisonURL = (params) => {
     return `/Print/BL?${parsedParams}`
 }
 export const getPrintBonReceptionURL = (params) => {
-    const allParams = {
-        ...params
-    };
-    const parsedParams = new URLSearchParams(allParams).toString();
+    const parsedParams = new URLSearchParams(params).toString();
     return `/Print/BR?${parsedParams}`
 }
 
 export const getPrintDevisURL = (params) => {
-    const allParams = {
-        ...params
-    };
-    const parsedParams = new URLSearchParams(allParams).toString();
+    const parsedParams = new URLSearchParams(params).toString();
     return `/Print/Devis?${parsedParams}`
+}
+
+export const getPrintFactureURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/Facture?${parsedParams}`
 }
 
 export const getImageURL = (fileName) => {

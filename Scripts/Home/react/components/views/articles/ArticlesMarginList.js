@@ -15,7 +15,8 @@ import DatePicker from '../../elements/date-picker/DatePicker'
 const ArticlesMarginList = () => {
     const today = new Date();
     const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDayCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const lastDayCurrentMonth = new Date();
+    lastDayCurrentMonth.setHours(23,59,59,999);
     const { siteId } = useSite();
     const { setTitle } = useTitle();
     const [data, setData] = React.useState([]);

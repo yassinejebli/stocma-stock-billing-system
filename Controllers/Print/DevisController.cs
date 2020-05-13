@@ -12,16 +12,16 @@ namespace WebApplication1.Controllers.Print
     {
         private MySaniSoftContext context = new MySaniSoftContext();
 
-        public ActionResult Index(Guid IdDevis, bool? showPrices = true, bool? cachet = false)
+        public ActionResult Index(Guid IdDevis, bool? ShowPrices = true, bool? Cachet = false)
         {
             var DevisById = context.Devises.Where(x => x.Id == IdDevis).FirstOrDefault();
             ReportDocument reportDocument = new ReportDocument();
             StatistiqueController statistiqueController = new StatistiqueController();
-            string company = StatistiqueController.getCompanyName().ToUpper();
+            var company = StatistiqueController.getCompany();
 
             reportDocument.Load(
                 Path.Combine(
-                    this.Server.MapPath("~/CrystalReports/" + company + "/Devis" + company +
+                    this.Server.MapPath("~/CrystalReports/" + company.Name + "/Devis" + company.Name +
                                         ".rpt")));
 
 
@@ -42,15 +42,21 @@ namespace WebApplication1.Controllers.Print
                     Adresse = x.Devis.Client.Adresse,
                     DelaiLivraison = x.Devis.DelaiLivrasion,
                     TransportExpedition = x.Devis.TransportExpedition,
-                    TypeReglement = x.Devis.TypeReglement,
-                    ValiditeOffre = x.Devis.ValiditeOffre
+                    TypeReglement = x.Devis.TypePaiement?.Name ?? "",
+                    Discount = x.Discount + (x.PercentageDiscount ? "%" : ""),
+                    Total = (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f)/100) : x.Discount ?? 0.0f),
+                    ValiditeOffre = x.Devis.ValiditeOffre,
+                    ICE = x.Devis.Client.ICE,
+                    Note = x.Devis.Note
                 }).ToList()
              );
          
             if (reportDocument.ParameterFields["ShowPrices"] != null)
-                reportDocument.SetParameterValue("ShowPrices", showPrices);
+                reportDocument.SetParameterValue("ShowPrices", ShowPrices);
+            if (reportDocument.ParameterFields["ShowDiscount"] != null)
+                reportDocument.SetParameterValue("ShowDiscount", DevisById.WithDiscount);
             if (reportDocument.ParameterFields["Cachet"] != null)
-                reportDocument.SetParameterValue("Cachet", cachet);
+                reportDocument.SetParameterValue("Cachet", Cachet);
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition

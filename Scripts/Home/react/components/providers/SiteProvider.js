@@ -4,7 +4,8 @@ import { getAllData } from '../../queries/crudBuilder';
 const SiteContext = React.createContext({
     siteId: 1,
     siteName: 'Magasin 1',
-    sites: []
+    sites: [],
+    company: {}
 });
 
 export const useSite = () => {
@@ -19,10 +20,12 @@ const SiteProvider = ({ children }) => {
     const savedSiteId = localStorage.getItem('site') ?  Number(localStorage.getItem('site')) : 1;
     const [siteId, setSiteId] = React.useState(savedSiteId);
     const [siteName, setSiteName] = React.useState('Magasin 1');
+    const [company, setCompany] = React.useState({});
     const [sites, setSites] = React.useState([]);
 
     React.useEffect(() => {
         fetchSites();
+        fetchCompany();
     }, []);
 
     const fetchSites = () => {
@@ -31,6 +34,11 @@ const SiteProvider = ({ children }) => {
         .catch(err => console.error(err));
     }
 
+    const fetchCompany = () => {
+        getAllData('Companies')
+        .then(res => setCompany(res[0]))
+        .catch(err => console.error(err));
+    }
     const setSite = (site) => {
         if (site) {
             setSiteId(site.Id)
@@ -45,7 +53,8 @@ const SiteProvider = ({ children }) => {
             siteName,
             setSite,
             sites,
-            fetchSites
+            fetchSites,
+            useVAT: company?.UseVAT
         }}>
             {children}
         </SiteContext.Provider>)

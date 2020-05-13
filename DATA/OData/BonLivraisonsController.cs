@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WebApplication1.DATA.OData.BonLivraisonsController
-// Assembly: WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
-// Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -14,8 +8,6 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.AspNet.OData;
 using WebApplication1.Generators;
-using WebApplication1.Managers;
-using WebApplication1.PaimentManager;
 
 namespace WebApplication1.DATA.OData
 {
@@ -23,8 +15,6 @@ namespace WebApplication1.DATA.OData
     public class BonLivraisonsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
-        private PaymentManager pm = new PaymentManager();
-        private MarginManager mm = new MarginManager();
 
 
         [EnableQuery(EnsureStableOrdering = false)]
@@ -115,7 +105,6 @@ namespace WebApplication1.DATA.OData
 
             var bonLivraisonWithItems = db.BonLivraisons.Where(x => x.Id == bonLivraison.Id);
             return Content(HttpStatusCode.Created, SingleResult.Create(bonLivraisonWithItems));
-            //return (IHttpActionResult)this.Created<BonLivraison>(bonLivraison);
         }
 
         [EnableQuery]

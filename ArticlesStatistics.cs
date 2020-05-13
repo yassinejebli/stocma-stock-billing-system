@@ -39,9 +39,11 @@ namespace WebApplication1
                 QteStock = x.QteStock,
                 QteSold = x.Article.BonLivraisonItems.Where(y=> y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite).Sum(y=>(int?)y.Qte) ?? 0,
                 PA = x.Article.PA,
-                Marge = x.Article.BonLivraisonItems.Where(y=>y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite)
+                Turnover = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite).
+                Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f,
+                Margin = x.Article.BonLivraisonItems.Where(y=>y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite)
                 .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f
-            }).Where(x=>x.Marge > 0).OrderByDescending(x=>x.Marge).ToList();
+            }).Where(x=>x.Turnover > 0).OrderByDescending(x=>x.Margin).ToList();
 
             return articlesWithMargin;
         }

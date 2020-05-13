@@ -11,6 +11,7 @@ import SideWrapperDialog from '../dialogs/SideWrapperDialog';
 import { useTitle } from '../../providers/TitleProvider';
 import SiteSelect from '../site-select/SiteSelect';
 import SideMenu from './SideMenu';
+import SettingsDialog from '../dialogs/SettingsDialog';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,6 +42,9 @@ export default function TopBar() {
     const [showModalSideMenu, hideModalSideMenu] = useModal(({ in: open, onExited }) => (
         <SideMenu open={open} onExited={onExited} onClose={hideModalSideMenu} />
     ));
+    const [showSettingSideMenu, hideSettingSideMenu] = useModal(({ in: open, onExited }) => (
+        <SettingsDialog open={open} onExited={onExited} onClose={hideSettingSideMenu} />
+    ));
 
     return (
         <>
@@ -64,7 +68,7 @@ export default function TopBar() {
                         <IconButton onClick={showModal} color="inherit">
                             <AddIcon />
                         </IconButton>
-                        <IconButton edge="end" color="inherit">
+                        <IconButton onClick={showSettingSideMenu} edge="end" color="inherit">
                             <MoreIcon />
                         </IconButton>
                     </div>

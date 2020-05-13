@@ -94,7 +94,7 @@ namespace WebApplication1.Controllers
             StatistiqueController statistiqueController = new StatistiqueController();
             Dictionary<double, double> source = statistiqueController.totalWithTVAFacture(IdFacture);
             double num1 =
-                source.Where<KeyValuePair<double, double>>(
+                source.Where(
                         (Func<KeyValuePair<double, double>, bool>) (x => x.Key == 0.0))
                     .Select<KeyValuePair<double, double>, double>(
                         (Func<KeyValuePair<double, double>, double>) (x => x.Value))
@@ -195,14 +195,8 @@ namespace WebApplication1.Controllers
                     StatistiqueController.getModeReglementFacture(IdFacture);
 
 
-
-
-
-            
-
             if (upper != "SUIV" && upper != "SBCIT")
             {
-
                 double num6 = num1 / 1.0;
                 TextObject reportObject1 = reportDocument.ReportDefinition.ReportObjects["t0"] as TextObject;
                 string str1 = num6.ToString("F");
@@ -272,7 +266,7 @@ namespace WebApplication1.Controllers
 
 
 
-                //taxe
+                //tax
                 TextObject reportObject7 = reportDocument.ReportDefinition.ReportObjects["total7"] as TextObject;
                 num6 = num2 * 0.07;
                 string str7 = num6.ToString("F");

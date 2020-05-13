@@ -140,7 +140,7 @@ const BonLivraison = () => {
             if (!_row.Article
                 || !_row.Qte
                 || !_row.Pu
-                || Number(_row.Pu) <= 0
+                || Number(_row.Pu) < 0
                 || Number(_row.Qte) <= 0
             ) {
                 _errors['table'] = 'Compléter les lignes.';

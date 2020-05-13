@@ -17,7 +17,7 @@ namespace WebApplication1.Generators
             var newRef = lastRef + 1;
 
             if(companyName == "SUIV" || companyName == "SBCIT")
-                return companyName + "/" + date.ToString("yy") + "/" + date.ToString("MM") + String.Format("/BLD/{0:000000}", newRef);
+                return companyName + "/" + date.ToString("yy") + "/" + date.ToString("MM") + String.Format("/{0:00000}", newRef);
 
             if (companyName == "AQK")
                 return companyName+"/"+date.ToString("yyyyMM") + newRef;

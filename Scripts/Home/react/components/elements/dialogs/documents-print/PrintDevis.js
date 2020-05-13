@@ -4,7 +4,7 @@ import { Box, FormControlLabel, Switch } from '@material-ui/core';
 import { getPrintDevisURL } from '../../../../utils/urlBuilder';
 
 const PrintDevis = ({document, onClose, onExited, open}) => {
-    const [hidePrices, setHidePrices] = React.useState(false);
+    const [showStamp, setShowStamp] = React.useState(false);
 
     if(!document) return null;
     return (
@@ -14,7 +14,8 @@ const PrintDevis = ({document, onClose, onExited, open}) => {
                 onClose={onClose}
                 src={getPrintDevisURL({
                     IdDevis: document.Id,
-                    showPrices: !hidePrices,
+                    ShowStamp: showStamp,
+                    Cachet: showStamp
                 })}>
                 <Box p={1}>
                     {document &&
@@ -22,9 +23,9 @@ const PrintDevis = ({document, onClose, onExited, open}) => {
                             <Box display="flex" justifyContent="space-between" flexWrap="wrap">
                                 <FormControlLabel
                                     control={<Switch
-                                        checked={hidePrices}
-                                        onChange={(_, checked) => setHidePrices(checked)} />}
-                                    label="Cacher les prix"
+                                        checked={showStamp}
+                                        onChange={(_, checked) => setShowStamp(checked)} />}
+                                    label="Afficher le cachet"
                                 />
                             </Box>
                         </>

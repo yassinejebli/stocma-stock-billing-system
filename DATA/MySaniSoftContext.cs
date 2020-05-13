@@ -55,6 +55,7 @@ namespace WebApplication1.DATA
         public DbSet<BonCommandeItem> BonCommandeItems { get; set; }
 
         public DbSet<Paiement> Paiements { get; set; }
+        public DbSet<PaiementFacture> PaiementFactures { get; set; }
 
         public DbSet<TypePaiement> TypePaiements { get; set; }
 
@@ -290,7 +291,20 @@ namespace WebApplication1.DATA
                 .HasRequired<Article>((Expression<Func<BonLivraisonItem, Article>>)(t => t.Article))
                 .WithMany((Expression<Func<Article, ICollection<BonLivraisonItem>>>)(t => t.BonLivraisonItems))
                 .HasForeignKey<Guid>((Expression<Func<BonLivraisonItem, Guid>>)(d => d.IdArticle));
+
+            //-------------------------Facture
             modelBuilder.Entity<Facture>().HasKey<Guid>((Expression<Func<Facture, Guid>>)(t => t.Id));
+
+            modelBuilder.Entity<Facture>()
+                .HasOptional(t => t.Site)
+                .WithMany(t => t.Factures)
+                .HasForeignKey(d => d.IdSite);
+
+            modelBuilder.Entity<BonLivraison>()
+                .HasOptional(t => t.Facture)
+                .WithMany(t => t.BonLivraisons)
+                .HasForeignKey(d => d.IdFacture);
+
             modelBuilder.Entity<Facture>()
                 .HasRequired<Client>((Expression<Func<Facture, Client>>)(t => t.Client))
                 .WithMany((Expression<Func<Client, ICollection<Facture>>>)(t => t.Factures))
@@ -354,6 +368,12 @@ namespace WebApplication1.DATA
                 .WithMany((Expression<Func<Article, ICollection<DevisItem>>>)(t => t.DevisItems))
                 .HasForeignKey<Guid>((Expression<Func<DevisItem, Guid>>)(d => d.IdArticle));
             modelBuilder.Entity<Devis>().HasKey<Guid>((Expression<Func<Devis, Guid>>)(t => t.Id));
+
+            modelBuilder.Entity<Devis>()
+               .HasOptional(t => t.TypePaiement)
+               .WithMany(t => t.Devises)
+               .HasForeignKey(d => d.IdTypePaiement);
+
             modelBuilder.Entity<Devis>()
                 .HasRequired<Client>((Expression<Func<Devis, Client>>)(t => t.Client))
                 .WithMany((Expression<Func<Client, ICollection<Devis>>>)(t => t.Devises))
@@ -410,10 +430,31 @@ namespace WebApplication1.DATA
                 .HasForeignKey<Guid>((Expression<Func<BonCommande, Guid>>)(d => d.IdFournisseur));
             modelBuilder.Entity<Paiement>().HasKey<Guid>((Expression<Func<Paiement, Guid>>)(t => t.Id));
             modelBuilder.Entity<TypePaiement>().HasKey<Guid>((Expression<Func<TypePaiement, Guid>>)(t => t.Id));
+            modelBuilder.Entity<PaiementFacture>().HasKey(t => t.Id);
+
+
             modelBuilder.Entity<Paiement>()
                 .HasRequired<Client>((Expression<Func<Paiement, Client>>)(t => t.Client))
                 .WithMany((Expression<Func<Client, ICollection<Paiement>>>)(t => t.Paiements))
                 .HasForeignKey<Guid>((Expression<Func<Paiement, Guid>>)(d => d.IdClient));
+
+
+
+            modelBuilder.Entity<PaiementFacture>()
+                .HasRequired(t => t.Client)
+                .WithMany(t => t.PaiementFactures)
+                .HasForeignKey(d => d.IdClient);
+
+            modelBuilder.Entity<PaiementFacture>()
+                .HasRequired(t => t.TypePaiement)
+                .WithMany(t => t.PaiementFactures)
+                .HasForeignKey(d => d.IdTypePaiement);
+
+            modelBuilder.Entity<PaiementFacture>()
+               .HasOptional(t => t.Facture)
+               .WithMany(t => t.PaiementFactures)
+               .HasForeignKey(d => d.IdFacture);
+
             modelBuilder.Entity<Paiement>()
                 .HasOptional<BonLivraison>((Expression<Func<Paiement, BonLivraison>>)(t => t.BonLivraison))
                 .WithMany((Expression<Func<BonLivraison, ICollection<Paiement>>>)(t => t.Paiements))

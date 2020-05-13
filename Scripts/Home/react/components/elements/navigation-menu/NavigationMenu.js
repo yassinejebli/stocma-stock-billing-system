@@ -6,7 +6,6 @@ import PostAddIcon from '@material-ui/icons/PostAdd';
 import { useHistory } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 
-
 const useStyles = makeStyles({
   root: {
     position: 'fixed',
@@ -24,7 +23,6 @@ const useStyles = makeStyles({
     height: 28
   }
 });
-
 
 const NavigationMenu = () => {
   const classes = useStyles();
@@ -44,16 +42,16 @@ const NavigationMenu = () => {
       route: '/BonLivraison'
     },
     {
-      label: 'B.R',
-      value: 1,
-      icon: <PostAddIcon className={classes.icon} style={{ color: 'rgb(14, 140, 230)' }} />,
-      route: '/BonReception'
-    },
-    {
       label: 'FA',
       value: 2,
       icon: <PostAddIcon className={classes.icon} style={{ color: 'rgb(111, 14, 230)' }} />,
       route: '/Facture'
+    },
+    {
+      label: 'B.R',
+      value: 1,
+      icon: <PostAddIcon className={classes.icon} style={{ color: 'rgb(14, 140, 230)' }} />,
+      route: '/BonReception'
     },
     {
       label: 'C.F',

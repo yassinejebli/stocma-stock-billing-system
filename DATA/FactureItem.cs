@@ -29,6 +29,7 @@ namespace WebApplication1.DATA
         public string NumBC { get; set; }
 
         public string NumBL { get; set; }
+        public string Description { get; set; }
 
         public virtual Facture Facture { get; set; }
 

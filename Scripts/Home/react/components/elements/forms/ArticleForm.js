@@ -56,12 +56,13 @@ const ArticleForm = ({ data, onSuccess }) => {
 
     React.useEffect(() => {
         console.log({ data })
-        if (editMode){
-            const {Article, QteStock, Disabled} = data;
+        if (editMode) {
+            const { Article, QteStock, Disabled } = data;
             setFormState({
                 Id: Article.Id,
                 QteStock,
                 Designation: Article.Designation,
+                Ref: Article.Ref,
                 PVD: Article.PVD,
                 PA: Article.PA,
                 TVA: Article.TVA,
@@ -78,6 +79,8 @@ const ArticleForm = ({ data, onSuccess }) => {
         const _errors = [];
         if (!formState.Designation)
             _errors['Designation'] = 'Ce champs est obligatoire.'
+        if (!formState.Ref)
+            _errors['Ref'] = 'Ce champs est obligatoire.'
         if (!formState.PVD)
             _errors['PVD'] = 'Ce champs est obligatoire.'
         if (!formState.PA)
@@ -91,7 +94,7 @@ const ArticleForm = ({ data, onSuccess }) => {
 
     const save = async () => {
         if (!isFormValid()) return;
-        const {Disabled, ...preparedData} = formState;
+        const { Disabled, ...preparedData } = formState;
 
         setLoading(true);
         if (editMode) {
@@ -124,6 +127,19 @@ const ArticleForm = ({ data, onSuccess }) => {
         <div>
             <Loader loading={loading} />
             <TitleIcon title={editMode ? 'Modifier l\'article' : 'Ajouter un article'} Icon={AddShoppingCartIcon} />
+            <TextField
+                name="Ref"
+                label="Référence/Code"
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+                onChange={onFieldChange}
+                value={formState.Ref}
+                helperText={formErrors.Ref}
+                error={Boolean(formErrors.Ref)}
+
+            />
             <TextField
                 name="Designation"
                 label="Désignation"
@@ -181,7 +197,7 @@ const ArticleForm = ({ data, onSuccess }) => {
             />
             <TextField
                 name="TVA"
-                label="T.V.A (%)"
+                label="T.V.A applicable (%)"
                 variant="outlined"
                 size="small"
                 fullWidth

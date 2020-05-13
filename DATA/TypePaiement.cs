@@ -10,15 +10,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.DATA
 {
-  public class TypePaiement
-  {
-    [Key]
-    public Guid Id { get; set; }
+    public class TypePaiement
+    {
+        [Key]
+        public Guid Id { get; set; }
 
-    public string Name { get; set; }
+        public string Name { get; set; }
 
-    public virtual ICollection<Paiement> Paiements { get; set; }
+        public string DisplayName { get; set; }
 
-    public virtual ICollection<PaiementF> PaiementFs { get; set; }
-  }
+        public virtual ICollection<Paiement> Paiements { get; set; }
+        public virtual ICollection<Devis> Devises { get; set; }
+
+        public virtual ICollection<PaiementF> PaiementFs { get; set; }
+        public virtual ICollection<PaiementFacture> PaiementFactures { get; set; }
+    }
 }

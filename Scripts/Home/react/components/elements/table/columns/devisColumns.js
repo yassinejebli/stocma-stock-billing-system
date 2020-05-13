@@ -11,7 +11,7 @@ import ArticleAutocomplete from '../../article-autocomplete/ArticleAutocomplete'
 import { format } from 'date-fns';
 import { Box } from '@material-ui/core';
 
-export const devisColumns = () => ([
+export const devisColumns = ({devisDiscount}) => ([
     {
         Header: 'Article',
         accessor: 'Article',
@@ -64,12 +64,27 @@ export const devisColumns = () => ([
         type: inputTypes.number.description,
         align: 'right'
     },
+    ((devisDiscount?.Enabled)&&{
+        Header: 'Remise',
+        accessor: 'Discount',
+        editable: true,
+        type: inputTypes.text.description,
+        align: 'right'
+    }),
     {
         id: 'TotalHT',
         Header: 'Montant',
         accessor: (props) => {
-            console.log(props.Pu, props.Qte);
-            return formatMoney(props.Pu * props.Qte);
+            let discount = 0;
+            const total = props.Pu * props.Qte;
+            if (props.Discount) {
+                if (!isNaN(props.Discount))
+                    discount = props.Discount
+                else if (/^\d+(\.\d+)?%$/.test(props.Discount)) {
+                    discount = total * parseFloat(props.Discount) / 100;
+                }
+            }
+            return formatMoney(total - discount);
         },
         type: inputTypes.text.description,
         editable: false,
@@ -90,7 +105,7 @@ export const devisColumns = () => ([
         width: 24,
         align: 'right'
     },
-])
+].filter(x=>x))
 
 
 

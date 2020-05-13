@@ -42,7 +42,7 @@ const FournisseurForm = ({data, onSuccess}) => {
 
     const save = async () => {
         if (!isFormValid()) return;
-        const {Solde, ...preparedData} = formState;
+        const {Solde, SoldeFacture, ...preparedData} = formState;
         setLoading(true);
         if(editMode){
             const response = await updateData(TABLE, preparedData, preparedData.Id);

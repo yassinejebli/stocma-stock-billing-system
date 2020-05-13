@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WebApplication1.DATA.BonLivraison
-// Assembly: WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
-// Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -25,6 +19,7 @@ namespace WebApplication1.DATA
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public DateTime? ModificationDate { get; set; }
         public Guid IdClient { get; set; }
+        public Guid? IdFacture { get; set; }
 
         public int? IdSite { get; set; }
 
@@ -34,6 +29,7 @@ namespace WebApplication1.DATA
         public string TypeReglement { get; set; }
 
         public virtual Client Client { get; set; }
+        public virtual Facture Facture { get; set; }
         public virtual Site Site { get; set; }
 
         public virtual float? OldSolde { get; set; }

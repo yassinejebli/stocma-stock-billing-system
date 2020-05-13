@@ -6,6 +6,7 @@ import { getClients } from '../../../queries/clientQueries';
 import useDebounce from '../../../hooks/useDebounce';
 import { grey } from '@material-ui/core/colors';
 import { formatMoney } from '../../../utils/moneyUtils';
+import { useSite } from '../../providers/SiteProvider';
 
 const useStyles = makeStyles({
   root: {
@@ -20,6 +21,7 @@ const useStyles = makeStyles({
 
 const ClientAutocomplete = ({ errorText, ...props }) => {
   const classes = useStyles();
+  const {useVAT} = useSite();
   const [loading, setLoading] = React.useState(false);
   const [clients, setClients] = React.useState([]);
   const [searchText, setSearchText] = React.useState('');
@@ -61,9 +63,10 @@ const ClientAutocomplete = ({ errorText, ...props }) => {
       getOptionLabel={(option) => option?.Name}
       renderOption={option => {
         const soldeColor = (option.Solde > option?.Plafond && option?.Plafond !== 0) ? 'red' : grey[700];
+        const solde = !useVAT ? option?.Solde : option?.SoldeFacture;
         return (<div>
           <div>{option?.Name}</div>
-          <div style={{ color: soldeColor }} className={classes.solde}>Solde: {formatMoney(option?.Solde || 0)}</div>
+          <div style={{ color: soldeColor }} className={classes.solde}>Solde: {formatMoney(solde||0)}</div>
         </div>)
       }}
       renderInput={(params) => (

@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SBCIT {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class DevisChiffreSBCIT : ReportClass {
+    public class DevisSBCIT_ : ReportClass {
         
-        public DevisChiffreSBCIT() {
+        public DevisSBCIT_() {
         }
         
         public override string ResourceName {
             get {
-                return "DevisChiffreSBCIT.rpt";
+                return "DevisSBCIT_.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SBCIT {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SBCIT.DevisChiffreSBCIT.rpt";
+                return "WebApplication1.CrystalReports.SBCIT.DevisSBCIT_.rpt";
             }
             set {
                 // Do nothing
@@ -98,9 +98,9 @@ namespace WebApplication1.CrystalReports.SBCIT {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedDevisChiffreSBCIT : Component, ICachedReport {
+    public class CachedDevisSBCIT_ : Component, ICachedReport {
         
-        public CachedDevisChiffreSBCIT() {
+        public CachedDevisSBCIT_() {
         }
         
         [Browsable(false)]
@@ -137,7 +137,7 @@ namespace WebApplication1.CrystalReports.SBCIT {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            DevisChiffreSBCIT rpt = new DevisChiffreSBCIT();
+            DevisSBCIT_ rpt = new DevisSBCIT_();
             rpt.Site = this.Site;
             return rpt;
         }

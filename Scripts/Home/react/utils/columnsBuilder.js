@@ -250,7 +250,7 @@ export const getBonLivraisonListColumns = () => ([
         width: 60
     },
     {
-        Header: 'Type de règ.',
+        Header: 'Mode de paiement',
         accessor: 'TypeReglement',
         type: inputTypes.text.description,
     },

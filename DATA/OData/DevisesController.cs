@@ -21,10 +21,10 @@ namespace WebApplication1.DATA.OData
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<Devis> GetDevises()
         {
-            return (IQueryable<Devis>)this.db.Devises;
+            return (IQueryable<Devis>)this.db.Devises.OrderByDescending(x => x.Date);
         }
 
         [EnableQuery]
@@ -48,6 +48,11 @@ namespace WebApplication1.DATA.OData
             devis.Ref = newDevis.Ref;
             devis.Date = newDevis.Date;
             devis.Note = newDevis.Note;
+            devis.WithDiscount = newDevis.WithDiscount;
+            devis.IdTypePaiement = newDevis.IdTypePaiement;
+            devis.ValiditeOffre = newDevis.ValiditeOffre;
+            devis.TransportExpedition = newDevis.TransportExpedition;
+            devis.DelaiLivrasion = newDevis.DelaiLivrasion;
             var numBonGenerator = new DocNumberGenerator();
 
             devis.NumBon = numBonGenerator.getNumDocByCompany(newDevis.Ref - 1, newDevis.Date);

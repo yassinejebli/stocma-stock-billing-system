@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WebApplication1.DATA.Article
-// Assembly: WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
-// Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -29,6 +23,8 @@ namespace WebApplication1.DATA
         [Index(IsUnique = true)]
         [StringLength(200)]
         public string Designation { get; set; }
+
+        public string Description { get; set; }
 
         public string Marque { get; set; }
 
@@ -58,6 +54,8 @@ namespace WebApplication1.DATA
 
         [DefaultValue("U")]
         public string Unite { get; set; }
+
+        public bool IsStocked { get; set; } = false;
 
         [DefaultValue(20)]
         public float? TVA { get; set; }

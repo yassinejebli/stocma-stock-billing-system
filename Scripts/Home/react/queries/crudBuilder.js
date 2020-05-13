@@ -3,7 +3,10 @@ import buildQuery from 'odata-query'
 const ODATA_URL = '/Odata/'
 
 export const saveData = async (table, data, expand) => {
-    const URL = ODATA_URL + table + (expand?`?$expand=${expand}`:'')
+    const allParams = buildQuery({ 
+        expand: expand?.join(',')
+    })
+    const URL = ODATA_URL + table + allParams
 
     try {
         const res = await (await fetch(URL, {
@@ -59,7 +62,7 @@ export const getData = async (table, params, filters, expand) => {
         filter: filters, 
         count: true, 
         top: 10, 
-        skip: params.$skip||0,
+        skip: params?.$skip||0,
         expand: expand?.join(',')
     })
 

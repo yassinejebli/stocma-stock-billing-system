@@ -48,7 +48,7 @@ namespace WebApplication1.Migrations
             }
 
             var bonLivraisons = context.BonLivraisons.Where(x => x.IdSite == null);
-            if(bonLivraisons.Count() > 0)
+            if (bonLivraisons.Count() > 0)
             {
                 foreach (var b in bonLivraisons)
                 {
@@ -73,6 +73,16 @@ namespace WebApplication1.Migrations
                 foreach (var b in bonReceptions)
                 {
                     b.IdSite = 1;
+                }
+                context.SaveChanges();
+            }
+
+            var factures = context.Factures.Where(x => x.IdSite == null);
+            if (factures.Count() > 0)
+            {
+                foreach (var f in factures)
+                {
+                    f.IdSite = 1;
                 }
                 context.SaveChanges();
             }
@@ -137,161 +147,96 @@ namespace WebApplication1.Migrations
                 });
                 context.SaveChanges();
             }
-            if (!context.Settings.Any<Setting>())
+
+
+            context.Database.ExecuteSqlCommand("TRUNCATE TABLE Settings");
+
+            var devisDiscount = context.Settings.Where(x => x.Code == "devis_discount")
+                    .FirstOrDefault();
+
+            if (
+                devisDiscount == null)
             {
-                context.Settings.AddRange((IEnumerable<Setting>)new Setting[2]
+                context.Settings.Add(new Setting
                 {
-                    new Setting()
-                    {
-                        Code = "1",
-                        Name = "Remplissage manuel du numéro BL",
-                        Afficher = 0
-                    },
-                    new Setting()
-                    {
-                        Code = "2",
-                        Name = "Taille de la police",
-                        Afficher = 14
-                    }
+                    Id = 1,
+                    Code = "devis_discount",
+                    Name = "Remise"
                 });
-                context.SaveChanges();
             }
-            else
+
+            var devisValidity = context.Settings.Where(x => x.Code == "devis_validity")
+                    .FirstOrDefault();
+
+            if (
+                devisValidity == null)
             {
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "2"))
-                        .FirstOrDefault<Setting>() == null)
+                context.Settings.Add(new Setting
                 {
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "2",
-                            Name = "Taille de la police (Page)",
-                            Afficher = 14
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "3"))
-                        .FirstOrDefault<Setting>() == null)
-                {
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "3",
-                            Name = "Taille de la police (Impression)",
-                            Afficher = 9
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "5"))
-                        .FirstOrDefault<Setting>() == null)
-                {
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "5",
-                            Name = "Type Tableau (Impression)",
-                            Afficher = 2
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "6"))
-                        .FirstOrDefault<Setting>() == null)
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "6",
-                            Name = "Coût unitaire moyen pondéré (C.U.M.P)",
-                            Afficher = 0
-                        }
-                    });
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "7"))
-                        .FirstOrDefault<Setting>() == null)
-                {
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "7",
-                            Name = "Format BL Par défaut (0 : petit / 1 : grand)",
-                            Afficher = 0
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "8"))
-                        .FirstOrDefault<Setting>() == null)
-                {
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "8",
-                            Name = "Ordre Qte (0 : aprés désignation / 1 : avant designation)",
-                            Afficher = 0
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "9"))
-                        .FirstOrDefault<Setting>() == null)
-                {
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "9",
-                            Name = "Afficher Réference d'article",
-                            Afficher = 0
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "10"))
-                        .FirstOrDefault<Setting>() == null)
-                {
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "10",
-                            Name =
-                                "0 : Scanner tous les articles puis entrer les quantitiés | 1 : Scanner un article par un et entrer la quantité",
-                            Afficher = 0
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                if (
-                    context.Settings.Where<Setting>((Expression<Func<Setting, bool>>)(x => x.Code == "11"))
-                        .FirstOrDefault<Setting>() == null)
-                {
-                    context.Settings.AddRange((IEnumerable<Setting>)new Setting[1]
-                    {
-                        new Setting()
-                        {
-                            Code = "11",
-                            Name = "Afficher H.T (0:non | 1:oui)",
-                            Afficher = 0
-                        }
-                    });
-                    context.SaveChanges();
-                }
+                    Code = "devis_validity",
+                    Enabled = false,
+                    Name = "Validité de l'offre"
+                });
             }
+
+            var devisPayment = context.Settings.Where(x => x.Code == "devis_payment")
+                    .FirstOrDefault();
+
+            if (
+                devisPayment == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "devis_payment",
+                    Enabled = false,
+                    Name = "Mode de paiement"
+                });
+            }
+
+            var devisTransport = context.Settings.Where(x => x.Code == "devis_transport")
+                    .FirstOrDefault();
+
+            if (
+                devisTransport == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "devis_transport",
+                    Enabled = false,
+                    Name = "Transport / Expédition"
+                });
+            }
+
+            var devisDeliveryTime = context.Settings.Where(x => x.Code == "devis_delivery_time")
+                    .FirstOrDefault();
+
+            if (
+                devisDeliveryTime == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "devis_delivery_time",
+                    Enabled = false,
+                    Name = "Délai de livraision"
+                });
+            }
+            var bonLivraisonDiscount = context.Settings.Where(x => x.Code == "bl_discount")
+                    .FirstOrDefault();
+
+            if (
+                bonLivraisonDiscount == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Id = 2,
+                    Code = "bl_discount",
+                    Disabled = true,
+                    Name = "Remise"
+                });
+            }
+
+            ///////////////////////////////////////////////// end Settings
+
             if (!context.TypePaiements.Any<TypePaiement>())
             {
                 context.TypePaiements.AddRange((IEnumerable<TypePaiement>)new TypePaiement[11]

@@ -43,7 +43,7 @@ const ClientForm = ({data, onSuccess}) => {
 
     const save = async () => {
         if (!isFormValid()) return;
-        const {Solde, ...preparedData} = formState;
+        const {Solde, SoldeFacture, ...preparedData} = formState;
 
         setLoading(true);
         if(editMode){

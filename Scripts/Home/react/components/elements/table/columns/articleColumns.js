@@ -116,10 +116,19 @@ export const articlesMarginColumns = () => ([
         align: 'right'
     },
     {
-        Id: 'Marge',
+        Id: 'Turnover',
+        Header: 'Chiffre d\'affaire',
+        accessor: (props) => {
+            return formatMoney(props.Turnover);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        Id: 'Margin',
         Header: 'Marge',
         accessor: (props) => {
-            return formatMoney(props.Marge);
+            return formatMoney(props.Margin);
         },
         type: inputTypes.text.description,
         align: 'right'
