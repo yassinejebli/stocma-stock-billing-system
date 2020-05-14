@@ -60,11 +60,11 @@ namespace WebApplication1.DATA.OData
             var payment = db.PaiementFactures.FirstOrDefault(x => x.IdFacture == facture.Id);
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb7";
 
-            //espece
+            //TODO: espece
 
             var Total = newOriginalBonLivraisons
                     .SelectMany(x => x.BonLivraisonItems)
-                    .Sum(x => x.Qte * x.Pu);
+                    .Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
 
             if (payment != null)
             {
@@ -119,7 +119,7 @@ namespace WebApplication1.DATA.OData
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb7";
             var Total = originalBonLivraisons
                     .SelectMany(x => x.BonLivraisonItems)
-                    .Sum(x => x.Qte * x.Pu);
+                    .Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
 
             PaiementFacture paiement = new PaiementFacture()
             {

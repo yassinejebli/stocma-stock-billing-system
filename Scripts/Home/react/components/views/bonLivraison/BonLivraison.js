@@ -20,6 +20,9 @@ import { useLocation, useHistory } from 'react-router-dom'
 import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import qs from 'qs'
 import { useSite } from '../../providers/SiteProvider'
+import { useSettings } from '../../providers/SettingsProvider'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import { paymentMethods } from '../devis/Devis'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -32,6 +35,12 @@ const emptyLine = {
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
 const BonLivraison = () => {
+    const {
+        BLDiscount,
+        setBLDiscount,
+        BLPayment
+    } = useSettings();
+    console.log({ BLPayment, BLDiscount })
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -45,19 +54,30 @@ const BonLivraison = () => {
     const [errors, setErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
+    const [paymentType, setPaymentType] = React.useState(null);
     const location = useLocation();
     const BonLivraisonId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonLivraisonId;
     const isEditMode = Boolean(BonLivraisonId);
-    console.log({ location, BonLivraisonId });
-
-    const columns = React.useMemo(
-        () => getBonLivraisonColumns(),
-        []
-    )
     const [skipPageReset, setSkipPageReset] = React.useState(false);
     const total = data.reduce((sum, curr) => (
         sum += curr.Pu * curr.Qte
     ), 0);
+    const discount = data.reduce((sum, curr) => {
+        const total = curr.Pu * curr.Qte;
+        if (curr.Discount) {
+            if (!isNaN(curr.Discount))
+                sum += Number(curr.Discount)
+            else if (/^\d+(\.\d+)?%$/.test(curr.Discount)) {
+                sum += total * parseFloat(curr.Discount) / 100;
+            }
+        }
+        return sum;
+    }, 0);
+
+    const columns = React.useMemo(
+        () => getBonLivraisonColumns({ BLDiscount }),
+        [BLDiscount]
+    )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
         return (
             <PrintBL
@@ -76,21 +96,32 @@ const BonLivraison = () => {
     }, [data])
 
     React.useEffect(() => {
+        if (!BLDiscount?.Enabled)
+            setData(_data => _data.map(x => ({ ...x, Discount: '' })));
+    }, [BLDiscount])
+
+    React.useEffect(() => {
         setTitle('Bon de livraison')
         //load bon de livraison
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
+            getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article'])
                 .then(response => {
+                    if (response.WithDiscount)
+                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: true }));
+                    else
+                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: false }));
                     setClient(response.Client);
                     setDate(response.Date);
                     setNote(response.Note);
                     setData(response.BonLivraisonItems?.map(x => ({
                         Article: x.Article,
                         Qte: x.Qte,
-                        Pu: x.Pu
+                        Pu: x.Pu,
+                        Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
                     })));
                     setNumDoc(response.NumBon);
+                    setPaymentType(response.TypePaiement);
                     setRef(response.Ref);
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
@@ -154,7 +185,8 @@ const BonLivraison = () => {
 
     const save = async () => {
         if (!areDataValid()) return;
-        const expand = [DOCUMENT_ITEMS, DOCUMENT_OWNER].join(',');
+        // return console.log({paymentType})
+        const expand = [DOCUMENT_ITEMS, DOCUMENT_OWNER];
         const Id = isEditMode ? BonLivraisonId : uuidv4();
         const preparedData = {
             Id: Id,
@@ -162,12 +194,16 @@ const BonLivraison = () => {
             Note: note,
             NumBon: numDoc,
             Ref: ref,
+            IdTypePaiement: paymentType?.Id,
+            WithDiscount: discount > 0,
             BonLivraisonItems: data.filter(x => x.Article).map(d => ({
                 Id: uuidv4(),
                 IdBonLivraison: Id,
                 Qte: d.Qte,
                 Pu: d.Pu,
-                IdArticle: d.Article.Id
+                IdArticle: d.Article.Id,
+                Discount: parseFloat(d.Discount),
+                PercentageDiscount: (/^\d+(\.\d+)?%$/.test(d.Discount))
             })),
             IdClient: client.Id,
             Date: date
@@ -177,7 +213,6 @@ const BonLivraison = () => {
         const response = isEditMode ? await (await updateData(DOCUMENT, preparedData, Id, expand)).json()
             : await saveData(DOCUMENT, preparedData, expand);
         setLoading(false);
-        console.log({ response, isEditMode });
 
         if (response?.Id) {
             setSavedDocument(response)
@@ -207,8 +242,8 @@ const BonLivraison = () => {
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={<DescriptionIcon/>}
-                    onClick={()=>history.push('/BonLivraisonList')}
+                    startIcon={<DescriptionIcon />}
+                    onClick={() => history.push('/BonLivraisonList')}
                 >
                     Liste des bons de livraison
                 </Button>
@@ -245,6 +280,33 @@ const BonLivraison = () => {
                         onChange={(_date) => setDate(_date)}
                     />
                 </Box>
+                <Box mt={2} display="flex" flexWrap="wrap">
+                    {BLPayment?.Enabled && <Box mr={2} width={240}>
+                        <Autocomplete
+                            options={paymentMethods}
+                            disableClearable
+                            autoHighlight
+                            value={paymentType}
+                            onChange={(_, value) => setPaymentType(value)}
+                            size="small"
+                            getOptionLabel={(option) => option?.Name}
+                            renderInput={(params) => (
+                                <TextField
+                                    onChange={() => null}
+                                    {...params}
+                                    label="Mode de paiement"
+                                    variant="outlined"
+                                    inputProps={{
+                                        ...params.inputProps,
+                                        autoComplete: 'new-password',
+                                        type: 'search',
+                                        margin: 'normal'
+                                    }}
+                                />
+                            )}
+                        />
+                    </Box>}
+                </Box>
                 <Box mt={4}>
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>
@@ -263,7 +325,7 @@ const BonLivraison = () => {
                     {errors.table && <Error>
                         {errors.table}
                     </Error>}
-                    <TotalText total={total} />
+                    <TotalText total={total} discount={discount} />
                     <Box width={340}>
                         <TextField
                             value={note}

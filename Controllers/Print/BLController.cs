@@ -12,85 +12,28 @@ namespace WebApplication1.Controllers.Print
     public class BLController : Controller
     {
         private MySaniSoftContext context = new MySaniSoftContext();
+        
 
-        public ActionResult Index(Guid IdBonLivraison, bool? showBalance = false, bool? showPrices = true, bool? bigFormat = false)
+        public ActionResult Index(Guid IdBonLivraison, bool? showBalance = false, bool? showPrices = true, bool? bigFormat = false, bool? showStamp = false)
         {
+            string company = StatistiqueController.getCompanyName().ToUpper();
+            if (company == "SUIV" || company == "SBCIT")
+                bigFormat = true;
+
+            var ESPECE_PAYMENT_TYPE = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
             var BonLivraisonById = context.BonLivraisons.Where(x => x.Id == IdBonLivraison).FirstOrDefault();
             ReportDocument reportDocument = new ReportDocument();
             StatistiqueController statistiqueController = new StatistiqueController();
-            string company = StatistiqueController.getCompanyName().ToUpper();
 
             if (bigFormat == true)
                 reportDocument.Load(
                     Path.Combine(
-                        this.Server.MapPath("~/CrystalReports/" + company + "/BonLivraison" + company +
-                                            ".rpt")));
+                        this.Server.MapPath("~/CrystalReports/" + company + "/BonLivraison.rpt")));
             else
                 reportDocument.Load(
                     Path.Combine(
-                        this.Server.MapPath("~/CrystalReports/" + company + "/MiniBonLivraisonSoldeFrancais" + company +
-                                            ".rpt")));
+                        this.Server.MapPath("~/CrystalReports/" + company + "/MiniBonLivraison.rpt")));
 
-            /*  NumberFormatInfo numberFormatInfo = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
-              numberFormatInfo.NumberGroupSeparator = " ";
-              */
-            //TODO: change this
-            /*(reportDocument.ReportDefinition.ReportObjects["solde"] as TextObject).Text =
-                    statistiqueController.SoldeByClient(
-                        this.context.BonLivraisons.Where(
-                               (x => x.Id == IdBonLivraison)).Select((x => x.IdClient))
-                            .FirstOrDefault()).ToString("#,#.00", numberFormatInfo) + "DH";
-            TextObject reportObject = reportDocument.ReportDefinition.ReportObjects["oldSolde"] as TextObject;
-
-            if (
-                    this.context.BonLivraisons.Where(
-                         (x => x.Id == IdBonLivraison))
-                        .FirstOrDefault() != null)
-            {
-                float? oldSolde =
-                    this.context.BonLivraisons.Where(
-                            (x => x.Id == IdBonLivraison))
-                        .FirstOrDefault()
-                        .OldSolde;
-                float num1 = 0.0f;
-                if (((double)oldSolde.GetValueOrDefault() > (double)num1 ? (oldSolde.HasValue ? 1 : 0) : 0) != 0)
-                {
-                    oldSolde =
-                        this.context.BonLivraisons.Where(
-                                (x => x.Id == IdBonLivraison))
-                            .FirstOrDefault()
-                            .OldSolde;
-                    float num2 = oldSolde.HasValue ? oldSolde.GetValueOrDefault() : 0.0f;
-                    reportObject.Text = num2.ToString() ?? "NEANT";
-                }
-            }
-            */
-
-
-
-            /*else
-                reportDocument.Load(
-                Path.Combine(
-                    this.Server.MapPath("~/CrystalReports/" + company + "/MiniBonLivraisonFrancais" + company +
-                                        ".rpt")));*/
-
-
-
-
-
-
-
-            /*if (company == "H9S" && IsArabic == true)
-                reportDocument.Load(
-                    Path.Combine(
-                        this.Server.MapPath("~/CrystalReports/" + company + "/MiniBonLivraisonArabic" + company + ".rpt")));
-                        */
-
-            ////////////////////
-
-
-
-            ////////////////////////
             reportDocument.SetDataSource(
                 BonLivraisonById.BonLivraisonItems.Select(x => new
                 {
@@ -102,8 +45,15 @@ namespace WebApplication1.Controllers.Print
                     Qte = x.Qte,
                     PU = x.Pu,
                     TotalHT = x.TotalHT,
+                    TVA = x.Article.TVA ?? 20,
                     CodeClient = x.BonLivraison.Client.Code,
+                    NumBL = x.BonLivraison.NumBon,
+                    Adresse = x.BonLivraison.Client.Adresse,
+                    ICE = x.BonLivraison.Client.ICE,
+                    NumBC = x.NumBC,
                     Unite = x.Article.Unite,
+                    Discount = x.Discount + (x.PercentageDiscount ? "%" : ""),
+                    Total = (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f),
                     Index = x.Index ?? 0
                 }).OrderByDescending(x => x.Index).ToList()
              );
@@ -113,8 +63,13 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("Solde", BonLivraisonById.Client.Paiements.Sum(x => x.Debit - x.Credit));
             if (reportDocument.ParameterFields["ShowPrices"] != null)
                 reportDocument.SetParameterValue("ShowPrices", showPrices);
-            /*if (reportDocument.ParameterFields["OldSolde"] != null)
-                reportDocument.SetParameterValue("OldSolde", 0);*/
+            if (reportDocument.ParameterFields["ShowDiscount"] != null)
+                reportDocument.SetParameterValue("ShowDiscount", BonLivraisonById.WithDiscount);
+            if (reportDocument.ParameterFields["Cachet"] != null)
+                reportDocument.SetParameterValue("Cachet", showStamp);
+            if (reportDocument.ParameterFields["IsEspece"] != null)
+                reportDocument.SetParameterValue("IsEspece", BonLivraisonById.IdTypePaiement.HasValue ? BonLivraisonById.IdTypePaiement == ESPECE_PAYMENT_TYPE : false);
+
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition

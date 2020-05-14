@@ -174,7 +174,6 @@ namespace WebApplication1.Migrations
                 context.Settings.Add(new Setting
                 {
                     Code = "devis_validity",
-                    Enabled = false,
                     Name = "Validité de l'offre"
                 });
             }
@@ -188,7 +187,6 @@ namespace WebApplication1.Migrations
                 context.Settings.Add(new Setting
                 {
                     Code = "devis_payment",
-                    Enabled = false,
                     Name = "Mode de paiement"
                 });
             }
@@ -202,7 +200,6 @@ namespace WebApplication1.Migrations
                 context.Settings.Add(new Setting
                 {
                     Code = "devis_transport",
-                    Enabled = false,
                     Name = "Transport / Expédition"
                 });
             }
@@ -216,10 +213,11 @@ namespace WebApplication1.Migrations
                 context.Settings.Add(new Setting
                 {
                     Code = "devis_delivery_time",
-                    Enabled = false,
                     Name = "Délai de livraision"
                 });
             }
+
+            ///BL
             var bonLivraisonDiscount = context.Settings.Where(x => x.Code == "bl_discount")
                     .FirstOrDefault();
 
@@ -230,11 +228,22 @@ namespace WebApplication1.Migrations
                 {
                     Id = 2,
                     Code = "bl_discount",
-                    Disabled = true,
                     Name = "Remise"
                 });
             }
 
+            var bonLivraisonPayment = context.Settings.Where(x => x.Code == "bl_payment")
+                    .FirstOrDefault();
+
+            if (
+                bonLivraisonPayment == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "bl_payment",
+                    Name = "Mode de paiement"
+                });
+            }
             ///////////////////////////////////////////////// end Settings
 
             if (!context.TypePaiements.Any<TypePaiement>())

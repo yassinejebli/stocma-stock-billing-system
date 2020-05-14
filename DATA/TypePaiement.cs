@@ -21,6 +21,7 @@ namespace WebApplication1.DATA
 
         public virtual ICollection<Paiement> Paiements { get; set; }
         public virtual ICollection<Devis> Devises { get; set; }
+        public virtual ICollection<BonLivraison> BonLivraisons { get; set; }
 
         public virtual ICollection<PaiementF> PaiementFs { get; set; }
         public virtual ICollection<PaiementFacture> PaiementFactures { get; set; }

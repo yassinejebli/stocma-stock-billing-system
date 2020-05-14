@@ -282,6 +282,14 @@ namespace WebApplication1.DATA
                 .HasRequired<Client>((Expression<Func<BonLivraison, Client>>)(t => t.Client))
                 .WithMany((Expression<Func<Client, ICollection<BonLivraison>>>)(t => t.BonLivraisons))
                 .HasForeignKey<Guid>((Expression<Func<BonLivraison, Guid>>)(d => d.IdClient));
+
+
+            modelBuilder.Entity<BonLivraison>()
+               .HasOptional(t => t.TypePaiement)
+               .WithMany(t => t.BonLivraisons)
+               .HasForeignKey(d => d.IdTypePaiement);
+
+
             modelBuilder.Entity<BonLivraisonItem>().HasKey<Guid>((Expression<Func<BonLivraisonItem, Guid>>)(t => t.Id));
             modelBuilder.Entity<BonLivraisonItem>()
                 .HasRequired<BonLivraison>((Expression<Func<BonLivraisonItem, BonLivraison>>)(t => t.BonLivraison))

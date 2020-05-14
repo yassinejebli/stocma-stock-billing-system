@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using WebApplication1.DATA;
+using WebApplication1.Generators;
 
 namespace WebApplication1.Controllers.Print
 {
@@ -50,6 +51,10 @@ namespace WebApplication1.Controllers.Print
                     Note = x.Devis.Note
                 }).ToList()
              );
+
+            AmountTextGenerator atg = new AmountTextGenerator();
+
+            var total = (Decimal)DevisById.DevisItems.Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
          
             if (reportDocument.ParameterFields["ShowPrices"] != null)
                 reportDocument.SetParameterValue("ShowPrices", ShowPrices);
@@ -57,6 +62,8 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("ShowDiscount", DevisById.WithDiscount);
             if (reportDocument.ParameterFields["Cachet"] != null)
                 reportDocument.SetParameterValue("Cachet", Cachet);
+            if (reportDocument.ParameterFields["TotalWords"] != null)
+                reportDocument.SetParameterValue("TotalWords", atg.DecimalToWords(total));
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition

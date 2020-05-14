@@ -31,6 +31,10 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
         setDevisTransport,
         devisDeliveryTime,
         setDevisDeliveryTime,
+        BLDiscount,
+        setBLDiscount,
+        BLPayment,
+        setBLPayment
     } = useSettings();
     const classes = useStyles();
 
@@ -78,6 +82,25 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                                 checked={devisDeliveryTime?.Enabled}
                                 onChange={(_, checked) => setDevisDeliveryTime(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
                             label="Délai de livraision"
+                        />
+                    </Box>
+                </Box>
+                <Box flexDirection="column" display="flex" mt={4}>
+                    <TitleIcon title="Bon de livraison" Icon={DescriptionOutlinedIcon} />
+                    <Box mt={2}>
+                        <FormControlLabel
+                            control={<Switch
+                                checked={BLDiscount?.Enabled}
+                                onChange={(_, checked) => setBLDiscount(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                            label="Remise"
+                        />
+                    </Box>
+                    <Box mt={2}>
+                        <FormControlLabel
+                            control={<Switch
+                                checked={BLPayment?.Enabled}
+                                onChange={(_, checked) => setBLPayment(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                            label="Mode de paiement"
                         />
                     </Box>
                 </Box>

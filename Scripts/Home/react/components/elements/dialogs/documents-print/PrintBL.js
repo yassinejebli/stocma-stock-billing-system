@@ -11,6 +11,7 @@ const PrintBL = ({document, onClose, onExited, open}) => {
     const [bigFormat, setBigFormat] = React.useState(false);
     const [showBalance, setShowBalance] = React.useState(false);
     const [hidePrices, setHidePrices] = React.useState(false);
+    const [showStamp, setShowStamp] = React.useState(false);
 
     if(!document) return null;
     return (
@@ -23,6 +24,7 @@ const PrintBL = ({document, onClose, onExited, open}) => {
                     showBalance,
                     showPrices: !hidePrices,
                     bigFormat,
+                    showStamp: showStamp
                 })}>
                 <Box p={1}>
                     {document &&
@@ -45,6 +47,12 @@ const PrintBL = ({document, onClose, onExited, open}) => {
                                         checked={showBalance}
                                         onChange={(_, checked) => setShowBalance(checked)} />}
                                     label="Afficher solde"
+                                />
+                                <FormControlLabel
+                                    control={<Switch
+                                        checked={showStamp}
+                                        onChange={(_, checked) => setShowStamp(checked)} />}
+                                    label="Afficher le cachet"
                                 />
                             </Box>
                             <div>

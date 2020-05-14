@@ -34,6 +34,10 @@ namespace WebApplication1.DATA
 
         public float TotalHT { get; set; }
 
+        public float? Discount { get; set; } = 0;
+
+        public bool PercentageDiscount { get; set; } = false;
+
         public virtual BonLivraison BonLivraison { get; set; }
 
         public virtual Article Article { get; set; }

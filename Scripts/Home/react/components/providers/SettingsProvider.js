@@ -14,6 +14,11 @@ export const useSettings = () => {
 }
 
 const SettingsProvider = ({ children }) => {
+    //BL
+    const [BLDiscount, setBLDiscount] = React.useState(null);
+    const [BLPayment, setBLPayment] = React.useState(null);
+
+    //Devis
     const [devisDiscount, setDevisDiscount] = React.useState(null);
     const [devisValidity, setDevisValidity] = React.useState(null);
     const [devisPayment, setDevisPayment] = React.useState(null);
@@ -24,6 +29,17 @@ const SettingsProvider = ({ children }) => {
         fetchSettings();
     }, []);
 
+    //BL
+    React.useEffect(() => {
+        if (BLPayment)
+            updateData(TABLE, BLPayment, BLPayment?.Id);
+    }, [BLPayment]);
+    React.useEffect(() => {
+        if (BLDiscount)
+            updateData(TABLE, BLDiscount, BLDiscount?.Id);
+    }, [BLDiscount]);
+
+    //Devis
     React.useEffect(() => {
         if (devisDiscount)
             updateData(TABLE, devisDiscount, devisDiscount?.Id);
@@ -59,6 +75,8 @@ const SettingsProvider = ({ children }) => {
                 setDevisTransport(res.find(x => x.Code === 'devis_transport'));
                 setDevisDeliveryTime(res.find(x => x.Code === 'devis_delivery_time'));
                 //BL
+                setBLDiscount(res.find(x => x.Code === 'bl_discount'));
+                setBLPayment(res.find(x => x.Code === 'bl_payment'));
             })
             .catch(err => console.error(err));
     }
@@ -74,7 +92,12 @@ const SettingsProvider = ({ children }) => {
             devisTransport,
             setDevisTransport,
             devisDeliveryTime,
-            setDevisDeliveryTime
+            setDevisDeliveryTime,
+            //BL
+            BLDiscount,
+            setBLDiscount,
+            BLPayment,
+            setBLPayment
         }}>
             {children}
         </SettingsContext.Provider>)

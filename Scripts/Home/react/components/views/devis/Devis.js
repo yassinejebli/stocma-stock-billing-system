@@ -56,6 +56,7 @@ const Devis = () => {
     const { siteId } = useSite();
     const {
         devisDiscount,
+        setDevisDiscount,
         devisValidity,
         devisPayment,
         devisTransport,
@@ -98,7 +99,6 @@ const Devis = () => {
                 sum += total * parseFloat(curr.Discount) / 100;
             }
         }
-        console.log({ sum })
         return sum;
     }, 0);
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
@@ -129,6 +129,10 @@ const Devis = () => {
             setLoading(true);
             getSingleData(DOCUMENT, DevisId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article'])
                 .then(response => {
+                    if (response.WithDiscount)
+                        setDevisDiscount(_docSetting => ({ ..._docSetting, Enabled: true }));
+                    else
+                        setDevisDiscount(_docSetting => ({ ..._docSetting, Enabled: false }));
                     setClient(response.Client);
                     setDate(response.Date);
                     setNote(response.Note);
@@ -225,7 +229,7 @@ const Devis = () => {
                 Qte: d.Qte,
                 Pu: d.Pu,
                 IdArticle: d.Article.Id,
-                Discount: d.Discount > 0 ? parseFloat(d.Discount) : null,
+                Discount: parseFloat(d.Discount),
                 PercentageDiscount: (/^\d+(\.\d+)?%$/.test(d.Discount))
             })),
             IdClient: client.Id,

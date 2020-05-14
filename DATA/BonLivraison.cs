@@ -20,17 +20,21 @@ namespace WebApplication1.DATA
         public DateTime? ModificationDate { get; set; }
         public Guid IdClient { get; set; }
         public Guid? IdFacture { get; set; }
+        public Guid? IdTypePaiement { get; set; }
 
         public int? IdSite { get; set; }
 
         [DefaultValue(0)]
         public float? Marge { get; set; }
 
+        public bool WithDiscount { get; set; } = false;
+
         public string TypeReglement { get; set; }
 
         public virtual Client Client { get; set; }
         public virtual Facture Facture { get; set; }
         public virtual Site Site { get; set; }
+        public virtual TypePaiement TypePaiement { get; set; }
 
         public virtual float? OldSolde { get; set; }
 

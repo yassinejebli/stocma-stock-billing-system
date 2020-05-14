@@ -11,7 +11,7 @@ import { getLastPriceSale } from '../queries/articleQueries';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import { Box } from '@material-ui/core';
 
-export const getBonLivraisonColumns = () => ([
+export const getBonLivraisonColumns = ({BLDiscount}) => ([
     {
         Header: 'Article',
         accessor: 'Article',
@@ -64,6 +64,13 @@ export const getBonLivraisonColumns = () => ([
         type: inputTypes.number.description,
         align: 'right'
     },
+    ((BLDiscount?.Enabled) && {
+        Header: 'Remise',
+        accessor: 'Discount',
+        editable: true,
+        type: inputTypes.text.description,
+        align: 'right'
+    }),
     {
         id: 'TotalHT',
         Header: 'Montant',
@@ -90,7 +97,7 @@ export const getBonLivraisonColumns = () => ([
         width: 24,
         align: 'right'
     },
-])
+].filter(x=>x))
 
 
 export const getClientColumns = () => ([
@@ -251,7 +258,7 @@ export const getBonLivraisonListColumns = () => ([
     },
     {
         Header: 'Mode de paiement',
-        accessor: 'TypeReglement',
+        accessor: 'TypePaiement.Name',
         type: inputTypes.text.description,
     },
     {
@@ -260,10 +267,22 @@ export const getBonLivraisonListColumns = () => ([
         type: inputTypes.text.description,
         width: 30,
         accessor: (props) => {
+            const discount = props.BonLivraisonItems.reduce((sum, curr) => {
+                const total = curr.Pu * curr.Qte;
+                if (curr.Discount) {
+                    if (!curr.PercentageDiscount)
+                        sum += Number(curr.Discount)
+                    else
+                        sum += total * parseFloat(curr.Discount) / 100;
+                }
+                return sum;
+            }, 0);
+
             const total = props.BonLivraisonItems.reduce((sum, curr) => (
                 sum += curr.Pu * curr.Qte
             ), 0);
-            return formatMoney(total);
+
+            return formatMoney(total - discount);
         },
         align: 'right'
     },

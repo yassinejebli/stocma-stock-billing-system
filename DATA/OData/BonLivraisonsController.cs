@@ -58,6 +58,7 @@ namespace WebApplication1.DATA.OData
             bonLivraison.Date = newBonLivraison.Date;
             bonLivraison.Ref = newBonLivraison.Ref;
             bonLivraison.Note = newBonLivraison.Note;
+            bonLivraison.IdTypePaiement = newBonLivraison.IdTypePaiement;
             var numBonGenerator = new DocNumberGenerator();
 
             bonLivraison.NumBon = numBonGenerator.getNumDocByCompany(newBonLivraison.Ref - 1, newBonLivraison.Date);
@@ -70,7 +71,7 @@ namespace WebApplication1.DATA.OData
             //-----------------------------------------------Updating payment
             var payment = db.Paiements.FirstOrDefault(x => x.IdBonLivraison == bonLivraison.Id);
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb6";
-            var Total = newBonLivraison.BonLivraisonItems.Sum(x => x.Qte * x.Pu);
+            var Total = newBonLivraison.BonLivraisonItems.Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
             if (payment != null)
             {
                 payment.Debit = Total;
@@ -128,7 +129,7 @@ namespace WebApplication1.DATA.OData
             //-----------------------------------------------Updating payment
             var payment = db.Paiements.FirstOrDefault(x => x.IdBonLivraison == bonLivraison.Id);
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb6";
-            var Total = bonLivraison.BonLivraisonItems.Sum(x => x.Qte * x.Pu);
+            var Total = bonLivraison.BonLivraisonItems.Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
             if (payment != null)
             {
                 payment.Debit = Total;

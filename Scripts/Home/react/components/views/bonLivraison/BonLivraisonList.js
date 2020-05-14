@@ -13,13 +13,14 @@ import { TextField, Button } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import useDebounce from '../../../hooks/useDebounce'
 import { useModal } from 'react-modal-hook'
+import AddIcon from '@material-ui/icons/Add';
 import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import { useSite } from '../../providers/SiteProvider'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 
 
 const DOCUMENT = 'BonLivraisons'
-const EXPAND = ['Client', 'BonLivraisonItems']
+const EXPAND = ['Client', 'TypePaiement', 'BonLivraisonItems']
 
 const BonLivraisonList = () => {
     const { siteId } = useSite();
@@ -131,13 +132,23 @@ const BonLivraisonList = () => {
         <>
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+                <Box mr={2}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<LocalAtmIcon />}
+                        onClick={() => history.push('/')}
+                    >
+                        Marge bénéficiaire par BL
+                </Button>
+                </Box>
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={<LocalAtmIcon />}
-                    onClick={() => history.push('/')}
+                    startIcon={<AddIcon />}
+                    onClick={() => history.push('/BonLivraison')}
                 >
-                    Marge bénéficiaire par BL
+                    Nouveau bon de livraison
                 </Button>
             </Box>
             <Paper>
