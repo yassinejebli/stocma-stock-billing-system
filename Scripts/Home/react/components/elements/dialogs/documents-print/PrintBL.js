@@ -8,7 +8,7 @@ const DOCUMENT_ITEMS = 'BonLivraisonItems'
 
 const PrintBL = ({document, onClose, onExited, open}) => {
     const [showForm, setShowForm] = React.useState(false);
-    const [bigFormat, setBigFormat] = React.useState(false);
+    const [bigFormat, setBigFormat] = React.useState(document?.WithDiscount);
     const [showBalance, setShowBalance] = React.useState(false);
     const [hidePrices, setHidePrices] = React.useState(false);
     const [showStamp, setShowStamp] = React.useState(false);

@@ -45,6 +45,7 @@ function Table({
     addNewRow,
     showImage,
     print,
+    convert,
     owner,
     filters,
     totalItems }) {
@@ -78,6 +79,7 @@ function Table({
             showImage,
             updateRow,
             print,
+            convert,
             owner,
             initialState: { pageIndex: 0 },
             manualPagination: Boolean(serverPagination),

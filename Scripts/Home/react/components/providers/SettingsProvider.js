@@ -34,16 +34,16 @@ const SettingsProvider = ({ children }) => {
         if (BLPayment)
             updateData(TABLE, BLPayment, BLPayment?.Id);
     }, [BLPayment]);
-    React.useEffect(() => {
-        if (BLDiscount)
-            updateData(TABLE, BLDiscount, BLDiscount?.Id);
-    }, [BLDiscount]);
+    // React.useEffect(() => {
+    //     if (BLDiscount)
+    //         updateData(TABLE, BLDiscount, BLDiscount?.Id);
+    // }, [BLDiscount]);
 
     //Devis
-    React.useEffect(() => {
-        if (devisDiscount)
-            updateData(TABLE, devisDiscount, devisDiscount?.Id);
-    }, [devisDiscount]);
+    // React.useEffect(() => {
+    //     if (devisDiscount)
+    //         updateData(TABLE, devisDiscount, devisDiscount?.Id);
+    // }, [devisDiscount]);
 
     React.useEffect(() => {
         if (devisValidity)

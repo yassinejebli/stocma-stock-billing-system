@@ -98,7 +98,7 @@ const DevisList = () => {
         setLoading(false);
     }, [])
 
-    const updateRow = React.useCallback(async (id) => {
+    const updateRow = React.useCallback((id) => {
         history.push(`Devis?DevisId=${id}`);
     }, []);
 
@@ -124,6 +124,10 @@ const DevisList = () => {
     const print = React.useCallback((document) => {
         setDocumentToPrint(document);
         showModal();
+    }, [])
+
+    const convertToBL = React.useCallback((id) => {
+        history.push('/BonLivraison?DevisId=' + id);
     }, [])
 
     return (
@@ -159,6 +163,7 @@ const DevisList = () => {
                         deleteRow={deleteRow}
                         updateRow={updateRow}
                         print={print}
+                        convert={convertToBL}
                         serverPagination
                         totalItems={totalItems}
                         pageCount={pageCount}

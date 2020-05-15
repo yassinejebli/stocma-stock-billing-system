@@ -56,6 +56,7 @@ const BonLivraison = () => {
     const [savedDocument, setSavedDocument] = React.useState(null);
     const [paymentType, setPaymentType] = React.useState(null);
     const location = useLocation();
+    const DevisId = qs.parse(location.search, { ignoreQueryPrefix: true }).DevisId;
     const BonLivraisonId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonLivraisonId;
     const isEditMode = Boolean(BonLivraisonId);
     const [skipPageReset, setSkipPageReset] = React.useState(false);
@@ -125,6 +126,24 @@ const BonLivraison = () => {
                     setRef(response.Ref);
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
+        }else if (DevisId){
+            setLoading(true);
+            getSingleData('Devises', DevisId, [DOCUMENT_OWNER, 'TypePaiement', 'DevisItems' + '/' + 'Article'])
+                .then(response => {
+                    if (response.WithDiscount)
+                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: true }));
+                    else
+                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: false }));
+                    setClient(response.Client);
+                    setData(response.DevisItems?.map(x => ({
+                        Article: x.Article,
+                        Qte: x.Qte,
+                        Pu: x.Pu,
+                        Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
+                    })));
+                    setPaymentType(response.TypePaiement);
+                }).catch(err => console.error(err))
+                .finally(() => setLoading(false));
         }
     }, [])
 
@@ -185,6 +204,7 @@ const BonLivraison = () => {
 
     const save = async () => {
         if (!areDataValid()) return;
+
         // return console.log({paymentType})
         const expand = [DOCUMENT_ITEMS, DOCUMENT_OWNER];
         const Id = isEditMode ? BonLivraisonId : uuidv4();

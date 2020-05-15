@@ -59,6 +59,7 @@ namespace WebApplication1.DATA.OData
             bonLivraison.Ref = newBonLivraison.Ref;
             bonLivraison.Note = newBonLivraison.Note;
             bonLivraison.IdTypePaiement = newBonLivraison.IdTypePaiement;
+            bonLivraison.WithDiscount = newBonLivraison.WithDiscount;
             var numBonGenerator = new DocNumberGenerator();
 
             bonLivraison.NumBon = numBonGenerator.getNumDocByCompany(newBonLivraison.Ref - 1, newBonLivraison.Date);

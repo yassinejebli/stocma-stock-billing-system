@@ -8,8 +8,9 @@ import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import ArticleAutocomplete from '../../article-autocomplete/ArticleAutocomplete';
+import SyncIcon from '@material-ui/icons/Sync';
 import { format } from 'date-fns';
-import { Box } from '@material-ui/core';
+import { Box, Tooltip } from '@material-ui/core';
 
 export const devisColumns = ({ devisDiscount }) => ([
     {
@@ -159,12 +160,17 @@ export const devisListColumns = () => ([
     {
         id: 'actions',
         Header: '',
-        Cell: ({ row: { original }, updateRow, deleteRow, print }) => {
+        Cell: ({ row: { original }, updateRow, deleteRow, print, convert }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
                     <IconButton tabIndex={-1} size="small" onClick={() => print(original)}>
                         <PrintOutlinedIcon />
                     </IconButton>
+                    <Tooltip title="Convertir en bon de livraison">
+                        <IconButton tabIndex={-1} size="small" onClick={() => convert(original.Id)}>
+                            <SyncIcon />
+                        </IconButton>
+                    </Tooltip>
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original.Id)}>
                         <EditOutlinedIcon />
                     </IconButton>
