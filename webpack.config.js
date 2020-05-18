@@ -14,7 +14,18 @@ module.exports = {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 loader: require.resolve('babel-loader'),
-            }
+            },
+            {
+                test: /\.(png|jp(e*)g|svg|gif)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]',
+                        },
+                    },
+                ],
+            },
         ]
     },
     devtool: "inline-source-map",

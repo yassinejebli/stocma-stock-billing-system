@@ -18,10 +18,12 @@ namespace WebApplication1.DATA
         public DateTime Date { get; set; }
 
         public Guid IdClient { get; set; }
+        public Guid? IdTypePaiement { get; set; }
 
         public Guid? IdBonLivraison { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public DateTime? ModificationDate { get; set; }
+        public bool WithDiscount { get; set; } = false;
 
         public string Comment { get; set; }
 
@@ -36,6 +38,8 @@ namespace WebApplication1.DATA
         public virtual Client Client { get; set; }
 
         public virtual Site Site { get; set; }
+        public virtual TypePaiement TypePaiement { get; set; }
+
 
         public virtual BonLivraison BonLivraison { get; set; }
         public virtual ICollection<Paiement> Paiements { get; set; }

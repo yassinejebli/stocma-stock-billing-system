@@ -7,12 +7,13 @@ import { grey } from '@material-ui/core/colors';
 import { formatMoney } from '../../../utils/moneyUtils';
 import { getData } from '../../../queries/crudBuilder';
 import { useSite } from '../../providers/SiteProvider';
+import { format } from 'date-fns';
 
 const useStyles = makeStyles({
   root: {
 
   },
-  total: {
+  smallText: {
     fontSize: 12,
     color: grey[700]
   }
@@ -33,9 +34,9 @@ const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
         contains: debouncedSearchText
       } : undefined,
       IdClient: clientId ? { eq: { type: 'guid', value: clientId } } : undefined,
-      IdSite: siteId
-      // Disabled: false
-    }, ['BonLivraisonItems/Article']).then(response => {
+      IdSite: siteId,
+      IdFacture: null
+    }, ['Facture', 'BonLivraisonItems/Article']).then(response => {
       setLoading(false);
       setBonLivraisons(response.data);
     });
@@ -49,8 +50,6 @@ const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
     <Autocomplete
       {...props}
       multiple
-      loading={loading}
-      loadingText="Chargement..."
       disableClearable
       filterSelectedOptions
       popupIcon={null}
@@ -65,11 +64,24 @@ const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
       size="small"
       getOptionLabel={(option) => option?.NumBon}
       renderOption={option => {
+        const discount = option.BonLivraisonItems.reduce((sum, curr) => {
+          const total = curr.Pu * curr.Qte;
+          if (curr.Discount) {
+              if (!curr.PercentageDiscount)
+                  sum += Number(curr.Discount)
+              else
+                  sum += total * parseFloat(curr.Discount) / 100;
+          }
+          return sum;
+      }, 0);
+
+      const total = option.BonLivraisonItems.reduce((sum, curr) => (
+          sum += curr.Pu * curr.Qte
+      ), 0);
         return (<div>
           <div>{option?.NumBon}</div>
-          <div className={classes.total}>Total: {formatMoney(option.BonLivraisonItems.reduce((sum, curr) => (
-            sum += curr.Pu * curr.Qte
-          ), 0))}</div>
+          <div className={classes.smallText}>Total: {formatMoney(total - discount)}</div>
+          <div className={classes.smallText}>Date: {format(new Date(option.Date), 'dd/MM/yyyy')}</div>
         </div>)
       }}
       renderInput={(params) => (

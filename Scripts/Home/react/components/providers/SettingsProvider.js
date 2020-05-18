@@ -18,6 +18,11 @@ const SettingsProvider = ({ children }) => {
     const [BLDiscount, setBLDiscount] = React.useState(null);
     const [BLPayment, setBLPayment] = React.useState(null);
 
+    //FA
+    const [factureDiscount, setFactureDiscount] = React.useState(null);
+    const [facturePayment, setFacturePayment] = React.useState(null);
+    const [factureCheque, setFactureCheque] = React.useState(null);
+
     //Devis
     const [devisDiscount, setDevisDiscount] = React.useState(null);
     const [devisValidity, setDevisValidity] = React.useState(null);
@@ -28,6 +33,18 @@ const SettingsProvider = ({ children }) => {
     React.useEffect(() => {
         fetchSettings();
     }, []);
+
+
+    //FA client
+    React.useEffect(() => {
+        if (facturePayment)
+            updateData(TABLE, facturePayment, facturePayment?.Id);
+    }, [facturePayment]);
+
+    React.useEffect(() => {
+        if (factureCheque)
+            updateData(TABLE, factureCheque, factureCheque?.Id);
+    }, [factureCheque]);
 
     //BL
     React.useEffect(() => {
@@ -77,6 +94,10 @@ const SettingsProvider = ({ children }) => {
                 //BL
                 setBLDiscount(res.find(x => x.Code === 'bl_discount'));
                 setBLPayment(res.find(x => x.Code === 'bl_payment'));
+                //FA
+                setFactureDiscount(res.find(x => x.Code === 'fa_discount'));
+                setFacturePayment(res.find(x => x.Code === 'fa_payment'));
+                setFactureCheque(res.find(x => x.Code === 'fa_cheque'));
             })
             .catch(err => console.error(err));
     }
@@ -97,7 +118,14 @@ const SettingsProvider = ({ children }) => {
             BLDiscount,
             setBLDiscount,
             BLPayment,
-            setBLPayment
+            setBLPayment,
+            //FA
+            factureDiscount,
+            setFactureDiscount,
+            facturePayment,
+            setFacturePayment,
+            factureCheque,
+            setFactureCheque
         }}>
             {children}
         </SettingsContext.Provider>)

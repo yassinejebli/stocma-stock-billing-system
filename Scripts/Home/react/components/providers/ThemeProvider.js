@@ -8,7 +8,8 @@ const theme = createMuiTheme({
         },
         secondary: {
             main: '#7290af',
-        }
+            light: '#FFFFFF'
+        },
     },
     status: {
         danger: '#F1F1F1',
@@ -23,6 +24,15 @@ const theme = createMuiTheme({
     //         }
     //     }
     //   },
+    overrides: {
+        MuiListItemText:{
+            root:{
+                '& .MuiTypography-body1':{
+                    fontSize: 14
+                }
+            }
+        }
+    }
 });
 
 const ThemeProvider = ({ children }) => (

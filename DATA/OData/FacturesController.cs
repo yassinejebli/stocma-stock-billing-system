@@ -17,18 +17,19 @@ namespace WebApplication1.DATA.OData
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
-        [EnableQuery(EnsureStableOrdering = false)]
+        [EnableQuery(EnsureStableOrdering = false, MaxExpansionDepth = 4)]
         public IQueryable<Facture> GetFactures()
         {
             return (IQueryable<Facture>)this.db.Factures.OrderByDescending(x => x.Date);
         }
 
-        [EnableQuery]
+        [EnableQuery(MaxExpansionDepth = 4)]
         public SingleResult<Facture> GetFacture([FromODataUri] Guid key)
         {
             return SingleResult.Create<Facture>(this.db.Factures.Where<Facture>((Expression<Func<Facture, bool>>)(facture => facture.Id == key)));
         }
 
+        [EnableQuery]
         public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Facture newFacture)
         {
             if (!this.ModelState.IsValid)
@@ -42,7 +43,11 @@ namespace WebApplication1.DATA.OData
             facture.Date = newFacture.Date;
             facture.Ref = newFacture.Ref;
             facture.Note = newFacture.Note;
-            var numBonGenerator = new DocNumberGenerator();
+            facture.IdTypePaiement = newFacture.IdTypePaiement;
+            facture.WithDiscount = newFacture.WithDiscount;
+            facture.Comment = newFacture.Comment;
+            facture.ClientName = newFacture.ClientName;
+           var numBonGenerator = new DocNumberGenerator();
 
             facture.NumBon = numBonGenerator.getNumDocByCompany(newFacture.Ref - 1, newFacture.Date);
 
@@ -53,18 +58,26 @@ namespace WebApplication1.DATA.OData
 
             var newBonLivraisonIDs = newFacture.BonLivraisons.Select(x => x.Id);
             var newOriginalBonLivraisons = db.BonLivraisons.Where(x => newBonLivraisonIDs.Contains(x.Id));
-            originalBonLivraisons.ForEach(x => x.IdFacture = newFacture.Id);
+            newOriginalBonLivraisons.ForEach(x => x.IdFacture = newFacture.Id);
 
             //------------------------Updating payment
 
             var payment = db.PaiementFactures.FirstOrDefault(x => x.IdFacture == facture.Id);
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb7";
 
-            //TODO: espece
-
+            
             var Total = newOriginalBonLivraisons
                     .SelectMany(x => x.BonLivraisonItems)
-                    .Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
+                    .Sum(x => ((x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f)) * (1 + (x.Article.TVA ?? 20) / 100));
+
+            //espece
+            var company = db.Companies.FirstOrDefault();
+            var ESPECE_PAYMENT_TYPE = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
+
+            if (company.UseVAT && newFacture?.IdTypePaiement == ESPECE_PAYMENT_TYPE)
+            {
+                Total *= (1 + 0.0025f);
+            }
 
             if (payment != null)
             {
@@ -95,7 +108,8 @@ namespace WebApplication1.DATA.OData
                     return (IHttpActionResult)this.NotFound();
                 throw;
             }
-            return (IHttpActionResult)this.Updated<Facture>(facture);
+            var factureWithItems = db.Factures.Where(x => x.Id == facture.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(factureWithItems));
         }
 
         [EnableQuery]
@@ -114,12 +128,20 @@ namespace WebApplication1.DATA.OData
             var lastRef = lastDoc != null ? lastDoc.Ref : 0;
             facture.Ref = lastRef + 1;
             facture.NumBon = numBonGenerator.getNumDocByCompany(lastRef, facture.Date);
-            facture.ClientName = db.Clients.Find(facture.IdClient).Name;
             //-----------------------------------------------Updating payment
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb7";
             var Total = originalBonLivraisons
                     .SelectMany(x => x.BonLivraisonItems)
-                    .Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
+                    .Sum(x => ((x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f)) * (1 + (x.Article.TVA ?? 20) / 100));
+
+            //espece
+            var company = db.Companies.FirstOrDefault();
+            var ESPECE_PAYMENT_TYPE = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
+
+            if (company.UseVAT && facture?.IdTypePaiement == ESPECE_PAYMENT_TYPE)
+            {
+                Total *= (1 + 0.0025f);
+            }
 
             PaiementFacture paiement = new PaiementFacture()
             {

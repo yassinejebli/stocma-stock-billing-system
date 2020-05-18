@@ -23,6 +23,8 @@ import Devis from './components/views/devis/Devis';
 import DevisList from './components/views/devis/DevisList';
 import Facture from './components/views/facture-client/FactureClient';
 import SettingsProvider from './components/providers/SettingsProvider';
+import FactureList from './components/views/facture-client/FactureClientList';
+import SideMenu from './components/elements/layout/SideMenu';
 
 const App = () => {
     return (
@@ -33,21 +35,23 @@ const App = () => {
                         <TitleProvider>
                             <Router>
                                 <ModalProvider rootComponent={TransitionGroup}>
-                                    <TopBar />
                                     <Switch>
-                                        <Route exact path="/" component={Dashboard} />
-                                        <Route path="/Devis" component={Devis} />
-                                        <Route path="/Facture" component={Facture} />
-                                        <Route path="/BonReception" component={BonReception} />
-                                        <Route path="/BonLivraison" component={BonLivraison} />
-                                        <Route path="/BonLivraisonList" component={BonLivraisonList} />
-                                        <Route path="/BonReceptionList" component={BonReceptionList} />
-                                        <Route path="/DevisList" component={DevisList} />
-                                        <Route path="/ArticleList" component={ArticleList} />
-                                        <Route path="/SiteList" component={SiteList} />
-                                        <Route path="/ArticlesMarginList" component={ArticlesMarginList} />
-                                        <Route path="/ClientList" component={ClientList} />
-                                        <Route path="/SupplierList" component={SupplierList} />
+                                        <SideMenu onClose={() => null}>
+                                            <Route exact path="/" component={Dashboard} />
+                                            <Route path="/Devis" component={Devis} />
+                                            <Route path="/Facture" component={Facture} />
+                                            <Route path="/BonReception" component={BonReception} />
+                                            <Route path="/BonLivraison" component={BonLivraison} />
+                                            <Route path="/BonLivraisonList" component={BonLivraisonList} />
+                                            <Route path="/FactureList" component={FactureList} />
+                                            <Route path="/BonReceptionList" component={BonReceptionList} />
+                                            <Route path="/DevisList" component={DevisList} />
+                                            <Route path="/ArticleList" component={ArticleList} />
+                                            <Route path="/SiteList" component={SiteList} />
+                                            <Route path="/ArticlesMarginList" component={ArticlesMarginList} />
+                                            <Route path="/ClientList" component={ClientList} />
+                                            <Route path="/SupplierList" component={SupplierList} />
+                                        </SideMenu>
                                     </Switch>
                                     {/* <NavigationMenu /> */}
                                 </ModalProvider>

@@ -20,11 +20,17 @@ import ArticlesStatistics from '../../elements/statistics/ArticlesStatistics'
 import { useSite } from '../../providers/SiteProvider'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import { useHistory } from 'react-router-dom'
+import AddIcon from '@material-ui/icons/Add';
 
 const TABLE = 'ArticleSites';
 const EXPAND = ['Article'];
 
 const ArticleList = () => {
+    const [showArticleModal, hideArticleModal] = useModal(({ in: open, onExited }) => (
+        <SideDialogWrapper open={open} onExited={onExited} onClose={hideArticleModal}>
+            <ArticleForm />
+        </SideDialogWrapper>
+    ));
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -147,13 +153,23 @@ const ArticleList = () => {
                 <ArticlesStatistics />
             </Box>
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+                <Box mr={2}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<LocalAtmIcon />}
+                        onClick={() => history.push('/ArticlesMarginList')}
+                    >
+                        Marge bénéficiaire par article
+                    </Button>
+                </Box>
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={<LocalAtmIcon/>}
-                    onClick={()=>history.push('/ArticlesMarginList')}
+                    startIcon={<AddIcon />}
+                    onClick={showArticleModal}
                 >
-                    Marge bénéficiaire par article
+                    Nouvel article
                 </Button>
             </Box>
             <Paper>
@@ -171,7 +187,7 @@ const ArticleList = () => {
                 </Box>
                 <Box mt={2}>
                     <FormControlLabel
-                        control={<Checkbox checked={showDisabledArticles} color="primary" onChange={event=>setShowDisabledArticles(event.target.checked)} />}
+                        control={<Checkbox checked={showDisabledArticles} color="primary" onChange={event => setShowDisabledArticles(event.target.checked)} />}
                         label="Afficher les articles désactivés"
                     />
                 </Box>

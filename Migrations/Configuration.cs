@@ -159,7 +159,6 @@ namespace WebApplication1.Migrations
             {
                 context.Settings.Add(new Setting
                 {
-                    Id = 1,
                     Code = "devis_discount",
                     Name = "Remise"
                 });
@@ -226,7 +225,6 @@ namespace WebApplication1.Migrations
             {
                 context.Settings.Add(new Setting
                 {
-                    Id = 2,
                     Code = "bl_discount",
                     Name = "Remise"
                 });
@@ -242,6 +240,48 @@ namespace WebApplication1.Migrations
                 {
                     Code = "bl_payment",
                     Name = "Mode de paiement"
+                });
+            }
+
+            //FA client
+            var factureDiscount = context.Settings.Where(x => x.Code == "fa_discount")
+                    .FirstOrDefault();
+
+            if (
+                factureDiscount == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "fa_discount",
+                    Name = "Remise"
+                });
+            }
+
+            var facturePayment = context.Settings.Where(x => x.Code == "fa_payment")
+                    .FirstOrDefault();
+
+            if (
+                facturePayment == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "fa_payment",
+                    Name = "Mode de paiement",
+                    Enabled = true
+                });
+            }
+
+            var factureCheque = context.Settings.Where(x => x.Code == "fa_cheque")
+                   .FirstOrDefault();
+
+            if (
+                facturePayment == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "fa_cheque",
+                    Name = "Numéro de chèque/effet",
+                    Enabled = true
                 });
             }
             ///////////////////////////////////////////////// end Settings

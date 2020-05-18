@@ -20,7 +20,8 @@ const useStyles = makeStyles(theme => ({
         maxWidth: 400
     },
     title: {
-        fontWeight: 500
+        fontWeight: 500,
+        fontSize: 16
     },
     description: {
         marginTop: 6,

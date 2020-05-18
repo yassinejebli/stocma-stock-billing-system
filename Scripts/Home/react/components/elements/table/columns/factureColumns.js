@@ -8,7 +8,7 @@ import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import { format } from 'date-fns';
 import { Box } from '@material-ui/core';
 
-export const factureColumns = () => ([
+export const factureColumns = ({ factureDiscount }) => ([
     {
         Header: 'Article',
         accessor: 'Article.Designation',
@@ -19,6 +19,7 @@ export const factureColumns = () => ([
         Header: 'BL N#',
         accessor: 'Description',
         type: inputTypes.text.description,
+        width: 180,
     },
     {
         Header: 'Qte.',
@@ -32,17 +33,31 @@ export const factureColumns = () => ([
         type: inputTypes.number.description,
         align: 'right'
     },
+    ((factureDiscount?.Enabled) && {
+        Header: 'Remise',
+        accessor: 'Discount',
+        type: inputTypes.text.description,
+        align: 'right'
+    }),
     {
         id: 'TotalHT',
         Header: 'Montant',
         accessor: (props) => {
-            console.log(props.Pu, props.Qte);
-            return formatMoney(props.Pu * props.Qte);
+            let discount = 0;
+            const total = props.Pu * props.Qte;
+            if (props.Discount) {
+                if (!isNaN(props.Discount))
+                    discount = props.Discount
+                else if (/^\d+(\.\d+)?%$/.test(props.Discount)) {
+                    discount = total * parseFloat(props.Discount) / 100;
+                }
+            }
+            return formatMoney(total - discount);
         },
         type: inputTypes.text.description,
         align: 'right'
     },
-])
+].filter(x => x))
 
 
 
@@ -74,9 +89,18 @@ export const factureListColumns = () => ([
         type: inputTypes.text.description,
         width: 30,
         accessor: (props) => {
-            const total = props.FactureItems.reduce((sum, curr) => (
-                sum += curr.Pu * curr.Qte
-            ), 0);
+            const total = [].concat(...props.BonLivraisons.map(x => x.BonLivraisonItems.map(y => y)))
+                .reduce((sum, curr) => {
+                    sum += curr.Pu * curr.Qte;
+                    if (curr.Discount) {
+                        if (!curr.PercentageDiscount)
+                            sum -= Number(curr.Discount)
+                        else
+                            sum -= sum * parseFloat(curr.Discount) / 100;
+                    }
+                    return sum;
+                }, 0);
+
             return formatMoney(total);
         },
         align: 'right'

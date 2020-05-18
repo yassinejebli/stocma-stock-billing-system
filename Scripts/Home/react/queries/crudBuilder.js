@@ -25,7 +25,10 @@ export const saveData = async (table, data, expand) => {
 }
 
 export const updateData = async (table, data, id, expand) => {
-    const URL = ODATA_URL + table + `(${id})` + (expand?`?$expand=${expand}`:'');
+    const allParams = buildQuery({ 
+        expand: expand?.join(',')
+    })
+    const URL = ODATA_URL + table + `(${id})` + allParams;
 
     try {
         const res = await (await fetch(URL, {

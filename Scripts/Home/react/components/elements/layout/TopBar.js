@@ -10,13 +10,13 @@ import { useModal } from 'react-modal-hook';
 import SideWrapperDialog from '../dialogs/SideWrapperDialog';
 import { useTitle } from '../../providers/TitleProvider';
 import SiteSelect from '../site-select/SiteSelect';
-import SideMenu from './SideMenu';
+import { drawerWidth } from './SideMenu';
 import SettingsDialog from '../dialogs/SettingsDialog';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
-        marginBottom: 26
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex'
     },
     title: {
-        alignSelf: 'center'
+        alignSelf: 'center',
+        fontSize: 16
     }
 }));
 
@@ -39,9 +40,8 @@ export default function TopBar() {
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideWrapperDialog open={open} onExited={onExited} onClose={hideModal} />
     ));
-    const [showModalSideMenu, hideModalSideMenu] = useModal(({ in: open, onExited }) => (
-        <SideMenu open={open} onExited={onExited} onClose={hideModalSideMenu} />
-    ));
+    // const [showModalSideMenu, hideModalSideMenu] = useModal(({ in: open, onExited }) => (
+    // ));
     const [showSettingSideMenu, hideSettingSideMenu] = useModal(({ in: open, onExited }) => (
         <SettingsDialog open={open} onExited={onExited} onClose={hideSettingSideMenu} />
     ));
@@ -55,7 +55,7 @@ export default function TopBar() {
                             edge="start"
                             className={classes.menuButton}
                             color="inherit"
-                            onClick={showModalSideMenu}
+                            onClick={null}
                         >
                             <MenuIcon />
                         </IconButton>

@@ -45,7 +45,6 @@ const SiteSelect = () => {
     setSite(sites.find(x => x.Id === value));
   }
 
-  console.log({ hasMoreThanOneSite });
 
   if (!hasMoreThanOneSite) return null;
 

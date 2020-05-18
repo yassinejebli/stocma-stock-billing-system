@@ -11,13 +11,21 @@ import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog'
 import FournisseurForm from '../../elements/forms/FournisseurForm'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined';
-import { TextField } from '@material-ui/core'
+import { TextField, Button } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import { fournisseurColumns } from '../../elements/table/columns/fournisseurColumns'
+import { useSite } from '../../providers/SiteProvider'
+import AddIcon from '@material-ui/icons/Add';
 
 const TABLE = 'Fournisseurs';
 
 const FournisseurList = () => {
+    const [showFournisseurModal, hideFournisseurModal] = useModal(({ in: open, onExited }) => (
+        <SideDialogWrapper open={open} onExited={onExited} onClose={hideFournisseurModal}>
+            <FournisseurForm />
+        </SideDialogWrapper>
+    ));
+    const { useVAT } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -45,8 +53,8 @@ const FournisseurList = () => {
     const [pageCount, setTotalCount] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => fournisseurColumns(),
-        []
+        () => fournisseurColumns({ useVAT: useVAT }),
+        [useVAT]
     )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideModal}>
@@ -112,6 +120,16 @@ const FournisseurList = () => {
     return (
         <>
             <Loader loading={loading} />
+            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    onClick={showFournisseurModal}
+                >
+                    Nouveau fournisseur
+                </Button>
+            </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <TitleIcon noBorder title="Liste des fournisseurs" Icon={PeopleAltOutlinedIcon} />

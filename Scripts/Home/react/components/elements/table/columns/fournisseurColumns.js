@@ -5,9 +5,8 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { Box } from '@material-ui/core';
 import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
-import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
 
-export const fournisseurColumns = () => ([
+export const fournisseurColumns = ({useVAT}) => ([
     {
         Header: 'Fournisseur',
         accessor: 'Name',
@@ -36,7 +35,9 @@ export const fournisseurColumns = () => ([
         id: 'Solde',
         Header: 'Solde',
         accessor: (props) => {
-            return formatMoney(props.Solde || 0)
+            const solde = useVAT ? props.SoldeFacture : props.Solde;
+            console.log('props.SoldeFacture', useVAT)
+            return formatMoney(solde || 0)
         },
         type: inputTypes.text.description,
         align: 'right'

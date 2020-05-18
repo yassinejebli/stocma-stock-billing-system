@@ -378,6 +378,12 @@
       <DependentUpon>EtatPaiementSBCIT.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CrystalReports\SBCIT\FactureSBCIT_.cs">
+      <DependentUpon>FactureSBCIT_.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\SHMZ\BonAvoirCSHMZ.cs">
       <DependentUpon>BonAvoirCSHMZ.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -828,11 +834,17 @@
       <DependentUpon>BonCommandeTSR.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\TSR\BonLivraison.cs">
+    <Compile Include="CrystalReports\TSR\BonLivraison_.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BonLivraison.rpt</DependentUpon>
+      <DependentUpon>BonLivraison_.rpt</DependentUpon>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CrystalReports\TSR\BonLivraison.cs">
+      <DependentUpon>BonLivraison.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="CrystalReports\TSR\DevisTSR.cs">
       <AutoGen>True</AutoGen>
@@ -1183,6 +1195,10 @@
     <Compile Include="Migrations\202005141334175_BL_TypePaiement.designer.cs">
       <DependentUpon>202005141334175_BL_TypePaiement.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005152008014_FA_TypePaiement.cs" />
+    <Compile Include="Migrations\202005152008014_FA_TypePaiement.designer.cs">
+      <DependentUpon>202005152008014_FA_TypePaiement.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FileManagerModel.cs" />
@@ -1192,7 +1208,9 @@
     <Compile Include="Managers\PaymentManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="DashboardStatisticsController.cs" />
     <Compile Include="StatisticsController.cs" />
+    <Compile Include="Statistics\DashboardStatistics.cs" />
     <Compile Include="StatistiqueController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1264,6 +1282,7 @@
     <Content Include="Content\images\img6.jpg" />
     <Content Include="Content\images\img7.jpg" />
     <Content Include="Content\images\img8.jpg" />
+    <Content Include="Content\images\inventory.svg" />
     <Content Include="Content\images\login-key-icon.png" />
     <Content Include="Content\images\login-logo.png" />
     <Content Include="Content\images\materialize-logo.png" />
@@ -3418,6 +3437,10 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>EtatPaiementSBCIT.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\SBCIT\FactureSBCIT_.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FactureSBCIT_.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\SHMZ\BonAvoirCSHMZ.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirCSHMZ.cs</LastGenOutput>
@@ -3718,6 +3741,10 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeTSR.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\TSR\BonLivraison_.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>BonLivraison_.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\TSR\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
@@ -3894,6 +3921,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005141334175_BL_TypePaiement.resx">
       <DependentUpon>202005141334175_BL_TypePaiement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005152008014_FA_TypePaiement.resx">
+      <DependentUpon>202005152008014_FA_TypePaiement.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

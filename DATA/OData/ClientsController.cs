@@ -41,10 +41,10 @@ namespace WebApplication1.DATA.OData
         private MySaniSoftContext db = new MySaniSoftContext();
 
         // GET: odata/Clients
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<Client> GetClients()
         {
-            return db.Clients;
+            return db.Clients.OrderBy(x=>new { x.Disabled, x.Name });
         }
 
         // GET: odata/Clients(5)

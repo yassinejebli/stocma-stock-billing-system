@@ -34,7 +34,13 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
         BLDiscount,
         setBLDiscount,
         BLPayment,
-        setBLPayment
+        setBLPayment,
+        factureDiscount,
+        setFactureDiscount,
+        facturePayment,
+        setFacturePayment,
+        factureCheque,
+        setFactureCheque
     } = useSettings();
     const classes = useStyles();
 
@@ -48,7 +54,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                         <FormControlLabel
                             control={<Switch
                                 checked={devisDiscount?.Enabled}
-                                onChange={(_, checked) => setDevisDiscount(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                                onChange={(_, checked) => setDevisDiscount(_setting => ({ ..._setting, Enabled: checked }))} />}
                             label="Remise"
                         />
                     </Box>
@@ -56,7 +62,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                         <FormControlLabel
                             control={<Switch
                                 checked={devisValidity?.Enabled}
-                                onChange={(_, checked) => setDevisValidity(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                                onChange={(_, checked) => setDevisValidity(_setting => ({ ..._setting, Enabled: checked }))} />}
                             label="Validité de l'offre"
                         />
                     </Box>
@@ -64,7 +70,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                         <FormControlLabel
                             control={<Switch
                                 checked={devisPayment?.Enabled}
-                                onChange={(_, checked) => setDevisPayment(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                                onChange={(_, checked) => setDevisPayment(_setting => ({ ..._setting, Enabled: checked }))} />}
                             label="Mode de paiement"
                         />
                     </Box>
@@ -72,7 +78,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                         <FormControlLabel
                             control={<Switch
                                 checked={devisTransport?.Enabled}
-                                onChange={(_, checked) => setDevisTransport(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                                onChange={(_, checked) => setDevisTransport(_setting => ({ ..._setting, Enabled: checked }))} />}
                             label="Transport / Expédition"
                         />
                     </Box>
@@ -80,7 +86,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                         <FormControlLabel
                             control={<Switch
                                 checked={devisDeliveryTime?.Enabled}
-                                onChange={(_, checked) => setDevisDeliveryTime(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                                onChange={(_, checked) => setDevisDeliveryTime(_setting => ({ ..._setting, Enabled: checked }))} />}
                             label="Délai de livraision"
                         />
                     </Box>
@@ -91,7 +97,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                         <FormControlLabel
                             control={<Switch
                                 checked={BLDiscount?.Enabled}
-                                onChange={(_, checked) => setBLDiscount(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                                onChange={(_, checked) => setBLDiscount(_setting => ({ ..._setting, Enabled: checked }))} />}
                             label="Remise"
                         />
                     </Box>
@@ -99,8 +105,35 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                         <FormControlLabel
                             control={<Switch
                                 checked={BLPayment?.Enabled}
-                                onChange={(_, checked) => setBLPayment(_devisSetting => ({ ..._devisSetting, Enabled: checked }))} />}
+                                onChange={(_, checked) => setBLPayment(_setting => ({ ..._setting, Enabled: checked }))} />}
                             label="Mode de paiement"
+                        />
+                    </Box>
+                </Box>
+                <Box flexDirection="column" display="flex" mt={4}>
+                    <TitleIcon title="Facture" Icon={DescriptionOutlinedIcon} />
+                    <Box mt={2}>
+                        <FormControlLabel
+                            control={<Switch
+                                checked={factureDiscount?.Enabled}
+                                onChange={(_, checked) => setFactureDiscount(_setting => ({ ..._setting, Enabled: checked }))} />}
+                            label="Remise"
+                        />
+                    </Box>
+                    <Box mt={2}>
+                        <FormControlLabel
+                            control={<Switch
+                                checked={facturePayment?.Enabled}
+                                onChange={(_, checked) => setFacturePayment(_setting => ({ ..._setting, Enabled: checked }))} />}
+                            label="Mode de paiement"
+                        />
+                    </Box>
+                    <Box mt={2}>
+                        <FormControlLabel
+                            control={<Switch
+                                checked={factureCheque?.Enabled}
+                                onChange={(_, checked) => setFactureCheque(_setting => ({ ..._setting, Enabled: checked }))} />}
+                            label="Numéro de chèque/effet"
                         />
                     </Box>
                 </Box>

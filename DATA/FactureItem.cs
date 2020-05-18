@@ -28,6 +28,9 @@ namespace WebApplication1.DATA
 
         public string NumBC { get; set; }
 
+        public float? Discount { get; set; } = 0;
+
+        public bool PercentageDiscount { get; set; } = false;
         public string NumBL { get; set; }
         public string Description { get; set; }
 

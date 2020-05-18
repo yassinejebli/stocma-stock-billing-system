@@ -26,13 +26,13 @@ const useStyles = makeStyles(theme => ({
     },
     avatar: {
         backgroundColor: 'orange',
-        padding: 32,
+        padding: 48,
         position: 'relative',
         alignSelf: 'center'
     },
     avatarTotalStock: {
         backgroundColor: theme.palette.primary.main,
-        padding: 32,
+        padding: 48,
         position: 'relative',
         alignSelf: 'center'
     },

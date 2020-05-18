@@ -139,8 +139,6 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess }) => {
             _errors['dueDate'] = 'Ce champs est obligatoire.'
         if (!formState.comment && formState.type?.isBankRelatedItem)
             _errors['comment'] = 'Ce champs est obligatoire.'
-        if (!formState.comment && formState.type?.isBankRelatedItem)
-            _errors['fournisseur'] = 'Ce champs est obligatoire.'
 
         setFormErrors(_errors);
         return Object.keys(_errors).length === 0;

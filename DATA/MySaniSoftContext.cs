@@ -304,6 +304,11 @@ namespace WebApplication1.DATA
             modelBuilder.Entity<Facture>().HasKey<Guid>((Expression<Func<Facture, Guid>>)(t => t.Id));
 
             modelBuilder.Entity<Facture>()
+               .HasOptional(t => t.TypePaiement)
+               .WithMany(t => t.Factures)
+               .HasForeignKey(d => d.IdTypePaiement);
+
+            modelBuilder.Entity<Facture>()
                 .HasOptional(t => t.Site)
                 .WithMany(t => t.Factures)
                 .HasForeignKey(d => d.IdSite);

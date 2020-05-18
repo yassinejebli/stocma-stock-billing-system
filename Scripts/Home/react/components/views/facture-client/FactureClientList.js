@@ -17,7 +17,7 @@ import { factureListColumns } from '../../elements/table/columns/factureColumns'
 import PrintFacture from '../../elements/dialogs/documents-print/PrintFacture'
 
 const DOCUMENT = 'Factures'
-const EXPAND = ['Client', 'FactureItems']
+const EXPAND = ['Client', 'BonLivraisons/BonLivraisonItems/Article']
 
 const FactureList = () => {
     const { siteId } = useSite();
@@ -130,7 +130,7 @@ return (
         <Loader loading={loading} />
         <Paper>
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <TitleIcon noBorder title="Liste des bons de livraison" Icon={DescriptionOutlinedIcon} />
+                <TitleIcon noBorder title="Liste des factures (client)" Icon={DescriptionOutlinedIcon} />
                 <TextField
                     value={searchText}
                     onChange={({ target: { value } }) => {

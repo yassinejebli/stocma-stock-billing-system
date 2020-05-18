@@ -38,6 +38,13 @@ namespace WebApplication1.DATA
         {
             get { return (PaiementFs != null) ? PaiementFs.Sum(x => x.Debit - x.Credit) : 0; }
         }
+
+        //TODO
+        /*[NotMapped]
+        public float SoldeFacture
+        {
+            get { return (PaiementFactures != null) ? PaiementFactures.Sum(x => x.Debit - x.Credit) : 0; }
+        }*/
         public virtual ICollection<BonReception> BonReceptions { get; set; }
 
         public virtual ICollection<BonAvoir> BonAvoirs { get; set; }

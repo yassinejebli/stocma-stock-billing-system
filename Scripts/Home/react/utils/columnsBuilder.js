@@ -100,7 +100,7 @@ export const getBonLivraisonColumns = ({BLDiscount}) => ([
 ].filter(x=>x))
 
 
-export const getClientColumns = () => ([
+export const getClientColumns = ({useVAT}) => ([
     {
         Header: 'Client',
         accessor: 'Name',
@@ -129,7 +129,8 @@ export const getClientColumns = () => ([
         id: 'Solde',
         Header: 'Solde',
         accessor: (props) => {
-            return formatMoney(props.Solde || 0)
+            const solde = useVAT ? props.SoldeFacture : props.Solde;
+            return formatMoney(solde || 0)
         },
         type: inputTypes.text.description,
         align: 'right'

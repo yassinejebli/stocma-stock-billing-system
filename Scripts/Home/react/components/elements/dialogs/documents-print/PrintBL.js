@@ -46,7 +46,7 @@ const PrintBL = ({document, onClose, onExited, open}) => {
                                     control={<Switch
                                         checked={showBalance}
                                         onChange={(_, checked) => setShowBalance(checked)} />}
-                                    label="Afficher solde"
+                                    label="Afficher le solde"
                                 />
                                 <FormControlLabel
                                     control={<Switch

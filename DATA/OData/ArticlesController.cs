@@ -98,7 +98,8 @@ namespace WebApplication1.DATA.OData
                     QteStock = site.Id != IdSite ? 0 : QteStock
                 });
             }
-            article.Ref = String.Format("A{0:00000}", article.RefAuto);
+            if(article.Ref == null || article.Ref == "")
+                article.Ref = String.Format("A{0:00000}", article.RefAuto);
             db.Articles.Add(article);
 
             try

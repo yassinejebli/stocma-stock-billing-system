@@ -16,6 +16,7 @@ namespace WebApplication1.Controllers.Print
 
         public ActionResult Index(Guid IdFacture, bool? cachet = false)
         {
+            var ESPECE_PAYMENT_TYPE = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
             AmountTextGenerator atg = new AmountTextGenerator();
             string totalMots = "";
             var company = StatistiqueController.getCompany();
@@ -31,8 +32,7 @@ namespace WebApplication1.Controllers.Print
 
             if (!useVAT)
             {
-                reportDocument.SetDataSource(
-                FactureById.FactureItems.Select(x => new
+                var facturePrintData = FactureById.FactureItems.Select(x => new
                 {
                     NumBon = x.Facture.NumBon,
                     Date = x.Facture.Date,
@@ -45,23 +45,25 @@ namespace WebApplication1.Controllers.Print
                     Unite = x.Article.Unite,
                     Adresse = x.Facture.Client.Adresse,
                     ClientName = x.Facture.ClientName,
-                    TypeReglement = x.Facture.TypeReglement,
+                    TypeReglement = x.Facture.TypePaiement?.Name,
                     Comment = x.Facture.Comment,
                     NumBL = "",
                     NumBC = "",
-                    ICE = x.Facture.Client.ICE
-                }).ToList()
-             );
+                    ICE = x.Facture.Client.ICE,
+                    TotalHT = x.TotalHT,
+                    CodeClient = x.Facture.Client.Code,
+                    Discount = x.Discount + (x.PercentageDiscount ? "%" : ""),
+                    Total = (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f),
+                }).ToList();
+                reportDocument.SetDataSource(facturePrintData);
 
-                Decimal total = (Decimal)FactureById.BonLivraisons
-                    .SelectMany(x => x.BonLivraisonItems)
-                    .Sum(x => x.Qte * x.Pu);
-                totalMots = atg.DecimalToWords(total);
+                float total = facturePrintData.Sum(x => x.Total * (1 + x.TVA / 100));
+
+                totalMots = atg.DecimalToWords(Math.Round((Decimal)total, 2, MidpointRounding.AwayFromZero));
             }
             else
             {
-                reportDocument.SetDataSource(
-                FactureById.BonLivraisons.SelectMany(x => x.BonLivraisonItems).Select(x => new
+                var facturePrintData = FactureById.BonLivraisons.SelectMany(x => x.BonLivraisonItems).Select(x => new
                 {
                     NumBon = x.BonLivraison.Facture.NumBon,
                     Date = x.BonLivraison.Facture.Date,
@@ -74,18 +76,45 @@ namespace WebApplication1.Controllers.Print
                     Unite = x.Article.Unite,
                     Adresse = x.BonLivraison.Facture.Client.Adresse,
                     ClientName = x.BonLivraison.Facture.ClientName,
-                    TypeReglement = x.BonLivraison.Facture.TypeReglement,
+                    TypeReglement = x.BonLivraison.Facture.TypePaiement?.Name,
                     Comment = x.BonLivraison.Facture.Comment,
                     NumBL = x.BonLivraison.NumBon,
-                    NumBC = "",
-                    ICE = x.BonLivraison.Facture.Client.ICE
-                }).ToList()
-             );
+                    NumBC = x.NumBC,
+                    ICE = x.BonLivraison.Facture.Client.ICE,
+                    TotalHT = x.TotalHT,
+                    CodeClient = x.BonLivraison.Client.Code,
+                    Discount = x.Discount + (x.PercentageDiscount ? "%" : ""),
+                    Total = (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f),
+                    Index = x.Index ?? 0
+                }).ToList();
+                reportDocument.SetDataSource(facturePrintData);
 
-                Decimal total = (Decimal)FactureById.BonLivraisons
-                    .SelectMany(x => x.BonLivraisonItems)
-                    .Sum(x => x.Qte * (x.Pu + (x.Pu * x.Article.TVA / 100)));
-                totalMots = atg.DecimalToWords(total);
+                float total = facturePrintData.Sum(x => x.Total * (1 + x.TVA / 100));
+
+                if (FactureById.IdTypePaiement == ESPECE_PAYMENT_TYPE)
+                {
+                    total *= (1 + 0.0025f);
+                }
+                totalMots = atg.DecimalToWords(Math.Round((Decimal)total, 2, MidpointRounding.AwayFromZero));
+
+                // TVA
+                var baseTVA0 = facturePrintData.Where(x => x.TVA == 0f).Sum(x => x.Total);
+                var baseTVA7 = facturePrintData.Where(x => x.TVA == 7f).Sum(x => x.Total);
+                var baseTVA10 = facturePrintData.Where(x => x.TVA == 10f).Sum(x => x.Total);
+                var baseTVA14 = facturePrintData.Where(x => x.TVA == 14f).Sum(x => x.Total);
+                var baseTVA20 = facturePrintData.Where(x => x.TVA == 20f).Sum(x => x.Total);
+
+                if (reportDocument.ParameterFields["BaseTVA0"] != null)
+                    reportDocument.SetParameterValue("BaseTVA0", baseTVA0);
+                if (reportDocument.ParameterFields["BaseTVA7"] != null)
+                    reportDocument.SetParameterValue("BaseTVA7", baseTVA7);
+                if (reportDocument.ParameterFields["BaseTVA10"] != null)
+                    reportDocument.SetParameterValue("BaseTVA10", baseTVA10);
+                if (reportDocument.ParameterFields["BaseTVA14"] != null)
+                    reportDocument.SetParameterValue("BaseTVA14", baseTVA14);
+                if (reportDocument.ParameterFields["BaseTVA20"] != null)
+                    reportDocument.SetParameterValue("BaseTVA20", baseTVA20);
+
             }
 
 
@@ -93,6 +122,11 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("totalMots", totalMots);
             if (reportDocument.ParameterFields["Cachet"] != null)
                 reportDocument.SetParameterValue("Cachet", cachet);
+            if (reportDocument.ParameterFields["ShowDiscount"] != null)
+                reportDocument.SetParameterValue("ShowDiscount", FactureById.WithDiscount);
+            if (reportDocument.ParameterFields["IsEspece"] != null)
+                reportDocument.SetParameterValue("IsEspece", FactureById.IdTypePaiement.HasValue ? FactureById.IdTypePaiement == ESPECE_PAYMENT_TYPE : false);
+
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition

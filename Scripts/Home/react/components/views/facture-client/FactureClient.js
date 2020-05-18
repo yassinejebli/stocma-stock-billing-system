@@ -20,6 +20,9 @@ import { useSite } from '../../providers/SiteProvider'
 import { factureColumns } from '../../elements/table/columns/factureColumns'
 import PrintFacture from '../../elements/dialogs/documents-print/PrintFacture'
 import BonLivraisonAutocomplete from '../../elements/bon-livraison-autocomplete/BonLivraisonAutocomplete'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import { paymentMethods } from '../devis/Devis'
+import { useSettings } from '../../providers/SettingsProvider'
 
 const DOCUMENT = 'Factures'
 const DOCUMENT_ITEMS = 'FactureItems'
@@ -27,7 +30,15 @@ const DOCUMENT_OWNER = 'Client'
 
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
+const ESPECE_PAYMENT_TYPE = '399d159e-9ce0-4fcc-957a-08a65bbeecb2';
+
 const Facture = () => {
+    const {
+        factureDiscount,
+        setFactureDiscount,
+        facturePayment,
+        factureCheque
+    } = useSettings();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -37,9 +48,12 @@ const Facture = () => {
     const [client, setClient] = React.useState(null);
     const [date, setDate] = React.useState(new Date());
     const [note, setNote] = React.useState('');
+    const [chequeNumber, setChequeNumber] = React.useState('');
+    const [clientName, setClientName] = React.useState('');
     const [errors, setErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
+    const [paymentType, setPaymentType] = React.useState(null);
     const [selectedBonLivraisons, setSelectedBonLivraisons] = React.useState([]);
     const location = useLocation();
     const FactureId = qs.parse(location.search, { ignoreQueryPrefix: true }).FactureId;
@@ -48,14 +62,24 @@ const Facture = () => {
         Article: y.Article,
         Qte: y.Qte,
         Pu: y.Pu,
-        Description: 'BL ' + x.NumBon
+        Description: 'BL ' + x.NumBon,
+        Discount: y.Discount ? y.Discount + (y.PercentageDiscount ? '%' : '') : ''
     }))));
-
-    console.log({ data });
+    const discount = data.reduce((sum, curr) => {
+        const total = curr.Pu * curr.Qte;
+        if (curr.Discount) {
+            if (!isNaN(curr.Discount))
+                sum += Number(curr.Discount)
+            else if (/^\d+(\.\d+)?%$/.test(curr.Discount)) {
+                sum += total * parseFloat(curr.Discount) / 100;
+            }
+        }
+        return sum;
+    }, 0);
 
     const columns = React.useMemo(
-        () => factureColumns(),
-        []
+        () => factureColumns({ factureDiscount }),
+        [factureDiscount]
     )
     const [skipPageReset, setSkipPageReset] = React.useState(false);
     const total = data.reduce((sum, curr) => (
@@ -82,12 +106,16 @@ const Facture = () => {
         setTitle('Facture')
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, FactureId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
+            getSingleData(DOCUMENT, FactureId, [DOCUMENT_OWNER, 'BonLivraisons/BonLivraisonItems/Article'])
                 .then(response => {
+                    console.log({ response })
                     setClient(response.Client);
                     setDate(response.Date);
                     setNote(response.Note);
+                    setClientName(response.ClientName);
+                    setSelectedBonLivraisons(response.BonLivraisons);
                     setNumDoc(response.NumBon);
+                    setPaymentType(response.TypePaiement);
                     setRef(response.Ref);
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
@@ -159,8 +187,12 @@ const Facture = () => {
             Note: note,
             NumBon: numDoc,
             Ref: ref,
-            BonLivraisons: selectedBonLivraisons.map(x=>{
-                const {BonLivraisonItems,...bonLivraison} = x;
+            Comment: chequeNumber,
+            WithDiscount: discount > 0,
+            IdTypePaiement: paymentType?.Id,
+            ClientName: clientName,
+            BonLivraisons: selectedBonLivraisons.map(x => {
+                const { BonLivraisonItems, ...bonLivraison } = x;
                 return bonLivraison;
             }),
             FactureItems: data.filter(x => x.Article).map(d => ({
@@ -198,8 +230,8 @@ const Facture = () => {
         setClient(null);
         setNote('');
         setDate(new Date());
+        setPaymentType(null);
         setSelectedBonLivraisons([]);
-        // setData([]);
         addNewRow();
     }
 
@@ -223,9 +255,17 @@ const Facture = () => {
                         value={client}
                         onChange={(_, value) => {
                             setClient(value);
+                            setClientName(value?.Name);
                             setSelectedBonLivraisons([]);
                         }}
                         errorText={errors.client}
+                    />
+                    <TextField
+                        value={clientName}
+                        onChange={({ target: { value } }) => setClientName(value)}
+                        variant="outlined"
+                        size="small"
+                        label="Nom du société"
                     />
                     {isEditMode &&
                         <><TextField
@@ -256,9 +296,46 @@ const Facture = () => {
                         clientId={client?.Id}
                         value={selectedBonLivraisons}
                         onChange={(_, value) => {
+                            if (!factureDiscount?.Enabled && value?.find(x => x.WithDiscount))
+                                setFactureDiscount(_setting => ({ ..._setting, Enabled: true }));
                             setSelectedBonLivraisons(value);
                         }}
                     />
+                </Box>
+                <Box mt={2} display="flex" flexWrap="wrap">
+                    {facturePayment?.Enabled && <Box mr={2} width={240}>
+                        <Autocomplete
+                            options={paymentMethods}
+                            disableClearable
+                            autoHighlight
+                            value={paymentType}
+                            onChange={(_, value) => setPaymentType(value)}
+                            size="small"
+                            getOptionLabel={(option) => option?.Name}
+                            renderInput={(params) => (
+                                <TextField
+                                    onChange={() => null}
+                                    {...params}
+                                    label="Mode de paiement"
+                                    variant="outlined"
+                                    inputProps={{
+                                        ...params.inputProps,
+                                        autoComplete: 'new-password',
+                                        type: 'search',
+                                        margin: 'normal'
+                                    }}
+                                />
+                            )}
+                        />
+                    </Box>}
+                    {factureCheque?.Enabled && paymentType?.isBankRelatedItem && <Box width={240}><TextField
+                        value={chequeNumber}
+                        onChange={({ target: { value } }) => setChequeNumber(value)}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                        label="Numéro de chèque/effet"
+                    /></Box>}
                 </Box>
                 <Box mt={4}>
                     <Table
@@ -273,7 +350,7 @@ const Facture = () => {
                     {errors.table && <Error>
                         {errors.table}
                     </Error>}
-                    <TotalText total={total} />
+                    <TotalText total={total} discount={discount} />
                     <Box width={340}>
                         <TextField
                             value={note}

@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import { useTitle } from '../../providers/TitleProvider';
+import ProfitAndExpenses from './ProfitAndExpenses';
 
 const Dashboard = () => {
     const { setTitle } = useTitle();
@@ -8,9 +9,11 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <>
-            Dashboard
-        </>
+        <div>
+            <div>
+                <ProfitAndExpenses />
+            </div>
+        </div>
     )
 }
 
