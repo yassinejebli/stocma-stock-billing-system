@@ -7,10 +7,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using WebApplication1.DATA;
+using WebGrease.Css.Extensions;
 
 namespace WebApplication1.Migrations
 {
@@ -23,6 +23,15 @@ namespace WebApplication1.Migrations
 
         protected override void Seed(MySaniSoftContext context)
         {
+
+            //TODO: remove asap
+            var bonLivraisonItems = context.BonLivraisonItems.Where(x => x.PA == 0);
+
+            if(bonLivraisonItems.Count() > 0)
+                bonLivraisonItems.ForEach(x => x.PA = x.Article.PA);
+
+
+
             //article sites
             if (context.Sites.FirstOrDefault() == null)
             {

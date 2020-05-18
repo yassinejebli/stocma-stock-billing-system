@@ -2,7 +2,10 @@ import React from 'react';
 import Chart from "react-apexcharts";
 import { makeStyles, Box, useTheme } from '@material-ui/core';
 import { useSite } from '../../providers/SiteProvider';
-import { getProfitAndTurnover } from '../../../queries/DashboardQueries';
+import { getDailyProfitAndTurnover } from '../../../queries/DashboardQueries';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { formatMoney } from '../../../utils/moneyUtils';
 
 const useStyles = makeStyles(theme => ({
     wrapper: {
@@ -22,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
     amount: {
         fontWeight: 600,
-        fontSize: 26,
+        fontSize: 22,
         fontFamily: 'Helvetica, Arial, sans-serif',
         textAnchor: 'start',
         dominantBaseline: 'auto',
@@ -35,9 +38,10 @@ const useStyles = makeStyles(theme => ({
 
 const ProfitAndExpenses = () => {
     const theme = useTheme();
-    const {siteId} = useSite();
+    const { siteId } = useSite();
     const classes = useStyles();
-    const [data, setData] = React.useState();
+    const [turnoverData, setTurnoverData] = React.useState();
+    const [profitData, setProfitData] = React.useState();
     const [totalProfit, setTotalProfit] = React.useState();
     const [totalTurnover, setTotalTurnover] = React.useState();
     React.useEffect(() => {
@@ -45,9 +49,14 @@ const ProfitAndExpenses = () => {
     }, []);
 
     const loadProfitAndExpenses = () => {
-        getProfitAndTurnover(siteId).then(res=>{
-            console.log({res})
-            setData({
+        const today = new Date();
+        getDailyProfitAndTurnover(siteId).then(res => {
+            const categories = res.map(x => {
+                const date = new Date(today.getFullYear(), today.getMonth(), x.day);
+                return format(date, 'EEEE dd MMM Y', { locale: fr });
+            });
+
+            const defaultOptions = {
                 options: {
                     stroke: {
                         show: true,
@@ -73,10 +82,10 @@ const ProfitAndExpenses = () => {
                         labels: {
                             show: false
                         },
+                        categories,
                         tooltip: {
                             enabled: false
                         },
-                        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
                         axisBorder: {
                             show: false
                         },
@@ -89,33 +98,56 @@ const ProfitAndExpenses = () => {
                             show: false
                         },
                     }
-                },
+                }
+            };
+
+            setTotalTurnover(res.reduce((sum, curr) => {
+                sum += curr.turnover;
+                return sum;
+            }, 0));
+            setTotalProfit(res.reduce((sum, curr) => {
+                sum += curr.profit;
+                return sum;
+            }, 0));
+
+            setTurnoverData({
+                ...defaultOptions,
                 series: [
                     {
-                        name: "series-1",
-                        data: [30, 40, 45, 50, 49, 60, 70, 91]
+                        name: "Ventes",
+                        data: res.map(x => x.turnover)
+                    }
+                ]
+            });
+
+            setProfitData({
+                ...defaultOptions,
+                series: [
+                    {
+                        name: "Bénéfices",
+                        data: res.map(x => x.profit)
                     }
                 ]
             });
         });
     }
 
-
+    console.log(turnoverData?.series)
     return (
         <div className={classes.wrapper}>
             <div className={classes.card}>
                 <div className={classes.textWrapper}>
                     <div className={classes.amount}>
-                        255 000 DH
+                        {formatMoney(totalTurnover)} DH
                     </div>
                     <div className={classes.text}>
                         Ventes
                     </div>
                 </div>
                 <Box height={80}>
-                    {data && <Chart
-                        options={data.options}
-                        series={data.series}
+                    {turnoverData && <Chart
+                        options={turnoverData.options}
+                        series={turnoverData.series}
                         type="area"
                         height="100%"
                         width="100%"
@@ -125,16 +157,16 @@ const ProfitAndExpenses = () => {
             <div className={classes.card}>
                 <div className={classes.textWrapper}>
                     <div className={classes.amount}>
-                        100 000 DH
+                        {formatMoney(totalProfit)} DH
                     </div>
                     <div className={classes.text}>
                         Bénéfices
                     </div>
                 </div>
                 <Box height={80}>
-                    {data && <Chart
-                        options={data.options}
-                        series={data.series}
+                    {profitData && <Chart
+                        options={profitData.options}
+                        series={profitData.series}
                         type="area"
                         height="100%"
                         width="100%"
