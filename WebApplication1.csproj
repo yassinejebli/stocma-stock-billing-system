@@ -1199,6 +1199,10 @@
     <Compile Include="Migrations\202005152008014_FA_TypePaiement.designer.cs">
       <DependentUpon>202005152008014_FA_TypePaiement.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005190158227_FakeFactur_TypePaiemet.cs" />
+    <Compile Include="Migrations\202005190158227_FakeFactur_TypePaiemet.designer.cs">
+      <DependentUpon>202005190158227_FakeFactur_TypePaiemet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FileManagerModel.cs" />
@@ -3924,6 +3928,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005152008014_FA_TypePaiement.resx">
       <DependentUpon>202005152008014_FA_TypePaiement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005190158227_FakeFactur_TypePaiemet.resx">
+      <DependentUpon>202005190158227_FakeFactur_TypePaiemet.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

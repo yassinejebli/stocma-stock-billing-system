@@ -11,12 +11,14 @@ import FournisseurForm from '../forms/FournisseurForm';
 import PaiementClientForm from '../forms/PaiementClientForm';
 import SiteForm from '../forms/SiteForm';
 import PaiementFournisseurForm from '../forms/PaiementFournisseurForm';
+import FakeArticleForm from '../forms/FakeArticleForm';
 
 const border = '1px solid #d8d8d8';
 
 //elements
 const items = {
     article: 'article',
+    fakeArticle: 'fakeArticle',
     fournisseur: 'fournisseur',
     client: 'client',
     paiementClient: 'paiementClient',
@@ -79,6 +81,8 @@ const SideWrapperDialog = (props) => {
         switch (selectedItem) {
             case items.article:
                 return <ArticleForm />;
+            case items.fakeArticle:
+                return <FakeArticleForm />;
             case items.client:
                 return <ClientForm />;
             case items.fournisseur:
@@ -126,6 +130,15 @@ const Menu = ({ open }) => {
                 </Avatar>
                 <div className={classes.content}>
                     <div className={classes.title}>Article</div>
+                    <div className={classes.description}>Les produits que vous achetez / vendez et que vous suivez leurs quantités</div>
+                </div>
+            </div>
+            <div className={classes.item} onClick={() => open(items.fakeArticle)}>
+                <Avatar className={classes.avatar}>
+                    <AddShoppingCartIcon className={classes.icon} />
+                </Avatar>
+                <div className={classes.content}>
+                    <div className={classes.title}>Fake Article</div>
                     <div className={classes.description}>Les produits que vous achetez / vendez et que vous suivez leurs quantités</div>
                 </div>
             </div>

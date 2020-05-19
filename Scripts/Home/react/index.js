@@ -25,6 +25,8 @@ import Facture from './components/views/facture-client/FactureClient';
 import SettingsProvider from './components/providers/SettingsProvider';
 import FactureList from './components/views/facture-client/FactureClientList';
 import SideMenu from './components/elements/layout/SideMenu';
+import FakeFacture from './components/views/fake-facture-client/FakeFactureClient';
+import FakeFactureClientList from './components/views/fake-facture-client/FakeFactureClientList';
 
 const App = () => {
     return (
@@ -39,6 +41,8 @@ const App = () => {
                                         <SideMenu onClose={() => null}>
                                             <Route exact path="/" component={Dashboard} />
                                             <Route path="/Devis" component={Devis} />
+                                            <Route path="/_Facture" component={FakeFacture} />
+                                            <Route path="/_FactureList" component={FakeFactureClientList} />
                                             <Route path="/Facture" component={Facture} />
                                             <Route path="/BonReception" component={BonReception} />
                                             <Route path="/BonLivraison" component={BonLivraison} />

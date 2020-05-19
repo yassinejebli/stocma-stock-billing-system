@@ -338,6 +338,12 @@ namespace WebApplication1.DATA
 
 
             modelBuilder.Entity<FakeFactureF>().HasKey<Guid>((Expression<Func<FakeFactureF, Guid>>)(t => t.Id));
+
+            modelBuilder.Entity<FakeFacture>()
+              .HasOptional(t => t.TypePaiement)
+              .WithMany(t => t.FakeFactures)
+              .HasForeignKey(d => d.IdTypePaiement);
+
             modelBuilder.Entity<FakeFactureF>()
                 .HasRequired<Fournisseur>((Expression<Func<FakeFactureF, Fournisseur>>)(t => t.Fournisseur))
                 .WithMany((Expression<Func<Fournisseur, ICollection<FakeFactureF>>>)(t => t.FakeFactureFs))

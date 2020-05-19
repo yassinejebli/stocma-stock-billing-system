@@ -25,6 +25,26 @@ export const getArticles = async (filters) => {
     }
 }
 
+export const getFakeArticles = async (filters) => {
+    if(!filters['Designation']) return [];
+
+    const allParams = buildQuery({ 
+        filter: filters, 
+        top: 20, 
+        skip: 0,
+    })
+
+    const URL = '/Odata/' + 'ArticleFactures' + allParams;
+
+    try {
+        const res = await (await fetch(URL)).json();
+        return res?.value
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}
+
 export const getLastPriceSale = async (articleId, clientId) => {
     const parsedParams = new URLSearchParams({
         IdClient: clientId,

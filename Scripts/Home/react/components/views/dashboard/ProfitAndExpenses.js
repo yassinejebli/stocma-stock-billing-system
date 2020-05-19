@@ -132,7 +132,6 @@ const ProfitAndExpenses = () => {
         });
     }
 
-    console.log(turnoverData?.series)
     return (
         <div className={classes.wrapper}>
             <div className={classes.card}>

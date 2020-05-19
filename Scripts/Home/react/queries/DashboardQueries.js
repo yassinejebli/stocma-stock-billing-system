@@ -1,4 +1,3 @@
-
 const BASE_URL = '/DashboardStatistics/'
 
 export const getMonthlyProfitAndTurnover = async (idSite) => {
@@ -11,7 +10,6 @@ export const getMonthlyProfitAndTurnover = async (idSite) => {
         return res;
     } catch (e) {
         console.log(e);
-        return [];
     }
 }
 
@@ -25,6 +23,5 @@ export const getDailyProfitAndTurnover = async (idSite) => {
         return res;
     } catch (e) {
         console.log(e);
-        return [];
     }
 }

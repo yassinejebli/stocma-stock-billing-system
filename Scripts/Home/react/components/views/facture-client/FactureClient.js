@@ -25,12 +25,9 @@ import { paymentMethods } from '../devis/Devis'
 import { useSettings } from '../../providers/SettingsProvider'
 
 const DOCUMENT = 'Factures'
-const DOCUMENT_ITEMS = 'FactureItems'
 const DOCUMENT_OWNER = 'Client'
 
 const defaultErrorMsg = 'Ce champs est obligatoire.'
-
-const ESPECE_PAYMENT_TYPE = '399d159e-9ce0-4fcc-957a-08a65bbeecb2';
 
 const Facture = () => {
     const {

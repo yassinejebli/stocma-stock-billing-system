@@ -23,6 +23,9 @@ namespace WebApplication1.DATA
         public string Note { get; set; }
 
         public DateTime Date { get; set; }
+        public Guid? IdTypePaiement { get; set; }
+
+        public bool WithDiscount { get; set; } = false;
 
         public string ClientName { get; set; }
 
@@ -33,6 +36,7 @@ namespace WebApplication1.DATA
         public string User { get; set; }
 
         public virtual Client Client { get; set; }
+        public virtual TypePaiement TypePaiement { get; set; }
 
         public virtual ICollection<FakeFactureItem> FakeFactureItems { get; set; }
     }
