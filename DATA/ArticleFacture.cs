@@ -27,6 +27,7 @@ namespace WebApplication1.DATA
         [StringLength(200)]
         public string Designation { get; set; }
 
+        public bool Disabled { get; set; } = false;
         public string Marque { get; set; }
 
         [DefaultValue(0)]

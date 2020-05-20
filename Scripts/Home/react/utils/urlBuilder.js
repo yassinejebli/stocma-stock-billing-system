@@ -22,6 +22,11 @@ export const getPrintFactureURL = (params) => {
     return `/Print/Facture?${parsedParams}`
 }
 
+export const getPrintFakeFactureURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/FakeFacture?${parsedParams}`
+}
+
 export const getImageURL = (fileName) => {
     return `/UserFiles/images/articles/${fileName}`;
 };

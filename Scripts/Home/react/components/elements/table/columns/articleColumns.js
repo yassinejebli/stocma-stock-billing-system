@@ -64,7 +64,7 @@ export const articleColumns = () => ([
         Cell: ({ row: { original }, updateRow, deleteRow, showImage }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
-                    {original.Article.Image && <IconButton tabIndex={-1} size="small" onClick={() => showImage(original.Article.Image)}>
+                    {original.Article?.Image && <IconButton tabIndex={-1} size="small" onClick={() => showImage(original.Article.Image)}>
                         <ImageOutlinedIcon />
                     </IconButton>}
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
@@ -80,6 +80,77 @@ export const articleColumns = () => ([
     },
 ])
 
+
+
+export const fakeArticleColumns = () => ([
+    {
+        Header: 'Article',
+        accessor: 'Designation',
+        type: inputTypes.text.description,
+        width: 140
+    },
+    {
+        id: 'QteStock',
+        Header: 'Qte en stock',
+        accessor: (props) => {
+            return formatMoney(props.QteStock);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        id: 'PA',
+        Header: 'Prix d\'achat',
+        accessor: (props) => {
+            return formatMoney(props.PA);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        id: 'PVD',
+        Header: 'Prix de vente',
+        accessor: (props) => {
+            return formatMoney(props.PVD);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        id: 'TVA',
+        Header: 'T.V.A',
+        accessor: (props) => {
+            return props.TVA + '%';
+        },
+        type: inputTypes.text.description,
+        align: 'right',
+        width: 26
+    },
+    {
+        Header: 'Unité',
+        accessor: 'Unite',
+        type: inputTypes.text.description,
+        align: 'center',
+        width: 26
+    },
+    {
+        id: 'actions',
+        Header: '',
+        Cell: ({ row: { original }, updateRow, deleteRow }) => {
+            return (
+                <Box display="flex" justifyContent="flex-end">
+                    <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
+                        <EditOutlinedIcon />
+                    </IconButton>
+                    <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original)}>
+                        <DeleteForeverOutlinedIcon />
+                    </IconButton>
+                </Box>
+            )
+        },
+        width: 24
+    },
+])
 
 export const articlesMarginColumns = () => ([
     {

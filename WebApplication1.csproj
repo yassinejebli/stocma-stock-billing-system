@@ -227,6 +227,7 @@
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\Print\FakeFactureController.cs" />
     <Compile Include="Controllers\Print\FactureController.cs" />
     <Compile Include="Controllers\Print\DevisController.cs" />
     <Compile Include="Controllers\Print\BLController.cs" />

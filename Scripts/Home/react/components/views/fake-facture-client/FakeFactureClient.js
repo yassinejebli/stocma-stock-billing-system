@@ -16,17 +16,14 @@ import { useModal } from 'react-modal-hook'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { useLocation, useHistory } from 'react-router-dom'
 import qs from 'qs'
-import { useSite } from '../../providers/SiteProvider'
 import { fakeFactureColumns } from '../../elements/table/columns/fakeFactureColumns'
 import PrintFakeFacture from '../../elements/dialogs/documents-print/PrintFakeFacture'
-import BonLivraisonAutocomplete from '../../elements/bon-livraison-autocomplete/BonLivraisonAutocomplete'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { paymentMethods } from '../devis/Devis'
 import { useSettings } from '../../providers/SettingsProvider'
 import AddButton from '../../elements/button/AddButton'
 
 const DOCUMENT = 'FakeFactures'
-const DOCUMENT_ITEMS = 'FakeFactureItems'
 const DOCUMENT_OWNER = 'Client'
 
 const defaultErrorMsg = 'Ce champs est obligatoire.'
@@ -90,12 +87,17 @@ const FakeFacture = () => {
         setTitle('Facture')
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, FakeFactureId, [DOCUMENT_OWNER, 'FakeFactureItems/Article'])
+            getSingleData(DOCUMENT, FakeFactureId, [DOCUMENT_OWNER, 'TypePaiement', 'FakeFactureItems/ArticleFacture'])
                 .then(response => {
-                    console.log({ response })
                     setClient(response.Client);
                     setDate(response.Date);
                     setNote(response.Note);
+                    setData(response.FakeFactureItems?.map(x => ({
+                        Article: x.ArticleFacture,
+                        Qte: x.Qte,
+                        Pu: x.Pu,
+                        // Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
+                    })));
                     setClientName(response.ClientName);
                     setNumDoc(response.NumBon);
                     setPaymentType(response.TypePaiement);
@@ -162,7 +164,7 @@ const FakeFacture = () => {
 
     const save = async () => {
         if (!areDataValid()) return;
-        const expand = [DOCUMENT_OWNER, 'FakeItems/Article'];
+        const expand = [DOCUMENT_OWNER, 'FakeFactureItems/ArticleFacture'];
         const Id = isEditMode ? FakeFactureId : uuidv4();
         const preparedData = {
             Id: Id,
@@ -187,7 +189,6 @@ const FakeFacture = () => {
         const response = isEditMode ? await (await updateData(DOCUMENT, preparedData, Id, expand)).json()
             : await saveData(DOCUMENT, preparedData, expand);
         setLoading(false);
-        console.log({ response, isEditMode });
 
         if (response?.Id) {
             setSavedDocument(response)
@@ -220,7 +221,7 @@ const FakeFacture = () => {
                     variant="contained"
                     color="primary"
                     startIcon={<DescriptionIcon />}
-                    onClick={() => history.push('/FakeFactureList')}
+                    onClick={() => history.push('/_FactureList')}
                 >
                     Liste des factures
                 </Button>
@@ -235,13 +236,6 @@ const FakeFacture = () => {
                             setClientName(value?.Name);
                         }}
                         errorText={errors.client}
-                    />
-                    <TextField
-                        value={clientName}
-                        onChange={({ target: { value } }) => setClientName(value)}
-                        variant="outlined"
-                        size="small"
-                        label="Nom du société"
                     />
                     {isEditMode &&
                         <><TextField
@@ -265,6 +259,16 @@ const FakeFacture = () => {
                     <DatePicker
                         value={date}
                         onChange={(_date) => setDate(_date)}
+                    />
+                </Box>
+                <Box width={240} mt={2}>
+                    <TextField
+                        value={clientName}
+                        onChange={({ target: { value } }) => setClientName(value)}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                        label="Nom du société"
                     />
                 </Box>
                 <Box mt={2} display="flex" flexWrap="wrap">
@@ -302,6 +306,7 @@ const FakeFacture = () => {
                         label="Numéro de chèque/effet"
                     /></Box>}
                 </Box>
+                
                 <Box mt={4}>
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>

@@ -1,15 +1,15 @@
 import React from 'react';
 import IframeDialog from '../IframeDialog';
-import { getPrintFactureURL } from '../../../../utils/urlBuilder';
+import { getPrintFakeFactureURL } from '../../../../utils/urlBuilder';
 
-const PrintFakeFacture = ({ onClose, onExited, open }) => {
+const PrintFakeFacture = ({ document, onClose, onExited, open }) => {
     return (
         <IframeDialog
             onExited={onExited}
             open={open}
             onClose={onClose}
-            src={getPrintFactureURL({
-                IdFacture: document.Id
+            src={getPrintFakeFactureURL({
+                IdFakeFacture: document.Id
             })}>
         </IframeDialog>
     )

@@ -110,6 +110,11 @@ export const fakeFactureListColumns = () => ([
         width: 60
     },
     {
+        Header: 'Mode de paiement',
+        accessor: 'TypePaiement.Name',
+        type: inputTypes.text.description,
+    },
+    {
         id: 'Total',
         Header: 'Total',
         type: inputTypes.text.description,

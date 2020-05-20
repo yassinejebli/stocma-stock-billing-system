@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, Box, makeStyles } from '@material-ui/core';
+import { TextField, Button, Box, Switch, FormControlLabel } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid'
 import Loader from '../loaders/Loader';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
@@ -26,19 +26,9 @@ const FakeArticleForm = ({ data, onSuccess }) => {
     const [loading, setLoading] = React.useState(false);
 
     React.useEffect(() => {
-        console.log({ data })
         if (editMode) {
-            const { Article, QteStock } = data;
             setFormState({
-                Id: Article.Id,
-                QteStock,
-                Designation: Article.Designation,
-                Ref: Article.Ref,
-                PVD: Article.PVD,
-                PA: Article.PA,
-                TVA: Article.TVA,
-                Unite: Article.Unite,
-                Image: Article.Image
+                ...data
             });
         }
     }, [])
@@ -189,6 +179,16 @@ const FakeArticleForm = ({ data, onSuccess }) => {
                 value={formState.Unite}
                 helperText={formErrors.Unite}
                 error={Boolean(formErrors.Unite)}
+            />
+            <FormControlLabel
+                control={<Switch
+                    checked={!formState.Disabled}
+                    onChange={(_, checked) => setFormState(_formState => ({
+                        ...formState,
+                        Disabled: !checked
+                    })
+                    )} />}
+                label="Actif"
             />
             <Box my={4} display="flex" justifyContent="flex-end">
                 <Button variant="contained" color="primary" onClick={save}>

@@ -27,6 +27,7 @@ import FactureList from './components/views/facture-client/FactureClientList';
 import SideMenu from './components/elements/layout/SideMenu';
 import FakeFacture from './components/views/fake-facture-client/FakeFactureClient';
 import FakeFactureClientList from './components/views/fake-facture-client/FakeFactureClientList';
+import FakeArticleList from './components/views/articles/FakeArticleList';
 
 const App = () => {
     return (
@@ -51,6 +52,7 @@ const App = () => {
                                             <Route path="/BonReceptionList" component={BonReceptionList} />
                                             <Route path="/DevisList" component={DevisList} />
                                             <Route path="/ArticleList" component={ArticleList} />
+                                            <Route path="/_ArticleList" component={FakeArticleList} />
                                             <Route path="/SiteList" component={SiteList} />
                                             <Route path="/ArticlesMarginList" component={ArticlesMarginList} />
                                             <Route path="/ClientList" component={ClientList} />

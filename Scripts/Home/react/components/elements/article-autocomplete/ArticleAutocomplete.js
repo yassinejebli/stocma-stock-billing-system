@@ -13,7 +13,6 @@ const useStyles = makeStyles({
   }
 });
 
-
 const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
   const { siteId } = useSite(); 
   const classes = useStyles();

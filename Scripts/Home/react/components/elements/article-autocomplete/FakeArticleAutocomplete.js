@@ -22,6 +22,7 @@ const FakeArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       'Designation': value ? {
         contains: value
       } : undefined,
+      Disabled: false
     });
     setArticles(data);
   }
