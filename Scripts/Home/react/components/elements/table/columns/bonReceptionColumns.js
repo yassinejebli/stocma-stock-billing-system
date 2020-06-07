@@ -36,8 +36,8 @@ export const bonReceptionColumns = () => ([
                     onChange={(_, selectedValue) => {
                         updateMyData(index, id, selectedValue);
                         if (selectedValue && owner)
-                            getLastPricePurchase(selectedValue.Id, owner.Id).then(lastPriceSale => {
-                                updateMyData(index, 'Pu', lastPriceSale);
+                            getLastPricePurchase(selectedValue.Id, owner.Id).then(lastPricePurchase => {
+                                updateMyData(index, 'Pu', lastPricePurchase);
                             });
                         else if (selectedValue)
                             updateMyData(index, 'Pu', selectedValue.PA);

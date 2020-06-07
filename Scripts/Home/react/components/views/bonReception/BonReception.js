@@ -153,7 +153,7 @@ const BonReception = () => {
 
     const save = async () => {
         if (!areDataValid()) return;
-        const expand = [DOCUMENT_ITEMS, DOCUMENT_OWNER].join(',');
+        const expand = [DOCUMENT_ITEMS, DOCUMENT_OWNER];
         const Id = isEditMode ? BonReceptionId : uuidv4();
         const preparedData = {
             Id: Id,

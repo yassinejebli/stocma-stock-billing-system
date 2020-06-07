@@ -355,7 +355,7 @@ const Facture = () => {
                             multiline
                             rows={3}
                             variant="outlined"
-                            placeholder="Message à afficher sur le facture..."
+                            placeholder="Message à afficher sur la facture..."
                             size="small"
                             fullWidth
                         />

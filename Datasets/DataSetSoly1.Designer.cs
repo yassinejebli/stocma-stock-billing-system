@@ -725,6 +725,8 @@ namespace WebApplication1.Datasets {
             
             private global::System.Data.DataColumn columnICE;
             
+            private global::System.Data.DataColumn columnTypeReglement;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public FactureDataTable() {
@@ -864,6 +866,14 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TypeReglementColumn {
+                get {
+                    return this.columnTypeReglement;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -899,7 +909,7 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public FactureRow AddFactureRow(string NumBon, System.DateTime Date, string Client, string Ref, string Designation, double Qte, double PU, double TotalHT, double TVA, string Unite, string ClientName, string Comment, string ICE) {
+            public FactureRow AddFactureRow(string NumBon, System.DateTime Date, string Client, string Ref, string Designation, double Qte, double PU, double TotalHT, double TVA, string Unite, string ClientName, string Comment, string ICE, string TypeReglement) {
                 FactureRow rowFactureRow = ((FactureRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         NumBon,
@@ -914,7 +924,8 @@ namespace WebApplication1.Datasets {
                         Unite,
                         ClientName,
                         Comment,
-                        ICE};
+                        ICE,
+                        TypeReglement};
                 rowFactureRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowFactureRow);
                 return rowFactureRow;
@@ -950,6 +961,7 @@ namespace WebApplication1.Datasets {
                 this.columnClientName = base.Columns["ClientName"];
                 this.columnComment = base.Columns["Comment"];
                 this.columnICE = base.Columns["ICE"];
+                this.columnTypeReglement = base.Columns["TypeReglement"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -981,6 +993,8 @@ namespace WebApplication1.Datasets {
                 base.Columns.Add(this.columnComment);
                 this.columnICE = new global::System.Data.DataColumn("ICE", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnICE);
+                this.columnTypeReglement = new global::System.Data.DataColumn("TypeReglement", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTypeReglement);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5823,6 +5837,22 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string TypeReglement {
+                get {
+                    try {
+                        return ((string)(this[this.tableFacture.TypeReglementColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TypeReglement\' in table \'Facture\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableFacture.TypeReglementColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsNumBonNull() {
                 return this.IsNull(this.tableFacture.NumBonColumn);
             }
@@ -5975,6 +6005,18 @@ namespace WebApplication1.Datasets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetICENull() {
                 this[this.tableFacture.ICEColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTypeReglementNull() {
+                return this.IsNull(this.tableFacture.TypeReglementColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTypeReglementNull() {
+                this[this.tableFacture.TypeReglementColumn] = global::System.Convert.DBNull;
             }
         }
         

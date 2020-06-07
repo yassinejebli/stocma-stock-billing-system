@@ -51,20 +51,25 @@ namespace WebApplication1.Controllers.Print
                 TotalHT = x.TotalHT,
                 CodeClient = x.FakeFacture.Client.Code,
                 Discount = x.Discount + (x.PercentageDiscount ? "%" : ""),
-                Total = (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f),
+                Total = (x.Qte * x.Pu),
             }).ToList();
             reportDocument.SetDataSource(facturePrintData);
 
-            float total = facturePrintData.Sum(x => x.Total * (1 + x.TVA / 100));
+            float total = facturePrintData.Sum(x => x.Total);
+
+            if (FactureById.IdTypePaiement == ESPECE_PAYMENT_TYPE)
+            {
+                total *= (1 + 0.0025f);
+            }
 
             totalMots = atg.DecimalToWords(Math.Round((Decimal)total, 2, MidpointRounding.AwayFromZero));
 
             // TVA
             var baseTVA0 = facturePrintData.Where(x => x.TVA == 0f).Sum(x => x.Total);
-            var baseTVA7 = facturePrintData.Where(x => x.TVA == 7f).Sum(x => x.Total);
-            var baseTVA10 = facturePrintData.Where(x => x.TVA == 10f).Sum(x => x.Total);
-            var baseTVA14 = facturePrintData.Where(x => x.TVA == 14f).Sum(x => x.Total);
-            var baseTVA20 = facturePrintData.Where(x => x.TVA == 20f).Sum(x => x.Total);
+            var baseTVA7 = facturePrintData.Where(x => x.TVA == 7f).Sum(x => x.Total / 0.7);
+            var baseTVA10 = facturePrintData.Where(x => x.TVA == 10f).Sum(x => x.Total / 1.1);
+            var baseTVA14 = facturePrintData.Where(x => x.TVA == 14f).Sum(x => x.Total / 1.14);
+            var baseTVA20 = facturePrintData.Where(x => x.TVA == 20f).Sum(x => x.Total / 1.2);
 
             if (reportDocument.ParameterFields["BaseTVA0"] != null)
                 reportDocument.SetParameterValue("BaseTVA0", baseTVA0);

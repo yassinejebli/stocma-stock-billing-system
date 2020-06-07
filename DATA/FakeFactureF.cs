@@ -16,6 +16,7 @@ namespace WebApplication1.DATA
     {
         [Key]
         public Guid Id { get; set; }
+        public Guid? IdTypePaiement { get; set; }
 
         [Required]
         public int Ref { get; set; }
@@ -30,10 +31,12 @@ namespace WebApplication1.DATA
 
         public string TypeReglement { get; set; }
 
+
+
         public string User { get; set; }
 
         public virtual Fournisseur Fournisseur { get; set; }
-    
+        public virtual TypePaiement TypePaiement { get; set; }
         public virtual ICollection<FakeFactureFItem> FakeFactureFItems { get; set; }
     }
 }

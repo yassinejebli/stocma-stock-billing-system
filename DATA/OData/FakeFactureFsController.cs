@@ -1,31 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.OData;
-using System.Web.Http.OData.Routing;
-using WebApplication1.DATA;
 
 namespace WebApplication1.DATA.OData
 {
-    /*
-    The WebApiConfig class may require additional changes to add a route for this controller. Merge these statements into the Register method of the WebApiConfig class as applicable. Note that OData URLs are case sensitive.
-
-    using System.Web.Http.OData.Builder;
-    using System.Web.Http.OData.Extensions;
-    using WebApplication1.DATA;
-    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<FakeFactureF>("FakeFactureFs");
-    builder.EntitySet<FakeFactureFItem>("FakeFactureFItems"); 
-    builder.EntitySet<Fournisseur>("Fournisseurs"); 
-    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-    */
     public class FakeFactureFsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();

@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
         lineHeight: 0.9
     },
     text: {
-        fontSize: 16,
+        fontSize: 14,
     }
 }));
 

@@ -23,7 +23,6 @@ export const fakeFactureColumns = () => ([
             column: { id },
             updateMyData,
             addNewRow,
-            owner,
             data
         }) => {
             return (
