@@ -2,23 +2,21 @@
 import { render } from 'react-dom';
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Dashboard from './components/views/dashboard/Dashboard';
-import BonLivraison from './components/views/bonLivraison/BonLivraison';
-import NavigationMenu from './components/elements/navigation-menu/NavigationMenu';
+import BonLivraison from './components/views/bon-livraison/BonLivraison';
 import ThemeProvider from './components/providers/ThemeProvider';
 import { ModalProvider } from "react-modal-hook";
-import TopBar from './components/elements/layout/TopBar';
 import TitleProvider from './components/providers/TitleProvider';
 import { TransitionGroup } from "react-transition-group";
 import ClientList from './components/views/client/clientList';
 import SnackBarProvider from './components/providers/SnackBarProvider';
 import SupplierList from './components/views/fournisseur/SupplierList';
-import BonLivraisonList from './components/views/bonLivraison/BonLivraisonList';
+import BonLivraisonList from './components/views/bon-livraison/BonLivraisonList';
 import SiteProvider from './components/providers/SiteProvider';
 import ArticleList from './components/views/articles/ArticleList';
 import ArticlesMarginList from './components/views/articles/ArticlesMarginList';
 import SiteList from './components/views/sites/SiteList';
-import BonReception from './components/views/bonReception/BonReception';
-import BonReceptionList from './components/views/bonReception/BonReceptionList';
+import BonReception from './components/views/bon-reception/BonReception';
+import BonReceptionList from './components/views/bon-reception/BonReceptionList';
 import Devis from './components/views/devis/Devis';
 import DevisList from './components/views/devis/DevisList';
 import Facture from './components/views/facture-client/FactureClient';
@@ -29,6 +27,13 @@ import FakeFacture from './components/views/fake-facture-client/FakeFactureClien
 import FakeFactureClientList from './components/views/fake-facture-client/FakeFactureClientList';
 import FakeArticleList from './components/views/articles/FakeArticleList';
 import FakeFactureAchat from './components/views/fake-facture-achat/FakeFactureAchat';
+import FakeFactureAchatList from './components/views/fake-facture-achat/FakeFactureAchatList';
+import FactureAchat from './components/views/facture-achat/FactureAchat';
+import FactureAchatList from './components/views/facture-achat/FactureAchatList';
+import BonCommande from './components/views/bon-commande/BonCommande';
+import BonCommandeList from './components/views/bon-commande/BonCommandeList';
+import BonAvoirVente from './components/views/bon-avoir-vente/BonAvoirVente';
+import BonAvoirVenteList from './components/views/bon-avoir-vente/AvoirVenteList';
 
 const App = () => {
     return (
@@ -42,8 +47,15 @@ const App = () => {
                                     <Switch>
                                         <SideMenu onClose={() => null}>
                                             <Route exact path="/" component={Dashboard} />
+                                            <Route path="/bon-avoir-vente" component={BonAvoirVente} />
+                                            <Route path="/liste-bon-avoir-vente" component={BonAvoirVenteList} />
+                                            <Route path="/BonCommande" component={BonCommande} />
+                                            <Route path="/BonCommandeList" component={BonCommandeList} />
                                             <Route path="/Devis" component={Devis} />
+                                            <Route path="/FactureAchat" component={FactureAchat} />
+                                            <Route path="/FactureAchatList" component={FactureAchatList} />
                                             <Route path="/_FactureAchat" component={FakeFactureAchat} />
+                                            <Route path="/_FactureAchatList" component={FakeFactureAchatList} />
                                             <Route path="/_Facture" component={FakeFacture} />
                                             <Route path="/_FactureList" component={FakeFactureClientList} />
                                             <Route path="/Facture" component={Facture} />

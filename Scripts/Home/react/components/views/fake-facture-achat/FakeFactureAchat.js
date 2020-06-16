@@ -16,10 +16,11 @@ import { useTitle } from '../../providers/TitleProvider'
 import { useModal } from 'react-modal-hook'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { useLocation, useHistory } from 'react-router-dom'
-import PrintBR from '../../elements/dialogs/documents-print/PrintBR'
+import PrintFakeFactureAchat from '../../elements/dialogs/documents-print/PrintFakeFactureAchat'
 import qs from 'qs'
-import { useSite } from '../../providers/SiteProvider'
 import { fakeFactureAchatColumns } from '../../elements/table/columns/fakeFactureAchatColumns'
+import { paymentMethods } from '../devis/Devis'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 
 const DOCUMENT = 'FakeFactureFs'
 const DOCUMENT_ITEMS = 'FakeFactureFItems'
@@ -40,12 +41,12 @@ const FakeFactureAchat = () => {
     const [fournisseur, setFournisseur] = React.useState(null);
     const [date, setDate] = React.useState(new Date());
     const [errors, setErrors] = React.useState({});
+    const [paymentType, setPaymentType] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
     const location = useLocation();
-    const FakeFactureAchatId = qs.parse(location.search, { ignoreQueryPrefix: true }).FakeFactureAchatId;
+    const FakeFactureAchatId = qs.parse(location.search, { ignoreQueryPrefix: true }).FactureAchatId;
     const isEditMode = Boolean(FakeFactureAchatId);
-    console.log({ location, FakeFactureAchatId });
 
     const columns = React.useMemo(
         () => fakeFactureAchatColumns(),
@@ -57,7 +58,7 @@ const FakeFactureAchat = () => {
     ), 0);
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
         return (
-            <PrintBR
+            <PrintFakeFactureAchat
                 onExited={onExited}
                 open={open}
                 document={savedDocument}
@@ -73,18 +74,19 @@ const FakeFactureAchat = () => {
     }, [data])
 
     React.useEffect(() => {
-        setTitle('Bon de réception')
+        setTitle("Facture d'achat")
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, FakeFactureAchatId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
+            getSingleData(DOCUMENT, FakeFactureAchatId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'ArticleFacture'])
                 .then(response => {
                     setFournisseur(response.Fournisseur);
                     setDate(response.Date);
-                    setData(response.FakeFactureAchatItems?.map(x => ({
-                        Article: x.Article,
+                    setData(response.FakeFactureFItems?.map(x => ({
+                        Article: x.ArticleFacture,
                         Qte: x.Qte,
                         Pu: x.Pu
                     })));
+                    setPaymentType(response.TypePaiement);
                     setNumDoc(response.NumBon);
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
@@ -164,6 +166,7 @@ const FakeFactureAchat = () => {
                 Pu: d.Pu,
                 IdArticleFacture: d.Article.Id
             })),
+            IdTypePaiement: paymentType?.Id,
             IdFournisseur: fournisseur.Id,
             Date: date
         };
@@ -172,13 +175,12 @@ const FakeFactureAchat = () => {
         const response = isEditMode ? await (await updateData(DOCUMENT, preparedData, Id, expand)).json()
             : await saveData(DOCUMENT, preparedData, expand);
         setLoading(false);
-        console.log({ response, isEditMode });
 
         if (response?.Id) {
             setSavedDocument(response)
             resetData();
             showSnackBar();
-            showModal();
+            // showModal();
             history.replace('/_FactureAchat')
         } else {
             showSnackBar({
@@ -190,8 +192,10 @@ const FakeFactureAchat = () => {
 
     const resetData = () => {
         setFournisseur(null);
+        setNumDoc('');
         setDate(new Date());
         setData([]);
+        setPaymentType(null);
         addNewRow();
     }
 
@@ -203,9 +207,9 @@ const FakeFactureAchat = () => {
                     variant="contained"
                     color="primary"
                     startIcon={<DescriptionIcon />}
-                    onClick={() => history.push('/FakeFactureAchatList')}
+                    onClick={() => history.push('/_FactureAchatList')}
                 >
-                    Liste des bons de réception
+                    Liste des factures d'achat
                 </Button>
             </Box>
             <Paper>
@@ -221,13 +225,38 @@ const FakeFactureAchat = () => {
                         onChange={({ target: { value } }) => setNumDoc(value)}
                         variant="outlined"
                         size="small"
-                        placeholder="N#"
+                        label="N#"
                         helperText={errors.numDoc}
                         error={Boolean(errors.numDoc)}
                     />
                     <DatePicker
                         value={date}
                         onChange={(_date) => setDate(_date)}
+                    />
+                </Box>
+                <Box mt={2} width={240}>
+                    <Autocomplete
+                        options={paymentMethods}
+                        disableClearable
+                        autoHighlight
+                        value={paymentType}
+                        onChange={(_, value) => setPaymentType(value)}
+                        size="small"
+                        getOptionLabel={(option) => option?.Name}
+                        renderInput={(params) => (
+                            <TextField
+                                onChange={() => null}
+                                {...params}
+                                label="Mode de paiement"
+                                variant="outlined"
+                                inputProps={{
+                                    ...params.inputProps,
+                                    autoComplete: 'new-password',
+                                    type: 'search',
+                                    margin: 'normal'
+                                }}
+                            />
+                        )}
                     />
                 </Box>
                 <Box mt={4}>

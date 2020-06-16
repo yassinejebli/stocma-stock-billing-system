@@ -1,12 +1,11 @@
-﻿import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core'
+﻿import { Button, TextField, InputAdornment } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { saveData, updateData, getSingleData } from '../../../queries/crudBuilder'
-import { getBonLivraisonColumns } from '../../../utils/columnsBuilder'
 import AddButton from '../../elements/button/AddButton'
 import DescriptionIcon from '@material-ui/icons/Description';
-import ClientAutocomplete from '../../elements/client-autocomplete/ClientAutocomplete'
+import FournisseurAutocomplete from '../../elements/fournisseur-autocomplete/FournisseurAutocomplete'
 import DatePicker from '../../elements/date-picker/DatePicker'
 import Error from '../../elements/misc/Error'
 import Paper from '../../elements/misc/Paper'
@@ -17,16 +16,13 @@ import { useTitle } from '../../providers/TitleProvider'
 import { useModal } from 'react-modal-hook'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { useLocation, useHistory } from 'react-router-dom'
-import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import qs from 'qs'
-import { useSite } from '../../providers/SiteProvider'
-import { useSettings } from '../../providers/SettingsProvider'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import { paymentMethods } from '../devis/Devis'
+import { bonCommandeColumns } from '../../elements/table/columns/bonCommandeColumns'
+import PrintBonCommande from '../../elements/dialogs/documents-print/PrintBonCommande'
 
-const DOCUMENT = 'BonLivraisons'
-const DOCUMENT_ITEMS = 'BonLivraisonItems'
-const DOCUMENT_OWNER = 'Client'
+const DOCUMENT = 'BonCommandes'
+const DOCUMENT_ITEMS = 'BonCommandeItems'
+const DOCUMENT_OWNER = 'Fournisseur'
 const emptyLine = {
     Article: null,
     Qte: 1,
@@ -34,54 +30,52 @@ const emptyLine = {
 }
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
-const BonLivraison = () => {
-    const {
-        BLDiscount,
-        setBLDiscount,
-        BLPayment
-    } = useSettings();
-    console.log({ BLPayment, BLDiscount })
-    const { siteId } = useSite();
+export const paymentMethods = [
+    {
+        Id: '399d159e-9ce0-4fcc-957a-08a65bbeecb2',
+        Name: 'Espéce',
+    },
+    {
+        Id: '399d159e-9ce0-4fcc-957a-08a65bbeecb3',
+        Name: 'Chéque',
+        isBankRelatedItem: true,
+    },
+    {
+        Id: '399d159e-9ce0-4fcc-957a-08a65bbeecb4',
+        Name: 'Effet',
+        isBankRelatedItem: true,
+    },
+]
+
+const BonCommande = () => {
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
     const [numDoc, setNumDoc] = React.useState('');
     const [ref, setRef] = React.useState(0);
     const [data, setData] = React.useState([emptyLine]);
-    const [client, setClient] = React.useState(null);
+    const [fournisseur, setFournisseur] = React.useState(null);
     const [date, setDate] = React.useState(new Date());
     const [note, setNote] = React.useState('');
     const [errors, setErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
-    const [paymentType, setPaymentType] = React.useState(null);
     const location = useLocation();
-    const DevisId = qs.parse(location.search, { ignoreQueryPrefix: true }).DevisId;
-    const BonLivraisonId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonLivraisonId;
-    const isEditMode = Boolean(BonLivraisonId);
+    const BonCommandeId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonCommandeId;
+    const isEditMode = Boolean(BonCommandeId);
+
+    const columns = React.useMemo(
+        () => bonCommandeColumns(),
+        []
+    );
     const [skipPageReset, setSkipPageReset] = React.useState(false);
     const total = data.reduce((sum, curr) => (
         sum += curr.Pu * curr.Qte
     ), 0);
-    const discount = data.reduce((sum, curr) => {
-        const total = curr.Pu * curr.Qte;
-        if (curr.Discount) {
-            if (!isNaN(curr.Discount))
-                sum += Number(curr.Discount)
-            else if (/^\d+(\.\d+)?%$/.test(curr.Discount)) {
-                sum += total * parseFloat(curr.Discount) / 100;
-            }
-        }
-        return sum;
-    }, 0);
 
-    const columns = React.useMemo(
-        () => getBonLivraisonColumns({ BLDiscount }),
-        [BLDiscount]
-    )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
         return (
-            <PrintBL
+            <PrintBonCommande
                 onExited={onExited}
                 open={open}
                 document={savedDocument}
@@ -96,52 +90,23 @@ const BonLivraison = () => {
         setSkipPageReset(false)
     }, [data])
 
-    React.useEffect(() => {
-        if (!BLDiscount?.Enabled)
-            setData(_data => _data.map(x => ({ ...x, Discount: '' })));
-    }, [BLDiscount])
 
     React.useEffect(() => {
-        setTitle('Bon de livraison')
-        //load bon de livraison
+        setTitle('Bon de commande')
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article'])
+            getSingleData(DOCUMENT, BonCommandeId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
                 .then(response => {
-                    if (response.WithDiscount)
-                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: true }));
-                    else
-                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: false }));
-                    setClient(response.Client);
+                    setFournisseur(response.Fournisseur);
                     setDate(response.Date);
                     setNote(response.Note);
-                    setData(response.BonLivraisonItems?.map(x => ({
+                    setData(response.BonCommandeItems?.map(x => ({
                         Article: x.Article,
                         Qte: x.Qte,
                         Pu: x.Pu,
-                        Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
                     })));
                     setNumDoc(response.NumBon);
-                    setPaymentType(response.TypePaiement);
                     setRef(response.Ref);
-                }).catch(err => console.error(err))
-                .finally(() => setLoading(false));
-        }else if (DevisId){
-            setLoading(true);
-            getSingleData('Devises', DevisId, [DOCUMENT_OWNER, 'TypePaiement', 'DevisItems' + '/' + 'Article'])
-                .then(response => {
-                    if (response.WithDiscount)
-                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: true }));
-                    else
-                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: false }));
-                    setClient(response.Client);
-                    setData(response.DevisItems?.map(x => ({
-                        Article: x.Article,
-                        Qte: x.Qte,
-                        Pu: x.Pu,
-                        Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
-                    })));
-                    setPaymentType(response.TypePaiement);
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
         }
@@ -174,8 +139,8 @@ const BonLivraison = () => {
     const areDataValid = () => {
         const _errors = [];
         const filteredData = data.filter(x => x.Article);
-        if (!client) {
-            _errors['client'] = defaultErrorMsg;
+        if (!fournisseur) {
+            _errors['fournisseur'] = defaultErrorMsg;
         }
 
         if (!date) {
@@ -204,42 +169,38 @@ const BonLivraison = () => {
 
     const save = async () => {
         if (!areDataValid()) return;
-
-        // return console.log({paymentType})
         const expand = [DOCUMENT_ITEMS, DOCUMENT_OWNER];
-        const Id = isEditMode ? BonLivraisonId : uuidv4();
+        const Id = isEditMode ? BonCommandeId : uuidv4();
         const preparedData = {
             Id: Id,
-            IdSite: siteId,
             Note: note,
             NumBon: numDoc,
             Ref: ref,
-            IdTypePaiement: paymentType?.Id,
-            WithDiscount: discount > 0,
-            BonLivraisonItems: data.filter(x => x.Article).map(d => ({
+            BonCommandeItems: data.filter(x => x.Article).map(d => ({
                 Id: uuidv4(),
-                IdBonLivraison: Id,
+                IdBonCommande: Id,
                 Qte: d.Qte,
                 Pu: d.Pu,
                 IdArticle: d.Article.Id,
-                Discount: parseFloat(d.Discount),
-                PercentageDiscount: (/^\d+(\.\d+)?%$/.test(d.Discount))
             })),
-            IdClient: client.Id,
+            IdFournisseur: fournisseur.Id,
             Date: date
         };
+
+        // return console.log({preparedData});
 
         setLoading(true);
         const response = isEditMode ? await (await updateData(DOCUMENT, preparedData, Id, expand)).json()
             : await saveData(DOCUMENT, preparedData, expand);
         setLoading(false);
+        console.log({ response, isEditMode });
 
         if (response?.Id) {
             setSavedDocument(response)
             resetData();
             showSnackBar();
             showModal();
-            history.replace('/BonLivraison')
+            history.replace('/BonCommande')
         } else {
             showSnackBar({
                 error: true
@@ -248,7 +209,7 @@ const BonLivraison = () => {
     }
 
     const resetData = () => {
-        setClient(null);
+        setFournisseur(null);
         setNote('');
         setDate(new Date());
         setData([]);
@@ -263,69 +224,51 @@ const BonLivraison = () => {
                     variant="contained"
                     color="primary"
                     startIcon={<DescriptionIcon />}
-                    onClick={() => history.push('/BonLivraisonList')}
+                    onClick={() => history.push('/BonCommandeList')}
                 >
-                    Liste des bons de livraison
+                    Liste des bons de commande
                 </Button>
             </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-                    <ClientAutocomplete
-                        disabled={isEditMode}
-                        value={client}
-                        onChange={(_, value) => setClient(value)}
-                        errorText={errors.client}
-                    />
-                    {isEditMode &&
-                        <><TextField
-                            value={ref}
-                            onChange={({ target: { value } }) => setRef(value)}
-                            variant="outlined"
-                            size="small"
-                            label="Référence"
-                            type="number"
-                        />
-                            <TextField
-                                value={numDoc}
-                                disabled
-                                onChange={({ target: { value } }) => setNumDoc(value)}
-                                variant="outlined"
-                                size="small"
-                                label="N#"
+                    <Box display="flex" flexWrap="wrap">
+                        <Box mr={2}>
+                            <FournisseurAutocomplete
+                                disabled={isEditMode}
+                                value={fournisseur}
+                                onChange={(_, value) => setFournisseur(value)}
+                                errorText={errors.fournisseur}
                             />
-                        </>
-                    }
+                        </Box>
+                    </Box>
                     <DatePicker
                         value={date}
                         onChange={(_date) => setDate(_date)}
                     />
                 </Box>
-                <Box mt={2} display="flex" flexWrap="wrap">
-                    {BLPayment?.Enabled && <Box mr={2} width={240}>
-                        <Autocomplete
-                            options={paymentMethods}
-                            disableClearable
-                            autoHighlight
-                            value={paymentType}
-                            onChange={(_, value) => setPaymentType(value)}
-                            size="small"
-                            getOptionLabel={(option) => option?.Name}
-                            renderInput={(params) => (
-                                <TextField
-                                    onChange={() => null}
-                                    {...params}
-                                    label="Mode de paiement"
+                <Box mt={2} display="flex" justifyContent="space-between">
+                {isEditMode &&
+                            <><Box mr={2} width={240}><TextField
+                                value={ref}
+                                onChange={({ target: { value } }) => setRef(value)}
+                                variant="outlined"
+                                fullWidth
+                                size="small"
+                                label="Référence"
+                                type="number"
+                            /></Box>
+                                <Box width={240}> <TextField
+                                    value={numDoc}
+                                    disabled
+                                    fullWidth
+                                    onChange={({ target: { value } }) => setNumDoc(value)}
                                     variant="outlined"
-                                    inputProps={{
-                                        ...params.inputProps,
-                                        autoComplete: 'new-password',
-                                        type: 'search',
-                                        margin: 'normal'
-                                    }}
+                                    size="small"
+                                    label="N#"
                                 />
-                            )}
-                        />
-                    </Box>}
+                                </Box>
+                            </>
+                        }
                 </Box>
                 <Box mt={4}>
                     <Box>
@@ -336,7 +279,7 @@ const BonLivraison = () => {
                     <Table
                         columns={columns}
                         data={data}
-                        owner={client}
+                        owner={fournisseur}
                         updateMyData={updateMyData}
                         deleteRow={deleteRow}
                         skipPageReset={skipPageReset}
@@ -345,7 +288,7 @@ const BonLivraison = () => {
                     {errors.table && <Error>
                         {errors.table}
                     </Error>}
-                    <TotalText total={total} discount={discount} />
+                    <TotalText total={total} />
                     <Box width={340}>
                         <TextField
                             value={note}
@@ -353,7 +296,7 @@ const BonLivraison = () => {
                             multiline
                             rows={3}
                             variant="outlined"
-                            placeholder="Message à afficher sur le bon..."
+                            placeholder="Message à afficher sur le bon de commande..."
                             size="small"
                             fullWidth
                         />
@@ -370,4 +313,4 @@ const BonLivraison = () => {
     )
 }
 
-export default BonLivraison;
+export default BonCommande;

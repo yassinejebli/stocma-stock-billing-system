@@ -66,6 +66,16 @@ namespace WebApplication1.Migrations
                 context.SaveChanges();
             }
 
+            var bonAvoirVentes = context.BonAvoirCs.Where(x => x.IdSite == null);
+            if (bonAvoirVentes.Count() > 0)
+            {
+                foreach (var b in bonAvoirVentes)
+                {
+                    b.IdSite = 1;
+                }
+                context.SaveChanges();
+            }
+
             var devises = context.Devises.Where(x => x.IdSite == null);
             if (devises.Count() > 0)
             {

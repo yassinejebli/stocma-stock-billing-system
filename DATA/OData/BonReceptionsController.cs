@@ -15,21 +15,6 @@ using WebApplication1.DATA;
 
 namespace WebApplication1.DATA.OData
 {
-    /*
-    The WebApiConfig class may require additional changes to add a route for this controller. Merge these statements into the Register method of the WebApiConfig class as applicable. Note that OData URLs are case sensitive.
-
-    using System.Web.Http.OData.Builder;
-    using System.Web.Http.OData.Extensions;
-    using WebApplication1.DATA;
-    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<BonReception>("BonReceptions");
-    builder.EntitySet<BonAvoir>("BonAvoirs"); 
-    builder.EntitySet<BonReceptionItem>("BonReceptionItems"); 
-    builder.EntitySet<FactureF>("FactureFs"); 
-    builder.EntitySet<Fournisseur>("Fournisseurs"); 
-    builder.EntitySet<PaiementF>("PaiementFs"); 
-    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-    */
     public class BonReceptionsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
@@ -64,8 +49,6 @@ namespace WebApplication1.DATA.OData
                 return NotFound();
             }
 
-
-            /////////////////////////////////////////////
             //----------------------------------------------Updating QteStock
             foreach (var biOld in bonReception.BonReceptionItems)
             {
@@ -78,12 +61,12 @@ namespace WebApplication1.DATA.OData
                 articleSite.QteStock += biNew.Qte;
             }
 
-
             //-----------------------------------------------Updating document items
             db.BonReceptionItems.RemoveRange(bonReception.BonReceptionItems);
             db.BonReceptionItems.AddRange(newBonReception.BonReceptionItems);
             bonReception.ModificationDate = DateTime.Now;
             bonReception.Date = newBonReception.Date;
+            bonReception.NumBon = newBonReception.NumBon;
 
             //-----------------------------------------------Updating payment
             var payment = db.PaiementFs.FirstOrDefault(x => x.IdBonReception == bonReception.Id);

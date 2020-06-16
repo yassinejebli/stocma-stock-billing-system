@@ -40,11 +40,11 @@ namespace WebApplication1.DATA
         }
 
         //TODO
-        /*[NotMapped]
+        [NotMapped]
         public float SoldeFacture
         {
-            get { return (PaiementFactures != null) ? PaiementFactures.Sum(x => x.Debit - x.Credit) : 0; }
-        }*/
+            get { return (PaiementFactureFs != null) ? PaiementFactureFs.Sum(x => x.Debit - x.Credit) : 0; }
+        }
         public virtual ICollection<BonReception> BonReceptions { get; set; }
 
         public virtual ICollection<BonAvoir> BonAvoirs { get; set; }
@@ -52,6 +52,7 @@ namespace WebApplication1.DATA
         public virtual ICollection<BonCommande> BonCommandes { get; set; }
 
         public virtual ICollection<PaiementF> PaiementFs { get; set; }
+        public virtual ICollection<PaiementFactureF> PaiementFactureFs { get; set; }
         public virtual ICollection<DgbF> DgbFs { get; set; }
         public virtual ICollection<RdbF> RdbFs { get; set; }
         public virtual ICollection<FactureF> FactureFs { get; set; }

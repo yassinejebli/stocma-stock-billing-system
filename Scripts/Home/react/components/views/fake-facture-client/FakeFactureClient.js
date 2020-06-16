@@ -54,7 +54,7 @@ const FakeFacture = () => {
     const [savedDocument, setSavedDocument] = React.useState(null);
     const [paymentType, setPaymentType] = React.useState(null);
     const location = useLocation();
-    const FakeFactureId = qs.parse(location.search, { ignoreQueryPrefix: true }).FakeFactureId;
+    const FakeFactureId = qs.parse(location.search, { ignoreQueryPrefix: true }).FactureId;
     const isEditMode = Boolean(FakeFactureId);
 
 
@@ -333,7 +333,7 @@ const FakeFacture = () => {
                             multiline
                             rows={3}
                             variant="outlined"
-                            placeholder="Message à afficher sur le facture..."
+                            placeholder="Message à afficher sur la facture..."
                             size="small"
                             fullWidth
                         />

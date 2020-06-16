@@ -123,6 +123,7 @@ namespace WebApplication1
             
             //invoice & payment
             conventionModelBuilder.EntitySet<PaiementFacture>("PaiementFactures");
+            conventionModelBuilder.EntitySet<PaiementFactureF>("PaiementFactureFs");
 
             /////////
             //conventionModelBuilder.Entity<Article>().Collection.Action("ArticlesGaz");
@@ -138,6 +139,9 @@ namespace WebApplication1
             conventionModelBuilder.StructuralTypes
                 .First(t => t.ClrType == typeof(Fournisseur))
                 .AddProperty(typeof(Fournisseur).GetProperty("Solde"));
+            conventionModelBuilder.StructuralTypes
+               .First(t => t.ClrType == typeof(Fournisseur))
+               .AddProperty(typeof(Fournisseur).GetProperty("SoldeFacture"));
             conventionModelBuilder.StructuralTypes
                 .First(t => t.ClrType == typeof(Article))
                 .AddProperty(typeof(Article).GetProperty("QteStockSum"));

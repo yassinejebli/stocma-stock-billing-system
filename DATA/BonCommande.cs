@@ -18,7 +18,6 @@ namespace WebApplication1.DATA
         [Required]
         public int Ref { get; set; }
 
-        [Required]
         public string NumBon { get; set; }
 
         public DateTime Date { get; set; }

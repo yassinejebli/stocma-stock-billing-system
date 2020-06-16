@@ -170,8 +170,6 @@ namespace WebApplication1.DATA.OData
             }
             var bonLivraisonWithItems = db.BonLivraisons.Where(x=>x.Id == bonLivraison.Id);
             return Content(HttpStatusCode.Created, SingleResult.Create(bonLivraisonWithItems));
-
-            //return (IHttpActionResult)this.Created(bonLivraisonWithItems);
         }
 
         public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)

@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class BonCommandeChiffreSUIV : ReportClass {
+    public class BonAvoirVente : ReportClass {
         
-        public BonCommandeChiffreSUIV() {
+        public BonAvoirVente() {
         }
         
         public override string ResourceName {
             get {
-                return "BonCommandeChiffreSUIV.rpt";
+                return "BonAvoirVente.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.BonCommandeChiffreSUIV.rpt";
+                return "WebApplication1.CrystalReports.SUIV.BonAvoirVente.rpt";
             }
             set {
                 // Do nothing
@@ -90,7 +90,15 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
+        public CrystalDecisions.CrystalReports.Engine.Section PageFooterSection1 {
+            get {
+                return this.ReportDefinition.Sections[5];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_showStamp {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -98,9 +106,9 @@ namespace WebApplication1.CrystalReports.SUIV {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedBonCommandeChiffreSUIV : Component, ICachedReport {
+    public class CachedBonAvoirVente : Component, ICachedReport {
         
-        public CachedBonCommandeChiffreSUIV() {
+        public CachedBonAvoirVente() {
         }
         
         [Browsable(false)]
@@ -137,7 +145,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            BonCommandeChiffreSUIV rpt = new BonCommandeChiffreSUIV();
+            BonAvoirVente rpt = new BonAvoirVente();
             rpt.Site = this.Site;
             return rpt;
         }

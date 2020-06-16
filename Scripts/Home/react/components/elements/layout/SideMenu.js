@@ -160,7 +160,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Devis" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={()=>history.push('/')}>
+                        <ListItem button className={classes.nested} onClick={()=>history.push('/AvoirVente')}>
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>

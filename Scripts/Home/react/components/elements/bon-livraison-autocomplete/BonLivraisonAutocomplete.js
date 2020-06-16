@@ -6,7 +6,6 @@ import useDebounce from '../../../hooks/useDebounce';
 import { grey } from '@material-ui/core/colors';
 import { formatMoney } from '../../../utils/moneyUtils';
 import { getData } from '../../../queries/crudBuilder';
-import { useSite } from '../../providers/SiteProvider';
 import { format } from 'date-fns';
 
 const useStyles = makeStyles({
@@ -20,7 +19,6 @@ const useStyles = makeStyles({
 });
 
 const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
-  const { siteId } = useSite();
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
   const [bonLivraisons, setBonLivraisons] = React.useState([]);
@@ -34,13 +32,12 @@ const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
         contains: debouncedSearchText
       } : undefined,
       IdClient: clientId ? { eq: { type: 'guid', value: clientId } } : undefined,
-      IdSite: siteId,
       IdFacture: null
     }, ['Facture', 'BonLivraisonItems/Article']).then(response => {
       setLoading(false);
       setBonLivraisons(response.data);
     });
-  }, [debouncedSearchText, siteId, clientId]);
+  }, [debouncedSearchText, clientId]);
 
   const onChangeHandler = async ({ target: { value } }) => {
     setSearchText(value);

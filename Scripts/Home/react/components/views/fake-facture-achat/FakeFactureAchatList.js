@@ -12,15 +12,13 @@ import { TextField } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import useDebounce from '../../../hooks/useDebounce'
 import { useModal } from 'react-modal-hook'
-import PrintBR from '../../elements/dialogs/documents-print/PrintBR'
-import { useSite } from '../../providers/SiteProvider'
-import { bonReceptionListColumns } from '../../elements/table/columns/bonReceptionColumns'
+import PrintFakeFactureAchat from '../../elements/dialogs/documents-print/PrintFakeFactureAchat'
+import { fakeFactureAchatListColumns } from '../../elements/table/columns/fakeFactureAchatColumns'
 
-const DOCUMENT = 'BonReceptions'
-const EXPAND = ['Fournisseur', 'BonReceptionItems']
+const DOCUMENT = 'FakeFactureFs'
+const EXPAND = ['Fournisseur', 'FakeFactureFItems']
 
-const BonReceptionList = () => {
-    const { siteId } = useSite();
+const FakeFactureAchatList = () => {
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -28,7 +26,6 @@ const BonReceptionList = () => {
     const filters = React.useMemo(() => {
         return {
             and: [
-                { IdSite: siteId },
                 {
                     or: {
                         'Fournisseur/Name': {
@@ -41,7 +38,7 @@ const BonReceptionList = () => {
                 }
             ]
         }
-    }, [debouncedSearchText, siteId]);
+    }, [debouncedSearchText]);
 const [data, setData] = React.useState([]);
 const [loading, setLoading] = React.useState(false);
 const [totalItems, setTotalItems] = React.useState(0);
@@ -50,12 +47,12 @@ const [documentToPrint, setDocumentToPrint] = React.useState(null);
 const history = useHistory();
 const fetchIdRef = React.useRef(0);
 const columns = React.useMemo(
-    () => bonReceptionListColumns(),
+    () => fakeFactureAchatListColumns(),
     []
 );
 const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
     return (
-        <PrintBR
+        <PrintFakeFactureAchat
             onExited={onExited}
             open={open}
             document={documentToPrint}
@@ -97,7 +94,7 @@ const deleteRow = React.useCallback(async (id) => {
 }, [])
 
 const updateRow = React.useCallback(async (id) => {
-    history.push(`BonReception?BonReceptionId=${id}`);
+    history.push(`_FactureAchat?FactureAchatId=${id}`);
 }, []);
 
 
@@ -159,4 +156,4 @@ return (
 )
 }
 
-export default BonReceptionList;
+export default FakeFactureAchatList;

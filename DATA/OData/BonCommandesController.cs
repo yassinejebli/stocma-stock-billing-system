@@ -13,118 +13,142 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.AspNet.OData;
+using WebApplication1.Generators;
 
 namespace WebApplication1.DATA.OData
 {
-  public class BonCommandesController : ODataController
-  {
-    private MySaniSoftContext db = new MySaniSoftContext();
-
-    [EnableQuery]
-    public IQueryable<BonCommande> GetBonCommandes()
+    public class BonCommandesController : ODataController
     {
-      return (IQueryable<BonCommande>) this.db.BonCommandes;
-    }
+        private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
-    public SingleResult<BonCommande> GetBonCommande([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<BonCommande>(this.db.BonCommandes.Where<BonCommande>((Expression<Func<BonCommande, bool>>) (bonCommande => bonCommande.Id == key)));
-    }
+        [EnableQuery]
+        public IQueryable<BonCommande> GetBonCommandes()
+        {
+            return (IQueryable<BonCommande>)this.db.BonCommandes;
+        }
 
-    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<BonCommande> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      BonCommande bonCommande = await this.db.BonCommandes.FindAsync((object) key);
-      if (bonCommande == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Put(bonCommande);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.BonCommandeExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<BonCommande>(bonCommande);
-    }
+        [EnableQuery]
+        public SingleResult<BonCommande> GetBonCommande([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<BonCommande>(this.db.BonCommandes.Where<BonCommande>((Expression<Func<BonCommande, bool>>)(bonCommande => bonCommande.Id == key)));
+        }
 
-    public async Task<IHttpActionResult> Post(BonCommande bonCommande)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      this.db.BonCommandes.Add(bonCommande);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateException ex)
-      {
-        if (this.BonCommandeExists(bonCommande.Id))
-          return (IHttpActionResult) this.Conflict();
-        throw;
-      }
-      return (IHttpActionResult) this.Created<BonCommande>(bonCommande);
-    }
+        [EnableQuery]
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, BonCommande newBonCommande)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            BonCommande bonCommande = await this.db.BonCommandes.FindAsync((object)key);
+            if (bonCommande == null)
+                return (IHttpActionResult)this.NotFound();
 
-    [AcceptVerbs(new string[] {"PATCH", "MERGE"})]
-    public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonCommande> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      BonCommande bonCommande = await this.db.BonCommandes.FindAsync((object) key);
-      if (bonCommande == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Patch(bonCommande);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.BonCommandeExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<BonCommande>(bonCommande);
-    }
+            db.BonCommandeItems.RemoveRange(bonCommande.BonCommandeItems);
+            db.BonCommandeItems.AddRange(newBonCommande.BonCommandeItems);
+            bonCommande.Date = newBonCommande.Date;
+            bonCommande.Ref = newBonCommande.Ref;
+            bonCommande.Note = newBonCommande.Note;
 
-    public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
-    {
-      BonCommande async = await this.db.BonCommandes.FindAsync((object) key);
-      if (async == null)
-        return (IHttpActionResult) this.NotFound();
-      this.db.BonCommandes.Remove(async);
-      int num = await this.db.SaveChangesAsync();
-      return (IHttpActionResult) this.StatusCode(HttpStatusCode.NoContent);
-    }
+            var numBonGenerator = new DocNumberGenerator();
 
-    [EnableQuery]
-    public IQueryable<BonCommandeItem> GetBonCommandeItems([FromODataUri] Guid key)
-    {
-      return this.db.BonCommandes.Where<BonCommande>((Expression<Func<BonCommande, bool>>) (m => m.Id == key)).SelectMany<BonCommande, BonCommandeItem>((Expression<Func<BonCommande, IEnumerable<BonCommandeItem>>>) (m => m.BonCommandeItems));
-    }
+            bonCommande.NumBon = numBonGenerator.getNumDocByCompany(bonCommande.Ref - 1, newBonCommande.Date);
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.BonCommandeExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            var bonCommandeWithItems = db.BonCommandes.Where(x => x.Id == bonCommande.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(bonCommandeWithItems));
+        }
 
-    [EnableQuery]
-    public SingleResult<Fournisseur> GetFournisseur([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<Fournisseur>(this.db.BonCommandes.Where<BonCommande>((Expression<Func<BonCommande, bool>>) (m => m.Id == key)).Select<BonCommande, Fournisseur>((Expression<Func<BonCommande, Fournisseur>>) (m => m.Fournisseur)));
-    }
+        [EnableQuery]
+        public async Task<IHttpActionResult> Post(BonCommande bonCommande)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing)
-        this.db.Dispose();
-      base.Dispose(disposing);
-    }
+            var numBonGenerator = new DocNumberGenerator();
+            var currentYear = DateTime.Now.Year;
+            var lastDoc = db.BonCommandes.Where(x => x.Date.Year == currentYear).OrderByDescending(x => x.Ref).FirstOrDefault();
+            var lastRef = lastDoc != null ? lastDoc.Ref : 0;
+            bonCommande.Ref = lastRef + 1;
+            bonCommande.NumBon = numBonGenerator.getNumDocByCompany(lastRef, bonCommande.Date);
 
-    private bool BonCommandeExists(Guid key)
-    {
-      return this.db.BonCommandes.Count<BonCommande>((Expression<Func<BonCommande, bool>>) (e => e.Id == key)) > 0;
+            this.db.BonCommandes.Add(bonCommande);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (this.BonCommandeExists(bonCommande.Id))
+                    return (IHttpActionResult)this.Conflict();
+                throw;
+            }
+            var bonCommandeWithItems = db.BonCommandes.Where(x => x.Id == bonCommande.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(bonCommandeWithItems));
+        }
+
+        [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
+        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonCommande> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            BonCommande bonCommande = await this.db.BonCommandes.FindAsync((object)key);
+            if (bonCommande == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Patch(bonCommande);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.BonCommandeExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<BonCommande>(bonCommande);
+        }
+
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
+        {
+            BonCommande bonCommande = await this.db.BonCommandes.FindAsync((object)key);
+            if (bonCommande == null)
+                return (IHttpActionResult)this.NotFound();
+
+            db.BonCommandeItems.RemoveRange(bonCommande.BonCommandeItems);
+            db.BonCommandes.Remove(bonCommande);
+            await db.SaveChangesAsync();
+            return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
+        }
+
+        [EnableQuery]
+        public IQueryable<BonCommandeItem> GetBonCommandeItems([FromODataUri] Guid key)
+        {
+            return this.db.BonCommandes.Where<BonCommande>((Expression<Func<BonCommande, bool>>)(m => m.Id == key)).SelectMany<BonCommande, BonCommandeItem>((Expression<Func<BonCommande, IEnumerable<BonCommandeItem>>>)(m => m.BonCommandeItems));
+        }
+
+        [EnableQuery]
+        public SingleResult<Fournisseur> GetFournisseur([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<Fournisseur>(this.db.BonCommandes.Where<BonCommande>((Expression<Func<BonCommande, bool>>)(m => m.Id == key)).Select<BonCommande, Fournisseur>((Expression<Func<BonCommande, Fournisseur>>)(m => m.Fournisseur)));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                this.db.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private bool BonCommandeExists(Guid key)
+        {
+            return this.db.BonCommandes.Count<BonCommande>((Expression<Func<BonCommande, bool>>)(e => e.Id == key)) > 0;
+        }
     }
-  }
 }

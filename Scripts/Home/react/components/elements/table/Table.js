@@ -13,6 +13,8 @@ const border = '1px solid #d8d8d8';
 
 const useStyles = makeStyles(theme => ({
     root: {
+        borderCollapse: 'separate',
+        borderSpacing: '4px 0',
         '& tbody, textarea':{
             fontSize: '13px !important'
         },

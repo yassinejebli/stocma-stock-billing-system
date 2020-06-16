@@ -12,7 +12,6 @@ import { TextField, Button } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import useDebounce from '../../../hooks/useDebounce'
 import { useModal } from 'react-modal-hook'
-import { useSite } from '../../providers/SiteProvider'
 import { factureListColumns } from '../../elements/table/columns/factureColumns'
 import PrintFacture from '../../elements/dialogs/documents-print/PrintFacture'
 import AddIcon from '@material-ui/icons/Add';
@@ -21,7 +20,6 @@ const DOCUMENT = 'Factures'
 const EXPAND = ['Client', 'TypePaiement', 'BonLivraisons/BonLivraisonItems/Article']
 
 const FactureList = () => {
-    const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -29,7 +27,6 @@ const FactureList = () => {
     const filters = React.useMemo(() => {
         return {
             and: [
-                { IdSite: siteId },
                 {
                     or: {
                         'Client/Name': {
@@ -42,7 +39,7 @@ const FactureList = () => {
                 }
             ]
         }
-    }, [debouncedSearchText, siteId]);
+    }, [debouncedSearchText]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
@@ -141,7 +138,7 @@ const FactureList = () => {
             </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <TitleIcon noBorder title="Liste des factures (client)" Icon={DescriptionOutlinedIcon} />
+                    <TitleIcon noBorder title="Liste des factures de vente" Icon={DescriptionOutlinedIcon} />
                     <TextField
                         value={searchText}
                         onChange={({ target: { value } }) => {

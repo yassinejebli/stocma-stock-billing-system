@@ -27,6 +27,21 @@ export const getPrintFakeFactureURL = (params) => {
     return `/Print/FakeFacture?${parsedParams}`
 }
 
+export const getPrintFakeFactureAchatURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/FakeFactureAchat?${parsedParams}`
+}
+
 export const getImageURL = (fileName) => {
     return `/UserFiles/images/articles/${fileName}`;
 };
+
+export const getPrintBonCommandeURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/BonCommande?${parsedParams}`
+}
+
+export const getPrintBonAvoirVenteURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/BonAvoirVente?${parsedParams}`
+}

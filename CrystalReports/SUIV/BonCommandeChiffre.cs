@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.SBCIT {
+namespace WebApplication1.CrystalReports.SUIV {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SBCIT {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class BonCommandeSBCIT : ReportClass {
+    public class BonCommandeChiffre : ReportClass {
         
-        public BonCommandeSBCIT() {
+        public BonCommandeChiffre() {
         }
         
         public override string ResourceName {
             get {
-                return "BonCommandeSBCIT.rpt";
+                return "BonCommandeChiffre.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SBCIT {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SBCIT.BonCommandeSBCIT.rpt";
+                return "WebApplication1.CrystalReports.SUIV.BonCommandeChiffre.rpt";
             }
             set {
                 // Do nothing
@@ -90,7 +90,7 @@ namespace WebApplication1.CrystalReports.SBCIT {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
+        public CrystalDecisions.Shared.IParameterField Parameter_showStamp {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -98,9 +98,9 @@ namespace WebApplication1.CrystalReports.SBCIT {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedBonCommandeSBCIT : Component, ICachedReport {
+    public class CachedBonCommandeChiffre : Component, ICachedReport {
         
-        public CachedBonCommandeSBCIT() {
+        public CachedBonCommandeChiffre() {
         }
         
         [Browsable(false)]
@@ -137,7 +137,7 @@ namespace WebApplication1.CrystalReports.SBCIT {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            BonCommandeSBCIT rpt = new BonCommandeSBCIT();
+            BonCommandeChiffre rpt = new BonCommandeChiffre();
             rpt.Site = this.Site;
             return rpt;
         }

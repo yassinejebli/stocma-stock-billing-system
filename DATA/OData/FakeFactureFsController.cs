@@ -8,6 +8,7 @@ using Microsoft.AspNet.OData;
 
 namespace WebApplication1.DATA.OData
 {
+    [Authorize]
     public class FakeFactureFsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
@@ -27,10 +28,9 @@ namespace WebApplication1.DATA.OData
         }
 
         // PUT: odata/FakeFactureFs(5)
-        public IHttpActionResult Put([FromODataUri] Guid key, Delta<FakeFactureF> patch)
+        [EnableQuery]
+        public IHttpActionResult Put([FromODataUri] Guid key, FakeFactureF newFakeFactureF)
         {
-            
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -42,7 +42,26 @@ namespace WebApplication1.DATA.OData
                 return NotFound();
             }
 
-            patch.Put(fakeFactureF);
+            fakeFactureF.Date = newFakeFactureF.Date;
+            fakeFactureF.NumBon = newFakeFactureF.NumBon;
+            fakeFactureF.IdTypePaiement = newFakeFactureF.IdTypePaiement;
+            fakeFactureF.Comment = newFakeFactureF.Comment;
+
+            //----------------------------------------------Updating QteStock
+            foreach (var fiOld in fakeFactureF.FakeFactureFItems)
+            {
+                var article = db.ArticleFactures.Find(fiOld.IdArticleFacture);
+                article.QteStock -= fiOld.Qte;
+            }
+            foreach (var fiNew in newFakeFactureF.FakeFactureFItems)
+            {
+                var article = db.ArticleFactures.Find(fiNew.IdArticleFacture);
+                article.QteStock += fiNew.Qte;
+            }
+
+            //-----------------------------------------------Updating document items
+            db.FakeFactureFItems.RemoveRange(fakeFactureF.FakeFactureFItems);
+            db.FakeFactureFItems.AddRange(newFakeFactureF.FakeFactureFItems);
 
             try
             {
@@ -59,16 +78,23 @@ namespace WebApplication1.DATA.OData
                     throw;
                 }
             }
-
-            return Updated(fakeFactureF);
+            var fakeFactureFWithItems = db.FakeFacturesF.Where(x => x.Id == fakeFactureF.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(fakeFactureFWithItems));
         }
 
-        // POST: odata/FakeFactureFs
+        [EnableQuery]
         public IHttpActionResult Post(FakeFactureF fakeFactureF)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            //-------------------------------------------updating QteStock
+            foreach (var fi in fakeFactureF.FakeFactureFItems)
+            {
+                var article = db.ArticleFactures.Find(fi.IdArticleFacture);
+                article.QteStock += fi.Qte;
             }
 
             db.FakeFacturesF.Add(fakeFactureF);
@@ -89,7 +115,8 @@ namespace WebApplication1.DATA.OData
                 }
             }
 
-            return Created(fakeFactureF);
+            var fakeFactureFWithItems = db.FakeFacturesF.Where(x => x.Id == fakeFactureF.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(fakeFactureFWithItems));
         }
 
         // PATCH: odata/FakeFactureFs(5)
@@ -138,7 +165,13 @@ namespace WebApplication1.DATA.OData
             {
                 return NotFound();
             }
+            foreach (var fi in fakeFactureF.FakeFactureFItems)
+            {
+                var article = db.ArticleFactures.Find(fi.IdArticleFacture);
+                article.QteStock -= fi.Qte;
+            }
 
+            db.FakeFactureFItems.RemoveRange(fakeFactureF.FakeFactureFItems);
             db.FakeFacturesF.Remove(fakeFactureF);
             db.SaveChanges();
 

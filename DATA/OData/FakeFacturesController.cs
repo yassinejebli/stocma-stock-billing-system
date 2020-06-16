@@ -17,6 +17,7 @@ using WebApplication1.Generators;
 
 namespace WebApplication1.DATA.OData
 {
+    [Authorize]
     public class FakeFacturesController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
@@ -56,10 +57,21 @@ namespace WebApplication1.DATA.OData
 
             fakeFacture.NumBon = numBonGenerator.getNumDocByCompany(newFakeFacture.Ref - 1, newFakeFacture.Date);
 
+            //----------------------------------------------Updating QteStock
+            foreach (var fiOld in fakeFacture.FakeFactureItems)
+            {
+                var article = db.ArticleFactures.Find(fiOld.IdArticleFacture);
+                article.QteStock += fiOld.Qte;
+            }
+            foreach (var fiNew in newFakeFacture.FakeFactureItems)
+            {
+                var article = db.ArticleFactures.Find(fiNew.IdArticleFacture);
+                article.QteStock -= fiNew.Qte;
+            }
 
             try
             {
-               await db.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -84,10 +96,17 @@ namespace WebApplication1.DATA.OData
             var lastRef = lastDoc != null ? lastDoc.Ref : 0;
             fakeFacture.Ref = lastRef + 1;
             fakeFacture.NumBon = numBonGenerator.getNumDocByCompany(lastRef, fakeFacture.Date);
+            //-------------------------------------------updating QteStock
+            foreach (var fi in fakeFacture.FakeFactureItems)
+            {
+                var article = db.ArticleFactures.Find(fi.IdArticleFacture);
+                article.QteStock -= fi.Qte;
+            }
+
             this.db.FakeFactures.Add(fakeFacture);
             try
             {
-                int num = await this.db.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
@@ -126,8 +145,17 @@ namespace WebApplication1.DATA.OData
             FakeFacture async = await this.db.FakeFactures.FindAsync((object)key);
             if (async == null)
                 return (IHttpActionResult)this.NotFound();
-            this.db.FakeFactures.Remove(async);
-            int num = await this.db.SaveChangesAsync();
+
+            //--------------------------updating QteStock
+            foreach (var fi in async.FakeFactureItems)
+            {
+                var article = db.ArticleFactures.Find(fi.IdArticleFacture);
+                article.QteStock += fi.Qte;
+            }
+
+            db.FakeFactureItems.RemoveRange(async.FakeFactureItems);
+            db.FakeFactures.Remove(async);
+            await db.SaveChangesAsync();
             return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
         }
 

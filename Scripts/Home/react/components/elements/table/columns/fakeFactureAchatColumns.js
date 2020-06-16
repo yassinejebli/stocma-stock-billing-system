@@ -116,7 +116,7 @@ export const fakeFactureAchatListColumns = () => ([
         type: inputTypes.text.description,
         width: 30,
         accessor: (props) => {
-            const total = props.BonReceptionItems.reduce((sum, curr) => (
+            const total = props.FakeFactureFItems.reduce((sum, curr) => (
                 sum += curr.Pu * curr.Qte
             ), 0);
             return formatMoney(total);
@@ -129,9 +129,9 @@ export const fakeFactureAchatListColumns = () => ([
         Cell: ({ row: { original }, updateRow, deleteRow, print }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
-                    <IconButton tabIndex={-1} size="small" onClick={() => print(original)}>
+                    {/* <IconButton tabIndex={-1} size="small" onClick={() => print(original)}>
                         <PrintOutlinedIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original.Id)}>
                         <EditOutlinedIcon />
                     </IconButton>

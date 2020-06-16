@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.SUIV {
+namespace WebApplication1.CrystalReports.SBCIT {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class BonCommandeSUIV : ReportClass {
+    public class BonCommandeChiffre : ReportClass {
         
-        public BonCommandeSUIV() {
+        public BonCommandeChiffre() {
         }
         
         public override string ResourceName {
             get {
-                return "BonCommandeSUIV.rpt";
+                return "BonCommandeChiffre.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.BonCommandeSUIV.rpt";
+                return "WebApplication1.CrystalReports.SBCIT.BonCommandeChiffre.rpt";
             }
             set {
                 // Do nothing
@@ -90,7 +90,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
+        public CrystalDecisions.Shared.IParameterField Parameter_showStamp {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -98,9 +98,9 @@ namespace WebApplication1.CrystalReports.SUIV {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedBonCommandeSUIV : Component, ICachedReport {
+    public class CachedBonCommandeChiffre : Component, ICachedReport {
         
-        public CachedBonCommandeSUIV() {
+        public CachedBonCommandeChiffre() {
         }
         
         [Browsable(false)]
@@ -137,7 +137,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            BonCommandeSUIV rpt = new BonCommandeSUIV();
+            BonCommandeChiffre rpt = new BonCommandeChiffre();
             rpt.Site = this.Site;
             return rpt;
         }

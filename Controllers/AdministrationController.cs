@@ -2387,8 +2387,7 @@ namespace WebApplication1.Controllers
             
             reportDocument.SetDataSource(
                 (IEnumerable)
-                this.context.BonCommandeItems.Where<BonCommandeItem>(
-                    (Expression<Func<BonCommandeItem, bool>>) (x => x.BonCommande.Id == IdBonCommande)).Select(x => new
+                this.context.BonCommandeItems.Where(x => x.BonCommande.Id == IdBonCommande).Select(x => new
                 {
                         NumBon = x.BonCommande.NumBon,
                         Date = x.BonCommande.Date,

@@ -3,10 +3,12 @@ import IframeDialog from '../IframeDialog';
 import { Box, FormControlLabel, Switch } from '@material-ui/core';
 import { getPrintBonLivraisonURL } from '../../../../utils/urlBuilder';
 import PaiementClientForm from '../../forms/PaiementClientForm';
+import { useSite } from '../../../providers/SiteProvider';
 
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
 
 const PrintBL = ({document, onClose, onExited, open}) => {
+    const {useVAT} = useSite();
     const [showForm, setShowForm] = React.useState(false);
     const [bigFormat, setBigFormat] = React.useState(document?.WithDiscount);
     const [showBalance, setShowBalance] = React.useState(false);
@@ -42,12 +44,12 @@ const PrintBL = ({document, onClose, onExited, open}) => {
                                         onChange={(_, checked) => setHidePrices(checked)} />}
                                     label="Cacher les prix"
                                 />
-                                <FormControlLabel
+                                {!useVAT&&<FormControlLabel
                                     control={<Switch
                                         checked={showBalance}
                                         onChange={(_, checked) => setShowBalance(checked)} />}
                                     label="Afficher le solde"
-                                />
+                                />}
                                 <FormControlLabel
                                     control={<Switch
                                         checked={showStamp}

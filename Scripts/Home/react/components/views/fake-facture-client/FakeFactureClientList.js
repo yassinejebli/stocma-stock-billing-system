@@ -96,7 +96,7 @@ const FakeFactureClientList = () => {
     }, [])
 
     const updateRow = React.useCallback(async (id) => {
-        history.push(`_Facture?FakeFactureId=${id}`);
+        history.push(`_Facture?FactureId=${id}`);
     }, []);
 
 

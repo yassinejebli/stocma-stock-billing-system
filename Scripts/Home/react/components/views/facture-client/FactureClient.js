@@ -59,7 +59,7 @@ const Facture = () => {
         Article: y.Article,
         Qte: y.Qte,
         Pu: y.Pu,
-        Description: 'BL ' + x.NumBon,
+        Description: x.NumBon,
         Discount: y.Discount ? y.Discount + (y.PercentageDiscount ? '%' : '') : ''
     }))));
     const discount = data.reduce((sum, curr) => {

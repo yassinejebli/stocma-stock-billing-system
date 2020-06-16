@@ -13,124 +13,219 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.AspNet.OData;
+using WebApplication1.Generators;
 
 namespace WebApplication1.DATA.OData
 {
-  public class BonAvoirCsController : ODataController
-  {
-    private MySaniSoftContext db = new MySaniSoftContext();
-
-    [EnableQuery]
-    public IQueryable<BonAvoirC> GetBonAvoirCs()
+    [Authorize]
+    public class BonAvoirCsController : ODataController
     {
-      return (IQueryable<BonAvoirC>) this.db.BonAvoirCs;
-    }
+        private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
-    public SingleResult<BonAvoirC> GetBonAvoirC([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<BonAvoirC>(this.db.BonAvoirCs.Where<BonAvoirC>((Expression<Func<BonAvoirC, bool>>) (bonAvoirC => bonAvoirC.Id == key)));
-    }
+        [EnableQuery]
+        public IQueryable<BonAvoirC> GetBonAvoirCs()
+        {
+            return (IQueryable<BonAvoirC>)this.db.BonAvoirCs;
+        }
 
-    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<BonAvoirC> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      BonAvoirC bonAvoirC = await this.db.BonAvoirCs.FindAsync((object) key);
-      if (bonAvoirC == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Put(bonAvoirC);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.BonAvoirCExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<BonAvoirC>(bonAvoirC);
-    }
+        [EnableQuery]
+        public SingleResult<BonAvoirC> GetBonAvoirC([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<BonAvoirC>(this.db.BonAvoirCs.Where<BonAvoirC>((Expression<Func<BonAvoirC, bool>>)(bonAvoirC => bonAvoirC.Id == key)));
+        }
 
-    public async Task<IHttpActionResult> Post(BonAvoirC bonAvoirC)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      this.db.BonAvoirCs.Add(bonAvoirC);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateException ex)
-      {
-        if (this.BonAvoirCExists(bonAvoirC.Id))
-          return (IHttpActionResult) this.Conflict();
-        throw;
-      }
-      return (IHttpActionResult) this.Created<BonAvoirC>(bonAvoirC);
-    }
+        [EnableQuery]
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, BonAvoirC newBonAvoiC)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            BonAvoirC bonAvoirC = await this.db.BonAvoirCs.FindAsync((object)key);
+            if (bonAvoirC == null)
+                return (IHttpActionResult)this.NotFound();
 
-    [AcceptVerbs(new string[] {"PATCH", "MERGE"})]
-    public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonAvoirC> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      BonAvoirC bonAvoirC = await this.db.BonAvoirCs.FindAsync((object) key);
-      if (bonAvoirC == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Patch(bonAvoirC);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.BonAvoirCExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<BonAvoirC>(bonAvoirC);
-    }
+            /////////////////////////////////////////////
+            //----------------------------------------------Updating QteStock
+            foreach (var biOld in bonAvoirC.BonAvoirCItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonAvoirC.IdSite && x.IdArticle == biOld.IdArticle);
+                articleSite.QteStock -= biOld.Qte;
+            }
+            foreach (var biNew in newBonAvoiC.BonAvoirCItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == newBonAvoiC.IdSite && x.IdArticle == biNew.IdArticle);
+                articleSite.QteStock += biNew.Qte;
+            }
 
-    public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
-    {
-      BonAvoirC async = await this.db.BonAvoirCs.FindAsync((object) key);
-      if (async == null)
-        return (IHttpActionResult) this.NotFound();
-      this.db.BonAvoirCs.Remove(async);
-      int num = await this.db.SaveChangesAsync();
-      return (IHttpActionResult) this.StatusCode(HttpStatusCode.NoContent);
-    }
 
-    [EnableQuery]
-    public IQueryable<BonAvoirCItem> GetBonAvoirCItems([FromODataUri] Guid key)
-    {
-      return this.db.BonAvoirCs.Where<BonAvoirC>((Expression<Func<BonAvoirC, bool>>) (m => m.Id == key)).SelectMany<BonAvoirC, BonAvoirCItem>((Expression<Func<BonAvoirC, IEnumerable<BonAvoirCItem>>>) (m => m.BonAvoirCItems));
-    }
+            //-----------------------------------------------Updating document items
+            db.BonAvoirCItems.RemoveRange(bonAvoirC.BonAvoirCItems);
+            db.BonAvoirCItems.AddRange(newBonAvoiC.BonAvoirCItems);
 
-    [EnableQuery]
-    public SingleResult<BonLivraison> GetBonLivraison([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<BonLivraison>(this.db.BonAvoirCs.Where<BonAvoirC>((Expression<Func<BonAvoirC, bool>>) (m => m.Id == key)).Select<BonAvoirC, BonLivraison>((Expression<Func<BonAvoirC, BonLivraison>>) (m => m.BonLivraison)));
-    }
+            bonAvoirC.Date = newBonAvoiC.Date;
+            bonAvoirC.Ref = newBonAvoiC.Ref;
+            bonAvoirC.Note = newBonAvoiC.Note;
+            var numBonGenerator = new DocNumberGenerator();
+            bonAvoirC.NumBon = numBonGenerator.getNumDocByCompany(newBonAvoiC.Ref - 1, newBonAvoiC.Date);
 
-    [EnableQuery]
-    public SingleResult<Client> GetClient([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<Client>(this.db.BonAvoirCs.Where<BonAvoirC>((Expression<Func<BonAvoirC, bool>>) (m => m.Id == key)).Select<BonAvoirC, Client>((Expression<Func<BonAvoirC, Client>>) (m => m.Client)));
-    }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing)
-        this.db.Dispose();
-      base.Dispose(disposing);
-    }
+            //-----------------------------------------------Updating payment
+            var company = StatistiqueController.getCompany();
+            var payment = db.Paiements.FirstOrDefault(x => x.IdBonAvoirC == bonAvoirC.Id);
+            var AVOIR_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb8";
+            var Total = newBonAvoiC.BonAvoirCItems.Sum(x => x.Qte * x.Pu);
+            if(company.UseVAT)
+                Total = newBonAvoiC.BonAvoirCItems.Sum(x => (x.Qte * x.Pu) * (1 + (x.Article.TVA ?? 20) / 100));
 
-    private bool BonAvoirCExists(Guid key)
-    {
-      return this.db.BonAvoirCs.Count<BonAvoirC>((Expression<Func<BonAvoirC, bool>>) (e => e.Id == key)) > 0;
+            if (payment != null)
+            {
+                payment.Debit = Total;
+                payment.Date = bonAvoirC.Date;
+                payment.Comment = "BA " + bonAvoirC.NumBon;
+            }
+            else
+            {
+                Paiement paiement = new Paiement()
+                {
+                    Id = Guid.NewGuid(),
+                    IdBonAvoirC = newBonAvoiC.Id,
+                    IdClient = newBonAvoiC.IdClient,
+                    Debit = Total,
+                    IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
+                    Date = newBonAvoiC.Date
+                };
+                db.Paiements.Add(paiement);
+            }
+            ////////////////////////////////////////////
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.BonAvoirCExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            var bonAvoirWithItems = db.BonAvoirCs.Where(x => x.Id == bonAvoirC.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(bonAvoirWithItems));
+        }
+
+        [EnableQuery]
+        public async Task<IHttpActionResult> Post(BonAvoirC bonAvoirC)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+
+            var numBonGenerator = new DocNumberGenerator();
+            var currentYear = DateTime.Now.Year;
+            var lastDoc = db.BonAvoirCs.Where(x => x.Date.Year == currentYear && x.IdSite == bonAvoirC.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();
+            var lastRef = lastDoc != null ? lastDoc.Ref : 0;
+            bonAvoirC.Ref = lastRef + 1;
+            bonAvoirC.NumBon = numBonGenerator.getNumDocByCompany(lastRef, bonAvoirC.Date);
+
+            //---------------------------Updating Qte stock
+            foreach (var bi in bonAvoirC.BonAvoirCItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bonAvoirC.IdSite);
+                articleSite.QteStock += bi.Qte;
+            }
+
+
+            //-------------------------------Transaction
+            var company = StatistiqueController.getCompany();
+            var AVOIR_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb8";
+            var Total = bonAvoirC.BonAvoirCItems.Sum(x => x.Qte * x.Pu);
+
+            if (company.UseVAT)
+                Total = bonAvoirC.BonAvoirCItems.Sum(x => (x.Qte * x.Pu) * (1 + (x.Article.TVA ?? 20) / 100));
+
+            Paiement paiement = new Paiement()
+            {
+                Id = Guid.NewGuid(),
+                IdBonAvoirC = bonAvoirC.Id,
+                IdClient = bonAvoirC.IdClient,
+                Debit = Total,
+                IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
+                Date = bonAvoirC.Date,
+                Comment = "Avoir " + bonAvoirC.NumBon
+            };
+            db.Paiements.Add(paiement);
+
+            db.BonAvoirCs.Add(bonAvoirC);
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (this.BonAvoirCExists(bonAvoirC.Id))
+                    return (IHttpActionResult)this.Conflict();
+                throw;
+            }
+            var bonAvoirWithItems = db.BonAvoirCs.Where(x => x.Id == bonAvoirC.Id);
+            return Content(HttpStatusCode.Created, SingleResult.Create(bonAvoirWithItems));
+        }
+
+        [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
+        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonAvoirC> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            BonAvoirC bonAvoirC = await this.db.BonAvoirCs.FindAsync((object)key);
+            if (bonAvoirC == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Patch(bonAvoirC);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.BonAvoirCExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<BonAvoirC>(bonAvoirC);
+        }
+
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
+        {
+            BonAvoirC async = await this.db.BonAvoirCs.FindAsync((object)key);
+            if (async == null)
+                return (IHttpActionResult)this.NotFound();
+            this.db.BonAvoirCs.Remove(async);
+            int num = await this.db.SaveChangesAsync();
+            return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
+        }
+
+        [EnableQuery]
+        public IQueryable<BonAvoirCItem> GetBonAvoirCItems([FromODataUri] Guid key)
+        {
+            return this.db.BonAvoirCs.Where<BonAvoirC>((Expression<Func<BonAvoirC, bool>>)(m => m.Id == key)).SelectMany<BonAvoirC, BonAvoirCItem>((Expression<Func<BonAvoirC, IEnumerable<BonAvoirCItem>>>)(m => m.BonAvoirCItems));
+        }
+
+        [EnableQuery]
+        public SingleResult<BonLivraison> GetBonLivraison([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<BonLivraison>(this.db.BonAvoirCs.Where<BonAvoirC>((Expression<Func<BonAvoirC, bool>>)(m => m.Id == key)).Select<BonAvoirC, BonLivraison>((Expression<Func<BonAvoirC, BonLivraison>>)(m => m.BonLivraison)));
+        }
+
+        [EnableQuery]
+        public SingleResult<Client> GetClient([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<Client>(this.db.BonAvoirCs.Where<BonAvoirC>((Expression<Func<BonAvoirC, bool>>)(m => m.Id == key)).Select<BonAvoirC, Client>((Expression<Func<BonAvoirC, Client>>)(m => m.Client)));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                this.db.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private bool BonAvoirCExists(Guid key)
+        {
+            return this.db.BonAvoirCs.Count<BonAvoirC>((Expression<Func<BonAvoirC, bool>>)(e => e.Id == key)) > 0;
+        }
     }
-  }
 }
