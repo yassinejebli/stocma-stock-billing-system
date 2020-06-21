@@ -34,6 +34,8 @@ import BonCommande from './components/views/bon-commande/BonCommande';
 import BonCommandeList from './components/views/bon-commande/BonCommandeList';
 import BonAvoirVente from './components/views/bon-avoir-vente/BonAvoirVente';
 import BonAvoirVenteList from './components/views/bon-avoir-vente/AvoirVenteList';
+import BonAvoirAchat from './components/views/bon-avoir-achat/BonAvoirAchat';
+import BonAvoirAchatList from './components/views/bon-avoir-achat/BonAvoirAchatList';
 
 const App = () => {
     return (
@@ -47,6 +49,8 @@ const App = () => {
                                     <Switch>
                                         <SideMenu onClose={() => null}>
                                             <Route exact path="/" component={Dashboard} />
+                                            <Route path="/bon-avoir-achat" component={BonAvoirAchat} />
+                                            <Route path="/liste-bon-avoir-achat" component={BonAvoirAchatList} />
                                             <Route path="/bon-avoir-vente" component={BonAvoirVente} />
                                             <Route path="/liste-bon-avoir-vente" component={BonAvoirVenteList} />
                                             <Route path="/BonCommande" component={BonCommande} />

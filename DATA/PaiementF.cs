@@ -24,6 +24,7 @@ namespace WebApplication1.DATA
 
         public Guid? IdBonReception { get; set; }
         public Guid? IdFactureF { get; set; }
+        public Guid? IdBonAvoir { get; set; }
 
         [DefaultValue(0)]
         public float Debit { get; set; }
@@ -43,6 +44,7 @@ namespace WebApplication1.DATA
 
         public virtual Fournisseur Fournisseur { get; set; }
         public virtual FactureF FactureF { get; set; }
+        public virtual BonAvoir BonAvoir { get; set; }
 
         public virtual TypePaiement TypePaiement { get; set; }
     }

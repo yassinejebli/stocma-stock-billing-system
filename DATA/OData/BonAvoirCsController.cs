@@ -70,32 +70,58 @@ namespace WebApplication1.DATA.OData
 
             //-----------------------------------------------Updating payment
             var company = StatistiqueController.getCompany();
-            var payment = db.Paiements.FirstOrDefault(x => x.IdBonAvoirC == bonAvoirC.Id);
             var AVOIR_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb8";
-            var Total = newBonAvoiC.BonAvoirCItems.Sum(x => x.Qte * x.Pu);
-            if(company.UseVAT)
-                Total = newBonAvoiC.BonAvoirCItems.Sum(x => (x.Qte * x.Pu) * (1 + (x.Article.TVA ?? 20) / 100));
-
-            if (payment != null)
+            if (company.UseVAT)
             {
-                payment.Debit = Total;
-                payment.Date = bonAvoirC.Date;
-                payment.Comment = "BA " + bonAvoirC.NumBon;
+                var Total = newBonAvoiC.BonAvoirCItems.Sum(x => (x.Qte * x.Pu) * (1 + (db.Articles.Find(x.IdArticle).TVA ?? 20) / 100));
+                var payment = db.PaiementFactures.FirstOrDefault(x => x.IdBonAvoirC == bonAvoirC.Id);
+                if (payment != null)
+                {
+                    payment.Credit = Total;
+                    payment.Date = bonAvoirC.Date;
+                    payment.Comment = "Avoir " + bonAvoirC.NumBon;
+                }
+                else
+                {
+                    PaiementFacture paiement = new PaiementFacture()
+                    {
+                        Id = Guid.NewGuid(),
+                        IdBonAvoirC = newBonAvoiC.Id,
+                        IdClient = newBonAvoiC.IdClient,
+                        Credit = Total,
+                        IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
+                        Date = newBonAvoiC.Date
+                    };
+                    db.PaiementFactures.Add(paiement);
+                }
             }
             else
             {
-                Paiement paiement = new Paiement()
+                var payment = db.Paiements.FirstOrDefault(x => x.IdBonAvoirC == bonAvoirC.Id);
+                var Total = newBonAvoiC.BonAvoirCItems.Sum(x => x.Qte * x.Pu);
+                if (payment != null)
                 {
-                    Id = Guid.NewGuid(),
-                    IdBonAvoirC = newBonAvoiC.Id,
-                    IdClient = newBonAvoiC.IdClient,
-                    Debit = Total,
-                    IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
-                    Date = newBonAvoiC.Date
-                };
-                db.Paiements.Add(paiement);
+                    payment.Credit = Total;
+                    payment.Date = bonAvoirC.Date;
+                    payment.Comment = "BA " + bonAvoirC.NumBon;
+                }
+                else
+                {
+                    Paiement paiement = new Paiement()
+                    {
+                        Id = Guid.NewGuid(),
+                        IdBonAvoirC = newBonAvoiC.Id,
+                        IdClient = newBonAvoiC.IdClient,
+                        Credit = Total,
+                        IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
+                        Date = newBonAvoiC.Date
+                    };
+                    db.Paiements.Add(paiement);
+                }
             }
             ////////////////////////////////////////////
+
+
             try
             {
                 int num = await this.db.SaveChangesAsync();
@@ -130,26 +156,41 @@ namespace WebApplication1.DATA.OData
                 articleSite.QteStock += bi.Qte;
             }
 
-
-            //-------------------------------Transaction
+            //----------------------------Transaction
             var company = StatistiqueController.getCompany();
             var AVOIR_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb8";
-            var Total = bonAvoirC.BonAvoirCItems.Sum(x => x.Qte * x.Pu);
 
             if (company.UseVAT)
-                Total = bonAvoirC.BonAvoirCItems.Sum(x => (x.Qte * x.Pu) * (1 + (x.Article.TVA ?? 20) / 100));
-
-            Paiement paiement = new Paiement()
             {
-                Id = Guid.NewGuid(),
-                IdBonAvoirC = bonAvoirC.Id,
-                IdClient = bonAvoirC.IdClient,
-                Debit = Total,
-                IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
-                Date = bonAvoirC.Date,
-                Comment = "Avoir " + bonAvoirC.NumBon
-            };
-            db.Paiements.Add(paiement);
+                var Total = bonAvoirC.BonAvoirCItems.Sum(x => (x.Qte * x.Pu) * (1 + (db.Articles.Find(x.IdArticle).TVA ?? 20) / 100));
+                PaiementFacture paiement = new PaiementFacture()
+                {
+                    Id = Guid.NewGuid(),
+                    IdBonAvoirC = bonAvoirC.Id,
+                    IdClient = bonAvoirC.IdClient,
+                    Credit = Total,
+                    IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
+                    Date = bonAvoirC.Date,
+                    Comment = "Avoir " + bonAvoirC.NumBon
+                };
+                db.PaiementFactures.Add(paiement);
+            }
+            else
+            {
+                var Total = bonAvoirC.BonAvoirCItems.Sum(x => x.Qte * x.Pu);
+                Paiement paiement = new Paiement()
+                {
+                    Id = Guid.NewGuid(),
+                    IdBonAvoirC = bonAvoirC.Id,
+                    IdClient = bonAvoirC.IdClient,
+                    Credit = Total,
+                    IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
+                    Date = bonAvoirC.Date,
+                    Comment = "Avoir " + bonAvoirC.NumBon
+                };
+                db.Paiements.Add(paiement);
+            }
+
 
             db.BonAvoirCs.Add(bonAvoirC);
             try
@@ -193,9 +234,20 @@ namespace WebApplication1.DATA.OData
             BonAvoirC async = await this.db.BonAvoirCs.FindAsync((object)key);
             if (async == null)
                 return (IHttpActionResult)this.NotFound();
-            this.db.BonAvoirCs.Remove(async);
-            int num = await this.db.SaveChangesAsync();
-            return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
+
+            //--------------------------updating QteStock
+            foreach (var bi in async.BonAvoirCItems)
+            {
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == async.IdSite && x.IdArticle == bi.IdArticle);
+                articleSite.QteStock -= bi.Qte;
+            }
+
+            db.Paiements.RemoveRange(async.Paiements);
+            db.PaiementFactures.RemoveRange(async.PaiementFactures);
+            db.BonAvoirCItems.RemoveRange(async.BonAvoirCItems);
+            db.BonAvoirCs.Remove(async);
+            await db.SaveChangesAsync();
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
         [EnableQuery]

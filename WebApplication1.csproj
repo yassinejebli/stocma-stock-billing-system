@@ -657,8 +657,8 @@
       <DependentUpon>MiniBonReceptionEAS.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\SBCIT\BonAvoirCSBCIT.cs">
-      <DependentUpon>BonAvoirCSBCIT.rpt</DependentUpon>
+    <Compile Include="CrystalReports\SBCIT\BonAvoirVente.cs">
+      <DependentUpon>BonAvoirVente.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
@@ -1241,6 +1241,18 @@
     <Compile Include="Migrations\202006141335551_AvoirC_Paiement.cs" />
     <Compile Include="Migrations\202006141335551_AvoirC_Paiement.designer.cs">
       <DependentUpon>202006141335551_AvoirC_Paiement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006161905099_PaiementFacture_BonAvoirC.cs" />
+    <Compile Include="Migrations\202006161905099_PaiementFacture_BonAvoirC.designer.cs">
+      <DependentUpon>202006161905099_PaiementFacture_BonAvoirC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006181112092_PaiementFactureF_BonAvoir_Site.cs" />
+    <Compile Include="Migrations\202006181112092_PaiementFactureF_BonAvoir_Site.designer.cs">
+      <DependentUpon>202006181112092_PaiementFactureF_BonAvoir_Site.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006181133054_BonReception_Optional_BonAvoir.cs" />
+    <Compile Include="Migrations\202006181133054_BonReception_Optional_BonAvoir.designer.cs">
+      <DependentUpon>202006181133054_BonReception_Optional_BonAvoir.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3664,9 +3676,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionEAS1.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\BonAvoirCSBCIT.rpt">
+    <EmbeddedResource Include="CrystalReports\SBCIT\BonAvoirVente.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BonAvoirCSBCIT.cs</LastGenOutput>
+      <LastGenOutput>BonAvoirVente.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\SBCIT\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -3995,6 +4007,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006141335551_AvoirC_Paiement.resx">
       <DependentUpon>202006141335551_AvoirC_Paiement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006161905099_PaiementFacture_BonAvoirC.resx">
+      <DependentUpon>202006161905099_PaiementFacture_BonAvoirC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006181112092_PaiementFactureF_BonAvoir_Site.resx">
+      <DependentUpon>202006181112092_PaiementFactureF_BonAvoir_Site.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006181133054_BonReception_Optional_BonAvoir.resx">
+      <DependentUpon>202006181133054_BonReception_Optional_BonAvoir.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

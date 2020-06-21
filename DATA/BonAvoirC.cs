@@ -36,5 +36,6 @@ namespace WebApplication1.DATA
 
         public virtual ICollection<BonAvoirCItem> BonAvoirCItems { get; set; }
         public virtual ICollection<Paiement> Paiements { get; set; }
+        public virtual ICollection<PaiementFacture> PaiementFactures { get; set; }
     }
 }
