@@ -38,6 +38,7 @@ import BonAvoirAchat from './components/views/bon-avoir-achat/BonAvoirAchat';
 import BonAvoirAchatList from './components/views/bon-avoir-achat/BonAvoirAchatList';
 import StockMouvement from './components/views/stock-mouvement/StockMouvement';
 import StockMouvementList from './components/views/stock-mouvement/StockMouvementList';
+import SuiviVentes from './components/views/ventes/suivi/SuiviVentes';
 
 const App = () => {
     return (
@@ -51,6 +52,7 @@ const App = () => {
                                     <Switch>
                                         <SideMenu onClose={() => null}>
                                             <Route exact path="/" component={Dashboard} />
+                                            <Route path="/suivi-des-ventes" component={SuiviVentes} />
                                             <Route path="/mouvement-stock" component={StockMouvement} />
                                             <Route path="/liste-mouvement-stock" component={StockMouvementList} />
                                             <Route path="/bon-avoir-achat" component={BonAvoirAchat} />

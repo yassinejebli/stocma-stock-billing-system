@@ -1278,6 +1278,7 @@
     </Compile>
     <Compile Include="StatistiqueEspece.cs" />
     <Compile Include="StatistiqueEspeceParMois.cs" />
+    <Compile Include="Suivi\SuiviVentesController.cs" />
     <Compile Include="UserStoreService.cs" />
   </ItemGroup>
   <ItemGroup>

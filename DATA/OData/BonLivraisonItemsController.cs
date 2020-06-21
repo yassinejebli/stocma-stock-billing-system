@@ -1,9 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WebApplication1.DATA.OData.BonLivraisonItemsController
-// Assembly: WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
-// Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
-
+﻿
 using System;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -16,15 +11,16 @@ using WebApplication1.PaimentManager;
 
 namespace WebApplication1.DATA.OData
 {
+    [Authorize]
     public class BonLivraisonItemsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
         private PaymentManager pm = new PaymentManager();
 
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<BonLivraisonItem> GetBonLivraisonItems()
         {
-            return (IQueryable<BonLivraisonItem>)this.db.BonLivraisonItems;
+            return db.BonLivraisonItems.OrderByDescending(x=>x.BonLivraison.Date);
         }
 
         [EnableQuery]
