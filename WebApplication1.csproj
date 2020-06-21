@@ -896,6 +896,9 @@
       <DependentUpon>DataSetSoly.xsd</DependentUpon>
     </Compile>
     <Compile Include="DATA\ArticleSite.cs" />
+    <Compile Include="DATA\OData\StockMouvementsController.cs" />
+    <Compile Include="DATA\StockMouvementItem.cs" />
+    <Compile Include="DATA\StockMouvement.cs" />
     <Compile Include="DATA\OData\ArticlesController.cs" />
     <Compile Include="DATA\OData\ArticleSitesController.cs" />
     <Compile Include="DATA\OData\BonReceptionsController.cs" />
@@ -1254,6 +1257,10 @@
     <Compile Include="Migrations\202006181133054_BonReception_Optional_BonAvoir.designer.cs">
       <DependentUpon>202006181133054_BonReception_Optional_BonAvoir.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006211145222_StockMouvement.cs" />
+    <Compile Include="Migrations\202006211145222_StockMouvement.designer.cs">
+      <DependentUpon>202006211145222_StockMouvement.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FileManagerModel.cs" />
@@ -1302,6 +1309,7 @@
     <Content Include="Content\font\myriadproregular.svg" />
     <Content Include="Content\images\amazon.jpg" />
     <Content Include="Content\images\avatar.jpg" />
+    <Content Include="Content\images\delivery.gif" />
     <Content Include="Content\images\favicon\apple-touch-icon-152x152.png" />
     <Content Include="Content\images\favicon\favicon-32x32.png" />
     <Content Include="Content\images\favicon\mstile-144x144.png" />
@@ -4016,6 +4024,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006181133054_BonReception_Optional_BonAvoir.resx">
       <DependentUpon>202006181133054_BonReception_Optional_BonAvoir.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006211145222_StockMouvement.resx">
+      <DependentUpon>202006211145222_StockMouvement.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

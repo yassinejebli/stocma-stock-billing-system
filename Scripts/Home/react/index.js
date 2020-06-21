@@ -36,6 +36,8 @@ import BonAvoirVente from './components/views/bon-avoir-vente/BonAvoirVente';
 import BonAvoirVenteList from './components/views/bon-avoir-vente/AvoirVenteList';
 import BonAvoirAchat from './components/views/bon-avoir-achat/BonAvoirAchat';
 import BonAvoirAchatList from './components/views/bon-avoir-achat/BonAvoirAchatList';
+import StockMouvement from './components/views/stock-mouvement/StockMouvement';
+import StockMouvementList from './components/views/stock-mouvement/StockMouvementList';
 
 const App = () => {
     return (
@@ -49,6 +51,8 @@ const App = () => {
                                     <Switch>
                                         <SideMenu onClose={() => null}>
                                             <Route exact path="/" component={Dashboard} />
+                                            <Route path="/mouvement-stock" component={StockMouvement} />
+                                            <Route path="/liste-mouvement-stock" component={StockMouvementList} />
                                             <Route path="/bon-avoir-achat" component={BonAvoirAchat} />
                                             <Route path="/liste-bon-avoir-achat" component={BonAvoirAchatList} />
                                             <Route path="/bon-avoir-vente" component={BonAvoirVente} />

@@ -7,14 +7,14 @@ import { useTitle } from '../../providers/TitleProvider'
 import { getData, deleteData } from '../../../queries/crudBuilder'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import TitleIcon from '../../elements/misc/TitleIcon'
-import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined'
 import { TextField, Button } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import useDebounce from '../../../hooks/useDebounce'
 import { useModal } from 'react-modal-hook'
 import PrintBonAvoirAchat from '../../elements/dialogs/documents-print/PrintBonAvoirAchat'
 import { bonAvoirAchatListColumns } from '../../elements/table/columns/bonAvoirAchatColumns'
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@material-ui/icons/Add'
 import { useSite } from '../../providers/SiteProvider'
 
 const DOCUMENT = 'BonAvoirs'

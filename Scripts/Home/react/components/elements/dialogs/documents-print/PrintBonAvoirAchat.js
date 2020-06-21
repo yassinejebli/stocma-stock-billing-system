@@ -1,7 +1,7 @@
 import React from 'react';
 import IframeDialog from '../IframeDialog';
 import { Box, FormControlLabel, Switch } from '@material-ui/core';
-import { getPrintBonAvoirAchatURL } from '../../../../utils/urlBuilder';
+import { getPrintBonAvoirVenteURL } from '../../../../utils/urlBuilder';
 import PaiementClientForm from '../../forms/PaiementClientForm';
 
 const DOCUMENT_ITEMS = 'BonAvoirItems'
@@ -16,7 +16,7 @@ const PrintBonAvoirAchat = ({ document, onClose, onExited, open }) => {
             onExited={onExited}
             open={open}
             onClose={onClose}
-            src={getPrintBonAvoirAchatURL({
+            src={getPrintBonAvoirVenteURL({
                 id: document.Id,
                 showStamp: showStamp
             })}>

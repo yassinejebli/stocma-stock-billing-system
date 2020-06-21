@@ -59,6 +59,8 @@ namespace WebApplication1.DATA
         public DbSet<PaiementFactureF> PaiementFactureFs { get; set; }
 
         public DbSet<TypePaiement> TypePaiements { get; set; }
+        public DbSet<StockMouvement> StockMouvements { get; set; }
+        public DbSet<StockMouvementItem> StockMouvementItems { get; set; }
 
         public DbSet<PaiementF> PaiementFs { get; set; }
 
@@ -126,6 +128,17 @@ namespace WebApplication1.DATA
                 .HasOptional(t => t.Famille)
                 .WithMany(t => t.Categories)
                 .HasForeignKey(d => d.IdFamille);
+
+            modelBuilder.Entity<StockMouvement>().HasKey(t => t.Id);
+            modelBuilder.Entity<StockMouvementItem>().HasKey(t => t.Id);
+            modelBuilder.Entity<StockMouvementItem>()
+                .HasRequired(t => t.StockMouvement)
+                .WithMany(t => t.StockMouvementItems)
+                .HasForeignKey(d => d.IdStockMouvement);
+            modelBuilder.Entity<StockMouvementItem>()
+                .HasRequired(t => t.Article)
+                .WithMany(t => t.StockMouvementItems)
+                .HasForeignKey(d => d.IdArticle);
 
             modelBuilder.Entity<Rdb>().HasKey(t => t.Id);
             modelBuilder.Entity<RdbItem>().HasKey(t => t.Id);
@@ -292,6 +305,17 @@ namespace WebApplication1.DATA
                 .HasOptional(t => t.Site)
                 .WithMany(t => t.Devises)
                 .HasForeignKey(d => d.IdSite);
+            ///--------------------------------------site (from & to) - stock mouvement
+            modelBuilder.Entity<StockMouvement>()
+                .HasRequired(t => t.SiteFrom)
+                .WithMany(t => t.StockMouvementFroms)
+                .HasForeignKey(d => d.IdSiteFrom)
+                .WillCascadeOnDelete(false); ;
+            modelBuilder.Entity<StockMouvement>()
+               .HasRequired(t => t.SiteTo)
+               .WithMany(t => t.StockMouvementTos)
+               .HasForeignKey(d => d.IdSiteTo)
+               .WillCascadeOnDelete(false);
             ///
 
 

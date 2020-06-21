@@ -120,6 +120,7 @@ namespace WebApplication1
             conventionModelBuilder.EntitySet<ArticleSite>("ArticleSites");
             conventionModelBuilder.EntitySet<FakeFactureF>("FakeFactureFs");
             conventionModelBuilder.EntitySet<FakeFactureFItem>("FakeFactureFItems");
+            conventionModelBuilder.EntitySet<StockMouvement>("StockMouvements");
             
             //invoice & payment
             conventionModelBuilder.EntitySet<PaiementFacture>("PaiementFactures");

@@ -28,6 +28,8 @@ namespace WebApplication1.DATA
         public virtual ICollection<Facture> Factures { get; set; }
         public virtual ICollection<BonAvoirC> BonAvoirCs { get; set; }
         public virtual ICollection<BonAvoir> BonAvoirs { get; set; }
+        public virtual ICollection<StockMouvement> StockMouvementFroms { get; set; }
+        public virtual ICollection<StockMouvement> StockMouvementTos { get; set; }
 
 
     }
