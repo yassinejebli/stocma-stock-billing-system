@@ -46,6 +46,28 @@ export const updateData = async (table, data, id, expand) => {
     }
 }
 
+export const partialUpdateData = async (table, data, id, expand) => {
+    const allParams = buildQuery({ 
+        expand: expand?.join(',')
+    })
+    const URL = ODATA_URL + table + `(${id})` + allParams;
+
+    try {
+        const res = await (await fetch(URL, {
+            method: 'PATCH',
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }));
+        return res;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 export const deleteData = async (table, id) => {
     const URL = ODATA_URL + table + `(${id})`
 

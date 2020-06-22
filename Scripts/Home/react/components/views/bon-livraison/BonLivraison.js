@@ -249,6 +249,7 @@ const BonLivraison = () => {
     const resetData = () => {
         setClient(null);
         setNote('');
+        setPaymentType(null);
         setDate(new Date());
         setData([]);
         addNewRow();

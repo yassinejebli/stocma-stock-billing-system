@@ -15,8 +15,8 @@ const useStyles = makeStyles(theme => ({
     root: {
         borderCollapse: 'separate',
         borderSpacing: '4px 0',
-        '& tbody, textarea':{
-            fontSize: '13px !important'
+        '& tbody, textarea': {
+            fontSize: theme.typography.pxToRem(13) + ' !important'
         },
         '& thead th': {
             paddingBottom: 14,
@@ -40,19 +40,21 @@ function Table({
     updateMyData,
     updateRow,
     deleteRow,
+    customAction,
     skipPageReset,
     serverPagination,
     fetchData,
     pageCount: _pageCount,
     addNewRow,
     showImage,
+    disableRow,
     print,
     convert,
     owner,
     filters,
     totalItems }) {
     const classes = useStyles();
-    const {siteId} = useSite();
+    const { siteId } = useSite();
     const {
         getTableProps,
         getTableBodyProps,
@@ -78,8 +80,10 @@ function Table({
             updateMyData,
             addNewRow,
             deleteRow,
+            customAction,
             showImage,
             updateRow,
+            disableRow,
             print,
             convert,
             owner,
@@ -95,15 +99,15 @@ function Table({
     const onFetchDataDebounced = useAsyncDebounce(fetchData, 100);
 
     React.useEffect(() => {
-        if(serverPagination&&fetchData){
+        if (serverPagination && fetchData) {
             onFetchDataDebounced({ pageIndex, pageSize, filters });
         }
     }, [onFetchDataDebounced, pageIndex, pageSize, filters])
 
-    React.useEffect(()=>{
-        if(pageIndex !== 0)
+    React.useEffect(() => {
+        if (pageIndex !== 0)
             gotoPage(0);
-    },[filters])
+    }, [filters])
 
     return (
         <>
@@ -127,18 +131,18 @@ function Table({
                 <tbody {...getTableBodyProps()}>
                     {myData.map((row, i) => {
                         prepareRow(row);
-                        const disabled = row?.original?.Disabled;
+                        const disabled = row?.original?.Disabled || row?.original?.Hide;
                         return (
                             <tr key={i} {...row.getRowProps()}>
                                 {row.cells.map((cell, index) => {
-                                    return <td key={index} style={{color: disabled ? 'rgb(172, 174, 176)':'#000'}} {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                    return <td key={index} style={{ color: disabled ? 'rgb(172, 174, 176)' : '#000' }} {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                 })}
                             </tr>
                         )
                     })}
                 </tbody>
             </table>
-            {serverPagination && <Box mt={data.length>0?0:60} display="flex" justifyContent="flex-end" alignItems="center">
+            {serverPagination && <Box mt={data.length > 0 ? 0 : 60} display="flex" justifyContent="flex-end" alignItems="center">
                 <IconButton disableRipple onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                     <SkipPreviousIcon />
                 </IconButton>
@@ -168,7 +172,7 @@ const EditableCell = ({
     updateMyData, // This is a custom function that we supplied to our table instance
 }) => {
 
-    const disabled = original?.Disabled;
+    const disabled = original?.Disabled || original?.Hide;
     // We need to keep and update the state of the cell normally
     const [value, setValue] = React.useState(initialValue)
 
@@ -189,7 +193,7 @@ const EditableCell = ({
 
     return <Input
         inTable
-        tabIndex={id?.toLowerCase().includes('total')?-1:null}
+        tabIndex={id?.toLowerCase().includes('total') ? -1 : null}
         readOnly={!editable}
         value={value || ''}
         align={align}

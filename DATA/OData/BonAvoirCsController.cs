@@ -90,7 +90,8 @@ namespace WebApplication1.DATA.OData
                         IdClient = newBonAvoiC.IdClient,
                         Credit = Total,
                         IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
-                        Date = newBonAvoiC.Date
+                        Date = newBonAvoiC.Date,
+                        Comment = "Avoir " + newBonAvoiC.NumBon
                     };
                     db.PaiementFactures.Add(paiement);
                 }
@@ -103,7 +104,7 @@ namespace WebApplication1.DATA.OData
                 {
                     payment.Credit = Total;
                     payment.Date = bonAvoirC.Date;
-                    payment.Comment = "BA " + bonAvoirC.NumBon;
+                    payment.Comment = "Avoir " + bonAvoirC.NumBon;
                 }
                 else
                 {
@@ -114,8 +115,9 @@ namespace WebApplication1.DATA.OData
                         IdClient = newBonAvoiC.IdClient,
                         Credit = Total,
                         IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
-                        Date = newBonAvoiC.Date
-                    };
+                        Date = newBonAvoiC.Date,
+                        Comment = "Avoir " + bonAvoirC.NumBon
+                };
                     db.Paiements.Add(paiement);
                 }
             }

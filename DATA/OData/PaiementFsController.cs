@@ -15,29 +15,16 @@ using WebApplication1.DATA;
 
 namespace WebApplication1.DATA.OData
 {
-    /*
-    The WebApiConfig class may require additional changes to add a route for this controller. Merge these statements into the Register method of the WebApiConfig class as applicable. Note that OData URLs are case sensitive.
-
-    using System.Web.Http.OData.Builder;
-    using System.Web.Http.OData.Extensions;
-    using WebApplication1.DATA;
-    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<PaiementF>("PaiementFs");
-    builder.EntitySet<BonReception>("BonReceptions"); 
-    builder.EntitySet<FactureF>("FactureFs"); 
-    builder.EntitySet<Fournisseur>("Fournisseurs"); 
-    builder.EntitySet<TypePaiement>("TypePaiements"); 
-    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-    */
+    [Authorize]
     public class PaiementFsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
         // GET: odata/PaiementFs
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<PaiementF> GetPaiementFs()
         {
-            return db.PaiementFs;
+            return db.PaiementFs.OrderByDescending(x => x.Date);
         }
 
         // GET: odata/PaiementFs(5)
@@ -50,7 +37,7 @@ namespace WebApplication1.DATA.OData
         // PUT: odata/PaiementFs(5)
         public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<PaiementF> patch)
         {
-            
+
 
             if (!ModelState.IsValid)
             {
@@ -117,7 +104,7 @@ namespace WebApplication1.DATA.OData
         [AcceptVerbs("PATCH", "MERGE")]
         public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<PaiementF> patch)
         {
-            
+
 
             if (!ModelState.IsValid)
             {

@@ -205,7 +205,8 @@ namespace WebApplication1.Migrations
                 context.Settings.Add(new Setting
                 {
                     Code = "devis_payment",
-                    Name = "Mode de paiement"
+                    Name = "Mode de paiement",
+                    Enabled = true
                 });
             }
 
@@ -258,7 +259,8 @@ namespace WebApplication1.Migrations
                 context.Settings.Add(new Setting
                 {
                     Code = "bl_payment",
-                    Name = "Mode de paiement"
+                    Name = "Mode de paiement",
+                    Enabled = true
                 });
             }
 
@@ -357,70 +359,48 @@ namespace WebApplication1.Migrations
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4"),
-                        Name = "Retour d'argent"
+                        Name = "Remboursement",
+                        IsDebit = true
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecc9"),
-                        Name = "ANCIEN"
+                        Name = "Ancien Solde",
+                        IsDebit = true
+
                     }
                 });
                 context.SaveChanges();
             }
             else
             {
-                if (
-                    context.TypePaiements.Where<TypePaiement>(
-                        (Expression<Func<TypePaiement, bool>>)
-                        (x => x.Id == new Guid("399d159e-9ce0-4fcc-957a-08a65bbeece1"))).FirstOrDefault<TypePaiement>() ==
-                    null)
+                var TypePaiementCheque = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb3"));
+                if (TypePaiementCheque != null)
+                    TypePaiementCheque.IsBankRelated = true;
+
+                var TypePaiementEffet = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb4"));
+                if (TypePaiementEffet != null)
+                    TypePaiementEffet.IsBankRelated = true;
+
+                var TypePaiementImpaye = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeece1"));
+                if (TypePaiementImpaye != null)
                 {
-                    context.TypePaiements.AddRange((IEnumerable<TypePaiement>)new TypePaiement[1]
-                    {
-                        new TypePaiement()
-                        {
-                            Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeece1"),
-                            Name = "Impayé"
-                        }
-                    });
-                    context.SaveChanges();
+                    TypePaiementImpaye.IsBankRelated = true;
+                    TypePaiementImpaye.IsDebit = true;
                 }
-                if (
-                    context.TypePaiements.Where<TypePaiement>(
-                        (Expression<Func<TypePaiement, bool>>)
-                        (x => x.Id == new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4"))).FirstOrDefault<TypePaiement>() !=
-                    null)
-                    return;
-                context.TypePaiements.AddRange((IEnumerable<TypePaiement>)new TypePaiement[1]
+
+                var TypePaiementRemboursement = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4"));
+                if (TypePaiementRemboursement != null)
                 {
-                    new TypePaiement()
-                    {
-                        Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4"),
-                        Name = "Retour d'argent"
-                    }
-                });
-
-
-
-                //categories ss categories
-                if (
-                    context.Categories.Where(
-                        x => x.Id == new Guid("399d159e-9ce0-4fcc-957a-08a65bbeec00")).FirstOrDefault() != null)
-                {
-                    context.Categories.AddRange(new Categorie[1]
-                    {
-                        new Categorie()
-                        {
-                            Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeec00"),
-                            Name = "Gaz"
-                        }
-                    });
+                    TypePaiementRemboursement.IsDebit = true;
                 }
+
+                var TypePaiementAncien = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecc9"));
+                if (TypePaiementAncien != null)
+                    TypePaiementAncien.IsDebit = true;
 
                 context.SaveChanges();
             }
-
-
 
         }
     }

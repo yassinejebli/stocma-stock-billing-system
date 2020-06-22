@@ -13,6 +13,9 @@ namespace WebApplication1.DATA
 
         public string DisplayName { get; set; }
 
+        public bool IsBankRelated { get; set; } = false;
+        public bool IsDebit { get; set; } = false;
+
         public virtual ICollection<Paiement> Paiements { get; set; }
         public virtual ICollection<Devis> Devises { get; set; }
         public virtual ICollection<BonLivraison> BonLivraisons { get; set; }

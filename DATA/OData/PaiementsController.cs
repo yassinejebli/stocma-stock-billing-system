@@ -19,10 +19,10 @@ namespace WebApplication1.DATA.OData
   {
     private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
-    public IQueryable<Paiement> GetPaiements()
+        [EnableQuery(EnsureStableOrdering = false)]
+        public IQueryable<Paiement> GetPaiements()
     {
-      return (IQueryable<Paiement>) this.db.Paiements;
+      return (IQueryable<Paiement>) this.db.Paiements.OrderByDescending(x=>x.Date);
     }
 
     [EnableQuery]

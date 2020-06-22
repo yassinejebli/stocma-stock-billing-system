@@ -15,115 +15,116 @@ using Microsoft.AspNet.OData;
 
 namespace WebApplication1.DATA.OData
 {
-  public class BonReceptionItemsController : ODataController
-  {
-    private MySaniSoftContext db = new MySaniSoftContext();
-
-    [EnableQuery]
-    public IQueryable<BonReceptionItem> GetBonReceptionItems()
+    [Authorize]
+    public class BonReceptionItemsController : ODataController
     {
-      return (IQueryable<BonReceptionItem>) this.db.BonReceptionItems;
-    }
+        private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
-    public SingleResult<BonReceptionItem> GetBonReceptionItem([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<BonReceptionItem>(this.db.BonReceptionItems.Where<BonReceptionItem>((Expression<Func<BonReceptionItem, bool>>) (bonReceptionItem => bonReceptionItem.Id == key)));
-    }
+        [EnableQuery(EnsureStableOrdering = false)]
+        public IQueryable<BonReceptionItem> GetBonReceptionItems()
+        {
+            return (IQueryable<BonReceptionItem>)this.db.BonReceptionItems.OrderByDescending(x=>x.BonReception.Date);
+        }
 
-    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<BonReceptionItem> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      BonReceptionItem bonReceptionItem = await this.db.BonReceptionItems.FindAsync((object) key);
-      if (bonReceptionItem == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Put(bonReceptionItem);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.BonReceptionItemExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<BonReceptionItem>(bonReceptionItem);
-    }
+        [EnableQuery]
+        public SingleResult<BonReceptionItem> GetBonReceptionItem([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<BonReceptionItem>(this.db.BonReceptionItems.Where<BonReceptionItem>((Expression<Func<BonReceptionItem, bool>>)(bonReceptionItem => bonReceptionItem.Id == key)));
+        }
 
-    public async Task<IHttpActionResult> Post(BonReceptionItem bonReceptionItem)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      this.db.BonReceptionItems.Add(bonReceptionItem);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateException ex)
-      {
-        if (this.BonReceptionItemExists(bonReceptionItem.Id))
-          return (IHttpActionResult) this.Conflict();
-        throw;
-      }
-      return (IHttpActionResult) this.Created<BonReceptionItem>(bonReceptionItem);
-    }
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<BonReceptionItem> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            BonReceptionItem bonReceptionItem = await this.db.BonReceptionItems.FindAsync((object)key);
+            if (bonReceptionItem == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Put(bonReceptionItem);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.BonReceptionItemExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<BonReceptionItem>(bonReceptionItem);
+        }
 
-    [AcceptVerbs(new string[] {"PATCH", "MERGE"})]
-    public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonReceptionItem> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      BonReceptionItem bonReceptionItem = await this.db.BonReceptionItems.FindAsync((object) key);
-      if (bonReceptionItem == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Patch(bonReceptionItem);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.BonReceptionItemExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<BonReceptionItem>(bonReceptionItem);
-    }
+        public async Task<IHttpActionResult> Post(BonReceptionItem bonReceptionItem)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            this.db.BonReceptionItems.Add(bonReceptionItem);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (this.BonReceptionItemExists(bonReceptionItem.Id))
+                    return (IHttpActionResult)this.Conflict();
+                throw;
+            }
+            return (IHttpActionResult)this.Created<BonReceptionItem>(bonReceptionItem);
+        }
 
-    public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
-    {
-      BonReceptionItem async = await this.db.BonReceptionItems.FindAsync((object) key);
-      if (async == null)
-        return (IHttpActionResult) this.NotFound();
-      this.db.BonReceptionItems.Remove(async);
-      int num = await this.db.SaveChangesAsync();
-      return (IHttpActionResult) this.StatusCode(HttpStatusCode.NoContent);
-    }
+        [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
+        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonReceptionItem> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            BonReceptionItem bonReceptionItem = await this.db.BonReceptionItems.FindAsync((object)key);
+            if (bonReceptionItem == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Patch(bonReceptionItem);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.BonReceptionItemExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<BonReceptionItem>(bonReceptionItem);
+        }
 
-    [EnableQuery]
-    public SingleResult<Article> GetArticle([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<Article>(this.db.BonReceptionItems.Where<BonReceptionItem>((Expression<Func<BonReceptionItem, bool>>) (m => m.Id == key)).Select<BonReceptionItem, Article>((Expression<Func<BonReceptionItem, Article>>) (m => m.Article)));
-    }
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
+        {
+            BonReceptionItem async = await this.db.BonReceptionItems.FindAsync((object)key);
+            if (async == null)
+                return (IHttpActionResult)this.NotFound();
+            this.db.BonReceptionItems.Remove(async);
+            int num = await this.db.SaveChangesAsync();
+            return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
+        }
 
-    [EnableQuery]
-    public SingleResult<BonReception> GetBonReception([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<BonReception>(this.db.BonReceptionItems.Where<BonReceptionItem>((Expression<Func<BonReceptionItem, bool>>) (m => m.Id == key)).Select<BonReceptionItem, BonReception>((Expression<Func<BonReceptionItem, BonReception>>) (m => m.BonReception)));
-    }
+        [EnableQuery]
+        public SingleResult<Article> GetArticle([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<Article>(this.db.BonReceptionItems.Where<BonReceptionItem>((Expression<Func<BonReceptionItem, bool>>)(m => m.Id == key)).Select<BonReceptionItem, Article>((Expression<Func<BonReceptionItem, Article>>)(m => m.Article)));
+        }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing)
-        this.db.Dispose();
-      base.Dispose(disposing);
-    }
+        [EnableQuery]
+        public SingleResult<BonReception> GetBonReception([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<BonReception>(this.db.BonReceptionItems.Where<BonReceptionItem>((Expression<Func<BonReceptionItem, bool>>)(m => m.Id == key)).Select<BonReceptionItem, BonReception>((Expression<Func<BonReceptionItem, BonReception>>)(m => m.BonReception)));
+        }
 
-    private bool BonReceptionItemExists(Guid key)
-    {
-      return this.db.BonReceptionItems.Count<BonReceptionItem>((Expression<Func<BonReceptionItem, bool>>) (e => e.Id == key)) > 0;
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                this.db.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private bool BonReceptionItemExists(Guid key)
+        {
+            return this.db.BonReceptionItems.Count<BonReceptionItem>((Expression<Func<BonReceptionItem, bool>>)(e => e.Id == key)) > 0;
+        }
     }
-  }
 }

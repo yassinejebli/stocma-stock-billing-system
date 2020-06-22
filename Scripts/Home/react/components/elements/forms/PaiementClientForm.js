@@ -6,7 +6,7 @@ import TitleIcon from '../misc/TitleIcon';
 import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ClientAutocomplete from '../client-autocomplete/ClientAutocomplete';
-import { saveData } from '../../../queries/crudBuilder';
+import { saveData, updateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 
 export const useStyles = makeStyles(theme => ({
@@ -33,10 +33,12 @@ export const paiementMethods = [
         name: 'Effet',
         isBankRelatedItem: true,
     },
-    // {
-    //     id: '399d159e-9ce0-4fcc-957a-08a65bbeece1',
-    //     name: 'Impayé'
-    // },
+    {
+        id: '399d159e-9ce0-4fcc-957a-08a65bbeece1',
+        name: 'Impayé',
+        isBankRelatedItem: true,
+        isDebit: true
+    },
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeecc1',
         name: 'Versement',
@@ -56,6 +58,7 @@ export const paiementMethods = [
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeeca4',
         name: 'Remboursement',
+        isDebit: true
     },
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeecc9',
@@ -77,7 +80,7 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
     const { showSnackBar } = useSnackBar();
     const [formState, setFormState] = React.useState(initialState);
     const [formErrors, setFormErrors] = React.useState({});
-    const isFromDocument = document && amount;
+    const isFromDocument = Boolean(document);
     const isEditMode = Boolean(paiement);
 
     React.useEffect(() => {
@@ -86,8 +89,18 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
                 ..._formState,
                 amount,
                 client: document.Client,
-                comment: (isAvoir ? 'BA ' : 'BL ') + document.NumBon,
+                comment: (isAvoir ? 'Avoir ' : 'BL ') + document.NumBon,
                 IdBonLivraison: document.Id
+            }));
+        }
+        if(isEditMode){
+            setFormState(_formState => ({
+                ..._formState,
+                amount: paiement.Credit || paiement.Debit, //TODO: change this
+                client: paiement.Client,
+                type: paiementMethods.find(x=>x.id === paiement.IdTypePaiement),
+                comment: paiement.Comment,
+                date: paiement.Date
             }));
         }
     }, []);
@@ -106,7 +119,17 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
         }
 
         if (isEditMode) {
-
+            const response = await updateData(TABLE, {...preparedData, Id: paiement.Id}, paiement.Id);
+            if (response.ok) {
+                setFormState({ ...initialState });
+                showSnackBar();
+                if(onSuccess) onSuccess();
+            } else {
+                showSnackBar({
+                    error: true,
+                    text: 'Erreur !'
+                });
+            }
         } else {
             const response = await saveData(TABLE, preparedData);
             if (response?.Id) {
@@ -115,7 +138,8 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
-                    error: true
+                    error: true,
+                    text: 'Erreur!'
                 })
             }
         }

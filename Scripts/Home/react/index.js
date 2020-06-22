@@ -39,6 +39,8 @@ import BonAvoirAchatList from './components/views/bon-avoir-achat/BonAvoirAchatL
 import StockMouvement from './components/views/stock-mouvement/StockMouvement';
 import StockMouvementList from './components/views/stock-mouvement/StockMouvementList';
 import SuiviVentes from './components/views/ventes/suivi/SuiviVentes';
+import SuiviAchats from './components/views/achats/suivi/SuiviAchats';
+import PaiementClientList from './components/views/paiement-client/PaiementClientList';
 
 const App = () => {
     return (
@@ -52,7 +54,9 @@ const App = () => {
                                     <Switch>
                                         <SideMenu onClose={() => null}>
                                             <Route exact path="/" component={Dashboard} />
+                                            <Route path="/liste-paiements-des-clients" component={PaiementClientList} />
                                             <Route path="/suivi-des-ventes" component={SuiviVentes} />
+                                            <Route path="/suivi-des-achats" component={SuiviAchats} />
                                             <Route path="/mouvement-stock" component={StockMouvement} />
                                             <Route path="/liste-mouvement-stock" component={StockMouvementList} />
                                             <Route path="/bon-avoir-achat" component={BonAvoirAchat} />

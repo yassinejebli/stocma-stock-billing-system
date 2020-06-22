@@ -56,6 +56,7 @@ export const paiementMethods = [
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeeca4',
         name: 'Remboursement',
+        isDebit: true
     },
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeecc9',

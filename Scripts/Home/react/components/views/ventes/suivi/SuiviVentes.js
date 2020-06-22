@@ -9,17 +9,29 @@ import { useTitle } from '../../../providers/TitleProvider';
 import { getData } from '../../../../queries/crudBuilder';
 import useDebounce from '../../../../hooks/useDebounce';
 import Table from '../../../elements/table/Table';
+import PrintBL from '../../../elements/dialogs/documents-print/PrintBL';
+import { useModal } from 'react-modal-hook';
+import DatePicker from '../../../elements/date-picker/DatePicker';
 
 const TABLE = 'BonLivraisonItems';
 
 const EXPAND = ['Article', 'BonLivraison/Client'];
 
 const SuiviVentes = () => {
+    const today = new Date();
+    const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDayCurrentMonth = new Date();
+    firstDayCurrentMonth.setHours(0, 0, 0, 0);
+    lastDayCurrentMonth.setHours(23, 59, 59, 999);
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
+    const [documentToPrint, setDocumentToPrint] = React.useState(null);
+    const [dateFrom, setDateFrom] = React.useState(firstDayCurrentMonth);
+    const [dateTo, setDateTo] = React.useState(lastDayCurrentMonth);
     const debouncedSearchText = useDebounce(searchText);
     const filters = React.useMemo(() => {
         return {
+            'BonLivraison/Date': { ge: dateFrom, le: dateTo },
             or: [
                 {
                     'BonLivraison/Client/Name': {
@@ -33,7 +45,7 @@ const SuiviVentes = () => {
                 },
             ]
         }
-    }, [debouncedSearchText]);
+    }, [debouncedSearchText, dateFrom, dateTo]);
     const [data, setData] = React.useState([]);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
@@ -42,6 +54,19 @@ const SuiviVentes = () => {
         () => getSuiviVentesColumns(),
         []
     )
+    const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
+        return (
+            <PrintBL
+                onExited={onExited}
+                open={open}
+                document={documentToPrint}
+                onClose={() => {
+                    setDocumentToPrint(null);
+                    hideModal();
+                }}
+            />
+        )
+    }, [documentToPrint]);
 
     React.useEffect(() => {
         setTitle('Suivi des ventes')
@@ -63,6 +88,11 @@ const SuiviVentes = () => {
         }
     }, [])
 
+    const print = React.useCallback((document) => {
+        setDocumentToPrint(document);
+        showModal();
+    }, [])
+
     return (
         <>
             <Paper>
@@ -78,11 +108,33 @@ const SuiviVentes = () => {
                         size="small"
                     />
                 </Box>
+                <Box mt={3}>
+                    <DatePicker
+                        value={dateFrom}
+                        label="Date de début"
+                        onChange={(date) => {
+                            date && date.setHours(0, 0, 0, 0);
+                            setDateFrom(date)
+                        }}
+                    />
+                    <DatePicker
+                        style={{
+                            marginLeft: 12
+                        }}
+                        value={dateTo}
+                        label="Date de fin"
+                        onChange={(date) => {
+                            date && date.setHours(23, 59, 59, 999);
+                            setDateTo(date)
+                        }}
+                    />
+                </Box>
                 <Box mt={4}>
                     <Table
                         columns={columns}
                         data={data}
                         serverPagination
+                        print={print}
                         totalItems={totalItems}
                         pageCount={pageCount}
                         fetchData={fetchData}

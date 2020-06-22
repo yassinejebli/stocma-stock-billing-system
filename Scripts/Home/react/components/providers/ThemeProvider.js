@@ -28,7 +28,7 @@ const theme = createMuiTheme({
         MuiListItemText:{
             root:{
                 '& .MuiTypography-body1':{
-                    fontSize: 14
+                    fontSize: '1rem'
                 }
             }
         }

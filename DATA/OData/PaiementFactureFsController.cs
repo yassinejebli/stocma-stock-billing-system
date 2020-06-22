@@ -9,6 +9,7 @@ using Microsoft.AspNet.OData;
 
 namespace WebApplication1.DATA.OData
 {
+    [Authorize]
     public class PaiementFactureFFsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
@@ -16,7 +17,7 @@ namespace WebApplication1.DATA.OData
         [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<PaiementFactureF> GetPaiementFactureFs()
         {
-            return db.PaiementFactureFs.OrderByDescending(x => new { x.Date, x.Id });
+            return db.PaiementFactureFs.OrderByDescending(x =>x.Date);
         }
 
         [EnableQuery]

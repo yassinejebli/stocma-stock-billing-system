@@ -84,8 +84,9 @@ namespace WebApplication1.DATA.OData
                         IdFournisseur = newBonAvoir.IdFournisseur,
                         Credit = Total,
                         IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
-                        Date = newBonAvoir.Date
-                    };
+                        Date = newBonAvoir.Date,
+                        Comment = "Avoir " + newBonAvoir.NumBon
+                };
                     db.PaiementFactureFs.Add(paiement);
                 }
             }
@@ -97,7 +98,7 @@ namespace WebApplication1.DATA.OData
                 {
                     payment.Credit = Total;
                     payment.Date = bonAvoir.Date;
-                    payment.Comment = "BA " + bonAvoir.NumBon;
+                    payment.Comment = "Avoir " + bonAvoir.NumBon;
                 }
                 else
                 {
@@ -108,7 +109,8 @@ namespace WebApplication1.DATA.OData
                         IdFournisseur = newBonAvoir.IdFournisseur,
                         Credit = Total,
                         IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
-                        Date = newBonAvoir.Date
+                        Date = newBonAvoir.Date,
+                        Comment = "Avoir " + newBonAvoir.NumBon
                     };
                     db.PaiementFs.Add(paiement);
                 }

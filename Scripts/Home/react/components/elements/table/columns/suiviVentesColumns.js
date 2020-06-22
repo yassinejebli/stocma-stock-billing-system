@@ -1,10 +1,10 @@
 import React from 'react'
 import IconButton from '@material-ui/core/IconButton';
-import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import { Box } from '@material-ui/core';
 import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
+import { format } from 'date-fns';
 
 export const getSuiviVentesColumns = () => ([
     {
@@ -18,6 +18,14 @@ export const getSuiviVentesColumns = () => ([
         accessor: 'BonLivraison.Client.Name',
         type: inputTypes.text.description,
         width: 160
+    },
+    {
+        Id: 'Date',
+        Header: 'Date',
+        type: inputTypes.text.description,
+        accessor: props => {
+            return format(new Date(props.BonLivraison.Date), 'dd/MM/yyyy')
+        },
     },
     {
         Header: 'BL N#',
@@ -38,21 +46,18 @@ export const getSuiviVentesColumns = () => ([
             return formatMoney(props.Pu);
         },
     },
-    // {
-    //     id: 'actions',
-    //     Header: '',
-    //     Cell: ({ row: { original }, updateRow, deleteRow }) => {
-    //         return (
-    //             <Box display="flex" justifyContent="flex-end">
-    //                 <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
-    //                     <EditOutlinedIcon />
-    //                 </IconButton>
-    //                 <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
-    //                     <DeleteForeverOutlinedIcon />
-    //                 </IconButton>
-    //             </Box>
-    //         )
-    //     },
-    //     width: 24
-    // },
+    {
+        id: 'actions',
+        Header: '',
+        Cell: ({ row: { original }, print }) => {
+            return (
+                <Box display="flex" justifyContent="flex-end">
+                    <IconButton tabIndex={-1} size="small" onClick={() => print(original.BonLivraison)}>
+                        <PrintOutlinedIcon />
+                    </IconButton>
+                </Box>
+            )
+        },
+        width: 24
+    },
 ])

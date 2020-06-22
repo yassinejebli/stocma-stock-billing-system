@@ -49,7 +49,7 @@ const ClientList = () => {
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
-    const [selectedRow, setSelectedRow] = React.useState();
+    const [selectedRow, setSelectedRow] = React.useState(null);
     const [pageCount, setTotalCount] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
