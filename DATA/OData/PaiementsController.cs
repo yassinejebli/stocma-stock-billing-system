@@ -15,121 +15,122 @@ using Microsoft.AspNet.OData;
 
 namespace WebApplication1.DATA.OData
 {
-  public class PaiementsController : ODataController
-  {
-    private MySaniSoftContext db = new MySaniSoftContext();
+    [Authorize]
+    public class PaiementsController : ODataController
+    {
+        private MySaniSoftContext db = new MySaniSoftContext();
 
         [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<Paiement> GetPaiements()
-    {
-      return (IQueryable<Paiement>) this.db.Paiements.OrderByDescending(x=>x.Date);
-    }
+        {
+            return (IQueryable<Paiement>)this.db.Paiements.OrderByDescending(x => x.Date);
+        }
 
-    [EnableQuery]
-    public SingleResult<Paiement> GetPaiement([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<Paiement>(this.db.Paiements.Where<Paiement>((Expression<Func<Paiement, bool>>) (paiement => paiement.Id == key)));
-    }
+        [EnableQuery]
+        public SingleResult<Paiement> GetPaiement([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<Paiement>(this.db.Paiements.Where<Paiement>((Expression<Func<Paiement, bool>>)(paiement => paiement.Id == key)));
+        }
 
-    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<Paiement> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      Paiement paiement = await this.db.Paiements.FindAsync((object) key);
-      if (paiement == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Put(paiement);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.PaiementExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<Paiement>(paiement);
-    }
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<Paiement> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            Paiement paiement = await this.db.Paiements.FindAsync((object)key);
+            if (paiement == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Put(paiement);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.PaiementExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<Paiement>(paiement);
+        }
 
-    public async Task<IHttpActionResult> Post(Paiement paiement)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      this.db.Paiements.Add(paiement);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateException ex)
-      {
-        if (this.PaiementExists(paiement.Id))
-          return (IHttpActionResult) this.Conflict();
-        throw;
-      }
-      return (IHttpActionResult) this.Created<Paiement>(paiement);
-    }
+        public async Task<IHttpActionResult> Post(Paiement paiement)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            this.db.Paiements.Add(paiement);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (this.PaiementExists(paiement.Id))
+                    return (IHttpActionResult)this.Conflict();
+                throw;
+            }
+            return (IHttpActionResult)this.Created<Paiement>(paiement);
+        }
 
-    [AcceptVerbs(new string[] {"PATCH", "MERGE"})]
-    public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Paiement> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      Paiement paiement = await this.db.Paiements.FindAsync((object) key);
-      if (paiement == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Patch(paiement);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.PaiementExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<Paiement>(paiement);
-    }
+        [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
+        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Paiement> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            Paiement paiement = await this.db.Paiements.FindAsync((object)key);
+            if (paiement == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Patch(paiement);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.PaiementExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<Paiement>(paiement);
+        }
 
-    public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
-    {
-      Paiement async = await this.db.Paiements.FindAsync((object) key);
-      if (async == null)
-        return (IHttpActionResult) this.NotFound();
-      this.db.Paiements.Remove(async);
-      int num = await this.db.SaveChangesAsync();
-      return (IHttpActionResult) this.StatusCode(HttpStatusCode.NoContent);
-    }
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
+        {
+            Paiement async = await this.db.Paiements.FindAsync((object)key);
+            if (async == null)
+                return (IHttpActionResult)this.NotFound();
+            this.db.Paiements.Remove(async);
+            int num = await this.db.SaveChangesAsync();
+            return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
+        }
 
-    [EnableQuery]
-    public SingleResult<BonLivraison> GetBonLivraison([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<BonLivraison>(this.db.Paiements.Where<Paiement>((Expression<Func<Paiement, bool>>) (m => m.Id == key)).Select<Paiement, BonLivraison>((Expression<Func<Paiement, BonLivraison>>) (m => m.BonLivraison)));
-    }
+        [EnableQuery]
+        public SingleResult<BonLivraison> GetBonLivraison([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<BonLivraison>(this.db.Paiements.Where<Paiement>((Expression<Func<Paiement, bool>>)(m => m.Id == key)).Select<Paiement, BonLivraison>((Expression<Func<Paiement, BonLivraison>>)(m => m.BonLivraison)));
+        }
 
-    [EnableQuery]
-    public SingleResult<Client> GetClient([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<Client>(this.db.Paiements.Where<Paiement>((Expression<Func<Paiement, bool>>) (m => m.Id == key)).Select<Paiement, Client>((Expression<Func<Paiement, Client>>) (m => m.Client)));
-    }
+        [EnableQuery]
+        public SingleResult<Client> GetClient([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<Client>(this.db.Paiements.Where<Paiement>((Expression<Func<Paiement, bool>>)(m => m.Id == key)).Select<Paiement, Client>((Expression<Func<Paiement, Client>>)(m => m.Client)));
+        }
 
-    [EnableQuery]
-    public SingleResult<TypePaiement> GetTypePaiement([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<TypePaiement>(this.db.Paiements.Where<Paiement>((Expression<Func<Paiement, bool>>) (m => m.Id == key)).Select<Paiement, TypePaiement>((Expression<Func<Paiement, TypePaiement>>) (m => m.TypePaiement)));
-    }
+        [EnableQuery]
+        public SingleResult<TypePaiement> GetTypePaiement([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<TypePaiement>(this.db.Paiements.Where<Paiement>((Expression<Func<Paiement, bool>>)(m => m.Id == key)).Select<Paiement, TypePaiement>((Expression<Func<Paiement, TypePaiement>>)(m => m.TypePaiement)));
+        }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing)
-        this.db.Dispose();
-      base.Dispose(disposing);
-    }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                this.db.Dispose();
+            base.Dispose(disposing);
+        }
 
-    private bool PaiementExists(Guid key)
-    {
-      return this.db.Paiements.Count<Paiement>((Expression<Func<Paiement, bool>>) (e => e.Id == key)) > 0;
+        private bool PaiementExists(Guid key)
+        {
+            return this.db.Paiements.Count<Paiement>((Expression<Func<Paiement, bool>>)(e => e.Id == key)) > 0;
+        }
     }
-  }
 }

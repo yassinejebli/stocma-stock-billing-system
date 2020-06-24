@@ -2,7 +2,8 @@ import React from 'react';
 import {
     ListItemIcon, ListItem,
     List, ListItemText, Divider, makeStyles, CssBaseline, Drawer,
-    Collapse
+    Collapse,
+    Box
 } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
@@ -17,6 +18,7 @@ import { useModal } from 'react-modal-hook';
 import SettingsDialog from '../dialogs/SettingsDialog';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 export const drawerWidth = 240;
 
@@ -155,7 +157,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Bon de livraison" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/Facture')}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/_Facture')}>
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>
@@ -266,6 +268,17 @@ const MenuItems = () => {
                     </List>
                 </Collapse>
             </List>
+            <Divider className={classes.divider} />
+            <Box mt="auto">
+                <Divider className={classes.divider} />
+                <List className={classes.list}>
+                    <ListItem button onClick={() => document.getElementById('logoutForm')?.submit()}>
+                        <ListItemIcon><ExitToAppIcon className={classes.icon} style={{transform: 'scaleX(-1)'}} /></ListItemIcon>
+                        <ListItemText primary="Sortir" />
+                    </ListItem>
+                </List>
+            </Box>
+
         </>
     );
 }

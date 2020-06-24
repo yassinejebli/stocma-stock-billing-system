@@ -155,7 +155,7 @@ const ArticleList = () => {
                 <ArticlesStatistics />
             </Box>
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
-                <Box mr={2}>
+                {/* <Box mr={2}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -164,7 +164,7 @@ const ArticleList = () => {
                     >
                         Marge bénéficiaire par article
                     </Button>
-                </Box>
+                </Box> */}
                 <Button
                     variant="contained"
                     color="primary"

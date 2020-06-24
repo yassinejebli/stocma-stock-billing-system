@@ -96,13 +96,13 @@ function Table({
         usePagination
     );
     const myData = serverPagination ? page : rows;
-    const onFetchDataDebounced = useAsyncDebounce(fetchData, 100);
+    // const onFetchDataDebounced = useAsyncDebounce(fetchData, 100);
 
     React.useEffect(() => {
         if (serverPagination && fetchData) {
-            onFetchDataDebounced({ pageIndex, pageSize, filters });
+            fetchData({ pageIndex, pageSize, filters });
         }
-    }, [onFetchDataDebounced, pageIndex, pageSize, filters])
+    }, [fetchData, pageIndex, pageSize, filters])
 
     React.useEffect(() => {
         if (pageIndex !== 0)

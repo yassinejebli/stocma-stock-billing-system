@@ -16,109 +16,110 @@ using Microsoft.AspNet.OData;
 
 namespace WebApplication1.DATA.OData
 {
-  public class TypePaiementsController : ODataController
-  {
-    private MySaniSoftContext db = new MySaniSoftContext();
-
-    [EnableQuery]
-    public IQueryable<TypePaiement> GetTypePaiements()
+    [Authorize]
+    public class TypePaiementsController : ODataController
     {
-      return (IQueryable<TypePaiement>) this.db.TypePaiements;
-    }
+        private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
-    public SingleResult<TypePaiement> GetTypePaiement([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<TypePaiement>(this.db.TypePaiements.Where<TypePaiement>((Expression<Func<TypePaiement, bool>>) (typePaiement => typePaiement.Id == key)));
-    }
+        [EnableQuery]
+        public IQueryable<TypePaiement> GetTypePaiements()
+        {
+            return (IQueryable<TypePaiement>)this.db.TypePaiements;
+        }
 
-    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<TypePaiement> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      TypePaiement typePaiement = await this.db.TypePaiements.FindAsync((object) key);
-      if (typePaiement == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Put(typePaiement);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.TypePaiementExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<TypePaiement>(typePaiement);
-    }
+        [EnableQuery]
+        public SingleResult<TypePaiement> GetTypePaiement([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<TypePaiement>(this.db.TypePaiements.Where<TypePaiement>((Expression<Func<TypePaiement, bool>>)(typePaiement => typePaiement.Id == key)));
+        }
 
-    public async Task<IHttpActionResult> Post(TypePaiement typePaiement)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      this.db.TypePaiements.Add(typePaiement);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateException ex)
-      {
-        if (this.TypePaiementExists(typePaiement.Id))
-          return (IHttpActionResult) this.Conflict();
-        throw;
-      }
-      return (IHttpActionResult) this.Created<TypePaiement>(typePaiement);
-    }
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<TypePaiement> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            TypePaiement typePaiement = await this.db.TypePaiements.FindAsync((object)key);
+            if (typePaiement == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Put(typePaiement);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.TypePaiementExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<TypePaiement>(typePaiement);
+        }
 
-    [AcceptVerbs(new string[] {"PATCH", "MERGE"})]
-    public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<TypePaiement> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      TypePaiement typePaiement = await this.db.TypePaiements.FindAsync((object) key);
-      if (typePaiement == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Patch(typePaiement);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.TypePaiementExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<TypePaiement>(typePaiement);
-    }
+        public async Task<IHttpActionResult> Post(TypePaiement typePaiement)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            this.db.TypePaiements.Add(typePaiement);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (this.TypePaiementExists(typePaiement.Id))
+                    return (IHttpActionResult)this.Conflict();
+                throw;
+            }
+            return (IHttpActionResult)this.Created<TypePaiement>(typePaiement);
+        }
 
-    public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
-    {
-      TypePaiement async = await this.db.TypePaiements.FindAsync((object) key);
-      if (async == null)
-        return (IHttpActionResult) this.NotFound();
-      this.db.TypePaiements.Remove(async);
-      int num = await this.db.SaveChangesAsync();
-      return (IHttpActionResult) this.StatusCode(HttpStatusCode.NoContent);
-    }
+        [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
+        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<TypePaiement> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            TypePaiement typePaiement = await this.db.TypePaiements.FindAsync((object)key);
+            if (typePaiement == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Patch(typePaiement);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.TypePaiementExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<TypePaiement>(typePaiement);
+        }
 
-    [EnableQuery]
-    public IQueryable<Paiement> GetPaiements([FromODataUri] Guid key)
-    {
-      return this.db.TypePaiements.Where<TypePaiement>((Expression<Func<TypePaiement, bool>>) (m => m.Id == key)).SelectMany<TypePaiement, Paiement>((Expression<Func<TypePaiement, IEnumerable<Paiement>>>) (m => m.Paiements));
-    }
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
+        {
+            TypePaiement async = await this.db.TypePaiements.FindAsync((object)key);
+            if (async == null)
+                return (IHttpActionResult)this.NotFound();
+            this.db.TypePaiements.Remove(async);
+            int num = await this.db.SaveChangesAsync();
+            return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
+        }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing)
-        this.db.Dispose();
-      base.Dispose(disposing);
-    }
+        [EnableQuery]
+        public IQueryable<Paiement> GetPaiements([FromODataUri] Guid key)
+        {
+            return this.db.TypePaiements.Where<TypePaiement>((Expression<Func<TypePaiement, bool>>)(m => m.Id == key)).SelectMany<TypePaiement, Paiement>((Expression<Func<TypePaiement, IEnumerable<Paiement>>>)(m => m.Paiements));
+        }
 
-    private bool TypePaiementExists(Guid key)
-    {
-      return this.db.TypePaiements.Count<TypePaiement>((Expression<Func<TypePaiement, bool>>) (e => e.Id == key)) > 0;
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                this.db.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private bool TypePaiementExists(Guid key)
+        {
+            return this.db.TypePaiements.Count<TypePaiement>((Expression<Func<TypePaiement, bool>>)(e => e.Id == key)) > 0;
+        }
     }
-  }
 }
