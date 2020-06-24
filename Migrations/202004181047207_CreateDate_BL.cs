@@ -7,12 +7,12 @@ namespace WebApplication1.Migrations
     {
         public override void Up()
         {
-            DropColumn("dbo.Clients", "Discriminator");
+            //DropColumn("dbo.Clients", "Discriminator");
         }
         
         public override void Down()
         {
-            AddColumn("dbo.Clients", "Discriminator", c => c.String(nullable: false, maxLength: 128));
+            //AddColumn("dbo.Clients", "Discriminator", c => c.String(nullable: false, maxLength: 128));
         }
     }
 }

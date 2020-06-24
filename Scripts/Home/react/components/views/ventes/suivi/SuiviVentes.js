@@ -43,6 +43,11 @@ const SuiviVentes = () => {
                         contains: debouncedSearchText
                     }
                 },
+                {
+                    'Article/Designation': {
+                        contains: debouncedSearchText
+                    }
+                },
             ]
         }
     }, [debouncedSearchText, dateFrom, dateTo]);

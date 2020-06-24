@@ -20,11 +20,6 @@ import AddIcon from '@material-ui/icons/Add';
 const TABLE = 'Clients';
 
 const ClientList = () => {
-    const [showClientModal, hideClientModal] = useModal(({ in: open, onExited }) => (
-        <SideDialogWrapper open={open} onExited={onExited} onClose={hideClientModal}>
-            <ClientForm />
-        </SideDialogWrapper>
-    ));
     const { showSnackBar } = useSnackBar();
     const {useVAT} = useSite();
     const { setTitle } = useTitle();
@@ -56,6 +51,15 @@ const ClientList = () => {
         () => getClientColumns({useVAT: useVAT}),
         [useVAT]
     )
+    const [showClientModal, hideClientModal] = useModal(({ in: open, onExited }) => (
+        <SideDialogWrapper open={open} onExited={onExited} onClose={hideClientModal}>
+            <ClientForm 
+                onSuccess={()=>{
+                    refetchData();
+                }}
+             />
+        </SideDialogWrapper>
+    ), [filters]);
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideModal}>
             <ClientForm onSuccess={() => {
@@ -70,14 +74,14 @@ const ClientList = () => {
     }, []);
 
 
-    const refetchData = () => {
+    const refetchData = React.useCallback(() => {
         getData(TABLE, {}, filters).then((response) => {
             setData(response.data);
             setTotalItems(response.totalItems);
         }).catch((err) => {
             console.log({ err });
         })
-    }
+    },[filters])
 
     const deleteRow = React.useCallback(async (id) => {
         setLoading(true);
@@ -93,7 +97,7 @@ const ClientList = () => {
             });
         }
         setLoading(false);
-    }, []);
+    }, [filters]);
 
     const updateRow = React.useCallback(async (row) => {
         setSelectedRow(row);

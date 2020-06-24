@@ -20,11 +20,6 @@ import AddIcon from '@material-ui/icons/Add';
 const TABLE = 'Fournisseurs';
 
 const FournisseurList = () => {
-    const [showFournisseurModal, hideFournisseurModal] = useModal(({ in: open, onExited }) => (
-        <SideDialogWrapper open={open} onExited={onExited} onClose={hideFournisseurModal}>
-            <FournisseurForm />
-        </SideDialogWrapper>
-    ));
     const { useVAT } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -56,6 +51,15 @@ const FournisseurList = () => {
         () => fournisseurColumns({ useVAT: useVAT }),
         [useVAT]
     )
+    const [showFournisseurModal, hideFournisseurModal] = useModal(({ in: open, onExited }) => (
+        <SideDialogWrapper open={open} onExited={onExited} onClose={hideFournisseurModal}>
+            <FournisseurForm
+                onSuccess={() => {
+                    refetchData();
+                }}
+            />
+        </SideDialogWrapper>
+    ), [filters]);
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideModal}>
             <FournisseurForm onSuccess={() => {

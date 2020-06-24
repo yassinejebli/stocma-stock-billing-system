@@ -43,6 +43,11 @@ const SuiviAchats = () => {
                         contains: debouncedSearchText
                     }
                 },
+                {
+                    'Article/Designation': {
+                        contains: debouncedSearchText
+                    }
+                },
             ]
         }
     }, [debouncedSearchText, dateFrom, dateTo]);

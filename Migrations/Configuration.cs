@@ -25,10 +25,27 @@ namespace WebApplication1.Migrations
         {
 
             //TODO: remove asap
+            var articlesTVANull = context.Articles.Where(x => x.TVA == null);
+            if (articlesTVANull.Count() > 0)
+            {
+                articlesTVANull.ForEach(x => x.TVA = 20);
+                context.SaveChanges();
+            }
+
+            var articlesFactureTVANull = context.ArticleFactures.Where(x => x.TVA == null);
+            if (articlesFactureTVANull.Count() > 0)
+            {
+                articlesFactureTVANull.ForEach(x => x.TVA = 20);
+                context.SaveChanges();
+            }
+
             var bonLivraisonItems = context.BonLivraisonItems.Where(x => x.PA == 0);
 
             if(bonLivraisonItems.Count() > 0)
+            {
                 bonLivraisonItems.ForEach(x => x.PA = x.Article.PA);
+                context.SaveChanges();
+            }
 
 
 
@@ -41,6 +58,7 @@ namespace WebApplication1.Migrations
                     Name = "Magasin 1",
                     ArticleSites = new List<ArticleSite>()
                 };
+                context.Sites.Add(mainSite);
 
                 foreach (var article in context.Articles)
                 {
@@ -52,7 +70,6 @@ namespace WebApplication1.Migrations
                     });
                 }
 
-                context.Sites.Add(mainSite);
                 context.SaveChanges();
             }
 

@@ -109,9 +109,9 @@ const BonLivraison = () => {
             getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article'])
                 .then(response => {
                     if (response.WithDiscount)
-                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: true }));
+                        setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: true }));
                     else
-                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: false }));
+                        setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: false }));
                     setClient(response.Client);
                     setDate(response.Date);
                     setNote(response.Note);
@@ -126,14 +126,14 @@ const BonLivraison = () => {
                     setRef(response.Ref);
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
-        }else if (DevisId){
+        } else if (DevisId) {
             setLoading(true);
             getSingleData('Devises', DevisId, [DOCUMENT_OWNER, 'TypePaiement', 'DevisItems' + '/' + 'Article'])
                 .then(response => {
                     if (response.WithDiscount)
-                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: true }));
+                        setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: true }));
                     else
-                        setBLDiscount(_docSetting=>({ ..._docSetting, Enabled: false }));
+                        setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: false }));
                     setClient(response.Client);
                     setData(response.DevisItems?.map(x => ({
                         Article: x.Article,
@@ -276,30 +276,33 @@ const BonLivraison = () => {
                         onChange={(_, value) => setClient(value)}
                         errorText={errors.client}
                     />
-                    {isEditMode &&
-                        <><TextField
-                            value={ref}
-                            onChange={({ target: { value } }) => setRef(value)}
-                            variant="outlined"
-                            size="small"
-                            label="Référence"
-                            type="number"
-                        />
-                            <TextField
-                                value={numDoc}
-                                disabled
-                                onChange={({ target: { value } }) => setNumDoc(value)}
-                                variant="outlined"
-                                size="small"
-                                label="N#"
-                            />
-                        </>
-                    }
+
                     <DatePicker
                         value={date}
                         onChange={(_date) => setDate(_date)}
                     />
                 </Box>
+                {isEditMode && <Box width={240} mt={2}>
+                    <TextField
+                        value={ref}
+                        onChange={({ target: { value } }) => setRef(value)}
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        label="Référence"
+                        type="number"
+                    />
+                </Box>}
+                {isEditMode && <Box width={240} mt={2}><TextField
+                    value={numDoc}
+                    disabled
+                    fullWidth
+                    onChange={({ target: { value } }) => setNumDoc(value)}
+                    variant="outlined"
+                    size="small"
+                    label="N#"
+                />
+                </Box>}
                 <Box mt={2} display="flex" flexWrap="wrap">
                     {BLPayment?.Enabled && <Box mr={2} width={240}>
                         <Autocomplete

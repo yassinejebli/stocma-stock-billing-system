@@ -4,7 +4,7 @@
   
  
 body{
-	background:#00c0e4 !important;
+	background:#3478c9 !important;
 	color: #333;
 }
 .alert{
@@ -34,9 +34,9 @@ body{
 	border-radius:3px;
 	padding-bottom: 20px; 
 	margin-top: 80px; 
-	-webkit-box-shadow: 2px 2px 0 #15add4;
-	-moz-box-shadow: 2px 2px 0 #15add4;
-	box-shadow: 2px 2px 0 #15add4;
+	-webkit-box-shadow: 2px 2px 0 #3478c9;
+	-moz-box-shadow: 2px 2px 0 #3478c9;
+	box-shadow: 2px 2px 0 #3478c9;
 }
 
 .login-logo{
@@ -68,7 +68,7 @@ body{
 	-webkit-border-radius: 100px;
 	-moz-border-radius: 100px;
 	border-radius: 100px;
-	background: #15add4;
+	background: #3478c9;
 	text-align: center; 
 	margin: -60px auto 0;
 	
@@ -88,7 +88,7 @@ body{
 }
 
 .myText{
-    border:1px solid #00c0e4 !important;
+    border:1px solid #3478c9 !important;
 }
 
 .rotate-icon{
@@ -124,7 +124,7 @@ body{
 	margin: 20px auto 20px !important;
 	color: white !important;
 	text-transform:uppercase !important;
-	background: #15add4 !important;
+	background: #3478c9 !important;
 	-webkit-transition: all .5s ease-in-out !important;
 	-moz-transition: all .5s ease-in-out !important;
 	-o-transition: all .5s ease-in-out !important;

@@ -45,3 +45,13 @@ export const getPrintBonAvoirVenteURL = (params) => {
     const parsedParams = new URLSearchParams(params).toString();
     return `/Print/BonAvoirVente?${parsedParams}`
 }
+
+export const getPrintClientAccountSummaryURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/Paiements?${parsedParams}`
+}
+
+export const getPrintFournisseurAccountSummaryURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/PaiementFs?${parsedParams}`
+}

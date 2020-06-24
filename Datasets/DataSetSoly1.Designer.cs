@@ -2281,6 +2281,10 @@ namespace WebApplication1.Datasets {
             
             private global::System.Data.DataColumn columnRevendeur;
             
+            private global::System.Data.DataColumn columnICE;
+            
+            private global::System.Data.DataColumn columnAdresse;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public PaiementDataTable() {
@@ -2396,6 +2400,22 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ICEColumn {
+                get {
+                    return this.columnICE;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn AdresseColumn {
+                get {
+                    return this.columnAdresse;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2431,7 +2451,7 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public PaiementRow AddPaiementRow(string Client, string NumBon, System.DateTime Date, double Debit, double Credit, string Type, string DateEcheance, string Commentaire, string SoldeByClient, string Revendeur) {
+            public PaiementRow AddPaiementRow(string Client, string NumBon, System.DateTime Date, double Debit, double Credit, string Type, string DateEcheance, string Commentaire, string SoldeByClient, string Revendeur, string ICE, string Adresse) {
                 PaiementRow rowPaiementRow = ((PaiementRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Client,
@@ -2443,7 +2463,9 @@ namespace WebApplication1.Datasets {
                         DateEcheance,
                         Commentaire,
                         SoldeByClient,
-                        Revendeur};
+                        Revendeur,
+                        ICE,
+                        Adresse};
                 rowPaiementRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPaiementRow);
                 return rowPaiementRow;
@@ -2476,6 +2498,8 @@ namespace WebApplication1.Datasets {
                 this.columnCommentaire = base.Columns["Commentaire"];
                 this.columnSoldeByClient = base.Columns["SoldeByClient"];
                 this.columnRevendeur = base.Columns["Revendeur"];
+                this.columnICE = base.Columns["ICE"];
+                this.columnAdresse = base.Columns["Adresse"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2501,6 +2525,10 @@ namespace WebApplication1.Datasets {
                 base.Columns.Add(this.columnSoldeByClient);
                 this.columnRevendeur = new global::System.Data.DataColumn("Revendeur", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnRevendeur);
+                this.columnICE = new global::System.Data.DataColumn("ICE", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnICE);
+                this.columnAdresse = new global::System.Data.DataColumn("Adresse", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAdresse);
                 this.columnNumBon.Caption = "Client";
                 this.columnDebit.Caption = "Qte";
                 this.columnCredit.Caption = "Qte";
@@ -7109,6 +7137,38 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ICE {
+                get {
+                    try {
+                        return ((string)(this[this.tablePaiement.ICEColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ICE\' in table \'Paiement\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePaiement.ICEColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Adresse {
+                get {
+                    try {
+                        return ((string)(this[this.tablePaiement.AdresseColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Adresse\' in table \'Paiement\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePaiement.AdresseColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsClientNull() {
                 return this.IsNull(this.tablePaiement.ClientColumn);
             }
@@ -7225,6 +7285,30 @@ namespace WebApplication1.Datasets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetRevendeurNull() {
                 this[this.tablePaiement.RevendeurColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsICENull() {
+                return this.IsNull(this.tablePaiement.ICEColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetICENull() {
+                this[this.tablePaiement.ICEColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsAdresseNull() {
+                return this.IsNull(this.tablePaiement.AdresseColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetAdresseNull() {
+                this[this.tablePaiement.AdresseColumn] = global::System.Convert.DBNull;
             }
         }
         

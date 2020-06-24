@@ -58,7 +58,7 @@ namespace WebApplication1.DATA
         public bool IsStocked { get; set; } = false;
 
         [DefaultValue(20)]
-        public float? TVA { get; set; }
+        public float? TVA { get; set; } = 20;
 
         [DefaultValue(0)]
         public float PA { get; set; }

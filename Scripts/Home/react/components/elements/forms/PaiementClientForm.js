@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Box, Button, TextField } from '@material-ui/core';
+import { Box, Button, TextField, FormControlLabel, Switch } from '@material-ui/core';
 import DatePicker from '../date-picker/DatePicker';
 import TitleIcon from '../misc/TitleIcon';
 import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
@@ -73,7 +73,8 @@ const initialState = {
     date: new Date(),
     dueDate: null,
     comment: '',
-    client: null
+    client: null,
+    isCashed: false
 }
 
 const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) => {
@@ -93,14 +94,16 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
                 IdBonLivraison: document.Id
             }));
         }
-        if(isEditMode){
+        if (isEditMode) {
             setFormState(_formState => ({
                 ..._formState,
                 amount: paiement.Credit || paiement.Debit, //TODO: change this
                 client: paiement.Client,
-                type: paiementMethods.find(x=>x.id === paiement.IdTypePaiement),
+                type: paiementMethods.find(x => x.id === paiement.IdTypePaiement),
                 comment: paiement.Comment,
-                date: paiement.Date
+                date: paiement.Date,
+                dueDate: paiement.DateEcheance,
+                isCashed: paiement.EnCaisse
             }));
         }
     }, []);
@@ -115,15 +118,16 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
             Debit: formState.type.isDebit ? formState.amount : 0,
             Date: formState.date,
             DateEcheance: formState.dueDate,
-            Comment: formState.comment
+            Comment: formState.comment,
+            EnCaisse: formState.isCashed
         }
 
         if (isEditMode) {
-            const response = await updateData(TABLE, {...preparedData, Id: paiement.Id}, paiement.Id);
+            const response = await updateData(TABLE, { ...preparedData, Id: paiement.Id }, paiement.Id);
             if (response.ok) {
                 setFormState({ ...initialState });
                 showSnackBar();
-                if(onSuccess) onSuccess();
+                if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
                     error: true,
@@ -134,7 +138,7 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
             const response = await saveData(TABLE, preparedData);
             if (response?.Id) {
                 showSnackBar();
-                setFormState({...initialState});
+                setFormState({ ...initialState });
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
@@ -244,6 +248,16 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
                     error={Boolean(formErrors.comment)}
                     helperText={formErrors.comment}
                 />
+                {formState.type?.isBankRelatedItem&&!formState.type?.isDebit&&<FormControlLabel
+                    control={<Switch
+                        checked={formState.isCashed}
+                        onChange={(_, checked) => setFormState(_formState => ({
+                            ...formState,
+                            isCashed: checked
+                        })
+                        )} />}
+                    label="Encaissé"
+                />}
                 <Box mt={2} display="flex" justifyContent="flex-end" onClick={save}>
                     <Button variant="contained" color="primary">
                         Enregistrer

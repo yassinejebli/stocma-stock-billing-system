@@ -17,7 +17,7 @@ namespace WebApplication1.DATA
 
         public Guid IdBonAvoirC { get; set; }
 
-        [Range(1, float.MaxValue)]
+        [Range(0, float.MaxValue)]
         public float Qte { get; set; }
 
         [DefaultValue(0)]

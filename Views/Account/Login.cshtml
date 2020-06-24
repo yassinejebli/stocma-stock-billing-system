@@ -207,7 +207,7 @@
     <!-- start Login box -->
     <div class="container" id="login-block">
         <div class="row">
-            <div class="col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4">
+            <div class="col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4" style="width:40%">
 
                 <div class="login-box clearfix animated flipInY">
                     <div class="page-icon animated bounceInDown">
@@ -226,8 +226,11 @@
                     }
                     else
                     {
-                        <div class="login-logo">
-                            <a href="#"><img src="~/Content/images/sanisoft.png" alt="Sanitaire" style="width:70%" /></a>
+                        <div class="login-logo" style="display: flex; flex-direction: column">
+                            <a href="#"><img src="~/Content/images/inventory.svg" alt="Sanitaire" style="width:60px" /></a>
+                            <div style="margin-top: 4px;font-size: 20px; font-weight: 500; color: #3478c9">
+                                STOCMA
+                            </div>
                         </div>
                     }
                     <hr />
@@ -275,7 +278,7 @@
 
     <!-- End Login box -->
     <footer class="container">
-        <p id="footer-text"><small>Copyright &copy; @DateTime.Now.Year <a href="http://yandiweb.com">Yandiweb for development.</a></small></p>
+        <p id="footer-text"><small>Copyright &copy; @DateTime.Now.Year <a href="http://stocma.com">Stocma for development.</a></small></p>
     </footer>
     <script src="~/Scripts/assets/bootstrap-wizard/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/Content/js/jquery-1.11.2.min.js"></script>

@@ -29,6 +29,15 @@ namespace WebApplication1
             return counter;
         }
 
+        public float TotalStockFacture()
+        {
+            var counter = db.ArticleFactures
+                .Where(x => x.QteStock > 0 && !x.Disabled)
+                .Sum(x => (float?)(x.QteStock * x.PA)) ?? 0;
+
+            return counter;
+        }
+
         public IEnumerable ArticlesWithMargin(int IdSite, DateTime? From, DateTime? To)
         {
             if (!From.HasValue) From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);

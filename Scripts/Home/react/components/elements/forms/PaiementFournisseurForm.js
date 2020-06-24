@@ -1,13 +1,14 @@
 import React from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Box, Button, TextField } from '@material-ui/core';
+import { Box, Button, TextField, FormControlLabel, Switch } from '@material-ui/core';
 import DatePicker from '../date-picker/DatePicker';
 import TitleIcon from '../misc/TitleIcon';
 import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FournisseurAutocomplete from '../fournisseur-autocomplete/FournisseurAutocomplete';
-import { saveData } from '../../../queries/crudBuilder';
+import { saveData, updateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
+import { paiementMethods } from './PaiementClientForm';
 
 export const useStyles = makeStyles(theme => ({
     root: {
@@ -17,78 +18,45 @@ export const useStyles = makeStyles(theme => ({
 
 const TABLE = 'PaiementFs'
 
-//TODO: should get these data from backend
-export const paiementMethods = [
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeecb2',
-        name: 'Espéce',
-    },
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeecb3',
-        name: 'Chéque',
-        isBankRelatedItem: true,
-    },
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeecb4',
-        name: 'Effet',
-        isBankRelatedItem: true,
-    },
-    // {
-    //     id: '399d159e-9ce0-4fcc-957a-08a65bbeece1',
-    //     name: 'Impayé'
-    // },
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeecc1',
-        name: 'Versement',
-    },
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeecb5',
-        name: 'Remise',
-    },
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeecb8',
-        name: 'Avoir',
-    },
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeecb7',
-        name: 'Vente',
-    },
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeeca4',
-        name: 'Remboursement',
-        isDebit: true
-    },
-    {
-        id: '399d159e-9ce0-4fcc-957a-08a65bbeecc9',
-        name: 'Ancien solde',
-        isDebit: true
-    }
-]
-
 const initialState = {
     type: null,
     amount: '',
     date: new Date(),
     dueDate: null,
     comment: '',
-    fournisseur: null
+    fournisseur: null,
+    isCashed: false,
+    myCheque: false
 }
 
-const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess }) => {
+const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoir }) => {
     const { showSnackBar } = useSnackBar();
     const [formState, setFormState] = React.useState(initialState);
     const [formErrors, setFormErrors] = React.useState({});
-    const isFromDocument = document && amount;
+    const isFromDocument = Boolean(document);
     const isEditMode = Boolean(paiement);
 
     React.useEffect(() => {
         if (isFromDocument) {
             setFormState(_formState => ({
                 ..._formState,
-                date: document.Date,
                 amount,
                 fournisseur: document.Fournisseur,
-                comment: 'BR ' + document.NumBon
+                comment: (isAvoir ? 'Avoir ' : 'BR ') + document.NumBon,
+                IdBonReception: document.Id
+            }));
+        }
+        if (isEditMode) {
+            setFormState(_formState => ({
+                ..._formState,
+                amount: paiement.Credit || paiement.Debit, //TODO: change this
+                fournisseur: paiement.Fournisseur,
+                type: paiementMethods.find(x => x.id === paiement.IdTypePaiement),
+                comment: paiement.Comment,
+                date: paiement.Date,
+                dueDate: paiement.DateEcheance,
+                isCashed: paiement.EnCaisse,
+                myCheque: paiement.MonCheque
             }));
         }
     }, []);
@@ -103,20 +71,33 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess }) => {
             Debit: formState.type.isDebit ? formState.amount : 0,
             Date: formState.date,
             DateEcheance: formState.dueDate,
-            Comment: formState.comment
+            Comment: formState.comment,
+            EnCaisse: formState.isCashed,
+            MonCheque: formState.myCheque,
         }
 
         if (isEditMode) {
-
-        } else {
-            const response = await saveData(TABLE, preparedData);
-            if (response?.Id) {
-                setFormState({...initialState});
+            const response = await updateData(TABLE, { ...preparedData, Id: paiement.Id }, paiement.Id);
+            if (response.ok) {
+                setFormState({ ...initialState });
                 showSnackBar();
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
-                    error: true
+                    error: true,
+                    text: 'Erreur !'
+                });
+            }
+        } else {
+            const response = await saveData(TABLE, preparedData);
+            if (response?.Id) {
+                showSnackBar();
+                setFormState({ ...initialState });
+                if (onSuccess) onSuccess();
+            } else {
+                showSnackBar({
+                    error: true,
+                    text: 'Erreur!'
                 })
             }
         }
@@ -221,6 +202,26 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess }) => {
                     error={Boolean(formErrors.comment)}
                     helperText={formErrors.comment}
                 />
+                {formState.type?.isBankRelatedItem&&!formState.type?.isDebit&&<FormControlLabel
+                    control={<Switch
+                        checked={formState.isCashed}
+                        onChange={(_, checked) => setFormState(_formState => ({
+                            ...formState,
+                            isCashed: checked
+                        })
+                        )} />}
+                    label="Encaissé"
+                />}
+                {formState.type?.isBankRelatedItem&&<FormControlLabel
+                    control={<Switch
+                        checked={formState.myCheque}
+                        onChange={(_, checked) => setFormState(_formState => ({
+                            ...formState,
+                            myCheque: checked
+                        })
+                        )} />}
+                    label="Mon chèque/effet"
+                />}
                 <Box mt={2} display="flex" justifyContent="flex-end" onClick={save}>
                     <Button variant="contained" color="primary">
                         Enregistrer

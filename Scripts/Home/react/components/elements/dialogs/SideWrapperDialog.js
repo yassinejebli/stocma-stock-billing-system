@@ -12,6 +12,7 @@ import PaiementClientForm from '../forms/PaiementClientForm';
 import SiteForm from '../forms/SiteForm';
 import PaiementFournisseurForm from '../forms/PaiementFournisseurForm';
 import FakeArticleForm from '../forms/FakeArticleForm';
+import { useSite } from '../../providers/SiteProvider';
 
 const border = '1px solid #d8d8d8';
 
@@ -108,7 +109,6 @@ const SideWrapperDialog = (props) => {
 
 export const SideDialogWrapper = ({ children, onExited, ...props }) => {
     const classes = useStyles();
-
     return (
         <Drawer anchor="right" {...props}>
             <div className={classes.root}>
@@ -120,6 +120,7 @@ export const SideDialogWrapper = ({ children, onExited, ...props }) => {
 
 const Menu = ({ open }) => {
     const classes = useStyles();
+    const {useVAT} = useSite();
 
     return (
         <>
@@ -133,15 +134,17 @@ const Menu = ({ open }) => {
                     <div className={classes.description}>Les produits que vous achetez / vendez et que vous suivez leurs quantités</div>
                 </div>
             </div>
-            <div className={classes.item} onClick={() => open(items.fakeArticle)}>
+            {
+                !useVAT&&<div className={classes.item} onClick={() => open(items.fakeArticle)}>
                 <Avatar className={classes.avatar}>
                     <AddShoppingCartIcon className={classes.icon} />
                 </Avatar>
                 <div className={classes.content}>
-                    <div className={classes.title}>Fake Article</div>
+                    <div className={classes.title}>Article (Factures)</div>
                     <div className={classes.description}>Les produits que vous achetez / vendez et que vous suivez leurs quantités</div>
                 </div>
             </div>
+            }
             <div className={classes.item} onClick={() => open(items.client)}>
                 <Avatar className={classes.avatar}>
                     <GroupAddOutlinedIcon className={classes.icon} />

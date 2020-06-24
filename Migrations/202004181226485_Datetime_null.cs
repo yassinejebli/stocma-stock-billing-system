@@ -7,12 +7,13 @@ namespace WebApplication1.Migrations
     {
         public override void Up()
         {
-            AlterColumn("dbo.BonLivraisons", "ModificationDate", c => c.DateTime());
+            AddColumn("dbo.BonLivraisons", "ModificationDate", c => c.DateTime());
+            AddColumn("dbo.BonLivraisons", "CreationDate", c => c.DateTime(nullable: false));
         }
         
         public override void Down()
         {
-            AlterColumn("dbo.BonLivraisons", "ModificationDate", c => c.DateTime(nullable: false));
+            //AlterColumn("dbo.BonLivraisons", "ModificationDate", c => c.DateTime(nullable: false));
         }
     }
 }

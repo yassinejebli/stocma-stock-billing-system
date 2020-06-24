@@ -28,13 +28,13 @@ const PrintBonAvoirVente = ({ document, onClose, onExited, open }) => {
                 {document &&
                     <>
                         <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-                            {!useVAT && <FormControlLabel
+                            {/* {!useVAT && <FormControlLabel
                                 control={<Switch
                                     checked={showBalance}
                                     onChange={(_, checked) => setShowBalance(checked)} />}
                                 label="Afficher le solde"
                             />
-                            }
+                            } */}
                             <FormControlLabel
                                 control={<Switch
                                     checked={showStamp}

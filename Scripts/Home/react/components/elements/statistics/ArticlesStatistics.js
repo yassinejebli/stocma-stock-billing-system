@@ -5,7 +5,7 @@ import RemoveCircleTwoToneIcon from '@material-ui/icons/RemoveCircleTwoTone';
 import MonetizationOnTwoToneIcon from '@material-ui/icons/MonetizationOnTwoTone';
 import StorefrontOutlinedIcon from '@material-ui/icons/StorefrontOutlined';
 import { Avatar, makeStyles, Box } from '@material-ui/core';
-import { getLowStockCount, getTotalStock } from '../../../queries/articleQueries';
+import { getLowStockCount, getTotalStockFacture, getTotalStock } from '../../../queries/articleQueries';
 import { formatMoney } from '../../../utils/moneyUtils';
 import { useSite } from '../../providers/SiteProvider';
 
@@ -77,6 +77,35 @@ const ArticlesStatistics = () => {
                 </div>
                 </Box>
             </Paper>
+            <Paper className={classes.root}>
+                <Box display="flex" flexDirection="column">
+                    <Avatar className={classes.avatarTotalStock}>
+                        <StorefrontOutlinedIcon className={classes.icon} />
+                        <MonetizationOnTwoToneIcon className={classes.block} style={{color: 'orange'}} />
+                    </Avatar>
+                    <div className={classes.number}>
+                        {formatMoney(totalStock)}
+                    </div>
+                    <div className={classes.text}>
+                        Total du stock
+                    </div>
+                </Box>
+            </Paper>
+        </Box>
+    )
+}
+
+export const ArticlesFactureStatistics = () => {
+    const classes = useStyles();
+    const [totalStock, setTotalStock] = React.useState(0);
+
+    React.useEffect(() => {
+        getTotalStockFacture().then(res => setTotalStock(res));
+    }, []);
+
+
+    return (
+        <Box display="flex" justifyContent="space-around">
             <Paper className={classes.root}>
                 <Box display="flex" flexDirection="column">
                     <Avatar className={classes.avatarTotalStock}>

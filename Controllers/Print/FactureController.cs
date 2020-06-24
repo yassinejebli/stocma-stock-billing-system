@@ -54,7 +54,7 @@ namespace WebApplication1.Controllers.Print
                     CodeClient = x.Facture.Client.Code,
                     Discount = x.Discount + (x.PercentageDiscount ? "%" : ""),
                     Total = (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f),
-                }).ToList();
+                }).OrderBy(x=>x.Designation).ToList();
                 reportDocument.SetDataSource(facturePrintData);
 
                 float total = facturePrintData.Sum(x => x.Total * (1 + x.TVA / 100));

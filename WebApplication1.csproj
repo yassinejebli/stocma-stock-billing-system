@@ -229,11 +229,13 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\Print\BonAvoirVenteController.cs" />
     <Compile Include="Controllers\Print\BonCommandeController.cs" />
+    <Compile Include="Controllers\Print\PaiementsController.cs" />
     <Compile Include="Controllers\Print\FakeFactureController.cs" />
     <Compile Include="Controllers\Print\FactureController.cs" />
     <Compile Include="Controllers\Print\DevisController.cs" />
     <Compile Include="Controllers\Print\BLController.cs" />
     <Compile Include="Controllers\Print\BRController.cs" />
+    <Compile Include="Controllers\PaiementsDataController.cs" />
     <Compile Include="Controllers\SalesHistoryController.cs" />
     <Compile Include="Controllers\UploadManagerController.cs" />
     <Compile Include="ConvertisseurChiffresLettres.cs" />
@@ -339,14 +341,32 @@
       <DependentUpon>CrystalReportCompteClient.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CrystalReports\EAS\BonCommandeChiffre.cs">
+      <DependentUpon>BonCommandeChiffre.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\EAS\Paiements.cs">
+      <DependentUpon>Paiements.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Paiements.cs">
+      <DependentUpon>Paiements.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\CrystalReportCompteClientParPeriodeTSR.cs">
       <DependentUpon>CrystalReportCompteClientParPeriodeTSR.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\EAS\BonAvoirCEAS.cs">
-      <DependentUpon>BonAvoirCEAS.rpt</DependentUpon>
+    <Compile Include="CrystalReports\EAS\BonAvoirVente.cs">
+      <DependentUpon>BonAvoirVente.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
@@ -621,10 +641,10 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\EAS\BonCommandeEAS.cs">
+    <Compile Include="CrystalReports\EAS\BonCommande.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BonCommandeEAS.rpt</DependentUpon>
+      <DependentUpon>BonCommande.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CrystalReports\EAS\FactureEAS.cs">
@@ -1260,6 +1280,10 @@
     <Compile Include="Migrations\202006211145222_StockMouvement.cs" />
     <Compile Include="Migrations\202006211145222_StockMouvement.designer.cs">
       <DependentUpon>202006211145222_StockMouvement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006241150290_ModDate.cs" />
+    <Compile Include="Migrations\202006241150290_ModDate.designer.cs">
+      <DependentUpon>202006241150290_ModDate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3473,13 +3497,25 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportCompteClient.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\EAS\BonCommandeChiffre.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>BonCommandeChiffre.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\EAS\Paiements.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Paiements.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Paiements.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Paiements.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\CrystalReportCompteClientParPeriodeTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportCompteClientParPeriodeTSR.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\BonAvoirCEAS.rpt">
+    <EmbeddedResource Include="CrystalReports\EAS\BonAvoirVente.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BonAvoirCEAS.cs</LastGenOutput>
+      <LastGenOutput>BonAvoirVente.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\EAS\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -3661,9 +3697,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionH9S.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\BonCommandeEAS.rpt">
+    <EmbeddedResource Include="CrystalReports\EAS\BonCommande.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BonCommandeEAS.cs</LastGenOutput>
+      <LastGenOutput>BonCommande.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\EAS\FactureEAS.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -4028,6 +4064,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006211145222_StockMouvement.resx">
       <DependentUpon>202006211145222_StockMouvement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006241150290_ModDate.resx">
+      <DependentUpon>202006241150290_ModDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

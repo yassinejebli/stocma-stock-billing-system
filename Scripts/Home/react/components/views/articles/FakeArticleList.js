@@ -14,18 +14,13 @@ import { TextField, Dialog, FormControlLabel, Checkbox, Button } from '@material
 import useDebounce from '../../../hooks/useDebounce'
 import { fakeArticleColumns } from '../../elements/table/columns/articleColumns'
 import { getImageURL } from '../../../utils/urlBuilder'
-import ArticlesStatistics from '../../elements/statistics/ArticlesStatistics'
+import {ArticlesFactureStatistics} from '../../elements/statistics/ArticlesStatistics'
 import AddIcon from '@material-ui/icons/Add';
 import FakeArticleForm from '../../elements/forms/FakeArticleForm'
 
 const TABLE = 'ArticleFactures';
 
 const FakeArticleList = () => {
-    const [showArticleModal, hideArticleModal] = useModal(({ in: open, onExited }) => (
-        <SideDialogWrapper open={open} onExited={onExited} onClose={hideArticleModal}>
-            <FakeArticleForm />
-        </SideDialogWrapper>
-    ));
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -58,6 +53,13 @@ const FakeArticleList = () => {
             }} data={selectedRow} />
         </SideDialogWrapper>
     ), [selectedRow]);
+    const [showArticleModal, hideArticleModal] = useModal(({ in: open, onExited }) => (
+        <SideDialogWrapper open={open} onExited={onExited} onClose={hideArticleModal}>
+            <FakeArticleForm onSuccess={() => {
+                refetchData();
+            }} />
+        </SideDialogWrapper>
+    ), [filters]);
     const [showModalImage, hideModalImage] = useModal(({ in: open, onExited }) => {
         return (
             <Dialog
@@ -135,7 +137,7 @@ const FakeArticleList = () => {
         <>
             <Loader loading={loading} />
             <Box my={2} display="flex" justifyContent="center">
-                <ArticlesStatistics />
+                <ArticlesFactureStatistics />
             </Box>
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
                 <Button

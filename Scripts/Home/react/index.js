@@ -41,6 +41,7 @@ import StockMouvementList from './components/views/stock-mouvement/StockMouvemen
 import SuiviVentes from './components/views/ventes/suivi/SuiviVentes';
 import SuiviAchats from './components/views/achats/suivi/SuiviAchats';
 import PaiementClientList from './components/views/paiement-client/PaiementClientList';
+import PaiementFournisseurList from './components/views/paiement-fournisseur/PaiementFournisseurList';
 
 const App = () => {
     return (
@@ -54,6 +55,7 @@ const App = () => {
                                     <Switch>
                                         <SideMenu onClose={() => null}>
                                             <Route exact path="/" component={Dashboard} />
+                                            <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />
                                             <Route path="/liste-paiements-des-clients" component={PaiementClientList} />
                                             <Route path="/suivi-des-ventes" component={SuiviVentes} />
                                             <Route path="/suivi-des-achats" component={SuiviAchats} />

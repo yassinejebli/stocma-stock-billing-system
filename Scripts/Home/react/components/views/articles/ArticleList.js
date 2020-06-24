@@ -26,11 +26,6 @@ const TABLE = 'ArticleSites';
 const EXPAND = ['Article'];
 
 const ArticleList = () => {
-    const [showArticleModal, hideArticleModal] = useModal(({ in: open, onExited }) => (
-        <SideDialogWrapper open={open} onExited={onExited} onClose={hideArticleModal}>
-            <ArticleForm />
-        </SideDialogWrapper>
-    ));
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -68,6 +63,13 @@ const ArticleList = () => {
             }} data={selectedRow} />
         </SideDialogWrapper>
     ), [selectedRow]);
+    const [showArticleModal, hideArticleModal] = useModal(({ in: open, onExited }) => (
+        <SideDialogWrapper open={open} onExited={onExited} onClose={hideArticleModal}>
+            <ArticleForm onSuccess={() => {
+                refetchData();
+            }} />
+        </SideDialogWrapper>
+    ), [filters]);
     const [showModalImage, hideModalImage] = useModal(({ in: open, onExited }) => {
         return (
             <Dialog

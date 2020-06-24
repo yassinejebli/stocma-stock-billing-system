@@ -16,6 +16,7 @@ import TopBar from './TopBar';
 import { useModal } from 'react-modal-hook';
 import SettingsDialog from '../dialogs/SettingsDialog';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 
 export const drawerWidth = 240;
 
@@ -107,7 +108,9 @@ const MenuItems = () => {
     const [openAccounts, setOpenAccounts] = React.useState(false);
     const [openSettings, setOpenSettings] = React.useState(false);
     const [openSales, setOpenSales] = React.useState(false);
+    const [openSituations, setOpenSituations] = React.useState(false);
     const [openPurchases, setOpenPurchases] = React.useState(false);
+    const [openStockArticles, setOpenStockArticles] = React.useState(false);
     const classes = useStyles();
     const history = useHistory();
 
@@ -148,23 +151,23 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openSales} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button className={classes.nested} onClick={()=>history.push('/BonLivraison')}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/BonLivraison')}>
                             <ListItemIcon />
                             <ListItemText primary="Bon de livraison" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={()=>history.push('/Facture')}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/Facture')}>
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={()=>history.push('/Devis')}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/Devis')}>
                             <ListItemIcon />
                             <ListItemText primary="Devis" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={()=>history.push('/AvoirVente')}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/bon-avoir-vente')}>
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={()=>history.push('/')}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/suivi-des-ventes')}>
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
                         </ListItem>
@@ -180,23 +183,23 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openPurchases} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button className={classes.nested}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/BonReception')}>
                             <ListItemIcon />
-                            <ListItemText primary="Bon de livraison" />
+                            <ListItemText primary="Bon de réception" />
                         </ListItem>
-                        <ListItem button className={classes.nested}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/_FactureAchat')}>
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>
-                        <ListItem button className={classes.nested}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/BonCommande')}>
                             <ListItemIcon />
                             <ListItemText primary="Commande" />
                         </ListItem>
-                        <ListItem button className={classes.nested}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/bon-avoir-achat')}>
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>
-                        <ListItem button className={classes.nested}>
+                        <ListItem button className={classes.nested} onClick={() => history.push('/suivi-des-achats')}>
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
                         </ListItem>
@@ -205,10 +208,43 @@ const MenuItems = () => {
             </List>
             <Divider className={classes.divider} />
             <List className={classes.list}>
-                <ListItem button onClick={() => history.replace('/ArticleList')}>
+                <ListItem button onClick={() => setOpenStockArticles(!openStockArticles)}>
                     <ListItemIcon><LocalMallIcon className={classes.icon} /></ListItemIcon>
                     <ListItemText primary="Articles & Stock" />
+                    {openStockArticles ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
+                <Collapse in={openStockArticles} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <ListItem button onClick={() => history.replace('/ArticleList')}>
+                            <ListItemIcon />
+                            <ListItemText primary="Articles" />
+                        </ListItem>
+                        <ListItem button onClick={() => history.replace('/_ArticleList')}>
+                            <ListItemIcon />
+                            <ListItemText primary="Articles (Facture)" />
+                        </ListItem>
+                    </List>
+                </Collapse>
+            </List>
+            <Divider className={classes.divider} />
+            <List className={classes.list}>
+                <ListItem button onClick={() => setOpenSituations(!openSituations)}>
+                    <ListItemIcon><AccountBalanceIcon className={classes.icon} /></ListItemIcon>
+                    <ListItemText primary="Situation" />
+                    {openSituations ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openSituations} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <ListItem button onClick={() => history.replace('/liste-paiements-des-clients')}>
+                            <ListItemIcon />
+                            <ListItemText primary="Clients" />
+                        </ListItem>
+                        <ListItem button onClick={() => history.replace('/liste-paiements-des-fournisseurs')}>
+                            <ListItemIcon />
+                            <ListItemText primary="Fournisseurs" />
+                        </ListItem>
+                    </List>
+                </Collapse>
             </List>
             <Divider className={classes.divider} />
             <List className={classes.list}>

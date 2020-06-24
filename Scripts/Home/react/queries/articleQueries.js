@@ -165,6 +165,17 @@ export const getTotalStock = async (IdSite) => {
     }
 }
 
+export const getTotalStockFacture = async () => {
+    const URL = '/Statistics/TotalStockFacture'
+    try {
+        const res = await (await fetch(URL)).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}
+
 export const getMarginArticles = async (idSite, dateFrom, dateTo) => {
     const parsedParams = new URLSearchParams({
         IdSite: idSite,

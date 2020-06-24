@@ -15,15 +15,19 @@ import ClientAutocomplete from '../../elements/client-autocomplete/ClientAutocom
 import PaiementClientForm from '../../elements/forms/PaiementClientForm';
 import { partialUpdateData } from '../../../queries/crudBuilder'
 import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog';
+import PrintIcon from '@material-ui/icons/Print';
 import AddIcon from '@material-ui/icons/Add';
 import PrintBL from '../../elements/dialogs/documents-print/PrintBL';
 import { useSnackBar } from '../../providers/SnackBarProvider';
+import PrintClientAccountSummary from '../../elements/dialogs/documents-print/PrintClientAccountSummary';
+import SoldeText from '../../elements/texts/SoldeText';
 
 const TABLE = 'Paiements';
 
 const EXPAND = ['TypePaiement', 'Client', 'BonLivraison/Client'];
 
 const PaiementClientList = () => {
+    const refreshCount = React.useRef(0)
     const today = new Date();
     const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDayCurrentMonth = new Date();
@@ -33,46 +37,13 @@ const PaiementClientList = () => {
     const [client, setClient] = React.useState(null);
     const [searchText, setSearchText] = React.useState('');
     const [selectedRow, setSelectedRow] = React.useState(null);
+    const [summaryClientIdToPrint, setSummaryClientIdToPrint] = React.useState(null);
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
     const [dateFrom, setDateFrom] = React.useState(firstDayCurrentMonth);
     const [dateTo, setDateTo] = React.useState(lastDayCurrentMonth);
     const debouncedSearchText = useDebounce(searchText);
     const [errors, setErrors] = React.useState({});
     const { showSnackBar } = useSnackBar();
-    const [showBLModal, hideBLModal] = useModal(({ in: open, onExited }) => {
-        return (
-            <PrintBL
-                onExited={onExited}
-                open={open}
-                document={documentToPrint}
-                onClose={() => {
-                    setDocumentToPrint(null);
-                    hideBLModal();
-                }}
-            />
-        )
-    }, [documentToPrint]);
-    const [showNewPaiementModal, hideNewPaiementModal] = useModal(({ in: open, onExited }) => (
-        <SideDialogWrapper open={open} onExited={onExited} onClose={hideNewPaiementModal}>
-            <PaiementClientForm
-                onSuccess={() => {
-                    refetchData();
-                    // hideNewPaiementModal();
-                }}
-            />
-        </SideDialogWrapper>
-    ));
-    const [showPaiementModal, hidePaiementModal] = useModal(({ in: open, onExited }) => (
-        <SideDialogWrapper open={open} onExited={onExited} onClose={hidePaiementModal}>
-            {selectedRow && <PaiementClientForm
-                paiement={selectedRow}
-                onSuccess={() => {
-                    refetchData();
-                    hidePaiementModal();
-                }}
-            />}
-        </SideDialogWrapper>
-    ), [selectedRow]);
     const filters = React.useMemo(() => {
         return {
             'Date': { ge: dateFrom, le: dateTo },
@@ -96,6 +67,55 @@ const PaiementClientList = () => {
             ]
         }
     }, [debouncedSearchText, client, dateFrom, dateTo]);
+    const [showBLModal, hideBLModal] = useModal(({ in: open, onExited }) => {
+        return (
+            <PrintBL
+                onExited={onExited}
+                open={open}
+                document={documentToPrint}
+                onClose={() => {
+                    setDocumentToPrint(null);
+                    hideBLModal();
+                }}
+            />
+        )
+    }, [documentToPrint]);
+    const [showAccountSummaryModal, hideAccountSummaryModal] = useModal(({ in: open, onExited }) => {
+        return (
+            <PrintClientAccountSummary
+                onExited={onExited}
+                open={open}
+                clientId={summaryClientIdToPrint}
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                onClose={() => {
+                    setSummaryClientIdToPrint(null);
+                    hideAccountSummaryModal();
+                }}
+            />
+        )
+    }, [summaryClientIdToPrint, dateFrom, dateTo]);
+    const [showNewPaiementModal, hideNewPaiementModal] = useModal(({ in: open, onExited }) => (
+        <SideDialogWrapper open={open} onExited={onExited} onClose={hideNewPaiementModal}>
+            <PaiementClientForm
+                onSuccess={() => {
+                    refetchData();
+                    // hideNewPaiementModal();
+                }}
+            />
+        </SideDialogWrapper>
+    ),[filters, client]);
+    const [showPaiementModal, hidePaiementModal] = useModal(({ in: open, onExited }) => (
+        <SideDialogWrapper open={open} onExited={onExited} onClose={hidePaiementModal}>
+            {selectedRow && <PaiementClientForm
+                paiement={selectedRow}
+                onSuccess={() => {
+                    refetchData();
+                    hidePaiementModal();
+                }}
+            />}
+        </SideDialogWrapper>
+    ), [selectedRow]);
     const [data, setData] = React.useState([]);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
@@ -120,14 +140,17 @@ const PaiementClientList = () => {
         setTitle('Liste des paiements')
     }, []);
 
-    const refetchData = () => {
+    const refetchData = React.useCallback(() => {
+        console.log({filters})
         getData(TABLE, {}, filters, EXPAND).then((response) => {
             setData(response.data);
             setTotalItems(response.totalItems);
         }).catch((err) => {
             console.log({ err });
+        }).finally(() => {
+            refreshCount.current += 1;
         })
-    }
+    }, [filters]);
 
     const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {
         const fetchId = ++fetchIdRef.current;
@@ -154,20 +177,25 @@ const PaiementClientList = () => {
         const response = await partialUpdateData(TABLE, {
             Hide: !document.Hide
         }, document.Id)
-        if(response.ok)
+        if (response.ok)
             showSnackBar();
         else
             showSnackBar({
                 error: true,
                 text: 'Erreur !'
             })
-        refetchData()
-    }, [])
+        refetchData();
+    }, [filters])
 
     const updateRow = React.useCallback(async (row) => {
         setSelectedRow(row);
         showPaiementModal();
     }, []);
+
+    const printAccountSummary = () => {
+        setSummaryClientIdToPrint(client?.Id);
+        showAccountSummaryModal();
+    }
 
     //Impaye
     const customAction = React.useCallback(async (row) => {
@@ -180,7 +208,7 @@ const PaiementClientList = () => {
             Comment: row.Comment
         }
         const response = await saveData(TABLE, preparedData)
-        if (response?.Id) 
+        if (response?.Id)
             showSnackBar();
         else
             showSnackBar({
@@ -194,21 +222,32 @@ const PaiementClientList = () => {
         const response = await deleteData(TABLE, id);
         if (response.ok) {
             showSnackBar();
-            refetchData();
         } else {
             showSnackBar({
                 error: true,
                 text: 'Impossible de supprimer la ligne sélectionnée !'
             });
         }
-    }, []);
+        refetchData();
+    }, [filters]);
 
     return (
         <>
-            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+            <Box mt={1} mb={2} display="flex" justifyContent="space-between">
+                {client && dateFrom && dateTo && <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<PrintIcon />}
+                    onClick={printAccountSummary}
+                >
+                    Imprimer la situation de compte client
+                </Button>}
                 <Button
                     variant="contained"
                     color="primary"
+                    style={{
+                        marginLeft: 'auto'
+                    }}
                     startIcon={<AddIcon />}
                     onClick={showNewPaiementModal}
                 >
@@ -271,6 +310,9 @@ const PaiementClientList = () => {
                         fetchData={fetchData}
                         filters={filters}
                     />
+                    {client && <Box mt={2}>
+                        <SoldeText refresh={refreshCount.current} clientId={client.Id} date={dateFrom} />
+                    </Box>}
                 </Box>
             </Paper>
         </>

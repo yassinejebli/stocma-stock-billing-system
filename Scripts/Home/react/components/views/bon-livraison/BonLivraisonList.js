@@ -132,7 +132,7 @@ const BonLivraisonList = () => {
         <>
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
-                <Box mr={2}>
+                {/* <Box mr={2}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -141,7 +141,7 @@ const BonLivraisonList = () => {
                     >
                         Marge bénéficiaire par BL
                 </Button>
-                </Box>
+                </Box> */}
                 <Button
                     variant="contained"
                     color="primary"
