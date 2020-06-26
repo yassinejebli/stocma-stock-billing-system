@@ -22,7 +22,9 @@ namespace WebApplication1.DATA
 
         [DefaultValue(0)]
         public float Pu { get; set; }
-        public float PA { get; set; }
+
+        [DefaultValue(0)]
+        public float PA { get; set; } = 0;
 
         public Guid IdArticle { get; set; }
 

@@ -17,14 +17,15 @@ using WebApplication1.Generators;
 
 namespace WebApplication1.DATA.OData
 {
+    [Authorize]
     public class BonCommandesController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<BonCommande> GetBonCommandes()
         {
-            return (IQueryable<BonCommande>)this.db.BonCommandes;
+            return (IQueryable<BonCommande>)this.db.BonCommandes.OrderByDescending(x=>x.Date);
         }
 
         [EnableQuery]

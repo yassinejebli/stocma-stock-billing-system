@@ -47,6 +47,13 @@ namespace WebApplication1.Migrations
                 context.SaveChanges();
             }
 
+            var bonAvoirCItems = context.BonAvoirCItems.Where(x => x.PA == 0);
+
+            if (bonAvoirCItems.Count() > 0)
+            {
+                bonAvoirCItems.ForEach(x => x.PA = x.Article.PA);
+                context.SaveChanges();
+            }
 
 
             //article sites

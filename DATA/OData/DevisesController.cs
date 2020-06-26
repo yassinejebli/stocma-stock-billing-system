@@ -17,6 +17,7 @@ using WebApplication1.Generators;
 
 namespace WebApplication1.DATA.OData
 {
+    [Authorize]
     public class DevisesController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();

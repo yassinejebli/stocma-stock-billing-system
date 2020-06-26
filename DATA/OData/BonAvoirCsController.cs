@@ -22,10 +22,10 @@ namespace WebApplication1.DATA.OData
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<BonAvoirC> GetBonAvoirCs()
         {
-            return (IQueryable<BonAvoirC>)this.db.BonAvoirCs;
+            return (IQueryable<BonAvoirC>)this.db.BonAvoirCs.OrderByDescending(x=>x.Date);
         }
 
         [EnableQuery]
@@ -66,7 +66,11 @@ namespace WebApplication1.DATA.OData
             bonAvoirC.Note = newBonAvoiC.Note;
             var numBonGenerator = new DocNumberGenerator();
             bonAvoirC.NumBon = numBonGenerator.getNumDocByCompany(newBonAvoiC.Ref - 1, newBonAvoiC.Date);
-
+            foreach (var bi in newBonAvoiC.BonAvoirCItems)
+            {
+                var article = db.Articles.Find(bi.IdArticle);
+                bi.PA = article.PA;
+            }
 
             //-----------------------------------------------Updating payment
             var company = StatistiqueController.getCompany();
@@ -150,7 +154,11 @@ namespace WebApplication1.DATA.OData
             var lastRef = lastDoc != null ? lastDoc.Ref : 0;
             bonAvoirC.Ref = lastRef + 1;
             bonAvoirC.NumBon = numBonGenerator.getNumDocByCompany(lastRef, bonAvoirC.Date);
-
+            foreach (var bi in bonAvoirC.BonAvoirCItems)
+            {
+                var article = db.Articles.Find(bi.IdArticle);
+                bi.PA = article.PA;
+            }
             //---------------------------Updating Qte stock
             foreach (var bi in bonAvoirC.BonAvoirCItems)
             {

@@ -212,7 +212,7 @@ const MenuItems = () => {
             <List className={classes.list}>
                 <ListItem button onClick={() => setOpenStockArticles(!openStockArticles)}>
                     <ListItemIcon><LocalMallIcon className={classes.icon} /></ListItemIcon>
-                    <ListItemText primary="Articles & Stock" />
+                    <ListItemText primary="Stock" />
                     {openStockArticles ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse in={openStockArticles} timeout="auto" unmountOnExit>
@@ -224,6 +224,10 @@ const MenuItems = () => {
                         <ListItem button onClick={() => history.replace('/_ArticleList')}>
                             <ListItemIcon />
                             <ListItemText primary="Articles (Facture)" />
+                        </ListItem>
+                        <ListItem button onClick={() => history.replace('/mouvement-stock')}>
+                            <ListItemIcon />
+                            <ListItemText primary="Mouvements" />
                         </ListItem>
                     </List>
                 </Collapse>

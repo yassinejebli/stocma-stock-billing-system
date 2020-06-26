@@ -20,10 +20,10 @@ namespace WebApplication1.DATA.OData
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<BonAvoir> GetBonAvoirs()
         {
-            return (IQueryable<BonAvoir>)this.db.BonAvoirs;
+            return (IQueryable<BonAvoir>)this.db.BonAvoirs.OrderByDescending(x=>x.Date);
         }
 
         [EnableQuery]

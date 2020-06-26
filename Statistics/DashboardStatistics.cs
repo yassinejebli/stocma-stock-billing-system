@@ -16,7 +16,13 @@ namespace WebApplication1.Statistics
 
             return db.BonLivraisonItems.Where(x => x.BonLivraison.Date.Year == currentYear)
                 .GroupBy(x => new { Month = x.BonLivraison.Date.Month, Year = x.BonLivraison.Date.Year })
-                .Select(x => new { year = x.Key.Year, month = x.Key.Month, turnover = x.Sum(y => y.Qte * y.Pu), profit = x.Sum(y => y.Qte * (y.Pu - y.PA)) });
+                .Select(x => new
+                {
+                    year = x.Key.Year,
+                    month = x.Key.Month,
+                    turnover = x.Sum(y => (float?)(y.Qte * y.Pu)) ?? 0 - db.BonAvoirCItems.Where(y => y.BonAvoirC.Date.Year == currentYear && y.BonAvoirC.Date.Month == x.Key.Month).Sum(y => (float?)(y.Qte * y.Pu)) ?? 0,
+                    profit = x.Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0 - db.BonAvoirCItems.Where(y => y.BonAvoirC.Date.Year == currentYear && y.BonAvoirC.Date.Month == x.Key.Month).Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0,
+                });
         }
 
         public IEnumerable DailyProfitAndTurnover(int IdSite)
@@ -26,7 +32,12 @@ namespace WebApplication1.Statistics
 
             return db.BonLivraisonItems.Where(x => x.BonLivraison.Date.Year == currentYear && x.BonLivraison.Date.Month == currentMonth)
                 .GroupBy(x => new { Day = x.BonLivraison.Date.Day })
-                .Select(x => new { day = x.Key.Day, turnover = x.Sum(y => y.Qte * y.Pu), profit = x.Sum(y => y.Qte * (y.Pu - y.PA)) });
+                .Select(x => new
+                {
+                    day = x.Key.Day,
+                    turnover = x.Sum(y => (float?)(y.Qte * y.Pu)) ?? 0 - db.BonAvoirCItems.Where(y=>y.BonAvoirC.Date.Day == x.Key.Day && y.BonAvoirC.Date.Year == currentYear && y.BonAvoirC.Date.Month == currentMonth).Sum(y=> (float?)(y.Qte*y.Pu)) ?? 0,
+                    profit = x.Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0 - db.BonAvoirCItems.Where(y => y.BonAvoirC.Date.Day == x.Key.Day && y.BonAvoirC.Date.Year == currentYear && y.BonAvoirC.Date.Month == currentMonth).Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0,
+                });
         }
     }
 }
