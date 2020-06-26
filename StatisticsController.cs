@@ -25,10 +25,10 @@ namespace WebApplication1
             return Json(statistics.TotalStockFacture(), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ArticlesWithMargin(int IdSite, DateTime? From, DateTime? To)
+        public ActionResult ArticlesWithMargin(int IdSite, int Skip, string SearchText, DateTime? From, DateTime? To)
         {
             ArticlesStatistics statistics = new ArticlesStatistics();
-            return Json(statistics.ArticlesWithMargin(IdSite, From, To), JsonRequestBehavior.AllowGet);
+            return Json(statistics.ArticlesWithMargin(IdSite, Skip, SearchText, From, To), JsonRequestBehavior.AllowGet);
         }
 
 

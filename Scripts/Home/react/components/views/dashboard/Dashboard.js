@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { useTitle } from '../../providers/TitleProvider';
 import ProfitAndExpenses from './ProfitAndExpenses';
+import MonthlyProfitAndExpenses from './MonthlyProfitAndExpenses';
 
 const Dashboard = () => {
     const { setTitle } = useTitle();
@@ -12,6 +13,7 @@ const Dashboard = () => {
         <div>
             <div>
                 <ProfitAndExpenses />
+                <MonthlyProfitAndExpenses />
             </div>
         </div>
     )

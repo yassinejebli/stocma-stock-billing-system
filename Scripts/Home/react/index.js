@@ -84,7 +84,7 @@ const App = () => {
                                             <Route path="/ArticleList" component={ArticleList} />
                                             <Route path="/_ArticleList" component={FakeArticleList} />
                                             <Route path="/SiteList" component={SiteList} />
-                                            <Route path="/ArticlesMarginList" component={ArticlesMarginList} />
+                                            <Route path="/marge-articles" component={ArticlesMarginList} />
                                             <Route path="/ClientList" component={ClientList} />
                                             <Route path="/SupplierList" component={SupplierList} />
                                         </SideMenu>

@@ -62,7 +62,8 @@ const ProfitAndExpenses = () => {
                         show: true,
                         width: 4,
                         dashArray: 0,
-                        opacity: 0.4
+                        opacity: 0.4,
+                        curve: 'straight',
                     },
                     grid: {
                         show: false,
@@ -95,7 +96,9 @@ const ProfitAndExpenses = () => {
                     },
                     yaxis: {
                         labels: {
-                            show: false
+                            formatter: function (value) {
+                                return formatMoney(value) + ' DH'
+                            }
                         },
                     }
                 }

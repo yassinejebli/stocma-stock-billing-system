@@ -54,14 +54,16 @@
 </head>
 <body>
     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
-                                        {
-                                            @Html.AntiForgeryToken()
-                                        }
+    {
+        @Html.AntiForgeryToken()
+    }
 
     @RenderBody()
-    <script src="~/Scripts/dist/Home/react/bundle.js"></script>
- @*<script id="__bs_script__">//<![CDATA[
-    document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>".replace("HOST", location.hostname));
-//]]></script>*@
+    @*<script src="~/Scripts/dist/Home/react/bundle.js"></script>*@
+    @Html.IncludeVersionedJs("/Scripts/dist/Home/react/bundle.js")
+    <script id="__bs_script__">
+    //<![CDATA[
+        document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>".replace("HOST", location.hostname));
+//]]></script>
 </body>
 </html>

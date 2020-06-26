@@ -26,7 +26,7 @@ namespace WebApplication1.Statistics
 
             return db.BonLivraisonItems.Where(x => x.BonLivraison.Date.Year == currentYear && x.BonLivraison.Date.Month == currentMonth)
                 .GroupBy(x => new { Day = x.BonLivraison.Date.Day })
-                .Select(x => new { day = x.Key.Day+1, turnover = x.Sum(y => y.Qte * y.Pu), profit = x.Sum(y => y.Qte * (y.Pu - y.PA)) });
+                .Select(x => new { day = x.Key.Day, turnover = x.Sum(y => y.Qte * y.Pu), profit = x.Sum(y => y.Qte * (y.Pu - y.PA)) });
         }
     }
 }

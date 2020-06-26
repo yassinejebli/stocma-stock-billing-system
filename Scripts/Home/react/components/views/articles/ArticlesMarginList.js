@@ -2,7 +2,6 @@ import Box from '@material-ui/core/Box'
 import React from 'react'
 import Paper from '../../elements/misc/Paper'
 import Table from '../../elements/table/Table'
-import Loader from '../../elements/loaders/Loader'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import { TextField } from '@material-ui/core'
@@ -11,6 +10,7 @@ import { useSite } from '../../providers/SiteProvider'
 import { getMarginArticles } from '../../../queries/articleQueries'
 import { useTitle } from '../../providers/TitleProvider'
 import DatePicker from '../../elements/date-picker/DatePicker'
+import useDebounce from '../../../hooks/useDebounce'
 
 const ArticlesMarginList = () => {
     const today = new Date();
@@ -19,25 +19,45 @@ const ArticlesMarginList = () => {
     firstDayCurrentMonth.setHours(0,0,0,0);
     lastDayCurrentMonth.setHours(23,59,59,999);
     const { siteId } = useSite();
+    const fetchIdRef = React.useRef(0);
     const { setTitle } = useTitle();
     const [data, setData] = React.useState([]);
     const [searchText, setSearchText] = React.useState('');
     const filteredData = data.filter(x=>x.Article.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()))
     const [dateFrom, setDateFrom] = React.useState(firstDayCurrentMonth);
     const [dateTo, setDateTo] = React.useState(lastDayCurrentMonth);
-    const [loading, setLoading] = React.useState(false);
+    const [totalItems, setTotalItems] = React.useState(0);
+    const [pageCount, setTotalCount] = React.useState(0);
     const columns = React.useMemo(
         () => articlesMarginColumns(),
         []
     )
-
+    const debouncedSearchText = useDebounce(searchText);
+    const filters = React.useMemo(() => {
+        return {
+            dateFrom,
+            dateTo,
+            searchText: debouncedSearchText
+        }
+    }, [debouncedSearchText, dateFrom, dateTo]);
     React.useEffect(() => {
-        setTitle('Marges & Articles')
-        setLoading(true);
-        getMarginArticles(siteId, dateFrom, dateTo)
-            .then(res => setData(res))
-            .finally(() => setLoading(false));
-    }, [siteId, dateFrom, dateTo]);
+        setTitle('Marge par article')
+        
+    }, []);
+
+    const fetchData = React.useCallback(({ pageSize, pageIndex, filters }) => {
+        const fetchId = ++fetchIdRef.current;
+        if (fetchId === fetchIdRef.current) {
+            const startRow = pageSize * pageIndex;
+
+            getMarginArticles(siteId, startRow, filters)
+            .then(response => {
+                setData(response.data)
+                setTotalItems(response.totalItems)
+                setTotalCount(Math.ceil(response.totalItems / pageSize))
+            });
+        }
+    }, [])
 
     React.useEffect(() => {
         
@@ -45,10 +65,7 @@ const ArticlesMarginList = () => {
 
     return (
         <>
-            <Loader loading={loading} />
-            {/* <Box my={2} display="flex" justifyContent="center">
-                <ArticlesStatistics />
-            </Box> */}
+
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <TitleIcon noBorder title="Marge bénéficiaire par article" Icon={LocalAtmIcon} />
@@ -87,6 +104,11 @@ const ArticlesMarginList = () => {
                     <Table
                         columns={columns}
                         data={filteredData}
+                        serverPagination
+                        totalItems={totalItems}
+                        pageCount={pageCount}
+                        fetchData={fetchData}
+                        filters={filters}
                     />
                 </Box>
             </Paper>

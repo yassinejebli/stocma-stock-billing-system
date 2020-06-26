@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.OData;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace WebApplication1
             return counter;
         }
 
-        public IEnumerable ArticlesWithMargin(int IdSite, DateTime? From, DateTime? To)
+        public dynamic ArticlesWithMargin(int IdSite, int Skip, string SearchText, DateTime? From, DateTime? To)
         {
             if (!From.HasValue) From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             if (!To.HasValue) To = DateTime.Now;
@@ -46,15 +47,18 @@ namespace WebApplication1
             {
                 Article = x.Article.Designation,
                 QteStock = x.QteStock,
-                QteSold = x.Article.BonLivraisonItems.Where(y=> y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite).Sum(y=>(int?)y.Qte) ?? 0,
+                QteSold = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite).Sum(y => (int?)y.Qte) ?? 0,
                 PA = x.Article.PA,
                 Turnover = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite).
                 Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f,
-                Margin = x.Article.BonLivraisonItems.Where(y=>y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite)
+                Margin = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite)
                 .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f
-            }).Where(x=>x.Turnover > 0).OrderByDescending(x=>x.Margin).ToList();
+            }).Where(x => x.Turnover > 0 && (SearchText == "" || x.Article.ToLower().Contains(SearchText.ToLower())));
 
-            return articlesWithMargin;
+            var totalItems = articlesWithMargin.Count();
+
+
+            return new { data = articlesWithMargin.OrderByDescending(x => x.Margin).Skip(Skip).Take(10), totalItems };
         }
     }
 }

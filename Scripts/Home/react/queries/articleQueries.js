@@ -5,12 +5,12 @@ const TABLE = 'Articles';
 const ODATA_URL = '/Odata/'
 
 export const getArticles = async (filters) => {
-    if(!filters['Article/Designation']) return [];
+    if (!filters['Article/Designation']) return [];
 
-    const allParams = buildQuery({ 
+    const allParams = buildQuery({
         expand: 'Article',
-        filter: filters, 
-        top: 20, 
+        filter: filters,
+        top: 20,
         skip: 0,
     })
 
@@ -26,11 +26,11 @@ export const getArticles = async (filters) => {
 }
 
 export const getFakeArticles = async (filters) => {
-    if(!filters['Designation']) return [];
+    if (!filters['Designation']) return [];
 
-    const allParams = buildQuery({ 
-        filter: filters, 
-        top: 20, 
+    const allParams = buildQuery({
+        filter: filters,
+        top: 20,
         skip: 0,
     })
 
@@ -125,8 +125,8 @@ export const saveArticle = async (article, qteStock, idSite) => {
         $expand: 'ArticlesSites'
     }).toString();
 
-    const URL = ODATA_URL + TABLE + '?'+ parsedParams;
-    const {QteStockSum, ...data} = article;
+    const URL = ODATA_URL + TABLE + '?' + parsedParams;
+    const { QteStockSum, ...data } = article;
     try {
         const res = await (await fetch(URL, {
             method: 'POST',
@@ -144,7 +144,7 @@ export const saveArticle = async (article, qteStock, idSite) => {
 }
 
 export const getLowStockCount = async (IdSite) => {
-    const URL = '/Statistics/LowStockArticles?IdSite='+IdSite;
+    const URL = '/Statistics/LowStockArticles?IdSite=' + IdSite;
     try {
         const res = await (await fetch(URL)).json();
         return res;
@@ -155,7 +155,7 @@ export const getLowStockCount = async (IdSite) => {
 }
 
 export const getTotalStock = async (IdSite) => {
-    const URL = '/Statistics/TotalStock?IdSite='+IdSite;
+    const URL = '/Statistics/TotalStock?IdSite=' + IdSite;
     try {
         const res = await (await fetch(URL)).json();
         return res;
@@ -176,16 +176,18 @@ export const getTotalStockFacture = async () => {
     }
 }
 
-export const getMarginArticles = async (idSite, dateFrom, dateTo) => {
+export const getMarginArticles = async (idSite, skip, filters) => {
     const parsedParams = new URLSearchParams({
         IdSite: idSite,
-        From: dateFrom?.toISOString(),
-        To: dateTo?.toISOString()
+        Skip: skip,
+        SearchText: filters.searchText,
+        From: filters.dateFrom?.toISOString(),
+        To: filters.dateTo?.toISOString(),
     }).toString();
-    const URL = '/Statistics/ArticlesWithMargin?'+parsedParams;
+    const URL = '/Statistics/ArticlesWithMargin?' + parsedParams;
     try {
         const res = await (await fetch(URL)).json();
-        console.log({res})
+        console.log({ res })
         return res;
     } catch (e) {
         console.log(e);
