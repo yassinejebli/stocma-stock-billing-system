@@ -102,8 +102,8 @@ const PaiementFournisseurList = () => {
     const [pageCount, setTotalCount] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getPaiementFournisseurListColumns(),
-        []
+        () => getPaiementFournisseurListColumns({ isFiltered: Boolean(!fournisseur) }),
+        [fournisseur]
     )
 
     React.useEffect(() => {

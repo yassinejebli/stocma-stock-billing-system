@@ -15,103 +15,104 @@ using Microsoft.AspNet.OData;
 
 namespace WebApplication1.DATA.OData
 {
-  public class CompaniesController : ODataController
-  {
-    private MySaniSoftContext db = new MySaniSoftContext();
-
-    [EnableQuery]
-    public IQueryable<Company> GetCompanies()
+    [Authorize]
+    public class CompaniesController : ODataController
     {
-      return (IQueryable<Company>) this.db.Companies;
-    }
+        private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
-    public SingleResult<Company> GetCompany([FromODataUri] Guid key)
-    {
-      return SingleResult.Create<Company>(this.db.Companies.Where<Company>((Expression<Func<Company, bool>>) (company => company.Id == key)));
-    }
+        [EnableQuery]
+        public IQueryable<Company> GetCompanies()
+        {
+            return (IQueryable<Company>)this.db.Companies;
+        }
 
-    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<Company> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      Company company = await this.db.Companies.FindAsync((object) key);
-      if (company == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Put(company);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.CompanyExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<Company>(company);
-    }
+        [EnableQuery]
+        public SingleResult<Company> GetCompany([FromODataUri] Guid key)
+        {
+            return SingleResult.Create<Company>(this.db.Companies.Where<Company>((Expression<Func<Company, bool>>)(company => company.Id == key)));
+        }
 
-    public async Task<IHttpActionResult> Post(Company company)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      this.db.Companies.Add(company);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateException ex)
-      {
-        if (this.CompanyExists(company.Id))
-          return (IHttpActionResult) this.Conflict();
-        throw;
-      }
-      return (IHttpActionResult) this.Created<Company>(company);
-    }
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<Company> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            Company company = await this.db.Companies.FindAsync((object)key);
+            if (company == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Put(company);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.CompanyExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<Company>(company);
+        }
 
-    [AcceptVerbs(new string[] {"PATCH", "MERGE"})]
-    public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Company> patch)
-    {
-      if (!this.ModelState.IsValid)
-        return (IHttpActionResult) this.BadRequest(this.ModelState);
-      Company company = await this.db.Companies.FindAsync((object) key);
-      if (company == null)
-        return (IHttpActionResult) this.NotFound();
-      patch.Patch(company);
-      try
-      {
-        int num = await this.db.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException ex)
-      {
-        if (!this.CompanyExists(key))
-          return (IHttpActionResult) this.NotFound();
-        throw;
-      }
-      return (IHttpActionResult) this.Updated<Company>(company);
-    }
+        public async Task<IHttpActionResult> Post(Company company)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            this.db.Companies.Add(company);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (this.CompanyExists(company.Id))
+                    return (IHttpActionResult)this.Conflict();
+                throw;
+            }
+            return (IHttpActionResult)this.Created<Company>(company);
+        }
 
-    public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
-    {
-      Company async = await this.db.Companies.FindAsync((object) key);
-      if (async == null)
-        return (IHttpActionResult) this.NotFound();
-      this.db.Companies.Remove(async);
-      int num = await this.db.SaveChangesAsync();
-      return (IHttpActionResult) this.StatusCode(HttpStatusCode.NoContent);
-    }
+        [AcceptVerbs(new string[] { "PATCH", "MERGE" })]
+        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Company> patch)
+        {
+            if (!this.ModelState.IsValid)
+                return (IHttpActionResult)this.BadRequest(this.ModelState);
+            Company company = await this.db.Companies.FindAsync((object)key);
+            if (company == null)
+                return (IHttpActionResult)this.NotFound();
+            patch.Patch(company);
+            try
+            {
+                int num = await this.db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!this.CompanyExists(key))
+                    return (IHttpActionResult)this.NotFound();
+                throw;
+            }
+            return (IHttpActionResult)this.Updated<Company>(company);
+        }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing)
-        this.db.Dispose();
-      base.Dispose(disposing);
-    }
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
+        {
+            Company async = await this.db.Companies.FindAsync((object)key);
+            if (async == null)
+                return (IHttpActionResult)this.NotFound();
+            this.db.Companies.Remove(async);
+            int num = await this.db.SaveChangesAsync();
+            return (IHttpActionResult)this.StatusCode(HttpStatusCode.NoContent);
+        }
 
-    private bool CompanyExists(Guid key)
-    {
-      return this.db.Companies.Count<Company>((Expression<Func<Company, bool>>) (e => e.Id == key)) > 0;
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                this.db.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private bool CompanyExists(Guid key)
+        {
+            return this.db.Companies.Count<Company>((Expression<Func<Company, bool>>)(e => e.Id == key)) > 0;
+        }
     }
-  }
 }

@@ -42,6 +42,8 @@ import SuiviVentes from './components/views/ventes/suivi/SuiviVentes';
 import SuiviAchats from './components/views/achats/suivi/SuiviAchats';
 import PaiementClientList from './components/views/paiement-client/PaiementClientList';
 import PaiementFournisseurList from './components/views/paiement-fournisseur/PaiementFournisseurList';
+import Depense from './components/views/depense/Depense';
+import DepenseList from './components/views/depense/DepenseList';
 
 const App = () => {
     return (
@@ -55,6 +57,8 @@ const App = () => {
                                     <Switch>
                                         <SideMenu onClose={() => null}>
                                             <Route exact path="/" component={Dashboard} />
+                                            <Route path="/depense" component={Depense} />
+                                            <Route path="/liste-des-depenses" component={DepenseList} />
                                             <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />
                                             <Route path="/liste-paiements-des-clients" component={PaiementClientList} />
                                             <Route path="/suivi-des-ventes" component={SuiviVentes} />

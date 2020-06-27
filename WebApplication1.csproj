@@ -916,7 +916,11 @@
       <DependentUpon>DataSetSoly.xsd</DependentUpon>
     </Compile>
     <Compile Include="DATA\ArticleSite.cs" />
+    <Compile Include="DATA\Depense.cs" />
+    <Compile Include="DATA\DepenseItem.cs" />
+    <Compile Include="DATA\OData\DepensesController.cs" />
     <Compile Include="DATA\OData\StockMouvementsController.cs" />
+    <Compile Include="DATA\OData\TypeDepensesController.cs" />
     <Compile Include="DATA\StockMouvementItem.cs" />
     <Compile Include="DATA\StockMouvement.cs" />
     <Compile Include="DATA\OData\ArticlesController.cs" />
@@ -1015,6 +1019,7 @@
     <Compile Include="DATA\Setting.cs" />
     <Compile Include="DATA\Tarif.cs" />
     <Compile Include="DATA\TarifItem.cs" />
+    <Compile Include="DATA\TypeDepense.cs" />
     <Compile Include="DATA\TypeDepence.cs" />
     <Compile Include="DATA\TypePaiement.cs" />
     <Compile Include="Generators\AmountTextGenerator.cs" />
@@ -1285,6 +1290,14 @@
     <Compile Include="Migrations\202006241150290_ModDate.cs" />
     <Compile Include="Migrations\202006241150290_ModDate.designer.cs">
       <DependentUpon>202006241150290_ModDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006270819243_New_Depense_structure.cs" />
+    <Compile Include="Migrations\202006270819243_New_Depense_structure.designer.cs">
+      <DependentUpon>202006270819243_New_Depense_structure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006270856340_DepenseItem_Montant.cs" />
+    <Compile Include="Migrations\202006270856340_DepenseItem_Montant.designer.cs">
+      <DependentUpon>202006270856340_DepenseItem_Montant.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -4177,6 +4190,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006241150290_ModDate.resx">
       <DependentUpon>202006241150290_ModDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006270819243_New_Depense_structure.resx">
+      <DependentUpon>202006270819243_New_Depense_structure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006270856340_DepenseItem_Montant.resx">
+      <DependentUpon>202006270856340_DepenseItem_Montant.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

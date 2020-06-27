@@ -42,7 +42,9 @@ const ProfitAndExpenses = () => {
     const classes = useStyles();
     const [turnoverData, setTurnoverData] = React.useState();
     const [profitData, setProfitData] = React.useState();
+    const [expensesData, setExpensesData] = React.useState();
     const [totalProfit, setTotalProfit] = React.useState();
+    const [totalExpenses, setTotalExpenses] = React.useState();
     const [totalTurnover, setTotalTurnover] = React.useState();
     React.useEffect(() => {
         loadProfitAndExpenses();
@@ -112,6 +114,20 @@ const ProfitAndExpenses = () => {
                 sum += curr.profit;
                 return sum;
             }, 0));
+            setTotalExpenses(res.reduce((sum, curr) => {
+                sum += curr.expense;
+                return sum;
+            }, 0));
+
+            setExpensesData({
+                ...defaultOptions,
+                series: [
+                    {
+                        name: "Dépenses",
+                        data: res.map(x => x.expense)
+                    }
+                ]
+            });
 
             setTurnoverData({
                 ...defaultOptions,
@@ -150,6 +166,25 @@ const ProfitAndExpenses = () => {
                     {turnoverData && <Chart
                         options={turnoverData.options}
                         series={turnoverData.series}
+                        type="area"
+                        height="100%"
+                        width="100%"
+                    />}
+                </Box>
+            </div>
+            <div className={classes.card}>
+                <div className={classes.textWrapper}>
+                    <div className={classes.amount}>
+                        {formatMoney(totalExpenses)} DH
+                    </div>
+                    <div className={classes.text}>
+                        Dépenses
+                    </div>
+                </div>
+                <Box height={80}>
+                    {expensesData && <Chart
+                        options={expensesData.options}
+                        series={expensesData.series}
                         type="area"
                         height="100%"
                         width="100%"

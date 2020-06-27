@@ -72,6 +72,11 @@ namespace WebApplication1.DATA
 
         public DbSet<TypeDepence> TypeDepences { get; set; }
 
+        public DbSet<Depense> Depenses { get; set; }
+        public DbSet<DepenseItem> DepenseItems { get; set; }
+
+        public DbSet<TypeDepense> TypeDepenses { get; set; }
+
         public DbSet<JournalConnexion> JournalConnexions { get; set; }
 
         public DbSet<ArticleFacture> ArticleFactures { get; set; }
@@ -112,7 +117,7 @@ namespace WebApplication1.DATA
             modelBuilder.Entity<ArticleSite>().HasKey(t => new { t.IdSite, t.IdArticle });
             modelBuilder.Entity<ArticleSite>().HasRequired(x => x.Site).WithMany(x => x.ArticleSites).HasForeignKey(x => x.IdSite).WillCascadeOnDelete(true);
             modelBuilder.Entity<ArticleSite>().HasRequired(x => x.Article).WithMany(x => x.ArticleSites).HasForeignKey(x => x.IdArticle).WillCascadeOnDelete(true);
-            
+
             //modelBuilder.Entity<Article>().HasMany(x => x.ArticleSites).WithRequired().HasForeignKey(x => x.IdArticle).WillCascadeOnDelete(true);
             //modelBuilder.Entity<Site>().HasMany(x => x.ArticleSites).WithRequired().HasForeignKey(x => x.IdSite).WillCascadeOnDelete(true);
             ////////
@@ -587,6 +592,22 @@ namespace WebApplication1.DATA
                 .HasRequired<TypeDepence>((Expression<Func<Depence, TypeDepence>>)(t => t.TypeDepence))
                 .WithMany((Expression<Func<TypeDepence, ICollection<Depence>>>)(t => t.Depences))
                 .HasForeignKey<Guid>((Expression<Func<Depence, Guid>>)(d => d.IdTypeDepence));
+
+
+            //new depense
+            modelBuilder.Entity<Depense>().HasKey(t => t.Id);
+            modelBuilder.Entity<TypeDepense>().HasKey(t => t.Id);
+            modelBuilder.Entity<DepenseItem>()
+                .HasRequired(t => t.TypeDepense)
+                .WithMany(t => t.DepenseItems)
+                .HasForeignKey(d => d.IdTypeDepense);
+
+            modelBuilder.Entity<DepenseItem>()
+                .HasRequired(t => t.Depense)
+                .WithMany(t => t.DepenseItems)
+                .HasForeignKey(d => d.IdDepense);
+
+
             modelBuilder.Entity<Tarif>().HasKey<Guid>((Expression<Func<Tarif, Guid>>)(t => t.Id));
             modelBuilder.Entity<TarifItem>().HasKey<Guid>((Expression<Func<TarifItem, Guid>>)(t => t.Id));
             modelBuilder.Entity<TarifItem>()

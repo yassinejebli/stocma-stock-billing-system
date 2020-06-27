@@ -10,7 +10,13 @@ import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
 import { format } from 'date-fns';
 
-export const getPaiementClientListColumns = () => ([
+export const getPaiementClientListColumns = ({isFiltered}) => ([
+    (isFiltered && {
+        Header: 'Client',
+        accessor: 'Client.Name',
+        editable: true,
+        type: inputTypes.text.description,
+    }),
     {
         Id: 'Date',
         Header: 'Date',
@@ -91,4 +97,4 @@ export const getPaiementClientListColumns = () => ([
         },
         width: 24
     },
-])
+]).filter(x=>x)

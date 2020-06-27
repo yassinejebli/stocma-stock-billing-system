@@ -121,7 +121,9 @@ namespace WebApplication1
             conventionModelBuilder.EntitySet<FakeFactureF>("FakeFactureFs");
             conventionModelBuilder.EntitySet<FakeFactureFItem>("FakeFactureFItems");
             conventionModelBuilder.EntitySet<StockMouvement>("StockMouvements");
-            //conventionModelBuilder.EntitySet<ISuiviVentes>("SuiviVentes");
+            conventionModelBuilder.EntitySet<Depense>("Depenses");
+            conventionModelBuilder.EntitySet<DepenseItem>("DepenseItems");
+            conventionModelBuilder.EntitySet<TypeDepense>("TypeDepenses");
             
             //invoice & payment
             conventionModelBuilder.EntitySet<PaiementFacture>("PaiementFactures");

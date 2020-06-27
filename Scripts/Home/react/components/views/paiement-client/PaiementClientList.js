@@ -121,8 +121,8 @@ const PaiementClientList = () => {
     const [pageCount, setTotalCount] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getPaiementClientListColumns(),
-        []
+        () => getPaiementClientListColumns({isFiltered: Boolean(!client)}),
+        [client]
     )
 
 

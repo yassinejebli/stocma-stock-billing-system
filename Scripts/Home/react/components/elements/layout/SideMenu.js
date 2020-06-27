@@ -19,7 +19,7 @@ import SettingsDialog from '../dialogs/SettingsDialog';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 export const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -111,6 +111,7 @@ const MenuItems = () => {
     const [openSettings, setOpenSettings] = React.useState(false);
     const [openSales, setOpenSales] = React.useState(false);
     const [openSituations, setOpenSituations] = React.useState(false);
+    const [openTresorery, setOpenTresorery] = React.useState(false);
     const [openPurchases, setOpenPurchases] = React.useState(false);
     const [openStockArticles, setOpenStockArticles] = React.useState(false);
     const classes = useStyles();
@@ -248,6 +249,22 @@ const MenuItems = () => {
                         <ListItem button onClick={() => history.replace('/liste-paiements-des-fournisseurs')}>
                             <ListItemIcon />
                             <ListItemText primary="Fournisseurs" />
+                        </ListItem>
+                    </List>
+                </Collapse>
+            </List>
+            <Divider className={classes.divider} />
+            <List className={classes.list}>
+                <ListItem button onClick={() => setOpenTresorery(!openTresorery)}>
+                    <ListItemIcon><MonetizationOnIcon className={classes.icon} /></ListItemIcon>
+                    <ListItemText primary="Trésorerie" />
+                    {openTresorery ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openTresorery} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <ListItem button onClick={() => history.replace('/depense')}>
+                            <ListItemIcon />
+                            <ListItemText primary="Dépenses" />
                         </ListItem>
                     </List>
                 </Collapse>

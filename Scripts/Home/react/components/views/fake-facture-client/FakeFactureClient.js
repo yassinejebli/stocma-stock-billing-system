@@ -206,6 +206,7 @@ const FakeFacture = () => {
 
     const resetData = () => {
         setClient(null);
+        setClientName('');
         setNote('');
         setData([]);
         setDate(new Date());

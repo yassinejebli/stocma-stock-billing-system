@@ -58,6 +58,16 @@ const MonthlyProfitAndExpenses = () => {
 
             const defaultOptions = {
                 options: {
+                    dataLabels: {
+                        enabled: true,
+                        offsetX: -10,
+                        formatter: function (val, opts) {
+                            return formatMoney(val)+' DH'
+                        },
+                        style: {
+                            fontSize: '0.8rem',
+                        },
+                    },
                     stroke: {
                         show: true,
                         width: 4,

@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using WebApplication1.DATA;
@@ -187,6 +188,47 @@ namespace WebApplication1.Migrations
                         Id = new Guid("45c8b294-3a63-487c-821e-70bf4f9bdc44"),
                         Name = "Gazoil"
                     }
+                });
+                context.SaveChanges();
+            }
+
+            context.SaveChanges();
+            if (!context.TypeDepenses.Any())
+            {
+                context.TypeDepences.ForEach(x =>
+                {
+                    var TypeDepense = new TypeDepense
+                    {
+                        Id = x.Id,
+                        Name = x.Name
+                    };
+
+                    context.TypeDepenses.Add(TypeDepense);
+                });
+                context.SaveChanges();
+            }
+
+            context.Database.ExecuteSqlCommand("Delete Depenses");
+            if (!context.Depenses.Any())
+            {
+                context.Depences.ForEach(x =>
+                {
+                    var Depense = new Depense
+                    {
+                        Id = Guid.NewGuid(),
+                        Date = x.Date,
+                        Titre = x.Comment,
+                    };
+                    context.DepenseItems.Add(new DepenseItem
+                    {
+
+                        Id = Guid.NewGuid(),
+                        IdDepense = Depense.Id,
+                        Montant = x.Montant,
+                        Name = x.Comment,
+                        IdTypeDepense = x.IdTypeDepence
+                    });
+                    context.Depenses.Add(Depense);
                 });
                 context.SaveChanges();
             }

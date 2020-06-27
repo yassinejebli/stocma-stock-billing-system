@@ -225,6 +225,7 @@ const Facture = () => {
 
     const resetData = () => {
         setClient(null);
+        setClientName('');
         setNote('');
         setDate(new Date());
         setPaymentType(null);
