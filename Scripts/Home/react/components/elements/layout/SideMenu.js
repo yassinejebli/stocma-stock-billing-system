@@ -17,6 +17,7 @@ import TopBar from './TopBar';
 import { useModal } from 'react-modal-hook';
 import SettingsDialog from '../dialogs/SettingsDialog';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import { Link } from "react-router-dom";
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
@@ -120,7 +121,7 @@ const MenuItems = () => {
     return (
         <>
             <List className={classes.list}>
-                <ListItem button onClick={() => history.replace('/')}>
+                <ListItem button component={Link} to="/">
                     <ListItemIcon><DashboardIcon className={classes.icon} /></ListItemIcon>
                     <ListItemText primary="Tableau du bord" />
                 </ListItem>
@@ -134,11 +135,11 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openAccounts} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button onClick={() => history.replace('/ClientList')}>
+                        <ListItem button component={Link} to="/ClientList">
                             <ListItemIcon />
                             <ListItemText primary="Clients" />
                         </ListItem>
-                        <ListItem button onClick={() => history.replace('/SupplierList')}>
+                        <ListItem button component={Link} to="/SupplierList">
                             <ListItemIcon />
                             <ListItemText primary="Fournisseurs" />
                         </ListItem>
@@ -154,25 +155,29 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openSales} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/BonLivraison')}>
+                        <ListItem button className={classes.nested} component={Link} to="/BonLivraison">
                             <ListItemIcon />
                             <ListItemText primary="Bon de livraison" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/_Facture')}>
+                        <ListItem button className={classes.nested} component={Link} to="/_Facture">
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/Devis')}>
+                        <ListItem button className={classes.nested} component={Link} to="/Devis">
                             <ListItemIcon />
                             <ListItemText primary="Devis" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/bon-avoir-vente')}>
+                        <ListItem button className={classes.nested} component={Link} to="/bon-avoir-vente">
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/suivi-des-ventes')}>
+                        <ListItem button className={classes.nested} component={Link} to="/suivi-des-ventes">
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
+                        </ListItem>
+                        <ListItem button className={classes.nested} component={Link} to="/rapports-des-ventes">
+                            <ListItemIcon />
+                            <ListItemText primary="Rapports" />
                         </ListItem>
                     </List>
                 </Collapse>
@@ -186,26 +191,30 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openPurchases} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/BonReception')}>
+                        <ListItem button className={classes.nested} component={Link} to="/BonReception">
                             <ListItemIcon />
                             <ListItemText primary="Bon de réception" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/_FactureAchat')}>
+                        <ListItem button className={classes.nested} component={Link} to="/_FactureAchat">
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/BonCommande')}>
+                        <ListItem button className={classes.nested} component={Link} to="/BonCommande">
                             <ListItemIcon />
                             <ListItemText primary="Commande" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/bon-avoir-achat')}>
+                        <ListItem button className={classes.nested} component={Link} to="/bon-avoir-achat">
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>
-                        <ListItem button className={classes.nested} onClick={() => history.push('/suivi-des-achats')}>
+                        <ListItem button className={classes.nested} component={Link} to="/suivi-des-achats">
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
                         </ListItem>
+                        {/* <ListItem button className={classes.nested} onClick={() => history.push('/rapports-des-achats')}>
+                            <ListItemIcon />
+                            <ListItemText primary="Rapports" />
+                        </ListItem> */}
                     </List>
                 </Collapse>
             </List>
@@ -218,15 +227,15 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openStockArticles} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button onClick={() => history.replace('/ArticleList')}>
+                        <ListItem button component={Link} to="/ArticleList">
                             <ListItemIcon />
                             <ListItemText primary="Articles" />
                         </ListItem>
-                        <ListItem button onClick={() => history.replace('/_ArticleList')}>
+                        <ListItem button component={Link} to="/_ArticleList">
                             <ListItemIcon />
                             <ListItemText primary="Articles (Facture)" />
                         </ListItem>
-                        <ListItem button onClick={() => history.replace('/mouvement-stock')}>
+                        <ListItem button component={Link} to="/mouvement-stock">
                             <ListItemIcon />
                             <ListItemText primary="Mouvements" />
                         </ListItem>
@@ -242,11 +251,11 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openSituations} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button onClick={() => history.replace('/liste-paiements-des-clients')}>
+                        <ListItem button component={Link} to="/liste-paiements-des-clients">
                             <ListItemIcon />
                             <ListItemText primary="Clients" />
                         </ListItem>
-                        <ListItem button onClick={() => history.replace('/liste-paiements-des-fournisseurs')}>
+                        <ListItem button component={Link} to="/liste-paiements-des-fournisseurs">
                             <ListItemIcon />
                             <ListItemText primary="Fournisseurs" />
                         </ListItem>
@@ -262,7 +271,7 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openTresorery} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button onClick={() => history.replace('/depense')}>
+                        <ListItem button component={Link} to="/depense">
                             <ListItemIcon />
                             <ListItemText primary="Dépenses" />
                         </ListItem>
@@ -282,9 +291,13 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Documents" />
                         </ListItem>
-                        <ListItem button onClick={() => history.replace('/SiteList')}>
+                        <ListItem button component={Link} to="/SiteList">
                             <ListItemIcon />
                             <ListItemText primary="Dépôts/Magasins" />
+                        </ListItem>
+                        <ListItem button component={Link} to="/liste-types-de-depense">
+                            <ListItemIcon />
+                            <ListItemText primary="Types Dépenses" />
                         </ListItem>
                     </List>
                 </Collapse>

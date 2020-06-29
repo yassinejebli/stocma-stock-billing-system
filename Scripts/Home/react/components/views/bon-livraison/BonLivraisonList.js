@@ -17,12 +17,14 @@ import AddIcon from '@material-ui/icons/Add';
 import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import { useSite } from '../../providers/SiteProvider'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import { useLoader } from '../../providers/LoaderProvider'
 
 
 const DOCUMENT = 'BonLivraisons'
 const EXPAND = ['Client', 'TypePaiement', 'BonLivraisonItems']
 
 const BonLivraisonList = () => {
+    const { showLoader } = useLoader();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -46,7 +48,6 @@ const BonLivraisonList = () => {
         }
     }, [debouncedSearchText, siteId]);
     const [data, setData] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
@@ -75,17 +76,20 @@ const BonLivraisonList = () => {
     }, []);
 
     const refetchData = () => {
+        showLoader(true, true)
         getData(DOCUMENT, {},
             filters, EXPAND).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
             }).catch((err) => {
                 console.log({ err });
+            }).finally(() => {
+                showLoader(false)
             })
     }
 
     const deleteRow = React.useCallback(async (id) => {
-        setLoading(true);
+        showLoader(true, true)
         const response = await deleteData(DOCUMENT, id);
         console.log({ response });
         if (response.ok) {
@@ -97,7 +101,7 @@ const BonLivraisonList = () => {
                 text: 'Impossible de supprimer le document sélectionné !'
             });
         }
-        setLoading(false);
+        showLoader(false)
     }, [])
 
     const updateRow = React.useCallback(async (id) => {
@@ -111,6 +115,7 @@ const BonLivraisonList = () => {
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
             // const endRow = startRow + pageSize
+            showLoader(true, true)
             getData(DOCUMENT, {
                 $skip: startRow
             }, filters, EXPAND).then((response) => {
@@ -119,6 +124,8 @@ const BonLivraisonList = () => {
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
             }).catch((err) => {
                 console.log({ err });
+            }).finally(() => {
+                showLoader(false)
             });
         }
     }, [])
@@ -130,7 +137,6 @@ const BonLivraisonList = () => {
 
     return (
         <>
-            <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
                 {/* <Box mr={2}>
                     <Button

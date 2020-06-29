@@ -16,11 +16,13 @@ import { useModal } from 'react-modal-hook'
 import { useSite } from '../../providers/SiteProvider'
 import { devisListColumns } from '../../elements/table/columns/devisColumns'
 import PrintDevis from '../../elements/dialogs/documents-print/PrintDevis'
+import { useLoader } from '../../providers/LoaderProvider'
 
 const DOCUMENT = 'Devises'
 const EXPAND = ['Client', 'DevisItems']
 
 const DevisList = () => {
+    const { showLoader } = useLoader();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -44,7 +46,6 @@ const DevisList = () => {
         }
     }, [debouncedSearchText, siteId]);
     const [data, setData] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
@@ -73,19 +74,22 @@ const DevisList = () => {
     }, []);
 
     const refetchData = () => {
+        showLoader(true, true)
         getData(DOCUMENT, {},
             filters, EXPAND).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
             }).catch((err) => {
                 console.log({ err });
+            }).finally(() => {
+                showLoader()
+
             })
     }
 
     const deleteRow = React.useCallback(async (id) => {
-        setLoading(true);
         const response = await deleteData(DOCUMENT, id);
-        console.log({ response });
+        showLoader(true, true)
         if (response.ok) {
             showSnackBar();
             refetchData();
@@ -95,7 +99,7 @@ const DevisList = () => {
                 text: 'Impossible de supprimer le devis sélectionné !'
             });
         }
-        setLoading(false);
+        showLoader()
     }, [])
 
     const updateRow = React.useCallback((id) => {
@@ -109,6 +113,7 @@ const DevisList = () => {
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
             // const endRow = startRow + pageSize
+            showLoader(true, true)
             getData(DOCUMENT, {
                 $skip: startRow
             }, filters, EXPAND).then((response) => {
@@ -117,7 +122,10 @@ const DevisList = () => {
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
             }).catch((err) => {
                 console.log({ err });
-            });
+            }).finally(() => {
+                showLoader()
+
+            })
         }
     }, [])
 
@@ -132,7 +140,6 @@ const DevisList = () => {
 
     return (
         <>
-            <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
                 <Button
                     variant="contained"

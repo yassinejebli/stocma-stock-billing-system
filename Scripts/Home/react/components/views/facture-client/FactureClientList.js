@@ -15,11 +15,13 @@ import { useModal } from 'react-modal-hook'
 import { factureListColumns } from '../../elements/table/columns/factureColumns'
 import PrintFacture from '../../elements/dialogs/documents-print/PrintFacture'
 import AddIcon from '@material-ui/icons/Add';
+import { useLoader } from '../../providers/LoaderProvider'
 
 const DOCUMENT = 'Factures'
 const EXPAND = ['Client', 'TypePaiement', 'BonLivraisons/BonLivraisonItems/Article']
 
 const FactureList = () => {
+    const { showLoader } = useLoader();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -41,7 +43,6 @@ const FactureList = () => {
         }
     }, [debouncedSearchText]);
     const [data, setData] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
@@ -70,17 +71,20 @@ const FactureList = () => {
     }, []);
 
     const refetchData = () => {
+        showLoader(true, true)
         getData(DOCUMENT, {},
             filters, EXPAND).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
             }).catch((err) => {
                 console.log({ err });
+            }).finally(() => {
+                showLoader(false)
             })
     }
 
     const deleteRow = React.useCallback(async (id) => {
-        setLoading(true);
+        showLoader(true, true)
         const response = await deleteData(DOCUMENT, id);
         console.log({ response });
         if (response.ok) {
@@ -92,7 +96,7 @@ const FactureList = () => {
                 text: 'Impossible de supprimer la facture sélectionnée !'
             });
         }
-        setLoading(false);
+        showLoader(false)
     }, [])
 
     const updateRow = React.useCallback(async (id) => {
@@ -106,6 +110,7 @@ const FactureList = () => {
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
             // const endRow = startRow + pageSize
+            showLoader(true, true)
             getData(DOCUMENT, {
                 $skip: startRow
             }, filters, EXPAND).then((response) => {
@@ -114,7 +119,9 @@ const FactureList = () => {
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
             }).catch((err) => {
                 console.log({ err });
-            });
+            }).finally(() => {
+                showLoader(false)
+            })
         }
     }, [])
 
@@ -125,7 +132,6 @@ const FactureList = () => {
 
     return (
         <>
-            <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
                 <Button
                     variant="contained"

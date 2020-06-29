@@ -192,7 +192,10 @@ namespace WebApplication1.Migrations
                 context.SaveChanges();
             }
 
-            context.SaveChanges();
+            //context.Database.ExecuteSqlCommand("DELETE DepenseItems");
+            //context.Database.ExecuteSqlCommand("DELETE Depenses");
+            //context.Database.ExecuteSqlCommand("DELETE TypeDepenses");
+            //context.SaveChanges();
             if (!context.TypeDepenses.Any())
             {
                 context.TypeDepences.ForEach(x =>
@@ -208,7 +211,7 @@ namespace WebApplication1.Migrations
                 context.SaveChanges();
             }
 
-            context.Database.ExecuteSqlCommand("Delete Depenses");
+
             if (!context.Depenses.Any())
             {
                 context.Depences.ForEach(x =>

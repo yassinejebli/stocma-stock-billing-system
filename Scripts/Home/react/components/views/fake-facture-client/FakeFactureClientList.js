@@ -2,7 +2,6 @@ import Box from '@material-ui/core/Box'
 import React from 'react'
 import Paper from '../../elements/misc/Paper'
 import Table from '../../elements/table/Table'
-import Loader from '../../elements/loaders/Loader'
 import { useTitle } from '../../providers/TitleProvider'
 import { getData, deleteData } from '../../../queries/crudBuilder'
 import { useSnackBar } from '../../providers/SnackBarProvider'
@@ -15,11 +14,13 @@ import { useModal } from 'react-modal-hook'
 import { fakeFactureListColumns } from '../../elements/table/columns/fakeFactureColumns'
 import PrintFakeFacture from '../../elements/dialogs/documents-print/PrintFakeFacture'
 import AddIcon from '@material-ui/icons/Add';
+import { useLoader } from '../../providers/LoaderProvider'
 
 const DOCUMENT = 'FakeFactures'
 const EXPAND = ['Client', 'TypePaiement', 'FakeFactureItems/ArticleFacture']
 
 const FakeFactureClientList = () => {
+    const { showLoader } = useLoader();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -41,7 +42,6 @@ const FakeFactureClientList = () => {
             ]
         }
     }, [debouncedSearchText]);
-    const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
@@ -70,17 +70,20 @@ const FakeFactureClientList = () => {
     }, []);
 
     const refetchData = () => {
+        showLoader(true, true)
         getData(DOCUMENT, {},
             filters, EXPAND).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
             }).catch((err) => {
                 console.log({ err });
+            }).finally(() => {
+                showLoader()
             })
     }
 
     const deleteRow = React.useCallback(async (id) => {
-        setLoading(true);
+        showLoader(true, true)
         const response = await deleteData(DOCUMENT, id);
         console.log({ response });
         if (response.ok) {
@@ -92,7 +95,7 @@ const FakeFactureClientList = () => {
                 text: 'Impossible de supprimer la facture sélectionnée !'
             });
         }
-        setLoading(false);
+        showLoader()
     }, [])
 
     const updateRow = React.useCallback(async (id) => {
@@ -106,6 +109,7 @@ const FakeFactureClientList = () => {
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
             // const endRow = startRow + pageSize
+            showLoader(true, true)
             getData(DOCUMENT, {
                 $skip: startRow
             }, filters, EXPAND).then((response) => {
@@ -114,7 +118,9 @@ const FakeFactureClientList = () => {
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
             }).catch((err) => {
                 console.log({ err });
-            });
+            }).finally(() => {
+                showLoader();
+            })
         }
     }, [])
 
@@ -125,7 +131,6 @@ const FakeFactureClientList = () => {
 
     return (
         <>
-            <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
                 <Button
                     variant="contained"

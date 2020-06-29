@@ -2,6 +2,10 @@
 var path = require("path");
 var WebpackNotifierPlugin = require("webpack-notifier");
 var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
+var MinifyPlugin = require("babel-minify-webpack-plugin");
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var CompressionPlugin = require('compression-webpack-plugin');
+
 module.exports = {
     entry: "./Scripts/Home/react/index.js",
     output: {
@@ -29,5 +33,11 @@ module.exports = {
         ]
     },
     devtool: "inline-source-map",
-    plugins: [new WebpackNotifierPlugin(), new BrowserSyncPlugin()]
+    plugins: [
+        new WebpackNotifierPlugin(),
+        new BrowserSyncPlugin(),
+        // new MinifyPlugin(),
+        // new BundleAnalyzerPlugin(),
+        // new CompressionPlugin()
+    ]
 };

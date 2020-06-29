@@ -55,3 +55,18 @@ export const getPrintFournisseurAccountSummaryURL = (params) => {
     const parsedParams = new URLSearchParams(params).toString();
     return `/Print/PaiementFs?${parsedParams}`
 }
+
+export const getPrintRapportVentesBLURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/RapportsVentes/BL?${parsedParams}`
+}
+
+export const getPrintRapportVentesFAURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/RapportsVentes/FA?${parsedParams}`
+}
+
+export const getPrintRapportTransactionURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Print/RapportsVentes/Transactions?${parsedParams}`
+}

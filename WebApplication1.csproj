@@ -229,6 +229,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\Print\BonAvoirVenteController.cs" />
     <Compile Include="Controllers\Print\BonCommandeController.cs" />
+    <Compile Include="Controllers\Print\RapportsVentes.cs" />
     <Compile Include="Controllers\Print\PaiementsController.cs" />
     <Compile Include="Controllers\Print\FakeFactureController.cs" />
     <Compile Include="Controllers\Print\FactureController.cs" />
@@ -328,18 +329,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CrystalReport2.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\CrystalReportBarCodeByCategory.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CrystalReportBarCodeByCategory.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\CrystalReportCompteClient.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CrystalReportCompteClient.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\EAS\BonCommandeChiffre.cs">
       <DependentUpon>BonCommandeChiffre.rpt</DependentUpon>
@@ -358,12 +362,14 @@
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\CrystalReportCompteClientParPeriodeTSR.cs">
       <DependentUpon>CrystalReportCompteClientParPeriodeTSR.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\EAS\BonAvoirVente.cs">
       <DependentUpon>BonAvoirVente.rpt</DependentUpon>
@@ -382,6 +388,13 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CrystalReports\RapportTransactions.cs">
+      <DependentUpon>RapportTransactions.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="CrystalReports\SBCIT\BonCommandeChiffre.cs">
       <DependentUpon>BonCommandeChiffre.rpt</DependentUpon>
@@ -454,12 +467,14 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\SituationVenteFakeFA.cs">
       <DependentUpon>SituationVenteFakeFA.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\SUIV\BonCommandeChiffre.cs">
       <AutoGen>True</AutoGen>
@@ -496,12 +511,14 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\SituationRevendeur.cs">
       <DependentUpon>SituationRevendeur.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\SANVIE\BonCommandeSANVIE.cs">
       <DependentUpon>BonCommandeSANVIE.rpt</DependentUpon>
@@ -550,48 +567,56 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="CrystalReports\SituationVenteBL.cs">
-      <DependentUpon>SituationVenteBL.rpt</DependentUpon>
+    <Compile Include="CrystalReports\RapportVentes.cs">
+      <DependentUpon>RapportVentes.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\SituationJournaliere.cs">
       <DependentUpon>SituationJournaliere.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\CrystalReportCompteClientParPeriode.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CrystalReportCompteClientParPeriode.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\CrystalReportCompteFournisseur.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CrystalReportCompteFournisseur.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\CrystalReportCompteFournisseurParPeriode.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CrystalReportCompteFournisseurParPeriode.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\CrystalReportStock.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CrystalReportStock.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\CrystalReportTest.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CrystalReportTest.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\EAS\DevisEAS.cs">
       <DependentUpon>DevisEAS.rpt</DependentUpon>
@@ -844,66 +869,77 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Tarif.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\BonAvoirF1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BonAvoirF.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\BonCommandeTSR.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BonCommandeTSR.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\BonLivraison_.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BonLivraison_.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\BonLivraison.cs">
       <DependentUpon>BonLivraison.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\DevisTSR.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DevisTSR.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\FactureELEC.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FactureELEC.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\FactureTSR.cs">
       <DependentUpon>FactureTSR.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\FactureTSR__.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FactureTSR__.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\BonAvoirCTSR.cs">
       <DependentUpon>BonAvoirCTSR.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="CrystalReports\TSR\MiniBonLivraison.cs">
       <DependentUpon>MiniBonLivraison.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Datasets\DataSetATF1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -1298,6 +1334,18 @@
     <Compile Include="Migrations\202006270856340_DepenseItem_Montant.cs" />
     <Compile Include="Migrations\202006270856340_DepenseItem_Montant.designer.cs">
       <DependentUpon>202006270856340_DepenseItem_Montant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006291741506_WillCascadeOnDelete_TypeDepense_Optional.cs" />
+    <Compile Include="Migrations\202006291741506_WillCascadeOnDelete_TypeDepense_Optional.designer.cs">
+      <DependentUpon>202006291741506_WillCascadeOnDelete_TypeDepense_Optional.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006291744040_WillCascadeOnDelete_TypeDepense_Required.cs" />
+    <Compile Include="Migrations\202006291744040_WillCascadeOnDelete_TypeDepense_Required.designer.cs">
+      <DependentUpon>202006291744040_WillCascadeOnDelete_TypeDepense_Required.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006291826330_WillCascadeOnDelete_Test_2.cs" />
+    <Compile Include="Migrations\202006291826330_WillCascadeOnDelete_Test_2.designer.cs">
+      <DependentUpon>202006291826330_WillCascadeOnDelete_Test_2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3552,450 +3600,483 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CrystalReports\AQK\BonAvoirCAQK.rpt">
+    <Content Include="CrystalReports\AQK\BonAvoirCAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirCAQK.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\AQK\BonLivraison.rpt">
+    </Content>
+    <Content Include="CrystalReports\AQK\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\AQK\BonCommandeAQK.rpt">
+    </Content>
+    <Content Include="CrystalReports\AQK\BonCommandeAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeAQK.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\AQK\DevisAQK.rpt">
+    </Content>
+    <Content Include="CrystalReports\AQK\DevisAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisAQK.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\AQK\FactureAQK.rpt">
+    </Content>
+    <Content Include="CrystalReports\AQK\FactureAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureAQK.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\AQK\MiniBonLivraison.rpt">
+    </Content>
+    <Content Include="CrystalReports\AQK\MiniBonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\AQK\MiniBonReceptionAQK.rpt">
+    </Content>
+    <Content Include="CrystalReports\AQK\MiniBonReceptionAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionAQK1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\ATF\BonCommandeATF.rpt">
+    </Content>
+    <Content Include="CrystalReports\ATF\BonCommandeATF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeATF.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\ATF\BonLivraisonATF.rpt">
+    </Content>
+    <Content Include="CrystalReports\ATF\BonLivraisonATF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraisonATF.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\ATF\CrystalReportArabicBL.rpt">
+    </Content>
+    <Content Include="CrystalReports\ATF\CrystalReportArabicBL.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportArabicBL.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\ATF\DevisATF.rpt">
+    </Content>
+    <Content Include="CrystalReports\ATF\DevisATF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisATF.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\ATF\FactureATF.rpt">
+    </Content>
+    <Content Include="CrystalReports\ATF\FactureATF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureATF.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\ATF\MiniBonLivraisonATF.rpt">
+    </Content>
+    <Content Include="CrystalReports\ATF\MiniBonLivraisonATF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraisonATF.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\ATF\MiniBonReceptionATF.rpt">
+    </Content>
+    <Content Include="CrystalReports\ATF\MiniBonReceptionATF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionATF.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReport2.rpt">
+    </Content>
+    <Content Include="CrystalReports\CrystalReport2.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReport21.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReportBarCodeByCategory.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\CrystalReportBarCodeByCategory.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportBarCodeByCategory.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReportCompteClient.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\CrystalReportCompteClient.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportCompteClient.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\BonCommandeChiffre.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\EAS\BonCommandeChiffre.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeChiffre.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\Paiements.rpt">
+    </Content>
+    <Content Include="CrystalReports\EAS\Paiements.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Paiements.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\Paiements.rpt">
+    </Content>
+    <Content Include="CrystalReports\Paiements.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Paiements.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReportCompteClientParPeriodeTSR.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\CrystalReportCompteClientParPeriodeTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportCompteClientParPeriodeTSR.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\BonAvoirVente.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\EAS\BonAvoirVente.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirVente.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\BonLivraison.rpt">
+    </Content>
+    <Content Include="CrystalReports\EAS\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\H9S\BonAvoirCH9S.rpt">
+    </Content>
+    <Content Include="CrystalReports\H9S\BonAvoirCH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirCH9S.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\BonCommandeChiffre.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\BonCommandeChiffre.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeChiffre.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\EtatBonLivraisonsSBCIT.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\EtatBonLivraisonsSBCIT.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>EtatBonLivraisonsSBCIT.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\EtatPaiementSBCIT.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\EtatPaiementSBCIT.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>EtatPaiementSBCIT.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\FactureSBCIT_.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\FactureSBCIT_.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureSBCIT_.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SHMZ\BonAvoirCSHMZ.rpt">
+    </Content>
+    <Content Include="CrystalReports\SHMZ\BonAvoirCSHMZ.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirCSHMZ.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SHMZ\BonCommandeSHMZ.rpt">
+    </Content>
+    <Content Include="CrystalReports\SHMZ\BonCommandeSHMZ.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeSHMZ.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SHMZ\BonLivraison.rpt">
+    </Content>
+    <Content Include="CrystalReports\SHMZ\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SHMZ\DevisSHMZ.rpt">
+    </Content>
+    <Content Include="CrystalReports\SHMZ\DevisSHMZ.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisSHMZ.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SHMZ\FactureSHMZ.rpt">
+    </Content>
+    <Content Include="CrystalReports\SHMZ\FactureSHMZ.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureSHMZ1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SHMZ\MiniBonLivraison.rpt">
+    </Content>
+    <Content Include="CrystalReports\SHMZ\MiniBonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SHMZ\MiniBonReceptionSHMZ.rpt">
+    </Content>
+    <Content Include="CrystalReports\SHMZ\MiniBonReceptionSHMZ.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionSHMZ.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SituationFournisseurs.rpt">
+    </Content>
+    <Content Include="CrystalReports\SituationFournisseurs.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>SituationFournisseurs.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SituationVenteFakeFA.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\SituationVenteFakeFA.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>SituationVenteFakeFA.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\BonCommandeChiffre.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\SUIV\BonCommandeChiffre.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeChiffre.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\BonCommande.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\BonCommande.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommande.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\EtatBonLivraisonsSUIV.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\EtatBonLivraisonsSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>EtatBonLivraisonsSUIV.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\EtatPaiementSUIV.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\EtatPaiementSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>EtatPaiementSUIV.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\RDBF.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\RDBF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>RDBF.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SituationClients.rpt">
+    </Content>
+    <Content Include="CrystalReports\SituationClients.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>SituationClients.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SituationRevendeur.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\SituationRevendeur.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>SituationRevendeur.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SANVIE\BonCommandeSANVIE.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\SANVIE\BonCommandeSANVIE.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeSANVIE.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SANVIE\BonLivraisonSANVIE.rpt">
+    </Content>
+    <Content Include="CrystalReports\SANVIE\BonLivraisonSANVIE.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraisonSANVIE.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SANVIE\DevisSANVIE.rpt">
+    </Content>
+    <Content Include="CrystalReports\SANVIE\DevisSANVIE.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisSANVIE.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SANVIE\FactureSANVIE.rpt">
+    </Content>
+    <Content Include="CrystalReports\SANVIE\FactureSANVIE.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureSANVIE.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SANVIE\MiniBonLivraisonArabicSANVIE.rpt">
+    </Content>
+    <Content Include="CrystalReports\SANVIE\MiniBonLivraisonArabicSANVIE.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraisonArabicSANVIE.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SANVIE\MiniBonLivraisonFrancaisSANVIE.rpt">
+    </Content>
+    <Content Include="CrystalReports\SANVIE\MiniBonLivraisonFrancaisSANVIE.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraisonFrancaisSANVIE.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SANVIE\MiniBonReceptionSANVIE.rpt">
+    </Content>
+    <Content Include="CrystalReports\SANVIE\MiniBonReceptionSANVIE.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionSANVIE.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SituationVenteFA.rpt">
+    </Content>
+    <Content Include="CrystalReports\SituationVenteFA.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>SituationVenteFA.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SituationVenteBL.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\RapportVentes.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>SituationVenteBL.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SituationJournaliere.rpt">
+      <LastGenOutput>RapportVentes.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\SituationJournaliere.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>SituationJournaliere.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReportCompteClientParPeriode.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\CrystalReportCompteClientParPeriode.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportCompteClientParPeriode.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReportCompteFournisseur.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\CrystalReportCompteFournisseur.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportCompteFournisseur.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReportCompteFournisseurParPeriode.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\CrystalReportCompteFournisseurParPeriode.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportCompteFournisseurParPeriode.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReportStock.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\CrystalReportStock.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportStock.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\CrystalReportTest.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\CrystalReportTest.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportTest.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\DevisEAS.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\EAS\DevisEAS.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisEAS.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\H9S\BonCommandeH9S.rpt">
+    </Content>
+    <Content Include="CrystalReports\H9S\BonCommandeH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeH9S.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\H9S\BonLivraisonH9S.rpt">
+    </Content>
+    <Content Include="CrystalReports\H9S\BonLivraisonH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraisonH9S.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\H9S\DevisH9S.rpt">
+    </Content>
+    <Content Include="CrystalReports\H9S\DevisH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisH9S.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\H9S\FactureH9S.rpt">
+    </Content>
+    <Content Include="CrystalReports\H9S\FactureH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureH9S.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\H9S\MiniBonLivraisonArabicH9S.rpt">
+    </Content>
+    <Content Include="CrystalReports\H9S\MiniBonLivraisonArabicH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraisonArabicH9S.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\H9S\MiniBonLivraisonFrancaisH9S.rpt">
+    </Content>
+    <Content Include="CrystalReports\H9S\MiniBonLivraisonFrancaisH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraisonFrancaisH9S.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\H9S\MiniBonReceptionH9S.rpt">
+    </Content>
+    <Content Include="CrystalReports\H9S\MiniBonReceptionH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionH9S.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\BonCommande.rpt">
+    </Content>
+    <Content Include="CrystalReports\EAS\BonCommande.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommande.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\FactureEAS.rpt">
+    </Content>
+    <Content Include="CrystalReports\EAS\FactureEAS.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureEAS.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\MiniBonLivraisonArabicEAS.rpt">
+    </Content>
+    <Content Include="CrystalReports\EAS\MiniBonLivraisonArabicEAS.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraisonArabicEAS.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\MiniBonLivraisonFrancaisEAS.rpt">
+    </Content>
+    <Content Include="CrystalReports\EAS\MiniBonLivraisonFrancaisEAS.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraisonFrancaisEAS.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\MiniBonLivraison.rpt">
+    </Content>
+    <Content Include="CrystalReports\EAS\MiniBonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\EAS\MiniBonReceptionEAS.rpt">
+    </Content>
+    <Content Include="CrystalReports\EAS\MiniBonReceptionEAS.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionEAS1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\BonAvoirVente.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\BonAvoirVente.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirVente.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\BonLivraison.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\BonCommande.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\BonCommande.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommande.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\DevisSBCIT.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\DevisSBCIT.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisSBCIT.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\DevisSBCIT_.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\DevisSBCIT_.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisSBCIT_.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\FactureSBCIT.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\FactureSBCIT.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureSBCIT.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SBCIT\ReleveFactureSBCIT.rpt">
+    </Content>
+    <Content Include="CrystalReports\SBCIT\ReleveFactureSBCIT.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ReleveFactureSBCIT.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\BonAvoirF.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\BonAvoirF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirF1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\BonCommandeSOLY.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\BonCommandeSOLY.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeSOLY.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\BonCommandeTSR.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\BonCommandeTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeTSR1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\BonLivraisonSOLY.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\BonLivraisonSOLY.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraisonSOLY.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\BonLivraisonTSR.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\BonLivraisonTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraisonTSR1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\DevisSOLY.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\DevisSOLY.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisSOLY.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\DevisTSR.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\DevisTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisTSR1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\FactureELEC.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\FactureELEC.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureELEC1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\FactureSOLY.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\FactureSOLY.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureSOLY.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SOLY\FactureTSR.rpt">
+    </Content>
+    <Content Include="CrystalReports\SOLY\FactureTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureTSR1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\EtatStockArticlesGaz.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\EtatStockArticlesGaz.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>EtatStockArticlesGaz.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\ReleveFactureSUIV.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\ReleveFactureSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ReleveFactureSUIV.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\DevisSUIV.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\DevisSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisSUIV.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\BonAvoirVente.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\BonAvoirVente.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirVente.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\FactureSUIV.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\FactureSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureSUIV.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\DevisChiffreSUIV.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\DevisChiffreSUIV.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisChiffreSUIV.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\BonLivraison.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\DGB.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\DGB.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DGB.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\RDB.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\RDB.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>RDB.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\SUIV\rptinvoice.rpt">
+    </Content>
+    <Content Include="CrystalReports\SUIV\rptinvoice.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptinvoice.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\Tarif.rpt">
+    </Content>
+    <Content Include="CrystalReports\Tarif.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Tarif.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\BonAvoirF.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\BonAvoirF.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirF1.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\BonCommandeTSR.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\BonCommandeTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeTSR.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\BonLivraison_.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\BonLivraison_.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison_.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\BonLivraison.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\DevisTSR.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\DevisTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisTSR.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\FactureELEC.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\FactureELEC.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureELEC.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\FactureTSR.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\FactureTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureTSR.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\FactureTSR__.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\FactureTSR__.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureTSR__.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\BonAvoirCTSR.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\BonAvoirCTSR.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirCTSR.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\TSR\MiniBonLivraison.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\TSR\MiniBonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraison.cs</LastGenOutput>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\RapportTransactions.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>RapportTransactions.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Migrations\201702231840475_init.resx">
       <DependentUpon>201702231840475_init.cs</DependentUpon>
     </EmbeddedResource>
@@ -4196,6 +4277,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006270856340_DepenseItem_Montant.resx">
       <DependentUpon>202006270856340_DepenseItem_Montant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006291741506_WillCascadeOnDelete_TypeDepense_Optional.resx">
+      <DependentUpon>202006291741506_WillCascadeOnDelete_TypeDepense_Optional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006291744040_WillCascadeOnDelete_TypeDepense_Required.resx">
+      <DependentUpon>202006291744040_WillCascadeOnDelete_TypeDepense_Required.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006291826330_WillCascadeOnDelete_Test_2.resx">
+      <DependentUpon>202006291826330_WillCascadeOnDelete_Test_2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

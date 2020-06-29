@@ -600,7 +600,7 @@ namespace WebApplication1.DATA
             modelBuilder.Entity<DepenseItem>()
                 .HasRequired(t => t.TypeDepense)
                 .WithMany(t => t.DepenseItems)
-                .HasForeignKey(d => d.IdTypeDepense);
+                .HasForeignKey(d => d.IdTypeDepense).WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DepenseItem>()
                 .HasRequired(t => t.Depense)

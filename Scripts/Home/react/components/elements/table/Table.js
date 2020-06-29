@@ -8,7 +8,7 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { useSite } from '../../providers/SiteProvider';
-
+import {confirmDialog} from '../../elements/dialogs/ConfirmDialog'
 const border = '1px solid #d8d8d8';
 
 const useStyles = makeStyles(theme => ({
@@ -32,8 +32,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-
-// Be sure to pass our updateMyData and the skipPageReset option
 function Table({
     columns,
     data,
@@ -55,6 +53,7 @@ function Table({
     totalItems }) {
     const classes = useStyles();
     const { siteId } = useSite();
+    const [showConfirmDialog, setShowConfimDialog] = React.useState(false);
     const {
         getTableProps,
         getTableBodyProps,
@@ -79,7 +78,11 @@ function Table({
             autoResetPage: !skipPageReset,
             updateMyData,
             addNewRow,
-            deleteRow,
+            deleteRow: async (params)=>{
+                const ok = await confirmDialog({text: "Voulez vous vraiment supprimer cet enregistrement?"})
+                if(deleteRow && ok)
+                    deleteRow(params)
+            },
             customAction,
             showImage,
             updateRow,

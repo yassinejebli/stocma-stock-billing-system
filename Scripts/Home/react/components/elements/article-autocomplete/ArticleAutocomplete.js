@@ -47,8 +47,6 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       autoHighlight
       size="small"
       getOptionLabel={(option) => {
-        console.log({option});
-        
         return option?.Designation}}
       renderOption={option => (
         <div>
