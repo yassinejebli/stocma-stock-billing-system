@@ -4,13 +4,17 @@
 // MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
 // Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
 
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using WebApplication1.Auth;
 using WebApplication1.DATA;
+using WebApplication1.Models;
 using WebGrease.Css.Extensions;
 
 namespace WebApplication1.Migrations
@@ -24,6 +28,7 @@ namespace WebApplication1.Migrations
 
         protected override void Seed(MySaniSoftContext context)
         {
+            
 
             //TODO: remove asap
             var articlesTVANull = context.Articles.Where(x => x.TVA == null);
@@ -42,7 +47,7 @@ namespace WebApplication1.Migrations
 
             var bonLivraisonItems = context.BonLivraisonItems.Where(x => x.PA == 0);
 
-            if(bonLivraisonItems.Count() > 0)
+            if (bonLivraisonItems.Count() > 0)
             {
                 bonLivraisonItems.ForEach(x => x.PA = x.Article.PA);
                 context.SaveChanges();
@@ -470,6 +475,7 @@ namespace WebApplication1.Migrations
 
                 context.SaveChanges();
             }
+
 
         }
     }

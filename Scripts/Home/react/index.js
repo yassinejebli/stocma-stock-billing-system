@@ -47,6 +47,7 @@ import DepenseList from './components/views/depense/DepenseList';
 import Rapports from './components/views/ventes/rapports/Rapports';
 import LoaderProvider from './components/providers/LoaderProvider';
 import TypeDepenseList from './components/views/type-depense/TypeDepenseList';
+import UtilisateurList from './components/views/utilisateurs/UtilisateurList';
 
 const App = () => {
     return (
@@ -61,6 +62,7 @@ const App = () => {
                                         <Switch>
                                             <SideMenu onClose={() => null}>
                                                 <Route exact path="/" component={Dashboard} />
+                                                <Route path="/liste-des-utilisateurs" component={UtilisateurList} />
                                                 <Route path="/rapports-des-ventes" component={Rapports} />
                                                 <Route path="/liste-types-de-depense" component={TypeDepenseList} />
                                                 <Route path="/depense" component={Depense} />

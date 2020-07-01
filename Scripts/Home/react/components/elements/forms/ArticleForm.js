@@ -105,7 +105,8 @@ const ArticleForm = ({ data, onSuccess }) => {
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
-                    error: true
+                    error: true,
+                    text: "Vous n'êtes pas autorisé à modifier l'élément!"
                 });
             }
         } else {
@@ -116,7 +117,8 @@ const ArticleForm = ({ data, onSuccess }) => {
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
-                    error: true
+                    error: true,
+                    text: "Erreur!",
                 });
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -27,6 +28,11 @@ namespace WebApplication1.Controllers
         {
             UserManager = userManager;
             SignInManager = signInManager;
+        }
+
+        public dynamic Users()
+        {
+            return _userManager.Users.ToList();
         }
 
         public ApplicationSignInManager SignInManager
@@ -144,7 +150,7 @@ namespace WebApplication1.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View("register");
+            return View("Register");
         }
 
         //
@@ -160,7 +166,7 @@ namespace WebApplication1.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    await SignInManager.SignInAsync(user, isPersistent: true, rememberBrowser: true);
 
                     // Pour plus d'informations sur l'activation de la confirmation du compte et la réinitialisation du mot de passe, consultez http://go.microsoft.com/fwlink/?LinkID=320771
                     // Envoyer un message électronique avec ce lien

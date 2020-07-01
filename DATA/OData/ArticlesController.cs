@@ -42,6 +42,7 @@ namespace WebApplication1.DATA.OData
 
         //[EnableQuery]
         // PUT: odata/Articles(5)
+        [Authorize(Roles = "Admin")]
         public IHttpActionResult Put([FromODataUri] Guid key, float QteStock, int IdSite, bool Disabled, Delta<Article> patch)
         {
             
@@ -122,6 +123,7 @@ namespace WebApplication1.DATA.OData
         }
 
         // PATCH: odata/Articles(5)
+        [Authorize(Roles = "Admin")]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] Guid key, Delta<Article> patch, float QteStock, bool Disabled, int IdSite = 1)
         {

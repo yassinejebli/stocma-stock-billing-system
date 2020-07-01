@@ -11,6 +11,7 @@ using System.Web.Http;
 using Microsoft.AspNet.OData.Extensions;
 using WebApplication1.DATA;
 using Microsoft.AspNet.OData.Builder;
+using WebApplication1.Models;
 
 namespace WebApplication1
 {
@@ -124,6 +125,7 @@ namespace WebApplication1
             conventionModelBuilder.EntitySet<Depense>("Depenses");
             conventionModelBuilder.EntitySet<DepenseItem>("DepenseItems");
             conventionModelBuilder.EntitySet<TypeDepense>("TypeDepenses");
+            conventionModelBuilder.EntitySet<ApplicationUser>("ApplicationUsers");
             
             //invoice & payment
             conventionModelBuilder.EntitySet<PaiementFacture>("PaiementFactures");

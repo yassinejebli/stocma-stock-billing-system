@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq.Expressions;
 using WebApplication1.Migrations;
+using WebApplication1.Models;
 
 namespace WebApplication1.DATA
 {
@@ -17,7 +18,7 @@ namespace WebApplication1.DATA
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<Revendeur> Revendeurs { get; set; }
-
+        
         public DbSet<Setting> Settings { get; set; }
 
         public DbSet<Fournisseur> Fournisseurs { get; set; }

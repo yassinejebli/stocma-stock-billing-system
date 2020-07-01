@@ -223,6 +223,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="ArticlesStatistics.cs" />
+    <Compile Include="Auth\UserController.cs" />
+    <Compile Include="Auth\AuthManager.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -957,6 +959,7 @@
     <Compile Include="DATA\OData\DepensesController.cs" />
     <Compile Include="DATA\OData\StockMouvementsController.cs" />
     <Compile Include="DATA\OData\TypeDepensesController.cs" />
+    <Compile Include="DATA\OData\ApplicationUsersController.cs" />
     <Compile Include="DATA\StockMouvementItem.cs" />
     <Compile Include="DATA\StockMouvement.cs" />
     <Compile Include="DATA\OData\ArticlesController.cs" />
@@ -1346,6 +1349,10 @@
     <Compile Include="Migrations\202006291826330_WillCascadeOnDelete_Test_2.cs" />
     <Compile Include="Migrations\202006291826330_WillCascadeOnDelete_Test_2.designer.cs">
       <DependentUpon>202006291826330_WillCascadeOnDelete_Test_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007010900353_Account_Name.cs" />
+    <Compile Include="Migrations\202007010900353_Account_Name.designer.cs">
+      <DependentUpon>202007010900353_Account_Name.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -4286,6 +4293,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006291826330_WillCascadeOnDelete_Test_2.resx">
       <DependentUpon>202006291826330_WillCascadeOnDelete_Test_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007010900353_Account_Name.resx">
+      <DependentUpon>202007010900353_Account_Name.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
