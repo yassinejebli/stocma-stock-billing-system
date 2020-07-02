@@ -13,6 +13,7 @@ import SiteForm from '../forms/SiteForm';
 import PaiementFournisseurForm from '../forms/PaiementFournisseurForm';
 import FakeArticleForm from '../forms/FakeArticleForm';
 import { useSite } from '../../providers/SiteProvider';
+import { useAuth } from '../../providers/AuthProvider';
 
 const border = '1px solid #d8d8d8';
 
@@ -120,32 +121,41 @@ export const SideDialogWrapper = ({ children, onExited, ...props }) => {
 
 const Menu = ({ open }) => {
     const classes = useStyles();
-    const {useVAT} = useSite();
-
+    const { useVAT } = useSite();
+    const {
+        canManageClients,
+        canManageFournisseurs,
+        canManageArticles,
+        canManageSites,
+        canManagePaiementsClients,
+        canManagePaiementsFournisseurs,
+    } = useAuth();
     return (
         <>
             <div className={classes.header}>Ajouter un élément</div>
-            <div className={classes.item} onClick={() => open(items.article)}>
-                <Avatar className={classes.avatar}>
-                    <AddShoppingCartIcon className={classes.icon} />
-                </Avatar>
-                <div className={classes.content}>
-                    <div className={classes.title}>Article</div>
-                    <div className={classes.description}>Les produits que vous achetez / vendez et que vous suivez leurs quantités</div>
+            {canManageArticles&&<>
+                <div className={classes.item} onClick={() => open(items.article)}>
+                    <Avatar className={classes.avatar}>
+                        <AddShoppingCartIcon className={classes.icon} />
+                    </Avatar>
+                    <div className={classes.content}>
+                        <div className={classes.title}>Article</div>
+                        <div className={classes.description}>Les produits que vous achetez / vendez et que vous suivez leurs quantités</div>
+                    </div>
                 </div>
-            </div>
-            {
-                !useVAT&&<div className={classes.item} onClick={() => open(items.fakeArticle)}>
-                <Avatar className={classes.avatar}>
-                    <AddShoppingCartIcon className={classes.icon} />
-                </Avatar>
-                <div className={classes.content}>
-                    <div className={classes.title}>Article (Factures)</div>
-                    <div className={classes.description}>Les produits que vous achetez / vendez et que vous suivez leurs quantités</div>
-                </div>
-            </div>
-            }
-            <div className={classes.item} onClick={() => open(items.client)}>
+                {
+                    !useVAT && <div className={classes.item} onClick={() => open(items.fakeArticle)}>
+                        <Avatar className={classes.avatar}>
+                            <AddShoppingCartIcon className={classes.icon} />
+                        </Avatar>
+                        <div className={classes.content}>
+                            <div className={classes.title}>Article (Factures)</div>
+                            <div className={classes.description}>Les produits que vous achetez / vendez et que vous suivez leurs quantités</div>
+                        </div>
+                    </div>
+                }
+            </>}
+            {canManageClients&&<div className={classes.item} onClick={() => open(items.client)}>
                 <Avatar className={classes.avatar}>
                     <GroupAddOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -153,8 +163,8 @@ const Menu = ({ open }) => {
                     <div className={classes.title}>Client</div>
                     <div className={classes.description}>Ajouter un nouveau client</div>
                 </div>
-            </div>
-            <div className={classes.item} onClick={() => open(items.fournisseur)}>
+            </div>}
+            {canManageFournisseurs&&<div className={classes.item} onClick={() => open(items.fournisseur)}>
                 <Avatar className={classes.avatar}>
                     <GroupAddOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -162,8 +172,8 @@ const Menu = ({ open }) => {
                     <div className={classes.title}>Fournisseur</div>
                     <div className={classes.description}>Ajouter un nouveau fournisseur</div>
                 </div>
-            </div>
-            <div className={classes.item} onClick={() => open(items.paiementClient)}>
+            </div>}
+            {canManagePaiementsClients&&<div className={classes.item} onClick={() => open(items.paiementClient)}>
                 <Avatar className={classes.avatar}>
                     <AccountBalanceWalletOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -171,8 +181,8 @@ const Menu = ({ open }) => {
                     <div className={classes.title}>Paiement (Client)</div>
                     <div className={classes.description}>Ajouter des paiements effectués par vos clients</div>
                 </div>
-            </div>
-            <div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
+            </div>}
+            {canManagePaiementsFournisseurs&&<div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
                 <Avatar className={classes.avatar}>
                     <AccountBalanceWalletOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -180,8 +190,8 @@ const Menu = ({ open }) => {
                     <div className={classes.title}>Paiement (Fournisseur)</div>
                     <div className={classes.description}>Ajouter des paiements que vous avez effectués à vos fournisseurs</div>
                 </div>
-            </div>
-            <div className={classes.item} onClick={() => open(items.site)}>
+            </div>}
+            {canManageSites&&<div className={classes.item} onClick={() => open(items.site)}>
                 <Avatar className={classes.avatar}>
                     <StorefrontOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -189,7 +199,7 @@ const Menu = ({ open }) => {
                     <div className={classes.title}>Dépôt/Magasin</div>
                     <div className={classes.description}>Ajouter un nouveau dépôt ou magasin</div>
                 </div>
-            </div>
+            </div>}
         </>
     )
 }

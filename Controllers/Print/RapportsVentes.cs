@@ -121,6 +121,7 @@ namespace WebApplication1.Controllers.Print
             ReportDocument reportDocument = new ReportDocument();
             StatistiqueController statistiqueController = new StatistiqueController();
             var company = context.Companies.FirstOrDefault();
+            var ESPECE_PAYMENT_TYPE = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
 
             reportDocument.Load(
                    Path.Combine(this.Server.MapPath("~/CrystalReports/RapportTransactions.rpt")));
@@ -135,6 +136,7 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.BonLivraisonItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
                     IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
+                    IsEspece = false,
                     Credit = 0,
                     Commentaire = "",
                 }).ToList();
@@ -149,6 +151,7 @@ namespace WebApplication1.Controllers.Print
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
                     IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
+                    IsEspece = false,
                     Commentaire = "",
                 }).OrderBy(x => x.Date).ToList()) : context.FakeFactures.Where(
                         (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo))
@@ -161,6 +164,7 @@ namespace WebApplication1.Controllers.Print
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
                     IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
+                    IsEspece = false,
                     Commentaire = "",
                 }).OrderBy(x => x.Date).ToList();
 
@@ -174,12 +178,13 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.BonAvoirCItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Type = "",
                     IsBankRelated = false,
+                    IsEspece = false,
                     Credit = 0,
                     Commentaire = "",
                 }).ToList();
 
-            var PaiementClients = company.UseVAT ? context.Paiements.Where(
-                        (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && (x.IdBonAvoirC != null && x.IdBonLivraison != null)))
+            var PaiementClients = !company.UseVAT ? context.Paiements.Where(
+                        (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && (x.IdBonAvoirC == null && x.IdBonLivraison == null)))
                 .Select(x => new
                 {
                     Client = x.Client.Name,
@@ -188,10 +193,11 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.Credit > 0 ? x.Credit : x.Debit,
                     Type = x.TypePaiement.Name,
                     IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
+                    IsEspece = x.TypePaiement.Id == ESPECE_PAYMENT_TYPE,
                     Credit = 0,
                     Commentaire = x.Comment,
                 }).ToList() : context.PaiementFactures.Where(
-                       (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && (x.IdBonAvoirC != null && x.IdFacture != null)))
+                       (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && (x.IdBonAvoirC == null && x.IdFacture == null)))
                .Select(x => new
                {
                    Client = x.Client.Name,
@@ -200,18 +206,42 @@ namespace WebApplication1.Controllers.Print
                    Debit = x.Credit > 0 ? x.Credit : x.Debit,
                    Type = x.TypePaiement.Name,
                    IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
+                   IsEspece = x.TypePaiement.Id == ESPECE_PAYMENT_TYPE,
                    Credit = 0,
                    Commentaire = x.Comment,
                }).ToList();
 
+            var Depenses = context.Depenses.Where(
+                       (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo))
+                .AsEnumerable()
+               .Select(x => new
+               {
+                   Client = "-",
+                   NumBon = "",
+                   Date = x.Date,
+                   Debit = x.DepenseItems.Sum(y => (float?)y.Montant) ?? 0,
+                   Type = "Dépense",
+                   IsBankRelated = false,
+                   IsEspece = false,
+                   Credit = 0,
+                   Commentaire = String.Join(", ", x.DepenseItems.Select(y => y.Name)),
+               }).ToList();
 
             dataSource.AddRange(BonLivraisons);
             dataSource.AddRange(BonAvoirCs);
             dataSource.AddRange(PaiementClients);
             dataSource.AddRange(Factures);
+            dataSource.AddRange(Depenses);
 
-            reportDocument.SetDataSource(dataSource.OrderBy(x=>x.Date));
-          
+            reportDocument.SetDataSource(dataSource.OrderBy(x => x.Date));
+
+            if (reportDocument.ParameterFields["totalDepenses"] != null)
+                reportDocument.SetParameterValue("totalDepenses", Depenses.Sum(x => x.Debit));
+            if (reportDocument.ParameterFields["totalVentes"] != null)
+                reportDocument.SetParameterValue("totalVentes", BonLivraisons.Sum(x => x.Debit));
+            if (reportDocument.ParameterFields["totalEspece"] != null)
+                reportDocument.SetParameterValue("totalEspece", PaiementClients.Where(x => x.IsEspece).Sum(x => x.Debit));
+
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition
             {

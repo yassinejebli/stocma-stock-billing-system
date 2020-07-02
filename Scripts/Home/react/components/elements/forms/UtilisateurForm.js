@@ -1,23 +1,48 @@
 import { Box, Button, TextField, FormControlLabel, Switch } from '@material-ui/core';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import React from 'react';
-import { saveData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import Loader from '../loaders/Loader';
 import TitleIcon from '../misc/TitleIcon';
 import { updateUtilisateur, updateUserPassword, setClaim, hasClaim, createUser } from '../../../queries/utilisateurQueries';
-import LockIcon from '@material-ui/icons/Lock';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 const initialState = {
     UserName: '',
 }
-const TABLE = 'ApplicationUsers';
 
 export const CLAIMS = [
     {
-        id: 'CanUpdateQteStock',
-        displayName: 'Peut changer la quantité de stock'
+        id: 'CanAddBonLivraison',
+        displayName: 'Peut ajouter des bons de liviraison'
+    },
+    {
+        id: 'CanUpdateBonLivraison',
+        displayName: 'Peut modifier les bons de liviraison'
+    },
+    {
+        id: 'CanDeleteBonLivraison',
+        displayName: 'Peut supprimer les bons de liviraison'
+    },
+    {
+        id: 'CanManageFacturesVente',
+        displayName: 'Peut gérer les factures de vente'
+    },
+    {
+        id: 'CanManageFacturesAchat',
+        displayName: 'Peut gérer les factures d\'achat'
+    },
+    {
+        id: 'CanManageBonReceptions',
+        displayName: 'Peut gérer les bons de réception'
+    },
+    {
+        id: 'CanManageArticles',
+        displayName: 'Peut gérer les articles'
+    },
+    {
+        id: 'CanManageMouvements',
+        displayName: 'Peut gérer les mouvements du stock'
     },
     {
         id: 'CanViewDashboard',
@@ -32,16 +57,20 @@ export const CLAIMS = [
         displayName: 'Peut gérer les fournisseurs'
     },
     {
-        id: 'CanAddPaiements',
-        displayName: 'Peut ajouter les paiements'
+        id: 'CanManagePaiementsClients',
+        displayName: 'Peut gérer les paiements (clients)'
     },
     {
-        id: 'CanRemovePaiements',
-        displayName: 'Peut supprimer les paiements'
+        id: 'CanManagePaiementsFournisseurs',
+        displayName: 'Peut gérer les paiements (fournisseurs)'
     },
     {
-        id: 'CanViewPaiements',
-        displayName: 'Peut consulter des paiements'
+        id: 'CanManageDepenses',
+        displayName: 'Peut gérer les dépenses'
+    },
+    {
+        id: 'CanManageSites',
+        displayName: 'Peut gérer les dépôts/magasins'
     }
 ]
 
