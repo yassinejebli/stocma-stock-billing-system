@@ -15,6 +15,7 @@ import { TextField, Button } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import AddIcon from '@material-ui/icons/Add';
 import { utilisateurColumns } from '../../elements/table/columns/UtilisateurColumns'
+import { removeUser } from '../../../queries/utilisateurQueries'
 
 const TABLE = 'ApplicationUsers';
 
@@ -49,7 +50,8 @@ const UtilisateurList = () => {
             <UtilisateurForm 
                 onSuccess={()=>{
                     refetchData();
-                }}
+                    hideUtilisateurModal()
+                 }}
              />
         </SideDialogWrapper>
     ), [filters]);
@@ -78,7 +80,9 @@ const UtilisateurList = () => {
 
     const deleteRow = React.useCallback(async (id) => {
         setLoading(true);
-        const response = await deleteData(TABLE, id);
+        const response = await removeUser({
+            userId: id
+        });
         console.log({ response });
         if (response.ok) {
             showSnackBar();
@@ -86,7 +90,7 @@ const UtilisateurList = () => {
         } else {
             showSnackBar({
                 error: true,
-                text: 'Impossible de supprimer la catégorie sélectionnée !'
+                text: 'Impossible de supprimer l\'utilisateur sélectionné !'
             });
         }
         setLoading(false);

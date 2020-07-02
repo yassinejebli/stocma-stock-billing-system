@@ -40,7 +40,7 @@ namespace WebApplication1.Models
             var manager = new RoleManager<IdentityRole>(store);
             // RoleTypes is a class containing constant string values for different roles
             List<IdentityRole> identityRoles = new List<IdentityRole>();
-            identityRoles.Add(new IdentityRole() { Name = "Admin" });
+            identityRoles.Add(new IdentityRole() {  Name = "Admin" });
 
             foreach (IdentityRole role in identityRoles)
             {
@@ -60,7 +60,6 @@ namespace WebApplication1.Models
                 userManager.Create(admin, "comciel123");
                 userManager.AddToRole(admin.Id, "Admin");
             }
-
 
             return context;
         }

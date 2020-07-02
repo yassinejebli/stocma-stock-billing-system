@@ -20,6 +20,9 @@ const useStyles = makeStyles({
     smallText: {
         fontSize: 10,
         color: grey[700]
+    },
+    text: {
+        fontSize: 15
     }
 });
 
@@ -35,11 +38,13 @@ function ConfirmModal({ show, proceed, text, smallText }) {
                 <Box px={2}>
                     <DialogContent>
                         <Box>
-                            <Typography variant="h6" dangerouslySetInnerHTML={{ __html: text }} />
+                            <div className={classes.text}>
+                                {text}
+                            </div>
                             {smallText && <div className={classes.smallText}
                                 dangerouslySetInnerHTML={{ __html: smallText }} />}
                         </Box>
-                        <Box mt={2} mb={1} display="flex" justifyContent="center">
+                        <Box mt={4} mb={1} display="flex" justifyContent="center">
                             <Button className={classes.button} variant="contained"
                                 onClick={() => proceed(true)} color="primary">
                                 Ok

@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import { useAuth } from '../../providers/AuthProvider';
 export const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -105,6 +106,12 @@ function SideMenu(props) {
 
 
 const MenuItems = () => {
+    const {
+        canManageClients,
+        canManageFournisseurs,
+        canViewDashboard,
+        canViewPaiements,
+    } = useAuth();
     const [showSettingSideMenu, hideSettingSideMenu] = useModal(({ in: open, onExited }) => (
         <SettingsDialog open={open} onExited={onExited} onClose={hideSettingSideMenu} />
     ));
@@ -116,36 +123,36 @@ const MenuItems = () => {
     const [openPurchases, setOpenPurchases] = React.useState(false);
     const [openStockArticles, setOpenStockArticles] = React.useState(false);
     const classes = useStyles();
-    const history = useHistory();
 
     return (
         <>
-            <List className={classes.list}>
+            {canViewDashboard && <List className={classes.list}>
                 <ListItem button component={Link} to="/">
                     <ListItemIcon><DashboardIcon className={classes.icon} /></ListItemIcon>
                     <ListItemText primary="Tableau du bord" />
                 </ListItem>
-            </List>
-            <Divider className={classes.divider} />
-            <List className={classes.list}>
-                <ListItem button onClick={() => setOpenAccounts(!openAccounts)}>
-                    <ListItemIcon><PeopleAltIcon className={classes.icon} /></ListItemIcon>
-                    <ListItemText primary="Comptes" />
-                    {openAccounts ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={openAccounts} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <ListItem button component={Link} to="/ClientList">
-                            <ListItemIcon />
-                            <ListItemText primary="Clients" />
-                        </ListItem>
-                        <ListItem button component={Link} to="/SupplierList">
-                            <ListItemIcon />
-                            <ListItemText primary="Fournisseurs" />
-                        </ListItem>
-                    </List>
-                </Collapse>
-            </List>
+            </List>}
+            {(canManageClients || canManageFournisseurs) && <><Divider className={classes.divider} />
+                <List className={classes.list}>
+                    <ListItem button onClick={() => setOpenAccounts(!openAccounts)}>
+                        <ListItemIcon><PeopleAltIcon className={classes.icon} /></ListItemIcon>
+                        <ListItemText primary="Comptes" />
+                        {openAccounts ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={openAccounts} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            {canManageClients && <ListItem button component={Link} to="/ClientList">
+                                <ListItemIcon />
+                                <ListItemText primary="Clients" />
+                            </ListItem>}
+                            {canManageFournisseurs && <ListItem button component={Link} to="/SupplierList">
+                                <ListItemIcon />
+                                <ListItemText primary="Fournisseurs" />
+                            </ListItem>}
+                        </List>
+                    </Collapse>
+                </List>
+            </>}
             <Divider className={classes.divider} />
             <List className={classes.list}>
                 <ListItem button onClick={() => setOpenSales(!openSales)}>
@@ -243,7 +250,8 @@ const MenuItems = () => {
                 </Collapse>
             </List>
             <Divider className={classes.divider} />
-            <List className={classes.list}>
+            {console.log({ canViewPaiements })}
+            {canViewPaiements && <List className={classes.list}>
                 <ListItem button onClick={() => setOpenSituations(!openSituations)}>
                     <ListItemIcon><AccountBalanceIcon className={classes.icon} /></ListItemIcon>
                     <ListItemText primary="Situation" />
@@ -261,7 +269,7 @@ const MenuItems = () => {
                         </ListItem>
                     </List>
                 </Collapse>
-            </List>
+            </List>}
             <Divider className={classes.divider} />
             <List className={classes.list}>
                 <ListItem button onClick={() => setOpenTresorery(!openTresorery)}>
@@ -287,6 +295,10 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openSettings} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
+                        <ListItem button component={Link} to="/liste-des-utilisateurs">
+                            <ListItemIcon />
+                            <ListItemText primary="Utilisateurs" />
+                        </ListItem>
                         <ListItem button onClick={showSettingSideMenu}>
                             <ListItemIcon />
                             <ListItemText primary="Documents" />
@@ -307,7 +319,7 @@ const MenuItems = () => {
                 <Divider className={classes.divider} />
                 <List className={classes.list}>
                     <ListItem button onClick={() => document.getElementById('logoutForm')?.submit()}>
-                        <ListItemIcon><ExitToAppIcon className={classes.icon} style={{transform: 'scaleX(-1)'}} /></ListItemIcon>
+                        <ListItemIcon><ExitToAppIcon className={classes.icon} style={{ transform: 'scaleX(-1)' }} /></ListItemIcon>
                         <ListItemText primary="Sortir" />
                     </ListItem>
                 </List>

@@ -37,6 +37,96 @@ export const updateUserPassword = async (userData) => {
     }
 }
 
+
+export const setClaim = async (userData) => {
+    const URL = ODATA_URL + 'SetClaim';
+    try {
+        const res = await (await fetch(URL, {
+            method: 'POST',
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        }));
+        return res;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+export const hasClaim = async (userData) => {
+    const URL = ODATA_URL + 'HasClaim';
+    try {
+        const res = await (await fetch(URL, {
+            method: 'POST',
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        })).json();
+        return res?.userHasClaim;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+export const createUser = async (userData) => {
+    const URL = ODATA_URL + 'CreateUser';
+    try {
+        const res = await (await fetch(URL, {
+            method: 'POST',
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        })).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+export const removeUser = async (userData) => {
+    const URL = ODATA_URL + 'Removeuser';
+    try {
+        const res = await fetch(URL, {
+            method: 'DELETE',
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+        return res;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+export const getUserInfo = async () => {
+    const URL = ODATA_URL + 'GetCurrentUserClaims';
+    try {
+        const res = await (await fetch(URL, {
+            method: 'GET',
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 export const deleteUtilisateur = async (id) => {
     const URL = ODATA_URL + 'ArticleSites' + `(IdArticle=${IdArticle},IdSite=${IdSite})`
     try {

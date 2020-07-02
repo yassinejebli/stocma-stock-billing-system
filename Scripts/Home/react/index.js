@@ -48,68 +48,71 @@ import Rapports from './components/views/ventes/rapports/Rapports';
 import LoaderProvider from './components/providers/LoaderProvider';
 import TypeDepenseList from './components/views/type-depense/TypeDepenseList';
 import UtilisateurList from './components/views/utilisateurs/UtilisateurList';
+import AuthProvider from './components/providers/AuthProvider';
 
 const App = () => {
     return (
-        <SiteProvider>
-            <SettingsProvider>
-                <ThemeProvider>
-                    <SnackBarProvider>
-                        <LoaderProvider>
-                            <TitleProvider>
-                                <Router>
-                                    <ModalProvider rootComponent={TransitionGroup}>
-                                        <Switch>
-                                            <SideMenu onClose={() => null}>
-                                                <Route exact path="/" component={Dashboard} />
-                                                <Route path="/liste-des-utilisateurs" component={UtilisateurList} />
-                                                <Route path="/rapports-des-ventes" component={Rapports} />
-                                                <Route path="/liste-types-de-depense" component={TypeDepenseList} />
-                                                <Route path="/depense" component={Depense} />
-                                                <Route path="/liste-des-depenses" component={DepenseList} />
-                                                <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />
-                                                <Route path="/liste-paiements-des-clients" component={PaiementClientList} />
-                                                <Route path="/suivi-des-ventes" component={SuiviVentes} />
-                                                <Route path="/suivi-des-achats" component={SuiviAchats} />
-                                                <Route path="/mouvement-stock" component={StockMouvement} />
-                                                <Route path="/liste-mouvement-stock" component={StockMouvementList} />
-                                                <Route path="/bon-avoir-achat" component={BonAvoirAchat} />
-                                                <Route path="/liste-bon-avoir-achat" component={BonAvoirAchatList} />
-                                                <Route path="/bon-avoir-vente" component={BonAvoirVente} />
-                                                <Route path="/liste-bon-avoir-vente" component={BonAvoirVenteList} />
-                                                <Route path="/BonCommande" component={BonCommande} />
-                                                <Route path="/BonCommandeList" component={BonCommandeList} />
-                                                <Route path="/Devis" component={Devis} />
-                                                <Route path="/FactureAchat" component={FactureAchat} />
-                                                <Route path="/FactureAchatList" component={FactureAchatList} />
-                                                <Route path="/_FactureAchat" component={FakeFactureAchat} />
-                                                <Route path="/_FactureAchatList" component={FakeFactureAchatList} />
-                                                <Route path="/_Facture" component={FakeFacture} />
-                                                <Route path="/_FactureList" component={FakeFactureClientList} />
-                                                <Route path="/Facture" component={Facture} />
-                                                <Route path="/BonReception" component={BonReception} />
-                                                <Route path="/BonLivraison" component={BonLivraison} />
-                                                <Route path="/BonLivraisonList" component={BonLivraisonList} />
-                                                <Route path="/FactureList" component={FactureList} />
-                                                <Route path="/BonReceptionList" component={BonReceptionList} />
-                                                <Route path="/DevisList" component={DevisList} />
-                                                <Route path="/ArticleList" component={ArticleList} />
-                                                <Route path="/_ArticleList" component={FakeArticleList} />
-                                                <Route path="/SiteList" component={SiteList} />
-                                                <Route path="/marge-articles" component={ArticlesMarginList} />
-                                                <Route path="/ClientList" component={ClientList} />
-                                                <Route path="/SupplierList" component={SupplierList} />
-                                            </SideMenu>
-                                        </Switch>
-                                        {/* <NavigationMenu /> */}
-                                    </ModalProvider>
-                                </Router>
-                            </TitleProvider>
-                        </LoaderProvider>
-                    </SnackBarProvider>
-                </ThemeProvider>
-            </SettingsProvider>
-        </SiteProvider>
+        <AuthProvider>
+            <SiteProvider>
+                <SettingsProvider>
+                    <ThemeProvider>
+                        <SnackBarProvider>
+                            <LoaderProvider>
+                                <TitleProvider>
+                                    <Router>
+                                        <ModalProvider rootComponent={TransitionGroup}>
+                                            <Switch>
+                                                <SideMenu onClose={() => null}>
+                                                    <Route exact path="/" component={Dashboard} />
+                                                    <Route path="/liste-des-utilisateurs" component={UtilisateurList} />
+                                                    <Route path="/rapports-des-ventes" component={Rapports} />
+                                                    <Route path="/liste-types-de-depense" component={TypeDepenseList} />
+                                                    <Route path="/depense" component={Depense} />
+                                                    <Route path="/liste-des-depenses" component={DepenseList} />
+                                                    <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />
+                                                    <Route path="/liste-paiements-des-clients" component={PaiementClientList} />
+                                                    <Route path="/suivi-des-ventes" component={SuiviVentes} />
+                                                    <Route path="/suivi-des-achats" component={SuiviAchats} />
+                                                    <Route path="/mouvement-stock" component={StockMouvement} />
+                                                    <Route path="/liste-mouvement-stock" component={StockMouvementList} />
+                                                    <Route path="/bon-avoir-achat" component={BonAvoirAchat} />
+                                                    <Route path="/liste-bon-avoir-achat" component={BonAvoirAchatList} />
+                                                    <Route path="/bon-avoir-vente" component={BonAvoirVente} />
+                                                    <Route path="/liste-bon-avoir-vente" component={BonAvoirVenteList} />
+                                                    <Route path="/BonCommande" component={BonCommande} />
+                                                    <Route path="/BonCommandeList" component={BonCommandeList} />
+                                                    <Route path="/Devis" component={Devis} />
+                                                    <Route path="/FactureAchat" component={FactureAchat} />
+                                                    <Route path="/FactureAchatList" component={FactureAchatList} />
+                                                    <Route path="/_FactureAchat" component={FakeFactureAchat} />
+                                                    <Route path="/_FactureAchatList" component={FakeFactureAchatList} />
+                                                    <Route path="/_Facture" component={FakeFacture} />
+                                                    <Route path="/_FactureList" component={FakeFactureClientList} />
+                                                    <Route path="/Facture" component={Facture} />
+                                                    <Route path="/BonReception" component={BonReception} />
+                                                    <Route path="/BonLivraison" component={BonLivraison} />
+                                                    <Route path="/BonLivraisonList" component={BonLivraisonList} />
+                                                    <Route path="/FactureList" component={FactureList} />
+                                                    <Route path="/BonReceptionList" component={BonReceptionList} />
+                                                    <Route path="/DevisList" component={DevisList} />
+                                                    <Route path="/ArticleList" component={ArticleList} />
+                                                    <Route path="/_ArticleList" component={FakeArticleList} />
+                                                    <Route path="/SiteList" component={SiteList} />
+                                                    <Route path="/marge-articles" component={ArticlesMarginList} />
+                                                    <Route path="/ClientList" component={ClientList} />
+                                                    <Route path="/SupplierList" component={SupplierList} />
+                                                </SideMenu>
+                                            </Switch>
+                                            {/* <NavigationMenu /> */}
+                                        </ModalProvider>
+                                    </Router>
+                                </TitleProvider>
+                            </LoaderProvider>
+                        </SnackBarProvider>
+                    </ThemeProvider>
+                </SettingsProvider>
+            </SiteProvider>
+        </AuthProvider>
     )
 }
 
