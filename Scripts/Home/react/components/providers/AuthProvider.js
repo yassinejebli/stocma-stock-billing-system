@@ -28,15 +28,17 @@ const AuthProvider = ({ children }) => {
     //-----Bon de reception
     const [canManageBonReceptions, setCanManageBonReceptions] = React.useState(false);
     //-----Bon de livraison
-    const [canAddBonLivraison, setCanAddBonLivraison] = React.useState(false);
-    const [canDeleteBonLivraison, setCanDeleteBonLivraison] = React.useState(false);
-    const [canUpdateBonLivraison, setCanUpdateBonLivraison] = React.useState(false);
-    const [canViewBonLivraison, setCanViewBonLivraison] = React.useState(false);
+    const [canAddBonLivraisons, setCanAddBonLivraisons] = React.useState(false);
+    const [canDeleteBonLivraisons, setCanDeleteBonLivraisons] = React.useState(false);
+    const [canUpdateBonLivraisons, setCanUpdateBonLivraisons] = React.useState(false);
+    const [canViewBonLivraisons, setCanViewBonLivraisons] = React.useState(false);
     //-----Facture de vente
     const [canManageFacturesVente, setCanManageFacturesVente] = React.useState(false);
     //-----Facture d'achat
     const [canManageFacturesAchat, setCanManageFacturesAchat] = React.useState(false);
-    
+    //-----BA
+    const [canManageBonAvoirsAchat, setCanManageBonAvoirsAchat] = React.useState(false);
+    const [canManageBonAvoirsVente, setCanManageBonAvoirsVente] = React.useState(false);
 
     React.useEffect(()=>{
         getUserInfo().then(response=>{
@@ -46,10 +48,10 @@ const AuthProvider = ({ children }) => {
             setIsAdmin(isAdmin);
             setUsername(response?.username);
             //Documents
-            setCanAddBonLivraison(Boolean(claims.find(x=>x==='CanAddBonLivraison'))||isAdmin);
-            setCanUpdateBonLivraison(Boolean(claims.find(x=>x==='CanUpdateBonLivraison'))||isAdmin);
-            setCanDeleteBonLivraison(Boolean(claims.find(x=>x==='CanDeleteBonLivraison'))||isAdmin);
-            setCanViewBonLivraison(Boolean(claims.find(x=>x==='CanViewBonLivraison'))||isAdmin);
+            setCanAddBonLivraisons(Boolean(claims.find(x=>x==='CanAddBonLivraisons'))||isAdmin);
+            setCanUpdateBonLivraisons(Boolean(claims.find(x=>x==='CanUpdateBonLivraisons'))||isAdmin);
+            setCanDeleteBonLivraisons(Boolean(claims.find(x=>x==='CanDeleteBonLivraisons'))||isAdmin);
+            setCanViewBonLivraisons(Boolean(claims.find(x=>x==='CanViewBonLivraisons'))||isAdmin);
 
             setCanManageBonReceptions(Boolean(claims.find(x=>x==='CanManageBonReceptions'))||isAdmin);
 
@@ -57,6 +59,10 @@ const AuthProvider = ({ children }) => {
 
             setCanManageFacturesAchat(Boolean(claims.find(x=>x==='CanManageFacturesAchat'))||isAdmin);
 
+            setCanManageBonAvoirsAchat(Boolean(claims.find(x=>x==='CanManageBonAvoirsAchat'))||isAdmin);
+       
+            setCanManageBonAvoirsVente(Boolean(claims.find(x=>x==='CanManageBonAvoirsVente'))||isAdmin);
+  
             //
             setCanViewDashboard(Boolean(claims.find(x=>x==='CanViewDashboard'))||isAdmin);
             setCanUpdateQteStock(Boolean(claims.find(x=>x==='CanUpdateQteStock'))||isAdmin);
@@ -89,12 +95,14 @@ const AuthProvider = ({ children }) => {
             canManageDepenses,
             //Documents
             canManageBonReceptions,
-            canAddBonLivraison,
-            canUpdateBonLivraison,
-            canDeleteBonLivraison,
-            canViewBonLivraison,
+            canAddBonLivraisons,
+            canUpdateBonLivraisons,
+            canDeleteBonLivraisons,
+            canViewBonLivraisons,
             canManageFacturesVente,
             canManageFacturesAchat,
+            canManageBonAvoirsAchat,
+            canManageBonAvoirsVente,
         }}>
             {children}
         </AuthContext.Provider>)

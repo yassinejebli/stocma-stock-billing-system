@@ -19,6 +19,8 @@ import { removeUser } from '../../../queries/utilisateurQueries'
 
 const TABLE = 'ApplicationUsers';
 
+const EXPAND = ['Claims'];
+
 const UtilisateurList = () => {
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -27,11 +29,11 @@ const UtilisateurList = () => {
     const filters = React.useMemo(() => {
         return {
             or: [
-                // {
-                //     Name: {
-                //         contains: debouncedSearchText
-                //     }
-                // },
+                {
+                    UserName: {
+                        contains: debouncedSearchText
+                    }
+                },
             ]
         }
     }, [debouncedSearchText]);
@@ -47,20 +49,23 @@ const UtilisateurList = () => {
     )
     const [showUtilisateurModal, hideUtilisateurModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideUtilisateurModal}>
-            <UtilisateurForm 
-                onSuccess={()=>{
+            <UtilisateurForm
+                reftech={refetchData}
+                onSuccess={() => {
                     refetchData();
                     hideUtilisateurModal()
-                 }}
-             />
+                }}
+            />
         </SideDialogWrapper>
     ), [filters]);
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideModal}>
-            <UtilisateurForm onSuccess={() => {
-                refetchData();
-                hideModal();
-            }} data={selectedRow} />
+            <UtilisateurForm
+                reftech={refetchData}
+                onSuccess={() => {
+                    refetchData();
+                    hideModal();
+                }} data={selectedRow} />
         </SideDialogWrapper>
     ), [selectedRow]);
 
@@ -70,13 +75,13 @@ const UtilisateurList = () => {
 
 
     const refetchData = React.useCallback(() => {
-        getData(TABLE, {}, filters).then((response) => {
+        getData(TABLE, {}, filters, EXPAND).then((response) => {
             setData(response.data);
             setTotalItems(response.totalItems);
         }).catch((err) => {
             console.log({ err });
         })
-    },[filters])
+    }, [filters])
 
     const deleteRow = React.useCallback(async (id) => {
         setLoading(true);
@@ -108,7 +113,7 @@ const UtilisateurList = () => {
             const startRow = pageSize * pageIndex;
             getData(TABLE, {
                 $skip: startRow
-            }, filters).then((response) => {
+            }, filters, EXPAND).then((response) => {
                 setData(response.data);
                 setTotalItems(response.totalItems);
                 setTotalCount(Math.ceil(response.totalItems / pageSize))

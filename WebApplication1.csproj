@@ -223,6 +223,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="ArticlesStatistics.cs" />
+    <Compile Include="Auth\ClaimsAuthorizeAttribute.cs" />
     <Compile Include="Auth\UserController.cs" />
     <Compile Include="Auth\AuthManager.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -1353,6 +1354,10 @@
     <Compile Include="Migrations\202007010900353_Account_Name.cs" />
     <Compile Include="Migrations\202007010900353_Account_Name.designer.cs">
       <DependentUpon>202007010900353_Account_Name.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007042048245_BonLivraison_IdUser.cs" />
+    <Compile Include="Migrations\202007042048245_BonLivraison_IdUser.designer.cs">
+      <DependentUpon>202007042048245_BonLivraison_IdUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -4296,6 +4301,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007010900353_Account_Name.resx">
       <DependentUpon>202007010900353_Account_Name.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007042048245_BonLivraison_IdUser.resx">
+      <DependentUpon>202007042048245_BonLivraison_IdUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

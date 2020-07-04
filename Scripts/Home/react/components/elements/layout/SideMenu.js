@@ -48,7 +48,9 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: drawerWidth,
     },
     list: {
-        color: '#FFF'
+        color: '#FFF',
+        paddingTop: 4,
+        paddingBottom: 4,
     },
     icon: {
         color: '#FFF'
@@ -119,6 +121,8 @@ const MenuItems = () => {
         canManageFacturesAchat,
         canManagePaiementsClients,
         canManagePaiementsFournisseurs,
+        canManageBonAvoirsAchat,
+        canManageBonAvoirsVente,
     } = useAuth();
     const [showSettingSideMenu, hideSettingSideMenu] = useModal(({ in: open, onExited }) => (
         <SettingsDialog open={open} onExited={onExited} onClose={hideSettingSideMenu} />
@@ -182,10 +186,10 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Devis" />
                         </ListItem>
-                        <ListItem button className={classes.nested} component={Link} to="/bon-avoir-vente">
+                        {canManageBonAvoirsVente&&<ListItem button className={classes.nested} component={Link} to="/bon-avoir-vente">
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
-                        </ListItem>
+                        </ListItem>}
                         <ListItem button className={classes.nested} component={Link} to="/suivi-des-ventes">
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
@@ -218,10 +222,10 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Commande" />
                         </ListItem>
-                        <ListItem button className={classes.nested} component={Link} to="/bon-avoir-achat">
+                        {canManageBonAvoirsAchat&&<ListItem button className={classes.nested} component={Link} to="/bon-avoir-achat">
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
-                        </ListItem>
+                        </ListItem>}
                         <ListItem button className={classes.nested} component={Link} to="/suivi-des-achats">
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
@@ -325,10 +329,9 @@ const MenuItems = () => {
             </List>
             <Divider className={classes.divider} />
             <Box mt="auto">
-                <Divider className={classes.divider} />
                 <List className={classes.list}>
                     <ListItem button onClick={() => document.getElementById('logoutForm')?.submit()}>
-                        <ListItemIcon><ExitToAppIcon className={classes.icon} style={{ transform: 'scaleX(-1)' }} /></ListItemIcon>
+                        <ListItemIcon><ExitToAppIcon className={classes.icon} style={{ transform: 'scaleX(-1)', color: '#eb5752' }} /></ListItemIcon>
                         <ListItemText primary="Sortir" />
                     </ListItem>
                 </List>

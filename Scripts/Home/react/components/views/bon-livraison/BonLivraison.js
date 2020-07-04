@@ -23,6 +23,7 @@ import { useSite } from '../../providers/SiteProvider'
 import { useSettings } from '../../providers/SettingsProvider'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { paymentMethods } from '../devis/Devis'
+import { useAuth } from '../../providers/AuthProvider'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -35,6 +36,7 @@ const emptyLine = {
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
 const BonLivraison = () => {
+    const { canAddBonLivraison, canUpdateBonLivraison } = useAuth();
     const {
         BLDiscount,
         setBLDiscount,

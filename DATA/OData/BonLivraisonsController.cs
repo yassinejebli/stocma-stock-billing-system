@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.OData;
 using WebApplication1.Generators;
 
@@ -118,6 +119,8 @@ namespace WebApplication1.DATA.OData
             var currentYear = DateTime.Now.Year;
             var lastDoc = db.BonLivraisons.Where(x=>x.Date.Year == currentYear && x.IdSite == bonLivraison.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();
             var lastRef = lastDoc != null ? lastDoc.Ref : 0;
+            bonLivraison.User = User.Identity.Name;
+            bonLivraison.IdUser = User.Identity.GetUserId();
             bonLivraison.Ref = lastRef + 1;
             foreach(var bi in bonLivraison.BonLivraisonItems)
             {

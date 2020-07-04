@@ -40,6 +40,8 @@ namespace WebApplication1.DATA
 
         public string User { get; set; }
 
+        public string IdUser { get; set; }
+
         public string Note { get; set; }
 
         public virtual ICollection<BonLivraisonItem> BonLivraisonItems { get; set; }

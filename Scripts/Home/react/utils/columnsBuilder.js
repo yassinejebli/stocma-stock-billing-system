@@ -235,7 +235,7 @@ export const getFournisseurColumns = () => ([
 ])
 
 
-export const getBonLivraisonListColumns = () => ([
+export const getBonLivraisonListColumns = ({canUpdateBonLivraisons, canDeleteBonLivraisons}) => ([
     {
         Header: 'Client',
         accessor: 'Client.Name',
@@ -256,6 +256,11 @@ export const getBonLivraisonListColumns = () => ([
             return format(new Date(props.Date), 'dd/MM/yyyy')
         },
         width: 60
+    },
+    {
+        Header: 'Opérateur',
+        accessor: 'User',
+        type: inputTypes.text.description,
     },
     {
         Header: 'Mode de paiement',
@@ -296,12 +301,12 @@ export const getBonLivraisonListColumns = () => ([
                     <IconButton tabIndex={-1} size="small" onClick={() => print(original)}>
                         <PrintOutlinedIcon />
                     </IconButton>
-                    <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original.Id)}>
+                    {canUpdateBonLivraisons&&<IconButton tabIndex={-1} size="small" onClick={() => updateRow(original.Id)}>
                         <EditOutlinedIcon />
-                    </IconButton>
-                    <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
+                    </IconButton>}
+                    {canDeleteBonLivraisons&&<IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
                         <DeleteForeverOutlinedIcon />
-                    </IconButton>
+                    </IconButton>}
                 </Box>
             )
         },

@@ -3,7 +3,6 @@ import React from 'react'
 import { getBonLivraisonListColumns } from '../../../utils/columnsBuilder'
 import Paper from '../../elements/misc/Paper'
 import Table from '../../elements/table/Table'
-import Loader from '../../elements/loaders/Loader'
 import { useTitle } from '../../providers/TitleProvider'
 import { getData, deleteData } from '../../../queries/crudBuilder'
 import { useSnackBar } from '../../providers/SnackBarProvider'
@@ -16,14 +15,17 @@ import { useModal } from 'react-modal-hook'
 import AddIcon from '@material-ui/icons/Add';
 import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import { useSite } from '../../providers/SiteProvider'
-import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import { useLoader } from '../../providers/LoaderProvider'
-
+import { useAuth } from '../../providers/AuthProvider'
 
 const DOCUMENT = 'BonLivraisons'
 const EXPAND = ['Client', 'TypePaiement', 'BonLivraisonItems']
 
 const BonLivraisonList = () => {
+    const {
+        canUpdateBonLivraisons,
+        canDeleteBonLivraisons,
+    } = useAuth();
     const { showLoader } = useLoader();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
@@ -54,7 +56,7 @@ const BonLivraisonList = () => {
     const history = useHistory();
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getBonLivraisonListColumns(),
+        () => getBonLivraisonListColumns({canUpdateBonLivraisons, canDeleteBonLivraisons}),
         []
     );
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
@@ -138,16 +140,6 @@ const BonLivraisonList = () => {
     return (
         <>
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
-                {/* <Box mr={2}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<LocalAtmIcon />}
-                        onClick={() => history.push('/')}
-                    >
-                        Marge bénéficiaire par BL
-                </Button>
-                </Box> */}
                 <Button
                     variant="contained"
                     color="primary"

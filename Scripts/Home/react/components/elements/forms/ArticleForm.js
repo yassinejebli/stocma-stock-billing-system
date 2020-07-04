@@ -12,6 +12,7 @@ import { toBase64 } from '../../../utils/imageUtils';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { uploadArticleImage } from '../../../queries/fileUploader';
 import { getImageURL } from '../../../utils/urlBuilder';
+import { useAuth } from '../../providers/AuthProvider';
 
 const initialState = {
     Id: uuidv4(),
@@ -45,6 +46,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const ArticleForm = ({ data, onSuccess }) => {
+    const { canUpdateQteStock } = useAuth();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const editMode = Boolean(data);
@@ -163,6 +165,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                 variant="outlined"
                 size="small"
                 fullWidth
+                disabled={!canUpdateQteStock&&editMode}
                 margin="normal"
                 type="number"
                 onChange={onFieldChange}

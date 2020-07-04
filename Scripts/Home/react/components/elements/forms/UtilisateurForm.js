@@ -13,15 +13,15 @@ const initialState = {
 
 export const CLAIMS = [
     {
-        id: 'CanAddBonLivraison',
-        displayName: 'Peut ajouter des bons de liviraison'
+        id: 'CanUpdateQteStock',
+        displayName: 'Peut modifier les quantités de stock'
     },
     {
-        id: 'CanUpdateBonLivraison',
+        id: 'CanUpdateBonLivraisons',
         displayName: 'Peut modifier les bons de liviraison'
     },
     {
-        id: 'CanDeleteBonLivraison',
+        id: 'CanDeleteBonLivraisons',
         displayName: 'Peut supprimer les bons de liviraison'
     },
     {
@@ -35,6 +35,14 @@ export const CLAIMS = [
     {
         id: 'CanManageBonReceptions',
         displayName: 'Peut gérer les bons de réception'
+    },
+    {
+        id: 'CanManageBonAvoirsAchat',
+        displayName: 'Peut gérer les bons d\'avoir d\'achat'
+    },
+    {
+        id: 'CanManageBonAvoirsVente',
+        displayName: 'Peut gérer les bons d\'avoir de vente'
     },
     {
         id: 'CanManageArticles',
@@ -74,7 +82,7 @@ export const CLAIMS = [
     }
 ]
 
-const UtilisateurForm = ({ data, onSuccess }) => {
+const UtilisateurForm = ({ data, onSuccess, reftech }) => {
     const isAdmin = data?.Id === '00000000-0000-0000-0000-000000000000';
     const [password, setPassword] = React.useState('');
     const [claims, setClaims] = React.useState([])
@@ -189,6 +197,7 @@ const UtilisateurForm = ({ data, onSuccess }) => {
             claim,
             enabled,
         })).json();
+        if(reftech) reftech()
         setClaims(_claims => {
             return _claims.map(x => x.id === claim ? { ...x, enabled: response?.userHasClaim } : { ...x });
         })

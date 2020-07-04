@@ -3,6 +3,7 @@ import { useTitle } from '../../../providers/TitleProvider';
 import VentesBL from './VentesBL';
 import VentesFA from './VentesFA';
 import Transactions from './Transactions';
+import VentesParUtilisateurs from './VentesParUtilisateur';
 
 const Rapports = () => {
     const { setTitle } = useTitle();
@@ -16,6 +17,7 @@ const Rapports = () => {
             <VentesBL />
             <VentesFA />
             <Transactions />
+            <VentesParUtilisateurs />
         </>
     )
 }

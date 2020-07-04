@@ -12,15 +12,16 @@ using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.OData;
 using System.Web.Http.OData.Routing;
 using WebApplication1.DATA;
+using WebApplication1.Auth;
 
 namespace WebApplication1.DATA.OData
 {
-    [Authorize]
     public class BonReceptionsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
         // GET: odata/BonReceptions
+        //[ClaimsAuthorizeAttribute("CanManageBonReceptions")]
         [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<BonReception> GetBonReceptions()
         {
