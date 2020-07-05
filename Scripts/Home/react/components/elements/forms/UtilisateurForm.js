@@ -156,7 +156,6 @@ const UtilisateurForm = ({ data, onSuccess, reftech }) => {
                     Id: response?.user?.Id
                 }))
                 showSnackBar();
-                if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
                     error: true,

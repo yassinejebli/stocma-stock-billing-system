@@ -22,10 +22,10 @@ namespace WebApplication1.DATA.OData
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<FakeFacture> GetFakeFactures()
         {
-            return (IQueryable<FakeFacture>)this.db.FakeFactures;
+            return (IQueryable<FakeFacture>)this.db.FakeFactures.OrderByDescending(x=>x.Date);
         }
 
         [EnableQuery]

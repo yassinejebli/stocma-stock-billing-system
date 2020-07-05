@@ -36,7 +36,6 @@ namespace WebApplication1
                         validateInterval: TimeSpan.FromMinutes(30),
                         regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
                 },
-                CookieName = "myAuthCookie",
             });
 
             

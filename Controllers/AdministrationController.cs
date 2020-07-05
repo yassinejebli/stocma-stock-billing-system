@@ -29,10 +29,10 @@ namespace WebApplication1.Controllers
 
         public ActionResult Index()
         {
-            if (this.User.Identity.Name.Contains("cmp") || User.Identity.Name.Contains("sec"))
-                return View("BonLivraison");
-            if(User.Identity.Name.Contains("comptabilite"))
-                return View("ArticleFacture");
+           // if (this.User.Identity.Name.Contains("cmp") || User.Identity.Name.Contains("sec"))
+              //  return View("BonLivraison");
+           // if(User.Identity.Name.Contains("comptabilite"))
+               // return View("ArticleFacture");
 
             return View();
         }

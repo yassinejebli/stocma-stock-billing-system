@@ -242,7 +242,7 @@ namespace WebApplication1.Migrations
             }
 
 
-            context.Database.ExecuteSqlCommand("TRUNCATE TABLE Settings");
+            //context.Database.ExecuteSqlCommand("TRUNCATE TABLE Settings");
 
             var devisDiscount = context.Settings.Where(x => x.Code == "devis_discount")
                     .FirstOrDefault();

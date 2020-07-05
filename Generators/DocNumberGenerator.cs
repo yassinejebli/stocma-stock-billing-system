@@ -20,7 +20,7 @@ namespace WebApplication1.Generators
                 return companyName + "/" + date.ToString("yy") + "/" + date.ToString("MM") + String.Format("/{0:00000}", newRef);
 
             if (companyName == "AQK")
-                return companyName+"/"+date.ToString("yyyyMM") + newRef;
+                return companyName+"/"+date.ToString("yyyyMM")+ "0" + newRef;
 
             return newRef + "/" + date.ToString("yyyy"); ;
         }

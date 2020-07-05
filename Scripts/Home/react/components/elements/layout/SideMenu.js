@@ -308,10 +308,10 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openSettings} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        <ListItem button component={Link} to="/liste-des-utilisateurs">
+                        {isAdmin&&<ListItem button component={Link} to="/liste-des-utilisateurs">
                             <ListItemIcon />
                             <ListItemText primary="Utilisateurs" />
-                        </ListItem>
+                        </ListItem>}
                         <ListItem button onClick={showSettingSideMenu}>
                             <ListItemIcon />
                             <ListItemText primary="Documents" />

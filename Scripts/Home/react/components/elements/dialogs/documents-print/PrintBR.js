@@ -27,7 +27,7 @@ const PrintBR = ({document, onClose, onExited, open}) => {
                                         checked={showForm}
                                         onChange={(_, checked) => setShowForm(checked)}
                                     />}
-                                    label="Paiement reçu"
+                                    label="Paiement effectué"
                                 />
                             </div>
                             {showForm &&

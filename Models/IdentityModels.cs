@@ -57,8 +57,8 @@ namespace WebApplication1.Models
             {
                 ApplicationUser admin = new ApplicationUser();
                 admin.Id = "00000000-0000-0000-0000-000000000000";
-                admin.Email = "admin@comciel.com";
-                admin.UserName = "admin@comciel.com";
+                admin.Email = "admin";
+                admin.UserName = "admin";
                 userManager.Create(admin, "comciel123");
                 userManager.AddToRole(admin.Id, "Admin");
             }
