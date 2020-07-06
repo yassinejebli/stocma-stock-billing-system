@@ -21,6 +21,7 @@ import qs from 'qs'
 import { fakeFactureAchatColumns } from '../../elements/table/columns/fakeFactureAchatColumns'
 import { paymentMethods } from '../devis/Devis'
 import Autocomplete from '@material-ui/lab/Autocomplete'
+import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 
 const DOCUMENT = 'FakeFactureFs'
 const DOCUMENT_ITEMS = 'FakeFactureFItems'
@@ -235,28 +236,9 @@ const FakeFactureAchat = () => {
                     />
                 </Box>
                 <Box mt={2} width={240}>
-                    <Autocomplete
-                        options={paymentMethods}
-                        disableClearable
-                        autoHighlight
-                        value={paymentType}
+                    <TypePaiementAutocomplete
                         onChange={(_, value) => setPaymentType(value)}
-                        size="small"
-                        getOptionLabel={(option) => option?.Name}
-                        renderInput={(params) => (
-                            <TextField
-                                onChange={() => null}
-                                {...params}
-                                label="Mode de paiement"
-                                variant="outlined"
-                                inputProps={{
-                                    ...params.inputProps,
-                                    autoComplete: 'new-password',
-                                    type: 'search',
-                                    margin: 'normal'
-                                }}
-                            />
-                        )}
+                        value={paymentType}
                     />
                 </Box>
                 <Box mt={4}>

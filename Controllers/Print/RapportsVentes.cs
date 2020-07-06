@@ -34,7 +34,6 @@ namespace WebApplication1.Controllers.Print
                     Date = x.Date,
                     Debit = x.BonLivraisonItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
-                    IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
                     Credit = 0,
                 }).OrderBy(x => x.Date).ToList();
 
@@ -43,10 +42,7 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("document", "BL");
             if (reportDocument.ParameterFields["total"] != null)
                 reportDocument.SetParameterValue("total", dataSource.Sum(x => x.Debit));
-            if (reportDocument.ParameterFields["totalEspece"] != null)
-                reportDocument.SetParameterValue("totalEspece", dataSource.Where(x => x.IsBankRelated != true).Sum(x => x.Debit));
-            if (reportDocument.ParameterFields["totalCheque"] != null)
-                reportDocument.SetParameterValue("totalCheque", dataSource.Where(x => x.IsBankRelated == true).Sum(x => x.Debit));
+
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition
             {
@@ -79,7 +75,6 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems).Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
-                    IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
                 }).OrderBy(x => x.Date).ToList()) : context.FakeFactures.Where(
                         (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo))
                 .Select(x => new
@@ -90,7 +85,6 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.FakeFactureItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
-                    IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
                 }).OrderBy(x => x.Date).ToList();
 
             reportDocument.SetDataSource(dataSource);
@@ -99,10 +93,6 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("document", "FA");
             if (reportDocument.ParameterFields["total"] != null)
                 reportDocument.SetParameterValue("total", dataSource.Sum(x => x.Debit));
-            if (reportDocument.ParameterFields["totalEspece"] != null)
-                reportDocument.SetParameterValue("totalEspece", dataSource.Where(x => x.IsBankRelated != true).Sum(x => x.Debit));
-            if (reportDocument.ParameterFields["totalCheque"] != null)
-                reportDocument.SetParameterValue("totalCheque", dataSource.Where(x => x.IsBankRelated == true).Sum(x => x.Debit));
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition
@@ -136,6 +126,7 @@ namespace WebApplication1.Controllers.Print
                     Date = x.Date,
                     Debit = x.BonLivraisonItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
+                    IsRemboursement = false,
                     IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
                     IsEspece = false,
                     Credit = 0,
@@ -151,6 +142,7 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems).Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
+                    IsRemboursement = false,
                     IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
                     IsEspece = false,
                     Commentaire = "",
@@ -164,6 +156,7 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.FakeFactureItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
+                    IsRemboursement = false,
                     IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
                     IsEspece = false,
                     Commentaire = "",
@@ -180,6 +173,7 @@ namespace WebApplication1.Controllers.Print
                     Type = "",
                     IsBankRelated = false,
                     IsEspece = false,
+                    IsRemboursement = false,
                     Credit = 0,
                     Commentaire = "",
                 }).ToList();
@@ -195,6 +189,7 @@ namespace WebApplication1.Controllers.Print
                     Type = x.TypePaiement.Name,
                     IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
                     IsEspece = x.TypePaiement.Id == ESPECE_PAYMENT_TYPE,
+                    IsRemboursement = x.TypePaiement != null ? x.TypePaiement.IsRemboursement : false,
                     Credit = 0,
                     Commentaire = x.Comment,
                 }).ToList() : context.PaiementFactures.Where(
@@ -208,6 +203,7 @@ namespace WebApplication1.Controllers.Print
                    Type = x.TypePaiement.Name,
                    IsBankRelated = x.TypePaiement != null ? x.TypePaiement.IsBankRelated : false,
                    IsEspece = x.TypePaiement.Id == ESPECE_PAYMENT_TYPE,
+                   IsRemboursement = x.TypePaiement != null ? x.TypePaiement.IsRemboursement : false,
                    Credit = 0,
                    Commentaire = x.Comment,
                }).ToList();
@@ -223,6 +219,7 @@ namespace WebApplication1.Controllers.Print
                    Debit = x.DepenseItems.Sum(y => (float?)y.Montant) ?? 0,
                    Type = "Dépense",
                    IsBankRelated = false,
+                   IsRemboursement = false,
                    IsEspece = false,
                    Credit = 0,
                    Commentaire = String.Join(", ", x.DepenseItems.Select(y => y.Name)),
@@ -242,6 +239,8 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("totalVentes", BonLivraisons.Sum(x => x.Debit));
             if (reportDocument.ParameterFields["totalEspece"] != null)
                 reportDocument.SetParameterValue("totalEspece", PaiementClients.Where(x => x.IsEspece).Sum(x => x.Debit));
+            if (reportDocument.ParameterFields["totalCaisse"] != null)
+                reportDocument.SetParameterValue("totalCaisse", PaiementClients.Where(x => x.IsEspece).Sum(x => x.Debit) - Depenses.Sum(x => x.Debit) - PaiementClients.Where(x => x.IsRemboursement).Sum(x => x.Debit));
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition

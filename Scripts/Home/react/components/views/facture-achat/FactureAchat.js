@@ -20,6 +20,7 @@ import BonReceptionAutocomplete from '../../elements/bon-reception-autocomplete/
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { paymentMethods } from '../devis/Devis'
 import { useSettings } from '../../providers/SettingsProvider'
+import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 
 const DOCUMENT = 'FactureFs'
 const DOCUMENT_OWNER = 'Fournisseur'
@@ -231,28 +232,9 @@ const FactureAchat = () => {
                 </Box>
                 <Box mt={2} display="flex" flexWrap="wrap">
                     <Box mr={2} width={240}>
-                        <Autocomplete
-                            options={paymentMethods}
-                            disableClearable
-                            autoHighlight
-                            value={paymentType}
+                        <TypePaiementAutocomplete
                             onChange={(_, value) => setPaymentType(value)}
-                            size="small"
-                            getOptionLabel={(option) => option?.Name}
-                            renderInput={(params) => (
-                                <TextField
-                                    onChange={() => null}
-                                    {...params}
-                                    label="Mode de paiement"
-                                    variant="outlined"
-                                    inputProps={{
-                                        ...params.inputProps,
-                                        autoComplete: 'new-password',
-                                        type: 'search',
-                                        margin: 'normal'
-                                    }}
-                                />
-                            )}
+                            value={paymentType}
                         />
                     </Box>
                 </Box>

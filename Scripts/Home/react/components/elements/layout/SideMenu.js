@@ -324,13 +324,20 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Types Dépenses" />
                         </ListItem>}
+                        {isAdmin && <ListItem button component={Link} to="/liste-methodes-de-paiement">
+                            <ListItemIcon />
+                            <ListItemText primary="Méthodes de paiement" />
+                        </ListItem>}
                     </List>
                 </Collapse>
             </List>
             <Divider className={classes.divider} />
             <Box mt="auto">
                 <List className={classes.list}>
-                    <ListItem button onClick={() => document.getElementById('logoutForm')?.submit()}>
+                    <ListItem button onClick={() => {
+                        localStorage.clear();
+                        document.getElementById('logoutForm')?.submit();
+                    }}>
                         <ListItemIcon><ExitToAppIcon className={classes.icon} style={{ transform: 'scaleX(-1)', color: '#eb5752' }} /></ListItemIcon>
                         <ListItemText primary="Sortir" />
                     </ListItem>

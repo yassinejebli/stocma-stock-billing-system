@@ -9,7 +9,7 @@ const DOCUMENT_ITEMS = 'BonLivraisonItems'
 
 const PrintBL = ({document, onClose, onExited, open}) => {
     const {useVAT} = useSite();
-    const [showForm, setShowForm] = React.useState(false);
+    const [showForm, setShowForm] = React.useState(document?.TypePaiement);
     const [bigFormat, setBigFormat] = React.useState(document?.WithDiscount);
     const [showBalance, setShowBalance] = React.useState(false);
     const [hidePrices, setHidePrices] = React.useState(false);

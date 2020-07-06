@@ -57,7 +57,8 @@ namespace WebApplication1.Controllers.Print
 
             float total = facturePrintData.Sum(x => x.Total);
 
-            if (FactureById.IdTypePaiement == ESPECE_PAYMENT_TYPE && company.Name == "AQK")
+            //TODO: need to review this
+            if (FactureById.IdTypePaiement == ESPECE_PAYMENT_TYPE && (company.Name == "AQK" || company.Name == "TSR"))
             {
                 total *= (1 + 0.0025f);
             }

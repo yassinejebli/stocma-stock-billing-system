@@ -22,6 +22,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 import { paymentMethods } from '../devis/Devis'
 import { useSettings } from '../../providers/SettingsProvider'
 import AddButton from '../../elements/button/AddButton'
+import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 
 const DOCUMENT = 'FakeFactures'
 const DOCUMENT_OWNER = 'Client'
@@ -274,28 +275,9 @@ const FakeFacture = () => {
                 </Box>
                 <Box mt={2} display="flex" flexWrap="wrap">
                     {facturePayment?.Enabled && <Box mr={2} width={240}>
-                        <Autocomplete
-                            options={paymentMethods}
-                            disableClearable
-                            autoHighlight
-                            value={paymentType}
+                        <TypePaiementAutocomplete
                             onChange={(_, value) => setPaymentType(value)}
-                            size="small"
-                            getOptionLabel={(option) => option?.Name}
-                            renderInput={(params) => (
-                                <TextField
-                                    onChange={() => null}
-                                    {...params}
-                                    label="Mode de paiement"
-                                    variant="outlined"
-                                    inputProps={{
-                                        ...params.inputProps,
-                                        autoComplete: 'new-password',
-                                        type: 'search',
-                                        margin: 'normal'
-                                    }}
-                                />
-                            )}
+                            value={paymentType}
                         />
                     </Box>}
                     {factureCheque?.Enabled && paymentType?.isBankRelatedItem && <Box width={240}><TextField
@@ -307,7 +289,7 @@ const FakeFacture = () => {
                         label="Numéro de chèque/effet"
                     /></Box>}
                 </Box>
-                
+
                 <Box mt={4}>
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>

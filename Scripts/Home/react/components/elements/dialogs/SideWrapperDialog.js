@@ -133,6 +133,24 @@ const Menu = ({ open }) => {
     return (
         <>
             <div className={classes.header}>Ajouter un élément</div>
+            {canManagePaiementsClients&&<div className={classes.item} onClick={() => open(items.paiementClient)}>
+                <Avatar className={classes.avatar}>
+                    <AccountBalanceWalletOutlinedIcon className={classes.icon} />
+                </Avatar>
+                <div className={classes.content}>
+                    <div className={classes.title}>Paiement (Client)</div>
+                    <div className={classes.description}>Ajouter des paiements effectués par vos clients</div>
+                </div>
+            </div>}
+            {canManagePaiementsFournisseurs&&<div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
+                <Avatar className={classes.avatar}>
+                    <AccountBalanceWalletOutlinedIcon className={classes.icon} />
+                </Avatar>
+                <div className={classes.content}>
+                    <div className={classes.title}>Paiement (Fournisseur)</div>
+                    <div className={classes.description}>Ajouter des paiements que vous avez effectués à vos fournisseurs</div>
+                </div>
+            </div>}
             {canManageArticles&&<>
                 <div className={classes.item} onClick={() => open(items.article)}>
                     <Avatar className={classes.avatar}>
@@ -171,24 +189,6 @@ const Menu = ({ open }) => {
                 <div className={classes.content}>
                     <div className={classes.title}>Fournisseur</div>
                     <div className={classes.description}>Ajouter un nouveau fournisseur</div>
-                </div>
-            </div>}
-            {canManagePaiementsClients&&<div className={classes.item} onClick={() => open(items.paiementClient)}>
-                <Avatar className={classes.avatar}>
-                    <AccountBalanceWalletOutlinedIcon className={classes.icon} />
-                </Avatar>
-                <div className={classes.content}>
-                    <div className={classes.title}>Paiement (Client)</div>
-                    <div className={classes.description}>Ajouter des paiements effectués par vos clients</div>
-                </div>
-            </div>}
-            {canManagePaiementsFournisseurs&&<div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
-                <Avatar className={classes.avatar}>
-                    <AccountBalanceWalletOutlinedIcon className={classes.icon} />
-                </Avatar>
-                <div className={classes.content}>
-                    <div className={classes.title}>Paiement (Fournisseur)</div>
-                    <div className={classes.description}>Ajouter des paiements que vous avez effectués à vos fournisseurs</div>
                 </div>
             </div>}
             {canManageSites&&<div className={classes.item} onClick={() => open(items.site)}>

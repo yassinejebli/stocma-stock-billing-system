@@ -887,10 +887,10 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="CrystalReports\TSR\BonCommandeTSR.cs">
+    <Compile Include="CrystalReports\TSR\BonCommandeChiffre.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BonCommandeTSR.rpt</DependentUpon>
+      <DependentUpon>BonCommandeChiffre.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
@@ -936,8 +936,8 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="CrystalReports\TSR\BonAvoirCTSR.cs">
-      <DependentUpon>BonAvoirCTSR.rpt</DependentUpon>
+    <Compile Include="CrystalReports\TSR\BonAvoirVente.cs">
+      <DependentUpon>BonAvoirVente.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
@@ -949,6 +949,16 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="CrystalReports\TSR\Paiements.cs">
+      <DependentUpon>Paiements.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Migrations\202007061850438_Client_IsClientDivers.cs" />
+    <Compile Include="Migrations\202007061850438_Client_IsClientDivers.designer.cs">
+      <DependentUpon>202007061850438_Client_IsClientDivers.cs</DependentUpon>
     </Compile>
     <Compile Include="UserStatisticsController.cs" />
     <Compile Include="Datasets\DataSetATF1.Designer.cs">
@@ -2696,8 +2706,7 @@
     </Content>
     <Content Include="package.json" />
     <Content Include="libman.json" />
-    <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
-    <None Include="Properties\PublishProfiles\CustomProfile2.pubxml" />
+    <None Include="Properties\PublishProfiles\aquakrim.pubxml" />
     <None Include="Properties\PublishProfiles\publish1.pubxml" />
     <None Include="Properties\PublishProfiles\publish2.pubxml" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
@@ -3608,6 +3617,7 @@
     <Content Include="Views\Administration\PopUpPrintFakeFactureF.cshtml" />
     <Content Include="Views\Administration\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Properties\PublishProfiles\sanisoft.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4048,9 +4058,9 @@
       <LastGenOutput>BonAvoirF1.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="CrystalReports\TSR\BonCommandeTSR.rpt">
+    <Content Include="CrystalReports\TSR\BonCommandeChiffre.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BonCommandeTSR.cs</LastGenOutput>
+      <LastGenOutput>BonCommandeChiffre.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CrystalReports\TSR\BonLivraison_.rpt">
@@ -4083,9 +4093,9 @@
       <LastGenOutput>FactureTSR__.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="CrystalReports\TSR\BonAvoirCTSR.rpt">
+    <Content Include="CrystalReports\TSR\BonAvoirVente.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BonAvoirCTSR.cs</LastGenOutput>
+      <LastGenOutput>BonAvoirVente.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CrystalReports\TSR\MiniBonLivraison.rpt">
@@ -4099,6 +4109,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CrystalReports\AQK\Paiements.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Paiements.cs</LastGenOutput>
+    </Content>
+    <Content Include="CrystalReports\TSR\Paiements.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Paiements.cs</LastGenOutput>
     </Content>
@@ -4317,6 +4331,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007042048245_BonLivraison_IdUser.resx">
       <DependentUpon>202007042048245_BonLivraison_IdUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007061850438_Client_IsClientDivers.resx">
+      <DependentUpon>202007061850438_Client_IsClientDivers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

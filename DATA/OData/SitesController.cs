@@ -88,8 +88,17 @@ namespace WebApplication1.DATA.OData
             {
                 return BadRequest(ModelState);
             }
-
+            site.ArticleSites = new List<ArticleSite>();
             db.Sites.Add(site);
+            foreach (var article in db.Articles)
+            {
+                site.ArticleSites.Add(new ArticleSite
+                {
+                    Article = article,
+                    QteStock = 0,
+                    Site = site
+                });
+            }
             await db.SaveChangesAsync();
 
             return Created(site);
@@ -99,7 +108,6 @@ namespace WebApplication1.DATA.OData
         [AcceptVerbs("PATCH", "MERGE")]
         public async Task<IHttpActionResult> Patch([FromODataUri] int key, Delta<Site> patch)
         {
-
 
             if (!ModelState.IsValid)
             {

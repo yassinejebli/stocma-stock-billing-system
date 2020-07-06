@@ -28,7 +28,7 @@ namespace WebApplication1.Migrations
 
         protected override void Seed(MySaniSoftContext context)
         {
-            
+
 
             //TODO: remove asap
             var articlesTVANull = context.Articles.Where(x => x.TVA == null);
@@ -164,7 +164,8 @@ namespace WebApplication1.Migrations
                     {
                         Id = new Guid("45c8b294-3a63-487c-821e-70bf4f9bdc39"),
                         Name = "Client Divers",
-                        DateCreation = DateTime.Now
+                        DateCreation = DateTime.Now,
+                        IsClientDivers = true,
                     }
                 });
                 context.SaveChanges();
@@ -388,60 +389,83 @@ namespace WebApplication1.Migrations
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2"),
-                        Name = "Espéce"
+                        Name = "Espéce",
+                        IsEditable = false,
+                        IsEspece = true,
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb3"),
-                        Name = "Chéque"
+                        Name = "Chéque",
+                        IsEditable = false,
+                        IsBankRelated = true,
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeece1"),
-                        Name = "Impayé"
+                        Name = "Impayé",
+                        IsBankRelated = true,
+
+
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb4"),
-                        Name = "Effet"
+                        Name = "Effet",
+                        IsEditable = false,
+                        IsBankRelated = true,
+
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb5"),
-                        Name = "Remise"
+                        Name = "Remise",
+                        IsEditable = false,
+                        IsRemise = true,
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb6"),
-                        Name = "Vente"
+                        Name = "Vente",
+                        IsEditable = false,
+                        IsVente = true
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb7"),
-                        Name = "Achat"
+                        Name = "Achat",
+                        IsEditable = false,
+                        IsAchat = true,
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb8"),
-                        Name = "Avoir"
+                        Name = "Avoir",
+                        IsEditable = false,
+                        IsAvoir = true
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecc1"),
-                        Name = "Versement"
+                        Name = "Versement",
+                        IsEditable = false,
+                        IsBankRelated = false,
+
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4"),
                         Name = "Remboursement",
-                        IsDebit = true
+                        IsDebit = true,
+                        IsEditable = false,
+                        IsRemboursement = true,
                     },
                     new TypePaiement()
                     {
                         Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecc9"),
                         Name = "Ancien Solde",
-                        IsDebit = true
-
+                        IsDebit = true,
+                        IsAncien = true,
                     }
                 });
                 context.SaveChanges();
@@ -461,22 +485,79 @@ namespace WebApplication1.Migrations
                 {
                     TypePaiementImpaye.IsBankRelated = true;
                     TypePaiementImpaye.IsDebit = true;
+                    TypePaiementImpaye.IsImpaye = true;
                 }
 
                 var TypePaiementRemboursement = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4"));
                 if (TypePaiementRemboursement != null)
                 {
+                    TypePaiementRemboursement.Name = "Remboursement";
                     TypePaiementRemboursement.IsDebit = true;
+                    TypePaiementRemboursement.IsRemboursement = true;
                 }
 
-                var TypePaiementAncien = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecc9"));
-                if (TypePaiementAncien != null)
-                    TypePaiementAncien.IsDebit = true;
+                var TypePaiementEspece = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2"));
+                if (TypePaiementEspece != null)
+                    TypePaiementEspece.IsEspece = true;
+
+
+                var TypePaiementAchat = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb7"));
+                if (TypePaiementAchat != null)
+                    TypePaiementAchat.IsAchat = true;
+
+                var TypePaiementVente = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb6"));
+                if (TypePaiementVente != null)
+                    TypePaiementVente.IsVente = true;
+
+                var TypePaiementAvoir = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb8"));
+                if (TypePaiementAvoir != null)
+                    TypePaiementAvoir.IsAvoir = true;
 
                 context.SaveChanges();
             }
 
+            var TypePaiementAncien = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecc9"));
+            if (TypePaiementAncien != null)
+            {
+                TypePaiementAncien.Name = "Ancien solde";
+                TypePaiementAncien.IsDebit = true;
+                TypePaiementAncien.IsAncien = true;
+            }
+            var TypePaiementRemise = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb5"));
+            if (TypePaiementRemise != null)
+                TypePaiementRemise.IsRemise = true;
 
+            var TypePaiementVirement = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeec00"));
+            if (TypePaiementVirement == null)
+                context.TypePaiements.Add(new TypePaiement
+                {
+                    Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeec00"),
+                    Name = "Virement",
+                });
+            else
+                TypePaiementVirement.IsBankRelated = false;
+
+            var TypePaiementCarteBancaire = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeec01"));
+            if (TypePaiementCarteBancaire == null)
+            {
+                context.TypePaiements.Add(new TypePaiement
+                {
+                    Id = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeec01"),
+                    Name = "Carte bancaire",
+                });
+            }
+            else
+            {
+                TypePaiementCarteBancaire.IsBankRelated = false;
+            }
+
+            var ClientDivers = context.Clients.Find(new Guid("45c8b294-3a63-487c-821e-70bf4f9bdc39"));
+            if(ClientDivers != null)
+            {
+                ClientDivers.IsClientDivers = true;
+            }
+
+            context.SaveChanges();
         }
     }
 }

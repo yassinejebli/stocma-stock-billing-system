@@ -15,6 +15,15 @@ namespace WebApplication1.DATA
 
         public bool IsBankRelated { get; set; } = false;
         public bool IsDebit { get; set; } = false;
+        public bool IsEditable { get; set; } = true;
+        public bool IsAchat { get; set; } = false;
+        public bool IsVente { get; set; } = false;
+        public bool IsAvoir { get; set; } = false;
+        public bool IsEspece { get; set; } = false;
+        public bool IsImpaye { get; set; } = false;
+        public bool IsRemise { get; set; } = false;
+        public bool IsAncien { get; set; } = false;
+        public bool IsRemboursement { get; set; } = false;
 
         public virtual ICollection<Paiement> Paiements { get; set; }
         public virtual ICollection<Devis> Devises { get; set; }

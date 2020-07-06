@@ -3,7 +3,6 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
-import PrintDisabledIcon from '@material-ui/icons/PrintDisabled';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { Box, Tooltip } from '@material-ui/core';
 import { inputTypes } from '../../../../types/input';
@@ -16,6 +15,7 @@ export const getPaiementFournisseurListColumns = ({isFiltered}) => ([
         accessor: 'Fournisseur.Name',
         editable: true,
         type: inputTypes.text.description,
+        width: 120,
     }),
     {
         Id: 'Date',
@@ -24,6 +24,7 @@ export const getPaiementFournisseurListColumns = ({isFiltered}) => ([
         accessor: props => {
             return format(new Date(props.Date), 'dd/MM/yyyy')
         },
+        width: 70,
     },
     {
         Header: 'BR N#',
@@ -34,7 +35,7 @@ export const getPaiementFournisseurListColumns = ({isFiltered}) => ([
         Header: 'Type',
         accessor: 'TypePaiement.Name',
         type: inputTypes.text.description,
-        width: 60
+        width: 100
     },
     {
         id: 'Debit',

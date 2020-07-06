@@ -43,7 +43,7 @@ namespace WebApplication1.DATA
         [NotMapped]
         public float Solde
         {
-            get { return (Paiements != null) ? Paiements.Sum(x => x.Debit - x.Credit) : 0; }
+            get { return (Paiements != null && Id != new Guid("45c8b294-3a63-487c-821e-70bf4f9bdc39")) ? Paiements.Sum(x => x.Debit - x.Credit) : 0; }
         }
 
         [NotMapped]
@@ -53,6 +53,7 @@ namespace WebApplication1.DATA
         }
 
         public bool Disabled { get; set; } = false;
+        public bool IsClientDivers { get; set; } = false;
 
         public DateTime? DateCreation { get; set; }
 

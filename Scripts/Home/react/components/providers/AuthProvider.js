@@ -1,5 +1,6 @@
 import React from 'react';
 import { getUserInfo } from '../../queries/utilisateurQueries';
+import { useLoader } from './LoaderProvider';
 
 const AuthContext = React.createContext();
 
@@ -12,6 +13,7 @@ export const useAuth = () => {
 }
 
 const AuthProvider = ({ children }) => {
+    const { showLoader } = useLoader();
     const [isAdmin, setIsAdmin] = React.useState(false);
     const [username, setUsername] = React.useState();
     const [canUpdateQteStock, setCanUpdateQteStock] = React.useState(false);
@@ -40,42 +42,45 @@ const AuthProvider = ({ children }) => {
     const [canManageBonAvoirsAchat, setCanManageBonAvoirsAchat] = React.useState(false);
     const [canManageBonAvoirsVente, setCanManageBonAvoirsVente] = React.useState(false);
 
-    React.useEffect(()=>{
-        getUserInfo().then(response=>{
+    React.useEffect(() => {
+        showLoader(true);
+        getUserInfo().then(response => {
             const claims = response?.claims;
             const isAdmin = response?.isAdmin;
-            console.log({claims})
+            console.log({ claims })
             setIsAdmin(isAdmin);
             setUsername(response?.username);
             //Documents
-            setCanAddBonLivraisons(Boolean(claims.find(x=>x==='CanAddBonLivraisons'))||isAdmin);
-            setCanUpdateBonLivraisons(Boolean(claims.find(x=>x==='CanUpdateBonLivraisons'))||isAdmin);
-            setCanDeleteBonLivraisons(Boolean(claims.find(x=>x==='CanDeleteBonLivraisons'))||isAdmin);
-            setCanViewBonLivraisons(Boolean(claims.find(x=>x==='CanViewBonLivraisons'))||isAdmin);
+            setCanAddBonLivraisons(Boolean(claims.find(x => x === 'CanAddBonLivraisons')) || isAdmin);
+            setCanUpdateBonLivraisons(Boolean(claims.find(x => x === 'CanUpdateBonLivraisons')) || isAdmin);
+            setCanDeleteBonLivraisons(Boolean(claims.find(x => x === 'CanDeleteBonLivraisons')) || isAdmin);
+            setCanViewBonLivraisons(Boolean(claims.find(x => x === 'CanViewBonLivraisons')) || isAdmin);
 
-            setCanManageBonReceptions(Boolean(claims.find(x=>x==='CanManageBonReceptions'))||isAdmin);
+            setCanManageBonReceptions(Boolean(claims.find(x => x === 'CanManageBonReceptions')) || isAdmin);
 
-            setCanManageFacturesVente(Boolean(claims.find(x=>x==='CanManageFacturesVente'))||isAdmin);
+            setCanManageFacturesVente(Boolean(claims.find(x => x === 'CanManageFacturesVente')) || isAdmin);
 
-            setCanManageFacturesAchat(Boolean(claims.find(x=>x==='CanManageFacturesAchat'))||isAdmin);
+            setCanManageFacturesAchat(Boolean(claims.find(x => x === 'CanManageFacturesAchat')) || isAdmin);
 
-            setCanManageBonAvoirsAchat(Boolean(claims.find(x=>x==='CanManageBonAvoirsAchat'))||isAdmin);
-       
-            setCanManageBonAvoirsVente(Boolean(claims.find(x=>x==='CanManageBonAvoirsVente'))||isAdmin);
-  
+            setCanManageBonAvoirsAchat(Boolean(claims.find(x => x === 'CanManageBonAvoirsAchat')) || isAdmin);
+
+            setCanManageBonAvoirsVente(Boolean(claims.find(x => x === 'CanManageBonAvoirsVente')) || isAdmin);
+
             //
-            setCanViewDashboard(Boolean(claims.find(x=>x==='CanViewDashboard'))||isAdmin);
-            setCanUpdateQteStock(Boolean(claims.find(x=>x==='CanUpdateQteStock'))||isAdmin);
-            setCanManageClients(Boolean(claims.find(x=>x==='CanManageClients'))||isAdmin);
-            setCanManageFournisseurs(Boolean(claims.find(x=>x==='CanManageFournisseurs'))||isAdmin);
-            setCanManagePaiementsClients(Boolean(claims.find(x=>x==='CanManagePaiementsClients'))||isAdmin);
-            setCanManagePaiementsFournisseurs(Boolean(claims.find(x=>x==='CanManagePaiementsFournisseurs'))||isAdmin);
-            setCanManageArticles(Boolean(claims.find(x=>x==='CanManageArticles'))||isAdmin);
-            setCanManageMouvements(Boolean(claims.find(x=>x==='CanManageMouvements'))||isAdmin);
-            setCanManageSites(Boolean(claims.find(x=>x==='CanManageSites'))||isAdmin);
-            setCanManageDepenses(Boolean(claims.find(x=>x==='CanManageDepenses'))||isAdmin);
+            setCanViewDashboard(Boolean(claims.find(x => x === 'CanViewDashboard')) || isAdmin);
+            setCanUpdateQteStock(Boolean(claims.find(x => x === 'CanUpdateQteStock')) || isAdmin);
+            setCanManageClients(Boolean(claims.find(x => x === 'CanManageClients')) || isAdmin);
+            setCanManageFournisseurs(Boolean(claims.find(x => x === 'CanManageFournisseurs')) || isAdmin);
+            setCanManagePaiementsClients(Boolean(claims.find(x => x === 'CanManagePaiementsClients')) || isAdmin);
+            setCanManagePaiementsFournisseurs(Boolean(claims.find(x => x === 'CanManagePaiementsFournisseurs')) || isAdmin);
+            setCanManageArticles(Boolean(claims.find(x => x === 'CanManageArticles')) || isAdmin);
+            setCanManageMouvements(Boolean(claims.find(x => x === 'CanManageMouvements')) || isAdmin);
+            setCanManageSites(Boolean(claims.find(x => x === 'CanManageSites')) || isAdmin);
+            setCanManageDepenses(Boolean(claims.find(x => x === 'CanManageDepenses')) || isAdmin);
+        }).finally(() => {
+            showLoader(false);
         })
-    },[])
+    }, [])
 
     return (
         <AuthContext.Provider value={{

@@ -11,13 +11,11 @@ export const getSuiviVentesColumns = () => ([
         Header: 'Article',
         accessor: 'Article.Designation',
         type: inputTypes.text.description,
-        width: 140
     },
     {
         Header: 'Client',
         accessor: 'BonLivraison.Client.Name',
         type: inputTypes.text.description,
-        width: 160
     },
     {
         Id: 'Date',
@@ -26,16 +24,19 @@ export const getSuiviVentesColumns = () => ([
         accessor: props => {
             return format(new Date(props.BonLivraison.Date), 'dd/MM/yyyy')
         },
+        width: 40,
     },
     {
         Header: 'BL N#',
         accessor: 'BonLivraison.NumBon',
-        type: inputTypes.text.description
+        type: inputTypes.text.description,
+        width: 60,
     },
     {
         Header: 'Qte.',
         accessor: 'Qte',
-        align: 'right'
+        align: 'right',
+        width: 30,
     },
     {
         id: 'Pu',
@@ -45,6 +46,7 @@ export const getSuiviVentesColumns = () => ([
         accessor: (props) => {
             return formatMoney(props.Pu);
         },
+        width: 40,
     },
     {
         id: 'actions',

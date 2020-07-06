@@ -24,33 +24,30 @@ const SuiviVentes = () => {
     firstDayCurrentMonth.setHours(0, 0, 0, 0);
     lastDayCurrentMonth.setHours(23, 59, 59, 999);
     const { setTitle } = useTitle();
-    const [searchText, setSearchText] = React.useState('');
+    const [clientSearchText, setClientSearchText] = React.useState('');
+    const [articleSearchText, setArticleSearchText] = React.useState('');
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
     const [dateFrom, setDateFrom] = React.useState(firstDayCurrentMonth);
     const [dateTo, setDateTo] = React.useState(lastDayCurrentMonth);
-    const debouncedSearchText = useDebounce(searchText);
+    const debouncedClientSearchText = useDebounce(clientSearchText);
+    const debouncedArticleSearchText = useDebounce(articleSearchText);
     const filters = React.useMemo(() => {
         return {
             'BonLivraison/Date': { ge: dateFrom, le: dateTo },
-            or: [
+            and: [
                 {
                     'BonLivraison/Client/Name': {
-                        contains: debouncedSearchText
-                    }
-                },
-                {
-                    'BonLivraison/NumBon': {
-                        contains: debouncedSearchText
+                        contains: debouncedClientSearchText
                     }
                 },
                 {
                     'Article/Designation': {
-                        contains: debouncedSearchText
+                        contains: debouncedArticleSearchText
                     }
                 },
             ]
         }
-    }, [debouncedSearchText, dateFrom, dateTo]);
+    }, [debouncedClientSearchText, debouncedArticleSearchText, dateFrom, dateTo]);
     const [data, setData] = React.useState([]);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
@@ -103,15 +100,6 @@ const SuiviVentes = () => {
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <TitleIcon noBorder title="Suivi des ventes" Icon={DescriptionOutlinedIcon} />
-                    <TextField
-                        value={searchText}
-                        onChange={({ target: { value } }) => {
-                            setSearchText(value);
-                        }}
-                        placeholder="Rechercher..."
-                        variant="outlined"
-                        size="small"
-                    />
                 </Box>
                 <Box mt={3}>
                     <DatePicker
@@ -133,6 +121,32 @@ const SuiviVentes = () => {
                             setDateTo(date)
                         }}
                     />
+                </Box>
+                <Box mt={2} display="flex">
+                    <Box width={240}>
+                        <TextField
+                            fullWidth
+                            value={clientSearchText}
+                            onChange={({ target: { value } }) => {
+                                setClientSearchText(value);
+                            }}
+                            placeholder="Choisir un client..."
+                            variant="outlined"
+                            size="small"
+                        />
+                    </Box>
+                    <Box ml={1.5} width={240}>
+                        <TextField
+                            fullWidth
+                            value={articleSearchText}
+                            onChange={({ target: { value } }) => {
+                                setArticleSearchText(value);
+                            }}
+                            placeholder="Choisir un article..."
+                            variant="outlined"
+                            size="small"
+                        />
+                    </Box>
                 </Box>
                 <Box mt={4}>
                     <Table

@@ -4,11 +4,10 @@ import { Box, Button, TextField, FormControlLabel, Switch } from '@material-ui/c
 import DatePicker from '../date-picker/DatePicker';
 import TitleIcon from '../misc/TitleIcon';
 import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import FournisseurAutocomplete from '../fournisseur-autocomplete/FournisseurAutocomplete';
 import { saveData, updateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
-import { paiementMethods } from './PaiementClientForm';
+import TypePaiementAutocomplete from '../type-paiement-autocomplete/TypePaiementAutocomplete';
 
 export const useStyles = makeStyles(theme => ({
     root: {
@@ -51,7 +50,7 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
                 ..._formState,
                 amount: paiement.Credit || paiement.Debit, //TODO: change this
                 fournisseur: paiement.Fournisseur,
-                type: paiementMethods.find(x => x.id === paiement.IdTypePaiement),
+                type: paiement.TypePaiement,
                 comment: paiement.Comment,
                 date: paiement.Date,
                 dueDate: paiement.DateEcheance,
@@ -65,10 +64,10 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
         if (!isFormValid()) return;
 
         const preparedData = {
-            IdTypePaiement: formState.type.id,
+            IdTypePaiement: formState.type.Id,
             IdFournisseur: formState.fournisseur.Id,
-            Credit: formState.type.isDebit ? 0 : formState.amount,
-            Debit: formState.type.isDebit ? formState.amount : 0,
+            Credit: formState.type.IsDebit ? 0 : formState.amount,
+            Debit: formState.type.IsDebit ? formState.amount : 0,
             Date: formState.date,
             DateEcheance: formState.dueDate,
             Comment: formState.comment,
@@ -117,9 +116,9 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
             _errors['type'] = 'Ce champs est obligatoire.'
         if (!formState.date)
             _errors['date'] = 'Ce champs est obligatoire.'
-        if (!formState.dueDate && formState.type?.isBankRelatedItem)
+        if (!formState.dueDate && formState.type?.IsBankRelated)
             _errors['dueDate'] = 'Ce champs est obligatoire.'
-        if (!formState.comment && formState.type?.isBankRelatedItem)
+        if (!formState.comment && formState.type?.IsBankRelated)
             _errors['comment'] = 'Ce champs est obligatoire.'
 
         setFormErrors(_errors);
@@ -149,32 +148,13 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
                     error={Boolean(formErrors.amount)}
                     helperText={formErrors.amount}
                 />
-                <Autocomplete
-                    options={paiementMethods}
-                    disableClearable
-                    autoHighlight
-                    value={formState.type}
-                    onChange={(_, value) => setFormState(_formState => ({ ...formState, type: value }))}
-                    size="small"
-                    getOptionLabel={(option) => option?.name}
-                    renderInput={(params) => (
-                        <TextField
-                            onChange={() => null}
-                            {...params}
-                            margin="normal"
-                            label="Mode de paiement"
-                            variant="outlined"
-                            inputProps={{
-                                ...params.inputProps,
-                                autoComplete: 'new-password',
-                                type: 'search',
-                                margin: 'normal'
-                            }}
-                            error={Boolean(formErrors.type)}
-                            helperText={formErrors.type}
-                        />
-                    )}
-                />
+                <Box mt={1}>
+                    <TypePaiementAutocomplete
+                        showAllPaymentMethods
+                        value={formState.type}
+                        onChange={(_, value) => setFormState(_formState => ({ ...formState, type: value }))}
+                    />
+                </Box>
                 <DatePicker
                     value={formState.date}
                     onChange={(_date) => setFormState(_formState => ({ ...formState, date: _date }))}
@@ -183,7 +163,7 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
                     error={Boolean(formErrors.date)}
                     helperText={formErrors.date}
                 />
-                {formState.type?.isBankRelatedItem && <DatePicker
+                {formState.type?.IsBankRelated && <DatePicker
                     value={formState.dueDate}
                     onChange={(_date) => setFormState(_formState => ({ ...formState, dueDate: _date }))}
                     margin="normal"
@@ -202,7 +182,7 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
                     error={Boolean(formErrors.comment)}
                     helperText={formErrors.comment}
                 />
-                {formState.type?.isBankRelatedItem&&!formState.type?.isDebit&&<FormControlLabel
+                {formState.type?.IsBankRelated && !formState.type?.IsDebit && <FormControlLabel
                     control={<Switch
                         checked={formState.isCashed}
                         onChange={(_, checked) => setFormState(_formState => ({
@@ -212,7 +192,7 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
                         )} />}
                     label="Encaissé"
                 />}
-                {formState.type?.isBankRelatedItem&&<FormControlLabel
+                {formState.type?.IsBankRelated && <FormControlLabel
                     control={<Switch
                         checked={formState.myCheque}
                         onChange={(_, checked) => setFormState(_formState => ({

@@ -13,7 +13,6 @@ namespace WebApplication1.Controllers.Print
     {
         private MySaniSoftContext context = new MySaniSoftContext();
         
-
         public ActionResult Index(Guid IdBonLivraison, bool? showBalance = false, bool? showPrices = true, bool? bigFormat = false, bool? showStamp = false)
         {
             string company = StatistiqueController.getCompanyName().ToUpper();

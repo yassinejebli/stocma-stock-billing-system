@@ -20,22 +20,25 @@ export const getSuiviAchatsColumns = () => ([
         width: 160
     },
     {
-        Id: 'Date',
+        id: 'Date',
         Header: 'Date',
         type: inputTypes.text.description,
         accessor: props => {
             return format(new Date(props.BonReception.Date), 'dd/MM/yyyy')
         },
+        width: 40,
     },
     {
         Header: 'BR N#',
         accessor: 'BonReception.NumBon',
-        type: inputTypes.text.description
+        type: inputTypes.text.description,
+        width: 60,
     },
     {
         Header: 'Qte.',
         accessor: 'Qte',
-        align: 'right'
+        align: 'right',
+        width: 40,
     },
     {
         id: 'Pu',
@@ -45,6 +48,7 @@ export const getSuiviAchatsColumns = () => ([
         accessor: (props) => {
             return formatMoney(props.Pu);
         },
+        width: 40,
     },
     {
         id: 'actions',

@@ -49,6 +49,7 @@ import LoaderProvider from './components/providers/LoaderProvider';
 import TypeDepenseList from './components/views/type-depense/TypeDepenseList';
 import UtilisateurList from './components/views/utilisateurs/UtilisateurList';
 import AuthProvider, { useAuth } from './components/providers/AuthProvider';
+import TypePaiementList from './components/views/type-paiement/TypePaiementList';
 
 const Routes = () => {
     const {
@@ -70,65 +71,66 @@ const Routes = () => {
     } = useAuth();
 
     return <>
-        {canViewDashboard&&<Route exact path="/" component={Dashboard} />}
-        {isAdmin&&<Route path="/liste-des-utilisateurs" component={UtilisateurList} />}
-        {isAdmin&&<Route path="/rapports-des-ventes" component={Rapports} />}
+        {canViewDashboard && <Route exact path="/" component={Dashboard} />}
+        {isAdmin && <Route path="/liste-des-utilisateurs" component={UtilisateurList} />}
+        {isAdmin && <Route path="/rapports-des-ventes" component={Rapports} />}
 
-        {canManageDepenses&&<Route path="/liste-types-de-depense" component={TypeDepenseList} />}
-        {canManageDepenses&&<Route path="/depense" component={Depense} />}
-        {canManageDepenses&&<Route path="/liste-des-depenses" component={DepenseList} />}
+        {canManageDepenses && <Route path="/liste-types-de-depense" component={TypeDepenseList} />}
+        {canManageDepenses && <Route path="/depense" component={Depense} />}
+        {canManageDepenses && <Route path="/liste-des-depenses" component={DepenseList} />}
 
-        {canManagePaiementsFournisseurs&&<Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />}
-        {canManagePaiementsClients&&<Route path="/liste-paiements-des-clients" component={PaiementClientList} />}
+        {canManagePaiementsFournisseurs && <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />}
+        {canManagePaiementsClients && <Route path="/liste-paiements-des-clients" component={PaiementClientList} />}
 
         <Route path="/suivi-des-ventes" component={SuiviVentes} />
         <Route path="/suivi-des-achats" component={SuiviAchats} />
-        
-        {canManageMouvements&&<Route path="/mouvement-stock" component={StockMouvement} />}
-        {canManageMouvements&&<Route path="/liste-mouvement-stock" component={StockMouvementList} />}
 
-        {canManageBonAvoirsAchat&&<Route path="/bon-avoir-achat" component={BonAvoirAchat} />}
-        {canManageBonAvoirsVente&&<Route path="/liste-bon-avoir-achat" component={BonAvoirAchatList} />}
+        {canManageMouvements && <Route path="/mouvement-stock" component={StockMouvement} />}
+        {canManageMouvements && <Route path="/liste-mouvement-stock" component={StockMouvementList} />}
 
-        {canManageBonAvoirsVente&&<Route path="/bon-avoir-vente" component={BonAvoirVente} />}
-        {canManageBonAvoirsVente&&<Route path="/liste-bon-avoir-vente" component={BonAvoirVenteList} />}
+        {canManageBonAvoirsAchat && <Route path="/bon-avoir-achat" component={BonAvoirAchat} />}
+        {canManageBonAvoirsVente && <Route path="/liste-bon-avoir-achat" component={BonAvoirAchatList} />}
+
+        {canManageBonAvoirsVente && <Route path="/bon-avoir-vente" component={BonAvoirVente} />}
+        {canManageBonAvoirsVente && <Route path="/liste-bon-avoir-vente" component={BonAvoirVenteList} />}
 
         <Route path="/BonCommande" component={BonCommande} />
         <Route path="/BonCommandeList" component={BonCommandeList} />
         <Route path="/Devis" component={Devis} />
 
-        {canManageFacturesAchat&&<Route path="/FactureAchat" component={FactureAchat} />}
-        {canManageFacturesAchat&&<Route path="/FactureAchatList" component={FactureAchatList} />}
-        {canManageFacturesAchat&&<Route path="/_FactureAchat" component={FakeFactureAchat} />}
-        {canManageFacturesAchat&&<Route path="/_FactureAchatList" component={FakeFactureAchatList} />}
+        {canManageFacturesAchat && <Route path="/FactureAchat" component={FactureAchat} />}
+        {canManageFacturesAchat && <Route path="/FactureAchatList" component={FactureAchatList} />}
+        {canManageFacturesAchat && <Route path="/_FactureAchat" component={FakeFactureAchat} />}
+        {canManageFacturesAchat && <Route path="/_FactureAchatList" component={FakeFactureAchatList} />}
 
-        {canManageFacturesVente&&<Route path="/_Facture" component={FakeFacture} />}
-        {canManageFacturesVente&&<Route path="/_FactureList" component={FakeFactureClientList} />}
-        {canManageFacturesVente&&<Route path="/Facture" component={Facture} />}
-        {canManageFacturesVente&&<Route path="/FactureList" component={FactureList} />}
+        {canManageFacturesVente && <Route path="/_Facture" component={FakeFacture} />}
+        {canManageFacturesVente && <Route path="/_FactureList" component={FakeFactureClientList} />}
+        {canManageFacturesVente && <Route path="/Facture" component={Facture} />}
+        {canManageFacturesVente && <Route path="/FactureList" component={FactureList} />}
 
-        {canManageBonReceptions&&<Route path="/BonReception" component={BonReception} />}
+        {canManageBonReceptions && <Route path="/BonReception" component={BonReception} />}
         <Route path="/BonLivraison" component={BonLivraison} />
         <Route path="/BonLivraisonList" component={BonLivraisonList} />
-        {canManageBonReceptions&&<Route path="/BonReceptionList" component={BonReceptionList} />}
+        {canManageBonReceptions && <Route path="/BonReceptionList" component={BonReceptionList} />}
         <Route path="/DevisList" component={DevisList} />
-        {canManageArticles&&<Route path="/ArticleList" component={ArticleList} />}
-        {canManageArticles&&<Route path="/_ArticleList" component={FakeArticleList} />}
-        {canManageSites&&<Route path="/SiteList" component={SiteList} />}
+        {canManageArticles && <Route path="/ArticleList" component={ArticleList} />}
+        {canManageArticles && <Route path="/_ArticleList" component={FakeArticleList} />}
+        {canManageSites && <Route path="/SiteList" component={SiteList} />}
         <Route path="/marge-articles" component={ArticlesMarginList} />
-        {canManageClients&&<Route path="/ClientList" component={ClientList} />}
-        {canManageFournisseurs&&<Route path="/SupplierList" component={SupplierList} />}
+        {canManageClients && <Route path="/ClientList" component={ClientList} />}
+        {canManageFournisseurs && <Route path="/SupplierList" component={SupplierList} />}
+        {isAdmin && <Route path="/liste-methodes-de-paiement" component={TypePaiementList} />}
     </>;
 }
 
 const App = () => {
     return (
-        <AuthProvider>
-            <SiteProvider>
-                <SettingsProvider>
-                    <ThemeProvider>
-                        <SnackBarProvider>
-                            <LoaderProvider>
+        <LoaderProvider>
+            <AuthProvider>
+                <SiteProvider>
+                    <SettingsProvider>
+                        <ThemeProvider>
+                            <SnackBarProvider>
                                 <TitleProvider>
                                     <Router>
                                         <ModalProvider rootComponent={TransitionGroup}>
@@ -141,12 +143,12 @@ const App = () => {
                                         </ModalProvider>
                                     </Router>
                                 </TitleProvider>
-                            </LoaderProvider>
-                        </SnackBarProvider>
-                    </ThemeProvider>
-                </SettingsProvider>
-            </SiteProvider>
-        </AuthProvider>
+                            </SnackBarProvider>
+                        </ThemeProvider>
+                    </SettingsProvider>
+                </SiteProvider>
+            </AuthProvider>
+        </LoaderProvider>
     )
 }
 

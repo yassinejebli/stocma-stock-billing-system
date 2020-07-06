@@ -34,7 +34,6 @@ namespace WebApplication1.DATA.OData
         public async Task<IHttpActionResult> Put([FromODataUri] int key, Delta<ArticleSite> patch)
         {
 
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

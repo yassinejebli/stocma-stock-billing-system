@@ -57,7 +57,7 @@ const ArticlesMarginList = () => {
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
             });
         }
-    }, [])
+    }, [siteId])
 
     React.useEffect(() => {
         

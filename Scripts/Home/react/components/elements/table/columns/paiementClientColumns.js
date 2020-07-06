@@ -16,6 +16,7 @@ export const getPaiementClientListColumns = ({isFiltered}) => ([
         accessor: 'Client.Name',
         editable: true,
         type: inputTypes.text.description,
+        width: 120,
     }),
     {
         Id: 'Date',
@@ -24,6 +25,7 @@ export const getPaiementClientListColumns = ({isFiltered}) => ([
         accessor: props => {
             return format(new Date(props.Date), 'dd/MM/yyyy')
         },
+        width: 70,
     },
     {
         Header: 'BL N#',
@@ -34,7 +36,7 @@ export const getPaiementClientListColumns = ({isFiltered}) => ([
         Header: 'Type',
         accessor: 'TypePaiement.Name',
         type: inputTypes.text.description,
-        width: 60
+        width: 120
     },
     {
         id: 'Debit',
@@ -44,6 +46,7 @@ export const getPaiementClientListColumns = ({isFiltered}) => ([
         accessor: (props) => {
             return formatMoney(props.Debit);
         },
+        width: 60,
     },
     {
         id: 'Credit',
@@ -53,6 +56,7 @@ export const getPaiementClientListColumns = ({isFiltered}) => ([
         accessor: (props) => {
             return formatMoney(props.Credit);
         },
+        width: 60,
     },
     {
         Id: 'DateEcheance',

@@ -24,6 +24,7 @@ import { useSettings } from '../../providers/SettingsProvider'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { paymentMethods } from '../devis/Devis'
 import { useAuth } from '../../providers/AuthProvider'
+import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -207,7 +208,7 @@ const BonLivraison = () => {
     const save = async () => {
         if (!areDataValid()) return;
 
-        const expand = [DOCUMENT_ITEMS, DOCUMENT_OWNER];
+        const expand = ['TypePaiement' ,DOCUMENT_ITEMS, DOCUMENT_OWNER];
         const Id = isEditMode ? BonLivraisonId : uuidv4();
         const preparedData = {
             Id: Id,
@@ -307,28 +308,9 @@ const BonLivraison = () => {
                 </Box>}
                 <Box mt={2} display="flex" flexWrap="wrap">
                     {BLPayment?.Enabled && <Box mr={2} width={240}>
-                        <Autocomplete
-                            options={paymentMethods}
-                            disableClearable
-                            autoHighlight
-                            value={paymentType}
+                        <TypePaiementAutocomplete
                             onChange={(_, value) => setPaymentType(value)}
-                            size="small"
-                            getOptionLabel={(option) => option?.Name}
-                            renderInput={(params) => (
-                                <TextField
-                                    onChange={() => null}
-                                    {...params}
-                                    label="Mode de paiement"
-                                    variant="outlined"
-                                    inputProps={{
-                                        ...params.inputProps,
-                                        autoComplete: 'new-password',
-                                        type: 'search',
-                                        margin: 'normal'
-                                    }}
-                                />
-                            )}
+                            value={paymentType}
                         />
                     </Box>}
                 </Box>

@@ -22,6 +22,7 @@ import { devisColumns } from '../../elements/table/columns/devisColumns'
 import PrintDevis from '../../elements/dialogs/documents-print/PrintDevis'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { useSettings } from '../../providers/SettingsProvider'
+import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 
 const DOCUMENT = 'Devises'
 const DOCUMENT_ITEMS = 'DevisItems'
@@ -323,28 +324,9 @@ const Devis = () => {
                 </Box>
                 <Box mt={2} display="flex" flexWrap="wrap">
                     {devisPayment?.Enabled && <Box mr={2} width={240}>
-                        <Autocomplete
-                            options={paymentMethods}
-                            disableClearable
-                            autoHighlight
-                            value={paymentType}
+                        <TypePaiementAutocomplete
                             onChange={(_, value) => setPaymentType(value)}
-                            size="small"
-                            getOptionLabel={(option) => option?.Name}
-                            renderInput={(params) => (
-                                <TextField
-                                    onChange={() => null}
-                                    {...params}
-                                    label="Mode de paiement"
-                                    variant="outlined"
-                                    inputProps={{
-                                        ...params.inputProps,
-                                        autoComplete: 'new-password',
-                                        type: 'search',
-                                        margin: 'normal'
-                                    }}
-                                />
-                            )}
+                            value={paymentType}
                         />
                     </Box>}
                     {devisValidity?.Enabled && <Box width={240}>

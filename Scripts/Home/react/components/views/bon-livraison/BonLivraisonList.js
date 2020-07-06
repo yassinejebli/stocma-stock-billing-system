@@ -43,6 +43,9 @@ const BonLivraisonList = () => {
                         },
                         'NumBon': {
                             contains: debouncedSearchText
+                        },
+                        'User': {
+                            contains: debouncedSearchText
                         }
                     }
                 }
