@@ -26,6 +26,10 @@
             font-family: 'Roboto', sans-serif;
             margin-bottom: 80px;
         }
+        input[type="date"]::-webkit-inner-spin-button,    
+        input[type="date"]::-webkit-clear-button{
+            display: none;
+        }
         input{
             font-family: 'Roboto', sans-serif;
         }
@@ -43,7 +47,15 @@
         .MuiAutocomplete-noOptions{
             display: none;
         }
-
+        .MuiAutocomplete-endAdornment{
+            top: calc(50% - 12px) !important;
+        }
+        .MuiSelect-icon{
+            top: calc(50% - 10px) !important;
+        }
+        .MuiSelect-selectMenu{
+            min-height: unset !important;
+        }
         *::-webkit-scrollbar {
             display: none;
             -ms-overflow-style: none;

@@ -51,6 +51,7 @@ namespace WebApplication1.DATA.OData
             fakeFacture.IdTypePaiement = newFakeFacture.IdTypePaiement;
             fakeFacture.WithDiscount = newFakeFacture.WithDiscount;
             fakeFacture.Comment = newFakeFacture.Comment;
+            fakeFacture.DateEcheance = newFakeFacture.DateEcheance;
             fakeFacture.ClientName = newFakeFacture.ClientName;
 
             var numBonGenerator = new DocNumberGenerator();

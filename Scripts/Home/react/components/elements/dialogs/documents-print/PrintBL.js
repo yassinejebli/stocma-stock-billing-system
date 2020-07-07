@@ -7,9 +7,9 @@ import { useSite } from '../../../providers/SiteProvider';
 
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
 
-const PrintBL = ({document, onClose, onExited, open}) => {
+const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
     const {useVAT} = useSite();
-    const [showForm, setShowForm] = React.useState(document?.TypePaiement);
+    const [showForm, setShowForm] = React.useState(typePaiement);
     const [bigFormat, setBigFormat] = React.useState(document?.WithDiscount);
     const [showBalance, setShowBalance] = React.useState(false);
     const [hidePrices, setHidePrices] = React.useState(false);
@@ -72,6 +72,7 @@ const PrintBL = ({document, onClose, onExited, open}) => {
                                         amount={document[DOCUMENT_ITEMS]?.reduce((sum, curr) => (
                                             sum += curr.Pu * curr.Qte
                                         ), 0)}
+                                        typePaiement={typePaiement}
                                         document={document}
                                         onSuccess={() => {
                                             //a workaround to refresh document

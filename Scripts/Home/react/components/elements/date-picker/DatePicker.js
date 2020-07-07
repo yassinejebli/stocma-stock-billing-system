@@ -26,6 +26,7 @@ export default function DatePicker(props) {
         inputVariant="outlined"
         format="dd/MM/yyyy"
         cancelLabel="Annuler"
+        clearLabel="Effacer"
         className={classes.root}
       />
     </MuiPickersUtilsProvider>

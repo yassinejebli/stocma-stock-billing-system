@@ -29,6 +29,7 @@
               <xs:element name="Comment" msprop:Generator_ColumnVarNameInTable="columnComment" msprop:Generator_ColumnPropNameInRow="Comment" msprop:Generator_ColumnPropNameInTable="CommentColumn" msprop:Generator_UserColumnName="Comment" type="xs:string" minOccurs="0" />
               <xs:element name="ICE" msprop:Generator_ColumnVarNameInTable="columnICE" msprop:Generator_ColumnPropNameInRow="ICE" msprop:Generator_ColumnPropNameInTable="ICEColumn" msprop:Generator_UserColumnName="ICE" type="xs:string" minOccurs="0" />
               <xs:element name="TypeReglement" msprop:Generator_ColumnVarNameInTable="columnTypeReglement" msprop:Generator_ColumnPropNameInRow="TypeReglement" msprop:Generator_ColumnPropNameInTable="TypeReglementColumn" msprop:Generator_UserColumnName="TypeReglement" type="xs:string" minOccurs="0" />
+              <xs:element name="DateEcheance" msprop:Generator_ColumnVarNameInTable="columnDateEcheance" msprop:Generator_ColumnPropNameInRow="DateEcheance" msprop:Generator_ColumnPropNameInTable="DateEcheanceColumn" msprop:Generator_UserColumnName="DateEcheance" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

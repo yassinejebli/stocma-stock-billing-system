@@ -179,7 +179,7 @@ export const articlesMarginColumns = () => ([
     },
     {
         id: 'QteSold',
-        Header: 'Qte vendues',
+        Header: 'Qte vendue',
         accessor: (props) => {
             return formatMoney(props.QteSold);
         },

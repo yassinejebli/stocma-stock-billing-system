@@ -21,6 +21,7 @@ import PrintBL from '../../elements/dialogs/documents-print/PrintBL';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import PrintClientAccountSummary from '../../elements/dialogs/documents-print/PrintClientAccountSummary';
 import SoldeText from '../../elements/texts/SoldeText';
+import { useLoader } from '../../providers/LoaderProvider';
 
 const TABLE = 'Paiements';
 
@@ -28,6 +29,7 @@ const EXPAND = ['TypePaiement', 'Client', 'BonLivraison/Client'];
 
 const PaiementClientList = () => {
     const refreshCount = React.useRef(0)
+    const { showLoader } = useLoader();
     const today = new Date();
     const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDayCurrentMonth = new Date();
@@ -104,7 +106,7 @@ const PaiementClientList = () => {
                 }}
             />
         </SideDialogWrapper>
-    ),[filters, client]);
+    ), [filters, client]);
     const [showPaiementModal, hidePaiementModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hidePaiementModal}>
             {selectedRow && <PaiementClientForm
@@ -121,7 +123,7 @@ const PaiementClientList = () => {
     const [pageCount, setTotalCount] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getPaiementClientListColumns({isFiltered: Boolean(!client)}),
+        () => getPaiementClientListColumns({ isFiltered: Boolean(!client) }),
         [client]
     )
 
@@ -141,7 +143,8 @@ const PaiementClientList = () => {
     }, []);
 
     const refetchData = React.useCallback(() => {
-        console.log({filters})
+        console.log({ filters })
+        showLoader(true, true);
         getData(TABLE, {}, filters, EXPAND).then((response) => {
             setData(response.data);
             setTotalItems(response.totalItems);
@@ -149,6 +152,7 @@ const PaiementClientList = () => {
             console.log({ err });
         }).finally(() => {
             refreshCount.current += 1;
+            showLoader();
         })
     }, [filters]);
 
@@ -156,6 +160,7 @@ const PaiementClientList = () => {
         const fetchId = ++fetchIdRef.current;
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
+            showLoader(true, true);
             getData(TABLE, {
                 $skip: startRow
             }, filters, EXPAND).then((response) => {
@@ -164,6 +169,8 @@ const PaiementClientList = () => {
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
             }).catch((err) => {
                 console.log({ err });
+            }).finally(() => {
+                showLoader();
             });
         }
     }, [])
@@ -269,6 +276,7 @@ const PaiementClientList = () => {
                 </Box>
                 <Box width={240} mt={3}>
                     <ClientAutocomplete
+                        disableClearable={false}
                         value={client}
                         onChange={(_, value) => setClient(value)}
                         errorText={errors.client}

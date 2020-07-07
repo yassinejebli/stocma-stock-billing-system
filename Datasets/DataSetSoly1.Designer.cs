@@ -727,6 +727,8 @@ namespace WebApplication1.Datasets {
             
             private global::System.Data.DataColumn columnTypeReglement;
             
+            private global::System.Data.DataColumn columnDateEcheance;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public FactureDataTable() {
@@ -874,6 +876,14 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn DateEcheanceColumn {
+                get {
+                    return this.columnDateEcheance;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -909,7 +919,7 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public FactureRow AddFactureRow(string NumBon, System.DateTime Date, string Client, string Ref, string Designation, double Qte, double PU, double TotalHT, double TVA, string Unite, string ClientName, string Comment, string ICE, string TypeReglement) {
+            public FactureRow AddFactureRow(string NumBon, System.DateTime Date, string Client, string Ref, string Designation, double Qte, double PU, double TotalHT, double TVA, string Unite, string ClientName, string Comment, string ICE, string TypeReglement, string DateEcheance) {
                 FactureRow rowFactureRow = ((FactureRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         NumBon,
@@ -925,7 +935,8 @@ namespace WebApplication1.Datasets {
                         ClientName,
                         Comment,
                         ICE,
-                        TypeReglement};
+                        TypeReglement,
+                        DateEcheance};
                 rowFactureRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowFactureRow);
                 return rowFactureRow;
@@ -962,6 +973,7 @@ namespace WebApplication1.Datasets {
                 this.columnComment = base.Columns["Comment"];
                 this.columnICE = base.Columns["ICE"];
                 this.columnTypeReglement = base.Columns["TypeReglement"];
+                this.columnDateEcheance = base.Columns["DateEcheance"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -995,6 +1007,8 @@ namespace WebApplication1.Datasets {
                 base.Columns.Add(this.columnICE);
                 this.columnTypeReglement = new global::System.Data.DataColumn("TypeReglement", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTypeReglement);
+                this.columnDateEcheance = new global::System.Data.DataColumn("DateEcheance", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDateEcheance);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5881,6 +5895,22 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string DateEcheance {
+                get {
+                    try {
+                        return ((string)(this[this.tableFacture.DateEcheanceColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DateEcheance\' in table \'Facture\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableFacture.DateEcheanceColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsNumBonNull() {
                 return this.IsNull(this.tableFacture.NumBonColumn);
             }
@@ -6045,6 +6075,18 @@ namespace WebApplication1.Datasets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetTypeReglementNull() {
                 this[this.tableFacture.TypeReglementColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDateEcheanceNull() {
+                return this.IsNull(this.tableFacture.DateEcheanceColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDateEcheanceNull() {
+                this[this.tableFacture.DateEcheanceColumn] = global::System.Convert.DBNull;
             }
         }
         

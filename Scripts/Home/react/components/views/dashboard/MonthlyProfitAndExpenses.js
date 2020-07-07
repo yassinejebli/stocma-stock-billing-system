@@ -36,23 +36,22 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const MonthlyProfitAndExpenses = () => {
-    const theme = useTheme();
+const MonthlyProfitAndExpenses = ({year}) => {
     const { siteId } = useSite();
     const classes = useStyles();
-    const [turnoverData, setTurnoverData] = React.useState();
-    const [profitData, setProfitData] = React.useState();
+    const [data, setData] = React.useState();
+    const [totalNetProfit, setTotalNetProfit] = React.useState();
     const [totalProfit, setTotalProfit] = React.useState();
     const [totalTurnover, setTotalTurnover] = React.useState();
     React.useEffect(() => {
-        loadMonthlyProfitAndExpenses();
-    }, []);
+        loadMonthlyProfitAndExpenses(year);
+    }, [year]);
 
-    const loadMonthlyProfitAndExpenses = () => {
-        const today = new Date();
-        getMonthlyProfitAndTurnover(siteId).then(res => {
+    const loadMonthlyProfitAndExpenses = (year) => {
+        setData(null);
+        getMonthlyProfitAndTurnover(siteId, year).then(res => {
             const categories = res.map(x => {
-                const date = new Date(today.getFullYear(), x.month - 1, 1);
+                const date = new Date(year, x.month - 1, 1);
                 return format(date, 'MMM Y', { locale: fr });
             });
 
@@ -62,7 +61,7 @@ const MonthlyProfitAndExpenses = () => {
                         enabled: true,
                         offsetX: -10,
                         formatter: function (val, opts) {
-                            return formatMoney(val)+' DH'
+                            return formatMoney(val) + ' DH'
                         },
                         style: {
                             fontSize: '0.8rem',
@@ -116,27 +115,27 @@ const MonthlyProfitAndExpenses = () => {
                 sum += curr.turnover;
                 return sum;
             }, 0));
+
+            setTotalNetProfit(res.reduce((sum, curr) => {
+                sum += curr.netProfit;
+                return sum;
+            }, 0));
+
             setTotalProfit(res.reduce((sum, curr) => {
                 sum += curr.profit;
                 return sum;
             }, 0));
 
-            setTurnoverData({
-                ...defaultOptions,
-                series: [
-                    {
-                        name: "Ventes",
-                        data: res.map(x => x.turnover)
-                    }
-                ]
-            });
-
-            setProfitData({
+            setData({
                 ...defaultOptions,
                 series: [{
                     name: 'Ventes',
                     data: res.map(x => x.turnover)
                 }, {
+                    name: 'Bénéfices net',
+                    data: res.map(x => x.netProfit)
+                },
+                {
                     name: 'Bénéfices',
                     data: res.map(x => x.profit)
                 }],
@@ -157,18 +156,26 @@ const MonthlyProfitAndExpenses = () => {
                         </div>
                     </div>
                     <div className={classes.textWrapper}>
-                        <div className={classes.amount} style={{color: 'rgb(0, 227, 150)'}}>
+                        <div className={classes.amount} style={{ color: 'rgb(254, 176, 25)' }}>
                             {formatMoney(totalProfit)} DH
                         </div>
                         <div className={classes.text}>
                             Total des bénéfices
                         </div>
                     </div>
+                    <div className={classes.textWrapper}>
+                        <div className={classes.amount} style={{ color: 'rgb(0, 227, 150)' }}>
+                            {formatMoney(totalNetProfit)} DH
+                        </div>
+                        <div className={classes.text}>
+                            Total des bénéfices net
+                        </div>
+                    </div>
                 </Box>
                 <Box mt={1} minHeight={300}>
-                    {profitData && <Chart
-                        options={profitData.options}
-                        series={profitData.series}
+                    {data && <Chart
+                        options={data.options}
+                        series={data.series}
                         type="area"
                         height="100%"
                         width="100%"

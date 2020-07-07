@@ -1557,7 +1557,8 @@ tr.group:hover {
 ------------------------------------------*/
 
 .login-form {
-  width: 280px;  
+  width: 280px; 
+  text-align: center; 
 }
 .login-form-text{
   text-transform: uppercase;

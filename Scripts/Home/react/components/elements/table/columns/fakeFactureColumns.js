@@ -106,12 +106,21 @@ export const fakeFactureListColumns = () => ([
         accessor: props => {
             return format(new Date(props.Date), 'dd/MM/yyyy')
         },
-        width: 60
+        width: 50
     },
     {
         Header: 'Mode de paiement',
         accessor: 'TypePaiement.Name',
         type: inputTypes.text.description,
+    },
+    {
+        Id: 'DateEcheance',
+        Header: 'Date d\'échéance',
+        type: inputTypes.text.description,
+        accessor: props => {
+            return props.DateEcheance ? format(new Date(props.DateEcheance), 'dd/MM/yyyy') : ''
+        },
+        width: 50
     },
     {
         id: 'Total',

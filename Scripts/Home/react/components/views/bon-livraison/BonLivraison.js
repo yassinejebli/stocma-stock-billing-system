@@ -1,4 +1,4 @@
-﻿import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core'
+﻿import { Button, TextField } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -21,8 +21,6 @@ import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import qs from 'qs'
 import { useSite } from '../../providers/SiteProvider'
 import { useSettings } from '../../providers/SettingsProvider'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import { paymentMethods } from '../devis/Devis'
 import { useAuth } from '../../providers/AuthProvider'
 import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 
@@ -87,6 +85,7 @@ const BonLivraison = () => {
             <PrintBL
                 onExited={onExited}
                 open={open}
+                typePaiement={savedDocument?.TypePaiement}
                 document={savedDocument}
                 onClose={() => {
                     setSavedDocument(null);

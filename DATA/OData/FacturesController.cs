@@ -46,6 +46,7 @@ namespace WebApplication1.DATA.OData
             facture.IdTypePaiement = newFacture.IdTypePaiement;
             facture.WithDiscount = newFacture.WithDiscount;
             facture.Comment = newFacture.Comment;
+            facture.DateEcheance = newFacture.DateEcheance;
             facture.ClientName = newFacture.ClientName;
            var numBonGenerator = new DocNumberGenerator();
 

@@ -23,6 +23,7 @@ namespace WebApplication1.DATA
         public string Note { get; set; }
 
         public DateTime Date { get; set; }
+        public DateTime? DateEcheance { get; set; }
         public Guid? IdTypePaiement { get; set; }
 
         public bool WithDiscount { get; set; } = false;

@@ -11,8 +11,10 @@ import { getMarginArticles } from '../../../queries/articleQueries'
 import { useTitle } from '../../providers/TitleProvider'
 import DatePicker from '../../elements/date-picker/DatePicker'
 import useDebounce from '../../../hooks/useDebounce'
+import { useLoader } from '../../providers/LoaderProvider'
 
 const ArticlesMarginList = () => {
+    const {showLoader} = useLoader()
     const today = new Date();
     const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDayCurrentMonth = new Date();
@@ -49,12 +51,14 @@ const ArticlesMarginList = () => {
         const fetchId = ++fetchIdRef.current;
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
-
+            showLoader(true, true)
             getMarginArticles(siteId, startRow, filters)
             .then(response => {
                 setData(response.data)
                 setTotalItems(response.totalItems)
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
+            }).finally(()=>{
+                showLoader();
             });
         }
     }, [siteId])

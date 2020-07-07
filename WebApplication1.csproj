@@ -956,9 +956,6 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\TSR\MiniBonReceptionTSR.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="CrystalReports\TSR\Paiements.cs">
       <DependentUpon>Paiements.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -968,6 +965,10 @@
     <Compile Include="Migrations\202007061850438_Client_IsClientDivers.cs" />
     <Compile Include="Migrations\202007061850438_Client_IsClientDivers.designer.cs">
       <DependentUpon>202007061850438_Client_IsClientDivers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007071611204_Facture_DateEcheance.cs" />
+    <Compile Include="Migrations\202007071611204_Facture_DateEcheance.designer.cs">
+      <DependentUpon>202007071611204_Facture_DateEcheance.cs</DependentUpon>
     </Compile>
     <Compile Include="UserStatisticsController.cs" />
     <Compile Include="Datasets\DataSetATF1.Designer.cs">
@@ -4347,6 +4348,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007061850438_Client_IsClientDivers.resx">
       <DependentUpon>202007061850438_Client_IsClientDivers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007071611204_Facture_DateEcheance.resx">
+      <DependentUpon>202007071611204_Facture_DateEcheance.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

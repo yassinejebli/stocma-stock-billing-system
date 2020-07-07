@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 
 const FournisseurAutocomplete = ({ errorText, ...props }) => {
   const classes = useStyles();
-  const {useVAT} = useSite();
+  const { useVAT } = useSite();
   const [loading, setLoading] = React.useState(false);
   const [fournisseurs, setFournisseurs] = React.useState([]);
   const [searchText, setSearchText] = React.useState('');
@@ -29,9 +29,9 @@ const FournisseurAutocomplete = ({ errorText, ...props }) => {
   React.useEffect(() => {
     setLoading(true);
     getFournisseurs({
-      Name: debouncedSearchText?{
+      Name: debouncedSearchText ? {
         contains: debouncedSearchText
-      }:undefined,
+      } : undefined,
       Disabled: false
     }).then(response => {
       setLoading(false);
@@ -45,7 +45,6 @@ const FournisseurAutocomplete = ({ errorText, ...props }) => {
 
   return (
     <Autocomplete
-      {...props}
       loading={loading}
       loadingText="Chargement..."
       disableClearable
@@ -79,11 +78,11 @@ const FournisseurAutocomplete = ({ errorText, ...props }) => {
           inputProps={{
             ...params.inputProps,
             autoComplete: 'new-password', // disable autocomplete and autofill
-            type: 'search',
             margin: 'normal'
           }}
         />
       )}
+      {...props}
     />
   )
 }

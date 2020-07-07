@@ -77,7 +77,7 @@ const initialState = {
     isCashed: false
 }
 
-const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) => {
+const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSuccess, isAvoir }) => {
     const { showSnackBar } = useSnackBar();
     const [formState, setFormState] = React.useState({
         ...initialState,
@@ -94,7 +94,7 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
                 amount,
                 client: document.Client,
                 comment: (isAvoir ? 'Avoir ' : 'BL ') + document.NumBon,
-                type: document.TypePaiement,
+                type: typePaiement,
                 IdBonLivraison: document.Id
             }));
         }

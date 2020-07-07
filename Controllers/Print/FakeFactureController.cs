@@ -34,6 +34,7 @@ namespace WebApplication1.Controllers.Print
             {
                 NumBon = x.FakeFacture.NumBon,
                 Date = x.FakeFacture.Date,
+                DateEcheance = x.FakeFacture.DateEcheance?.ToString("dd'/'MM'/'yyyy") ?? null,
                 Client = x.FakeFacture.Client.Name,
                 Ref = x.ArticleFacture.Ref,
                 Designation = x.ArticleFacture.Designation,

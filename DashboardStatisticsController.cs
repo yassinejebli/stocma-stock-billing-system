@@ -5,16 +5,16 @@ namespace WebApplication1
 {
     public class DashboardStatisticsController : Controller
     {
-        public ActionResult MonthlyProfitAndTurnover(int IdSite = 1)
+        public ActionResult MonthlyProfitAndTurnover(int year, int IdSite = 1)
         {
             DashboardStatistics statistics = new DashboardStatistics();
-            return Json(statistics.MonthlyProfitAndTurnover(IdSite), JsonRequestBehavior.AllowGet);
+            return Json(statistics.MonthlyProfitAndTurnover(IdSite, year), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult DailyProfitAndTurnover(int IdSite = 1)
+        public ActionResult DailyProfitAndTurnover(int year, int IdSite = 1)
         {
             DashboardStatistics statistics = new DashboardStatistics();
-            return Json(statistics.DailyProfitAndTurnover(IdSite), JsonRequestBehavior.AllowGet);
+            return Json(statistics.DailyProfitAndTurnover(IdSite, year), JsonRequestBehavior.AllowGet);
         }
     }
 }

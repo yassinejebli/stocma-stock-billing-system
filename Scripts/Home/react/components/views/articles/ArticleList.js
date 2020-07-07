@@ -41,6 +41,9 @@ const ArticleList = () => {
             or: {
                 'Article/Designation': {
                     contains: debouncedSearchText
+                },
+                'Article/Ref': {
+                    contains: debouncedSearchText
                 }
             },
             Disabled: !showDisabledArticles ? false : undefined

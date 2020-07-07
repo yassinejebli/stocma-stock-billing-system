@@ -16,6 +16,7 @@ namespace WebApplication1.DATA
         public string NumBon { get; set; }
 
         public DateTime Date { get; set; }
+        public DateTime? DateEcheance { get; set; }
 
         public Guid IdClient { get; set; }
         public Guid? IdTypePaiement { get; set; }

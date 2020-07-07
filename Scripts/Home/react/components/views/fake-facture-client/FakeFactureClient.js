@@ -47,6 +47,7 @@ const FakeFacture = () => {
     const [ref, setRef] = React.useState(0);
     const [client, setClient] = React.useState(null);
     const [date, setDate] = React.useState(new Date());
+    const [dueDate, setDueDate] = React.useState(null);
     const [note, setNote] = React.useState('');
     const [chequeNumber, setChequeNumber] = React.useState('');
     const [clientName, setClientName] = React.useState('');
@@ -92,6 +93,7 @@ const FakeFacture = () => {
                 .then(response => {
                     setClient(response.Client);
                     setDate(response.Date);
+                    setDueDate(response.DateEcheance);
                     setNote(response.Note);
                     setData(response.FakeFactureItems?.map(x => ({
                         Article: x.ArticleFacture,
@@ -183,7 +185,8 @@ const FakeFacture = () => {
                 IdArticleFacture: d.Article.Id
             })),
             IdClient: client.Id,
-            Date: date
+            Date: date,
+            DateEcheance: dueDate,
         };
 
         setLoading(true);
@@ -263,14 +266,22 @@ const FakeFacture = () => {
                         onChange={(_date) => setDate(_date)}
                     />
                 </Box>
-                <Box width={240} mt={2}>
-                    <TextField
-                        value={clientName}
-                        onChange={({ target: { value } }) => setClientName(value)}
-                        variant="outlined"
-                        fullWidth
-                        size="small"
-                        label="Nom du société"
+                <Box mt={2} display="flex" justifyContent="space-between">
+                    <Box width={240}>
+                        <TextField
+                            value={clientName}
+                            onChange={({ target: { value } }) => setClientName(value)}
+                            variant="outlined"
+                            fullWidth
+                            size="small"
+                            label="Nom du société"
+                        />
+                    </Box>
+                    <DatePicker
+                        label="Date d'échéance"
+                        value={dueDate}
+                        onChange={(_date) => setDueDate(_date)}
+                        clearable
                     />
                 </Box>
                 <Box mt={2} display="flex" flexWrap="wrap">

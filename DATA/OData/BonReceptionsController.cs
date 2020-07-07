@@ -25,7 +25,7 @@ namespace WebApplication1.DATA.OData
         [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<BonReception> GetBonReceptions()
         {
-            return db.BonReceptions.OrderByDescending(x=>x.Date);
+            return db.BonReceptions.OrderByDescending(x => x.Date);
         }
 
         // GET: odata/BonReceptions(5)
@@ -39,7 +39,7 @@ namespace WebApplication1.DATA.OData
         [EnableQuery]
         public async Task<IHttpActionResult> Put([FromODataUri] Guid key, BonReception newBonReception)
         {
-            
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -131,7 +131,7 @@ namespace WebApplication1.DATA.OData
             //-----------------------------------------------Updating payment
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb7";
             var Total = bonReception.BonReceptionItems.Sum(x => x.Qte * x.Pu);
-           
+
             PaiementF paiement = new PaiementF()
             {
                 Id = Guid.NewGuid(),
@@ -147,6 +147,16 @@ namespace WebApplication1.DATA.OData
             foreach (var bi in bonReception.BonReceptionItems)
             {
                 var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bonReception.IdSite);
+                if (articleSite.QteStock <= 0)
+                {
+                    articleSite.Article.PA = bi.Pu;
+                }
+                else
+                {
+                    //PUMP
+                    var PA = (Decimal)(((articleSite.QteStock * articleSite.Article.PA) + (bi.Qte * bi.Pu)) / (articleSite.QteStock + bi.Qte));
+                    articleSite.Article.PA = (float)Math.Round(PA, 2, MidpointRounding.AwayFromZero);
+                }
                 articleSite.QteStock += bi.Qte;
             }
 
@@ -175,7 +185,7 @@ namespace WebApplication1.DATA.OData
         [AcceptVerbs("PATCH", "MERGE")]
         public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<BonReception> patch)
         {
-            
+
 
             if (!ModelState.IsValid)
             {

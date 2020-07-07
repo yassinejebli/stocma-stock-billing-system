@@ -46,7 +46,6 @@ const ClientAutocomplete = ({ errorText, ...props }) => {
 
   return (
     <Autocomplete
-      {...props}
       loading={loading}
       loadingText="Chargement..."
       disableClearable
@@ -81,11 +80,11 @@ const ClientAutocomplete = ({ errorText, ...props }) => {
           inputProps={{
             ...params.inputProps,
             autoComplete: 'new-password', // disable autocomplete and autofill
-            type: 'search',
             margin: 'normal'
           }}
         />
       )}
+      {...props}
     />
   )
 }

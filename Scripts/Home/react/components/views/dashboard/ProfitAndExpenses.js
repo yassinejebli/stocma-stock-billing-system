@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const ProfitAndExpenses = () => {
+const ProfitAndExpenses = ({year}) => {
     const theme = useTheme();
     const { siteId } = useSite();
     const classes = useStyles();
@@ -47,14 +47,18 @@ const ProfitAndExpenses = () => {
     const [totalExpenses, setTotalExpenses] = React.useState();
     const [totalTurnover, setTotalTurnover] = React.useState();
     React.useEffect(() => {
-        loadProfitAndExpenses();
-    }, []);
+        loadProfitAndExpenses(year);
+    }, [year]);
 
-    const loadProfitAndExpenses = () => {
+    const loadProfitAndExpenses = (year) => {
         const today = new Date();
-        getDailyProfitAndTurnover(siteId).then(res => {
+        setTurnoverData(null)
+        setProfitData(null)
+        setExpensesData(null)
+        
+        getDailyProfitAndTurnover(siteId, year).then(res => {
             const categories = res.map(x => {
-                const date = new Date(today.getFullYear(), today.getMonth(), x.day);
+                const date = new Date(year, today.getMonth(), x.day);
                 return format(date, 'EEEE dd MMM Y', { locale: fr });
             });
 
@@ -85,7 +89,7 @@ const ProfitAndExpenses = () => {
                         labels: {
                             show: false
                         },
-                        categories,
+                        categories: categories,
                         tooltip: {
                             enabled: false
                         },
@@ -101,6 +105,9 @@ const ProfitAndExpenses = () => {
                             formatter: function (value) {
                                 return formatMoney(value) + ' DH'
                             }
+                        },
+                        axisBorder: {
+                            show: false
                         },
                     }
                 }
@@ -119,16 +126,6 @@ const ProfitAndExpenses = () => {
                 return sum;
             }, 0));
 
-            setExpensesData({
-                ...defaultOptions,
-                series: [
-                    {
-                        name: "Dépenses",
-                        data: res.map(x => x.expense)
-                    }
-                ]
-            });
-
             setTurnoverData({
                 ...defaultOptions,
                 series: [
@@ -145,6 +142,16 @@ const ProfitAndExpenses = () => {
                     {
                         name: "Bénéfices",
                         data: res.map(x => x.profit)
+                    }
+                ]
+            });
+
+            setExpensesData({
+                ...defaultOptions,
+                series: [
+                    {
+                        name: "Dépenses",
+                        data: res.map(x => x.expense)
                     }
                 ]
             });

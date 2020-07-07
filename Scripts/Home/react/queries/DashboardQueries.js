@@ -1,7 +1,8 @@
 const BASE_URL = '/DashboardStatistics/'
 
-export const getMonthlyProfitAndTurnover = async (idSite) => {
+export const getMonthlyProfitAndTurnover = async (idSite, year) => {
     const parsedParams = new URLSearchParams({
+        year: year,
         IdSite: idSite,
     }).toString();
     const URL = BASE_URL+'MonthlyProfitAndTurnover?'+parsedParams;
@@ -13,8 +14,9 @@ export const getMonthlyProfitAndTurnover = async (idSite) => {
     }
 }
 
-export const getDailyProfitAndTurnover = async (idSite) => {
+export const getDailyProfitAndTurnover = async (idSite, year) => {
     const parsedParams = new URLSearchParams({
+        year: year,
         IdSite: idSite,
     }).toString();
     const URL = BASE_URL+'DailyProfitAndTurnover?'+parsedParams;
