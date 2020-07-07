@@ -79,7 +79,10 @@ const initialState = {
 
 const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) => {
     const { showSnackBar } = useSnackBar();
-    const [formState, setFormState] = React.useState(initialState);
+    const [formState, setFormState] = React.useState({
+        ...initialState,
+        date: new Date()
+    });
     const [formErrors, setFormErrors] = React.useState({});
     const isFromDocument = Boolean(document);
     const isEditMode = Boolean(paiement);
@@ -127,7 +130,9 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
             const response = await updateData(TABLE, { ...preparedData, Id: paiement.Id }, paiement.Id);
             if (response.ok) {
                 setFormState({ ...initialState });
-                showSnackBar();
+                showSnackBar({
+                    text: 'Le paiement est bien enregistré'
+                });
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
@@ -138,7 +143,9 @@ const PaiementClientForm = ({ document, amount, paiement, onSuccess, isAvoir }) 
         } else {
             const response = await saveData(TABLE, preparedData);
             if (response?.Id) {
-                showSnackBar();
+                showSnackBar({
+                    text: 'Le paiement est bien enregistré'
+                });
                 setFormState({ ...initialState });
                 if (onSuccess) onSuccess();
             } else {

@@ -227,7 +227,9 @@ const Facture = () => {
         setClient(null);
         setClientName('');
         setNote('');
-        setDate(new Date());
+        setTimeout(() => {
+            setDate(new Date());
+        }, 500);
         setPaymentType(null);
         setSelectedBonLivraisons([]);
         addNewRow();

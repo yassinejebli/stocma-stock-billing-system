@@ -950,6 +950,15 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="CrystalReports\TSR\MiniBonReceptionTSR1.cs">
+      <DependentUpon>MiniBonReceptionTSR.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\TSR\MiniBonReceptionTSR.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CrystalReports\TSR\Paiements.cs">
       <DependentUpon>Paiements.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -4115,6 +4124,10 @@
     <Content Include="CrystalReports\TSR\Paiements.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Paiements.cs</LastGenOutput>
+    </Content>
+    <Content Include="CrystalReports\TSR\MiniBonReceptionTSR.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>MiniBonReceptionTSR1.cs</LastGenOutput>
     </Content>
     <EmbeddedResource Include="Migrations\201702231840475_init.resx">
       <DependentUpon>201702231840475_init.cs</DependentUpon>

@@ -253,7 +253,9 @@ const BonLivraison = () => {
         setClient(null);
         setNote('');
         setPaymentType(null);
-        setDate(new Date());
+        setTimeout(()=>{
+            setDate(new Date());
+        }, 500)
         setData([]);
         addNewRow();
     }
