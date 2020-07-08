@@ -50,6 +50,7 @@ namespace WebApplication1.DATA.OData
                 var articleSiteTo = db.ArticleSites.FirstOrDefault(x => x.IdArticle == diOld.IdArticle && x.IdSite == stockMouvement.IdSiteTo);
                 articleSiteFrom.QteStock += diOld.Qte;
                 articleSiteTo.QteStock -= diOld.Qte;
+                articleSiteTo.Disabled = false;
             }
             foreach (var diNew in newStockMouvement.StockMouvementItems)
             {
@@ -103,6 +104,7 @@ namespace WebApplication1.DATA.OData
                 var articleSiteTo = db.ArticleSites.FirstOrDefault(x => x.IdArticle == di.IdArticle && x.IdSite == stockMouvement.IdSiteTo);
                 articleSiteFrom.QteStock -= di.Qte;
                 articleSiteTo.QteStock += di.Qte;
+                articleSiteTo.Disabled = false;
             }
             db.StockMouvements.Add(stockMouvement);
 

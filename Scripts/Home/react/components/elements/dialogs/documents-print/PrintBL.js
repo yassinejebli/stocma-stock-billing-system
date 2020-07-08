@@ -8,8 +8,9 @@ import { useSite } from '../../../providers/SiteProvider';
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
 
 const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
+    const isClientDivers = Boolean(document?.Client?.IsClientDivers);
     const {useVAT} = useSite();
-    const [showForm, setShowForm] = React.useState(typePaiement);
+    const [showForm, setShowForm] = React.useState(typePaiement && !isClientDivers);
     const [bigFormat, setBigFormat] = React.useState(document?.WithDiscount);
     const [showBalance, setShowBalance] = React.useState(false);
     const [hidePrices, setHidePrices] = React.useState(false);
@@ -57,7 +58,7 @@ const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
                                     label="Afficher le cachet"
                                 />
                             </Box>
-                            <div>
+                            {!isClientDivers&&<div>
                                 <FormControlLabel
                                     control={<Switch
                                         checked={showForm}
@@ -65,8 +66,8 @@ const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
                                     />}
                                     label="Paiement reçu"
                                 />
-                            </div>
-                            {showForm &&
+                            </div>}
+                            {showForm && !isClientDivers &&
                                 <Box mt={2}>
                                     <PaiementClientForm
                                         amount={document[DOCUMENT_ITEMS]?.reduce((sum, curr) => (

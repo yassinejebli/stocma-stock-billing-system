@@ -103,13 +103,14 @@ const Depense = () => {
         }
 
         if (filteredData.length < 1) {
-            _errors['table'] = 'Ajouter des articles.';
+            _errors['table'] = 'Ajouter des dépenses.';
         }
 
         filteredData.forEach((_row, _index) => {
             if (!_row.TypeDepense
                 || !_row.Montant
                 || Number(_row.Montant) < 0
+                || !_row.Name
             ) {
                 _errors['table'] = 'Compléter les lignes.';
                 return;

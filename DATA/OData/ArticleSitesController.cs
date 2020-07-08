@@ -17,10 +17,10 @@ namespace WebApplication1.DATA.OData
         private MySaniSoftContext db = new MySaniSoftContext();
 
         // GET: odata/ArticleSites
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<ArticleSite> GetArticleSites()
         {
-            return db.ArticleSites;
+            return db.ArticleSites.OrderBy(x=>x.Article.Designation);
         }
 
         // GET: odata/ArticleSites(5)

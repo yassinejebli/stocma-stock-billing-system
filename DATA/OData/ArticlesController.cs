@@ -21,10 +21,10 @@ namespace WebApplication1.DATA.OData
         private MySaniSoftContext db = new MySaniSoftContext();
 
         // GET: odata/Articles
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<Article> GetArticles()
         {
-            return db.Articles;
+            return db.Articles.OrderBy(x=>x.Description);
         }
 
         [EnableQuery]

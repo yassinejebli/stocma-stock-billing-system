@@ -12,6 +12,7 @@ namespace WebApplication1.Statistics
 
         public IEnumerable MonthlyProfitAndTurnover(int IdSite, int year)
         {
+            var useVat = db.Companies.FirstOrDefault().UseVAT;
             return db.BonLivraisonItems.Where(x => x.BonLivraison.Date.Year == year)
                 .GroupBy(x => new { Month = x.BonLivraison.Date.Month, Year = x.BonLivraison.Date.Year })
                 .Select(x => new
@@ -20,6 +21,7 @@ namespace WebApplication1.Statistics
                     month = x.Key.Month,
                     expense = db.DepenseItems.Where(y=>y.Depense.Date.Year == year && y.Depense.Date.Month == x.Key.Month).Sum(y=>(float?)y.Montant) ?? 0,
                     turnover = x.Sum(y => (float?)(y.Qte * y.Pu)) ?? 0 - db.BonAvoirCItems.Where(y => y.BonAvoirC.Date.Year == year && y.BonAvoirC.Date.Month == x.Key.Month).Sum(y => (float?)(y.Qte * y.Pu)) ?? 0,
+                    remise = db.Paiements.Where(y=> y.Date.Year == year && y.Date.Month == x.Key.Month && y.TypePaiement.IsRemise).Sum(y => (float?)y.Credit) ?? 0,
                     profit = x.Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0 - db.BonAvoirCItems.Where(y => y.BonAvoirC.Date.Year == year && y.BonAvoirC.Date.Month == x.Key.Month).Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0,
                 }).Select(x=> new
                 {
@@ -28,7 +30,7 @@ namespace WebApplication1.Statistics
                     expense = x.expense,
                     turnover = x.turnover,
                     profit = x.profit,
-                    netProfit = x.profit - x.expense
+                    netProfit = x.profit - x.expense - x.remise
                 }).OrderBy(x=>x.month);
         }
 
@@ -43,6 +45,7 @@ namespace WebApplication1.Statistics
                     day = x.Key.Day,
                     expense = db.DepenseItems.Where(y=>y.Depense.Date.Year == year && y.Depense.Date.Month == currentMonth && y.Depense.Date.Day == x.Key.Day).Sum(y=>(float?)y.Montant) ?? 0,
                     turnover = x.Sum(y => (float?)(y.Qte * y.Pu)) ?? 0 - db.BonAvoirCItems.Where(y=>y.BonAvoirC.Date.Day == x.Key.Day && y.BonAvoirC.Date.Year == year && y.BonAvoirC.Date.Month == currentMonth).Sum(y=> (float?)(y.Qte*y.Pu)) ?? 0,
+                    remise = db.Paiements.Where(y=> y.Date.Year == year && y.Date.Month == currentMonth && y.Date.Day == x.Key.Day && y.TypePaiement.IsRemise).Sum(y=>(float?)y.Credit) ?? 0,
                     profit = x.Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0 - db.BonAvoirCItems.Where(y => y.BonAvoirC.Date.Day == x.Key.Day && y.BonAvoirC.Date.Year == year && y.BonAvoirC.Date.Month == currentMonth).Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0,
                 }).Select(x=> new
                 {
@@ -50,7 +53,7 @@ namespace WebApplication1.Statistics
                     expense = x.expense,
                     turnover = x.turnover,
                     profit = x.profit,
-                    netProfit = x.profit - x.expense
+                    netProfit = x.profit - x.expense - x.remise
                 }).OrderBy(x=>x.day);
         }
     }

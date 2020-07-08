@@ -18,8 +18,6 @@ import { useLocation, useHistory } from 'react-router-dom'
 import qs from 'qs'
 import { fakeFactureColumns } from '../../elements/table/columns/fakeFactureColumns'
 import PrintFakeFacture from '../../elements/dialogs/documents-print/PrintFakeFacture'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import { paymentMethods } from '../devis/Devis'
 import { useSettings } from '../../providers/SettingsProvider'
 import AddButton from '../../elements/button/AddButton'
 import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
@@ -94,6 +92,7 @@ const FakeFacture = () => {
                     setClient(response.Client);
                     setDate(response.Date);
                     setDueDate(response.DateEcheance);
+                    setChequeNumber(response.Comment);
                     setNote(response.Note);
                     setData(response.FakeFactureItems?.map(x => ({
                         Article: x.ArticleFacture,
@@ -282,7 +281,7 @@ const FakeFacture = () => {
                         value={dueDate}
                         onChange={(_date) => setDueDate(_date)}
                         clearable
-                    />
+                        />
                 </Box>
                 <Box mt={2} display="flex" flexWrap="wrap">
                     {facturePayment?.Enabled && <Box mr={2} width={240}>
@@ -291,7 +290,7 @@ const FakeFacture = () => {
                             value={paymentType}
                         />
                     </Box>}
-                    {factureCheque?.Enabled && paymentType?.isBankRelatedItem && <Box width={240}><TextField
+                    {factureCheque?.Enabled && paymentType?.IsBankRelated && <Box width={240}><TextField
                         value={chequeNumber}
                         onChange={({ target: { value } }) => setChequeNumber(value)}
                         variant="outlined"

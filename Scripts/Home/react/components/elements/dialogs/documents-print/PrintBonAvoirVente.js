@@ -8,6 +8,7 @@ import { useSite } from '../../../providers/SiteProvider';
 const DOCUMENT_ITEMS = 'BonAvoirCItems'
 
 const PrintBonAvoirVente = ({ document, onClose, onExited, open }) => {
+    const isClientDivers = document?.Client?.IsClientDivers;
     const { useVAT } = useSite();
     const [showForm, setShowForm] = React.useState(false);
     const [showBalance, setShowBalance] = React.useState(false);
@@ -42,7 +43,7 @@ const PrintBonAvoirVente = ({ document, onClose, onExited, open }) => {
                                 label="Afficher le cachet"
                             />
                         </Box>
-                        <div>
+                        {!isClientDivers&&<div>
                             <FormControlLabel
                                 control={<Switch
                                     checked={showForm}
@@ -50,8 +51,8 @@ const PrintBonAvoirVente = ({ document, onClose, onExited, open }) => {
                                 />}
                                 label="Remboursement de l'argent"
                             />
-                        </div>
-                        {showForm &&
+                        </div>}
+                        {showForm && !isClientDivers &&
                             <Box mt={2}>
                                 <PaiementClientForm
                                     isAvoir

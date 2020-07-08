@@ -112,6 +112,12 @@ export const fakeFactureListColumns = () => ([
         Header: 'Mode de paiement',
         accessor: 'TypePaiement.Name',
         type: inputTypes.text.description,
+        width: 80,
+    },
+    {
+        Header: 'Note',
+        accessor: 'Comment',
+        type: inputTypes.text.description,
     },
     {
         Id: 'DateEcheance',
@@ -126,7 +132,7 @@ export const fakeFactureListColumns = () => ([
         id: 'Total',
         Header: 'Total',
         type: inputTypes.text.description,
-        width: 30,
+        width: 45,
         accessor: (props) => {
             const total = props.FakeFactureItems.reduce((sum, curr) => (
                 sum += curr.Pu * curr.Qte

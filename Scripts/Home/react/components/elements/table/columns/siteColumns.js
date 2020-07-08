@@ -7,10 +7,16 @@ import { inputTypes } from '../../../../types/input';
 
 export const siteColumns = () => ([
     {
+        Header: 'Code',
+        accessor: 'Code',
+        type: inputTypes.text.description,
+        width: 60,
+    },
+    {
         Header: 'Dépôt/Magasin',
         accessor: 'Name',
         type: inputTypes.text.description,
-        width: 140
+        width: 140,
     },
     {
         Header: 'Adresse',
@@ -26,9 +32,9 @@ export const siteColumns = () => ([
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
                         <EditOutlinedIcon />
                     </IconButton>
-                    <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
+                    {original.Id!=1&&<IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
                         <DeleteForeverOutlinedIcon />
-                    </IconButton>
+                    </IconButton>}
                 </Box>
             )
         },

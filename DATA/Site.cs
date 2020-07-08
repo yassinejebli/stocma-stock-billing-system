@@ -16,6 +16,7 @@ namespace WebApplication1.DATA
         [Index(IsUnique = true)]
         [StringLength(200)]
         public string Name { get; set; }
+        public string Code { get; set; }
 
         public string Address { get; set; }
 

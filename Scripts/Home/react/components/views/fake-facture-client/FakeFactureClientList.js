@@ -36,6 +36,9 @@ const FakeFactureClientList = () => {
                         },
                         'NumBon': {
                             contains: debouncedSearchText
+                        },
+                        'Comment': {
+                            contains: debouncedSearchText
                         }
                     }
                 }

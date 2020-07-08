@@ -28,8 +28,8 @@ namespace WebApplication1.DATA
 
         public string Marque { get; set; }
 
-        [DefaultValue(0)]
-        public float? MinStock { get; set; }
+        [DefaultValue(1)]
+        public float? MinStock { get; set; } = 1;
 
         [DefaultValue(0)]
         public float? MaxStock { get; set; }

@@ -12,7 +12,9 @@ import { useSite } from '../../providers/SiteProvider';
 const useStyles = makeStyles(theme => ({
     root: {
         padding: '32px 26px',
-        marginLeft: 32
+        marginLeft: 32,
+        cursor: 'pointer',
+        userSelect: 'none',
     },
     icon: {
         width: 56,
@@ -46,13 +48,13 @@ const useStyles = makeStyles(theme => ({
         textTransform: 'uppercase',
         color: '#393a3d',
         opacity: 0.8
-    }
+    },
 }));
 
-const ArticlesStatistics = () => {
+const ArticlesStatistics = ({ onLowStockCountClick, lowStockSelected }) => {
     const [lowStockCount, setLowStockCount] = React.useState(0);
     const [totalStock, setTotalStock] = React.useState(0);
-    const {siteId} = useSite();
+    const { siteId } = useSite();
 
     React.useEffect(() => {
         getLowStockCount(siteId).then(res => setLowStockCount(res));
@@ -63,25 +65,31 @@ const ArticlesStatistics = () => {
     const classes = useStyles();
     return (
         <Box display="flex" justifyContent="space-around">
-            <Paper className={classes.root}>
+            <Paper className={classes.root} style={{
+                backgroundColor: lowStockSelected ? '#eff4f7' : '#FFF'
+            }}
+                onClick={() => onLowStockCountClick ? onLowStockCountClick() : null}
+            >
                 <Box display="flex" flexDirection="column">
-                    <Avatar className={classes.avatar}>
-                        <LocalMallOutlinedIcon className={classes.icon} />
-                        <RemoveCircleTwoToneIcon className={classes.block} style={{color: 'red'}} />
-                    </Avatar>
-                    <div className={classes.number}>
-                        {lowStockCount}
+                    <div>
+                        <Avatar className={classes.avatar}>
+                            <LocalMallOutlinedIcon className={classes.icon} />
+                            <RemoveCircleTwoToneIcon className={classes.block} style={{ color: 'red' }} />
+                        </Avatar>
+                        <div className={classes.number}>
+                            {lowStockCount}
+                        </div>
+                        <div className={classes.text}>
+                            Faibles stocks
+                        </div>
                     </div>
-                    <div className={classes.text}>
-                        Faibles stocks
-                </div>
                 </Box>
             </Paper>
             <Paper className={classes.root}>
                 <Box display="flex" flexDirection="column">
                     <Avatar className={classes.avatarTotalStock}>
                         <StorefrontOutlinedIcon className={classes.icon} />
-                        <MonetizationOnTwoToneIcon className={classes.block} style={{color: 'orange'}} />
+                        <MonetizationOnTwoToneIcon className={classes.block} style={{ color: 'orange' }} />
                     </Avatar>
                     <div className={classes.number}>
                         {formatMoney(totalStock)}
@@ -103,14 +111,13 @@ export const ArticlesFactureStatistics = () => {
         getTotalStockFacture().then(res => setTotalStock(res));
     }, []);
 
-
     return (
         <Box display="flex" justifyContent="space-around">
             <Paper className={classes.root}>
                 <Box display="flex" flexDirection="column">
                     <Avatar className={classes.avatarTotalStock}>
                         <StorefrontOutlinedIcon className={classes.icon} />
-                        <MonetizationOnTwoToneIcon className={classes.block} style={{color: 'orange'}} />
+                        <MonetizationOnTwoToneIcon className={classes.block} style={{ color: 'orange' }} />
                     </Avatar>
                     <div className={classes.number}>
                         {formatMoney(totalStock)}

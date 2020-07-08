@@ -8,29 +8,30 @@ import TitleIcon from '../misc/TitleIcon';
 import { useSite } from '../../providers/SiteProvider';
 
 const initialState = {
+    Code: '',
     Name: '',
     Address: '',
     Disabled: false
 }
 const TABLE = 'Sites';
 
-const SiteForm = ({data, onSuccess}) => {
-    const {fetchSites} = useSite();
+const SiteForm = ({ data, onSuccess }) => {
+    const { fetchSites } = useSite();
     const { showSnackBar } = useSnackBar();
     const editMode = Boolean(data);
     const [formState, setFormState] = React.useState(initialState);
     const [formErrors, setFormErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
-    
-    React.useEffect(()=>{
-        if(editMode)
-            setFormState({...data})
+
+    React.useEffect(() => {
+        if (editMode)
+            setFormState({ ...data })
     }, [])
 
     const onFieldChange = ({ target }) => setFormState(_formState => ({ ..._formState, [target.name]: target.value }));
 
     const isFormValid = () => {
-        if(Number(localStorage.getItem('site')) === formState.Id && formState.Disabled === true){
+        if (Number(localStorage.getItem('site')) === formState.Id && formState.Disabled === true) {
             showSnackBar({
                 error: true,
                 text: 'Vous devez changer le dépôt/magasin actuel pour pouvoir l\'archiver'
@@ -39,6 +40,8 @@ const SiteForm = ({data, onSuccess}) => {
         }
 
         const _errors = [];
+        if (!formState.Code)
+            _errors['Code'] = 'Ce champs est obligatoire.'
         if (!formState.Name)
             _errors['Name'] = 'Ce champs est obligatoire.'
 
@@ -50,24 +53,24 @@ const SiteForm = ({data, onSuccess}) => {
         if (!isFormValid()) return;
 
         setLoading(true);
-        if(editMode){
+        if (editMode) {
             const response = await updateData(TABLE, formState, formState.Id);
             if (response.ok) {
                 setFormState({ ...initialState });
                 showSnackBar();
-                if(onSuccess) onSuccess();
+                if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
                     error: true,
                     text: 'Erreur !'
                 });
             }
-        }else{
+        } else {
             const response = await saveData(TABLE, formState);
             if (response?.Id) {
                 setFormState({ ...initialState });
                 showSnackBar();
-                if(onSuccess) onSuccess();
+                if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
                     error: true,
@@ -84,6 +87,18 @@ const SiteForm = ({data, onSuccess}) => {
             <Loader loading={loading} />
             <TitleIcon title={editMode ? 'Modifier les infos du dépôt/magasin' : 'Ajouter un dépôt/magasin'} Icon={StorefrontOutlinedIcon} />
             <TextField
+                name="Code"
+                label="Code"
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+                onChange={onFieldChange}
+                value={formState.Code || ''}
+                helperText={formErrors.Code}
+                error={Boolean(formErrors.Code)}
+            />
+            <TextField
                 name="Name"
                 label="Nom du dépôt/magasin"
                 variant="outlined"
@@ -91,7 +106,7 @@ const SiteForm = ({data, onSuccess}) => {
                 fullWidth
                 margin="normal"
                 onChange={onFieldChange}
-                value={formState.Name||''}
+                value={formState.Name || ''}
                 helperText={formErrors.Name}
                 error={Boolean(formErrors.Name)}
             />
@@ -105,7 +120,7 @@ const SiteForm = ({data, onSuccess}) => {
                 margin="normal"
                 rows={3}
                 onChange={onFieldChange}
-                value={formState.Address||''}
+                value={formState.Address || ''}
             />
             <FormControlLabel
                 control={<Switch

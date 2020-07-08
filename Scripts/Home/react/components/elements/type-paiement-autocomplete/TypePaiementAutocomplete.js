@@ -39,7 +39,6 @@ const TypePaiementAutocomplete = ({ errorText, showAllPaymentMethods, ...props }
   return (
     <Autocomplete
       {...props}
-      disableClearable
       popupIcon={null}
       forcePopupIcon={false}
       style={{ minWidth: 240 }}
@@ -62,7 +61,6 @@ const TypePaiementAutocomplete = ({ errorText, showAllPaymentMethods, ...props }
           inputProps={{
             ...params.inputProps,
             autoComplete: 'new-password', // disable autocomplete and autofill
-            type: 'search',
             margin: 'normal'
           }}
         />

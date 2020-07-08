@@ -2717,6 +2717,7 @@
     <Content Include="package.json" />
     <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\aquakrim.pubxml" />
+    <None Include="Properties\PublishProfiles\aquared.pubxml" />
     <None Include="Properties\PublishProfiles\publish1.pubxml" />
     <None Include="Properties\PublishProfiles\publish2.pubxml" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />

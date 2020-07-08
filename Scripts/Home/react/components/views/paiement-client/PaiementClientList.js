@@ -22,14 +22,16 @@ import { useSnackBar } from '../../providers/SnackBarProvider';
 import PrintClientAccountSummary from '../../elements/dialogs/documents-print/PrintClientAccountSummary';
 import SoldeText from '../../elements/texts/SoldeText';
 import { useLoader } from '../../providers/LoaderProvider';
+import { useHistory } from 'react-router-dom';
 
 const TABLE = 'Paiements';
 
-const EXPAND = ['TypePaiement', 'Client', 'BonLivraison/Client'];
+const EXPAND = ['TypePaiement', 'Client', 'BonLivraison/Client', 'BonLivraisonItems'];
 
 const PaiementClientList = () => {
     const refreshCount = React.useRef(0)
     const { showLoader } = useLoader();
+    const history = useHistory();
     const today = new Date();
     const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDayCurrentMonth = new Date();
@@ -225,6 +227,10 @@ const PaiementClientList = () => {
         refetchData()
     }, []);
 
+    const editDocument = React.useCallback((id) => {
+        history.push(`BonLivraison?BonLivraisonId=${id}`);
+    }, []);
+
     const deleteRow = React.useCallback(async (id) => {
         const response = await deleteData(TABLE, id);
         if (response.ok) {
@@ -309,6 +315,7 @@ const PaiementClientList = () => {
                         data={data}
                         serverPagination
                         updateRow={updateRow}
+                        updateRow2={editDocument}
                         deleteRow={deleteRow}
                         disableRow={disableRow}
                         customAction={customAction}

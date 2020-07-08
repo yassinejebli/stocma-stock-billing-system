@@ -61,7 +61,7 @@ const SoldeText = ({ clientId, date, refresh }) => {
             setSoldeBeforeDate(response.soldeBeforeDate)
             setSolde(response.solde)
             setCalculatedSolde(response.calculatedSolde)
-            if(response.calculatedSolde !== response.solde){
+            if (response.calculatedSolde !== response.solde) {
                 showSnackBar({
                     error: true,
                     text: 'Attention: Le solde réel doit être égal au solde calculé!'
@@ -81,7 +81,7 @@ const SoldeText = ({ clientId, date, refresh }) => {
             <div className={classes.text}>
                 Solde calculé
             </div>
-            <div className={classes.total} style={{color: (solde !== calculatedSolde)?'red':'black'}}>
+            <div className={classes.total} style={{ color: (solde !== calculatedSolde) ? 'red' : 'black' }}>
                 {formatMoney(calculatedSolde)}
             </div>
         </div>

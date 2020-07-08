@@ -85,7 +85,7 @@ const BonLivraison = () => {
             <PrintBL
                 onExited={onExited}
                 open={open}
-                typePaiement={savedDocument?.TypePaiement}
+                typePaiement={!isEditMode ? savedDocument?.TypePaiement : null}
                 document={savedDocument}
                 onClose={() => {
                     setSavedDocument(null);

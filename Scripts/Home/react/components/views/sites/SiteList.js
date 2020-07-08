@@ -11,7 +11,7 @@ import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog'
 import SiteForm from '../../elements/forms/SiteForm'
 import TitleIcon from '../../elements/misc/TitleIcon'
 import StorefrontOutlinedIcon from '@material-ui/icons/StorefrontOutlined';
-import { TextField, Button } from '@material-ui/core'
+import { TextField, Button, FormControlLabel, Checkbox } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import { siteColumns } from '../../elements/table/columns/siteColumns'
 import { useSite } from '../../providers/SiteProvider'
@@ -28,6 +28,7 @@ const SiteList = () => {
     const { fetchSites } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
+    const [showDisabledData, setShowDisabledData] = React.useState(false);
     const [searchText, setSearchText] = React.useState('');
     const debouncedSearchText = useDebounce(searchText);
     const filters = React.useMemo(() => {
@@ -35,10 +36,11 @@ const SiteList = () => {
             {
                 Name: {
                     contains: debouncedSearchText
-                }
+                },
+                Disabled: !showDisabledData ? false : undefined,
             }
         ]
-    }, [debouncedSearchText]);
+    }, [debouncedSearchText, showDisabledData]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
@@ -147,6 +149,12 @@ const SiteList = () => {
                         placeholder="Rechercher..."
                         variant="outlined"
                         size="small"
+                    />
+                </Box>
+                <Box mt={2}>
+                    <FormControlLabel
+                        control={<Checkbox checked={showDisabledData} color="primary" onChange={event => setShowDisabledData(event.target.checked)} />}
+                        label="Afficher les magasins désactivés"
                     />
                 </Box>
                 <Box mt={4}>

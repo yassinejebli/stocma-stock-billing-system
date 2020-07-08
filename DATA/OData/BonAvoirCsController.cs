@@ -43,6 +43,7 @@ namespace WebApplication1.DATA.OData
             if (bonAvoirC == null)
                 return (IHttpActionResult)this.NotFound();
 
+            var oldNumBon = bonAvoirC.NumBon;
             /////////////////////////////////////////////
             //----------------------------------------------Updating QteStock
             foreach (var biOld in bonAvoirC.BonAvoirCItems)
@@ -124,7 +125,35 @@ namespace WebApplication1.DATA.OData
                 };
                     db.Paiements.Add(paiement);
                 }
+
+                if (db.Clients.Find(bonAvoirC.IdClient).IsClientDivers)
+                {
+                    var REMBOURSEMENT_PAIEMENT_TYPE_ID = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4");
+                    var paymentClientDivers = db.Paiements.FirstOrDefault(x => x.Comment == "Avoir " + oldNumBon);
+                    if (paymentClientDivers != null)
+                    {
+                        paymentClientDivers.Debit = Total;
+                        paymentClientDivers.Date = newBonAvoiC.Date;
+                        paymentClientDivers.Comment = "Avoir " + newBonAvoiC.NumBon;
+                    }
+                    else
+                    {
+                        Paiement paiementClientDivers = new Paiement()
+                        {
+                            Id = Guid.NewGuid(),
+                            IdClient = bonAvoirC.IdClient,
+                            Credit = Total,
+                            IdTypePaiement = REMBOURSEMENT_PAIEMENT_TYPE_ID,
+                            Date = newBonAvoiC.Date,
+                            Comment = "Avoir " + newBonAvoiC.NumBon,
+                        };
+                        db.Paiements.Add(paiementClientDivers);
+                    }
+
+                }
             }
+
+      
             ////////////////////////////////////////////
 
 
@@ -196,9 +225,25 @@ namespace WebApplication1.DATA.OData
                     Credit = Total,
                     IdTypePaiement = new Guid(AVOIR_PAIEMENT_TYPE_ID),
                     Date = bonAvoirC.Date,
-                    Comment = "Avoir " + bonAvoirC.NumBon
+                    Comment = "Avoir " + bonAvoirC.NumBon,
                 };
                 db.Paiements.Add(paiement);
+
+
+                if (db.Clients.Find(bonAvoirC.IdClient).IsClientDivers)
+                {
+                    var REMBOURSEMENT_PAIEMENT_TYPE_ID = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4");
+                    Paiement paiementClientDivers = new Paiement()
+                    {
+                        Id = Guid.NewGuid(),
+                        IdClient = bonAvoirC.IdClient,
+                        Debit = Total,
+                        IdTypePaiement = REMBOURSEMENT_PAIEMENT_TYPE_ID,
+                        Date = bonAvoirC.Date,
+                        Comment = "Avoir " + bonAvoirC.NumBon,
+                    };
+                    db.Paiements.Add(paiementClientDivers);
+                }
             }
 
 
@@ -250,6 +295,16 @@ namespace WebApplication1.DATA.OData
             {
                 var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == async.IdSite && x.IdArticle == bi.IdArticle);
                 articleSite.QteStock -= bi.Qte;
+            }
+
+            if (db.Clients.Find(async.IdClient).IsClientDivers)
+            {
+                var REMBOURSEMENT_PAIEMENT_TYPE_ID = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeeca4");
+                var paymentClientDivers = db.Paiements.FirstOrDefault(x => x.Comment == "Avoir " + async.NumBon && x.IdTypePaiement == REMBOURSEMENT_PAIEMENT_TYPE_ID);
+                if (paymentClientDivers != null)
+                {
+                    db.Paiements.Remove(paymentClientDivers);
+                }
             }
 
             db.Paiements.RemoveRange(async.Paiements);

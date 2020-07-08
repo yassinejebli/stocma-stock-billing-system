@@ -2,7 +2,6 @@ import Box from '@material-ui/core/Box'
 import React from 'react'
 import Paper from '../../elements/misc/Paper'
 import Table from '../../elements/table/Table'
-import Loader from '../../elements/loaders/Loader'
 import { useTitle } from '../../providers/TitleProvider'
 import { getData } from '../../../queries/crudBuilder'
 import { deleteArticle } from '../../../queries/articleQueries'
@@ -22,35 +21,49 @@ import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import { useHistory } from 'react-router-dom'
 import AddIcon from '@material-ui/icons/Add';
 import { useAuth } from '../../providers/AuthProvider'
+import { useLoader } from '../../providers/LoaderProvider'
 
 const TABLE = 'ArticleSites';
 const EXPAND = ['Article'];
 
 const ArticleList = () => {
+    const {showLoader} = useLoader();
     const { isAdmin } = useAuth();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
+    const [lowStockSelected, setLowStockSelected] = React.useState(false);
     const [searchText, setSearchText] = React.useState('');
     const [showDisabledArticles, setShowDisabledArticles] = React.useState(false);
     const debouncedSearchText = useDebounce(searchText);
     const history = useHistory();
     const filters = React.useMemo(() => {
         return {
-            IdSite: siteId,
-            or: {
-                'Article/Designation': {
-                    contains: debouncedSearchText
+            and: [
+                { IdSite: siteId },
+                {
+                    QteStock: lowStockSelected ? {
+                        le: {
+                            type: 'raw',
+                            value: 'Article/MinStock'
+                        }
+                    } : undefined
                 },
-                'Article/Ref': {
-                    contains: debouncedSearchText
+                { Disabled: !showDisabledArticles ? false : undefined },
+                {
+                    or: {
+                        'Article/Designation': {
+                            contains: debouncedSearchText
+                        },
+                        'Article/Ref': {
+                            contains: debouncedSearchText
+                        },
+                    },
                 }
-            },
-            Disabled: !showDisabledArticles ? false : undefined
+            ]
         }
-    }, [debouncedSearchText, showDisabledArticles, siteId]);
+    }, [debouncedSearchText, showDisabledArticles, siteId, lowStockSelected]);
     const [data, setData] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);
     const [selectedRow, setSelectedRow] = React.useState();
     const [pageCount, setTotalCount] = React.useState(0);
@@ -103,16 +116,18 @@ const ArticleList = () => {
     }, [siteId])
 
     const refetchData = () => {
+        showLoader(true)
         getData(TABLE, {}, filters, EXPAND).then((response) => {
             setData(response.data);
             setTotalItems(response.totalItems);
         }).catch((err) => {
             console.log({ err });
+        }).finally(()=>{
+            showLoader();
         })
     }
 
     const deleteRow = React.useCallback(async (row) => {
-        setLoading(true);
         const response = await deleteArticle(row.IdSite, row.IdArticle);
         console.log({ response });
         if (response.ok) {
@@ -124,7 +139,6 @@ const ArticleList = () => {
                 text: 'Impossible de supprimer l\'article sélectionné !'
             });
         }
-        setLoading(false);
     }, []);
 
     const updateRow = React.useCallback(async (row) => {
@@ -141,6 +155,7 @@ const ArticleList = () => {
         const fetchId = ++fetchIdRef.current;
         if (fetchId === fetchIdRef.current) {
             const startRow = pageSize * pageIndex;
+            showLoader(true, true)
             getData(TABLE, {
                 $skip: startRow
             }, filters, EXPAND).then((response) => {
@@ -149,18 +164,24 @@ const ArticleList = () => {
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
             }).catch((err) => {
                 console.log({ err });
+            }).finally(()=>{
+                showLoader();
             });
         }
     }, [])
 
     return (
         <>
-            <Loader loading={loading} />
             <Box my={2} display="flex" justifyContent="center">
-                <ArticlesStatistics />
+                <ArticlesStatistics
+                    lowStockSelected={lowStockSelected}
+                    onLowStockCountClick={() => {
+                        setLowStockSelected(_lowStockSelected => !_lowStockSelected)
+                    }}
+                />
             </Box>
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
-                {isAdmin&&<Box mr={2}>
+                {isAdmin && <Box mr={2}>
                     <Button
                         variant="contained"
                         color="primary"

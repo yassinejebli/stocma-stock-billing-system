@@ -23,6 +23,7 @@ const initialState = {
     Unite: 'U',
     QteStock: 0,
     Disabled: false,
+    MinStock: 1,
     Image: null
 }
 
@@ -60,6 +61,7 @@ const ArticleForm = ({ data, onSuccess }) => {
         console.log({ data })
         if (editMode) {
             const { Article, QteStock, Disabled } = data;
+            console.log('Article.MinStock', Article.MinStock)
             setFormState({
                 Id: Article.Id,
                 QteStock,
@@ -70,7 +72,8 @@ const ArticleForm = ({ data, onSuccess }) => {
                 TVA: Article.TVA,
                 Unite: Article.Unite,
                 Disabled: Disabled,
-                Image: Article.Image
+                Image: Article.Image,
+                MinStock: Article.MinStock
             });
         }
     }, [])
@@ -172,6 +175,18 @@ const ArticleForm = ({ data, onSuccess }) => {
                 value={formState.QteStock}
                 helperText={formErrors.QteStock}
                 error={Boolean(formErrors.QteStock)}
+
+            />
+            <TextField
+                name="MinStock"
+                label="Qte minimum en stock"
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+                type="number"
+                onChange={onFieldChange}
+                value={formState.MinStock}
 
             />
             <TextField

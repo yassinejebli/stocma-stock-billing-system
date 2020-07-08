@@ -12,6 +12,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import SettingsIcon from '@material-ui/icons/Settings';
+import { BarcodeScan } from 'mdi-material-ui'
 import TopBar from './TopBar';
 import { useModal } from 'react-modal-hook';
 import SettingsDialog from '../dialogs/SettingsDialog';
@@ -299,6 +300,13 @@ const MenuItems = () => {
                     </Collapse>
                 </List>
             </>}
+            <Divider className={classes.divider} />
+            <List className={classes.list}>
+                <ListItem button component={Link} to="/">
+                    <ListItemIcon><BarcodeScan className={classes.icon} /></ListItemIcon>
+                    <ListItemText primary="Code barres" />
+                </ListItem>
+            </List>
             <Divider className={classes.divider} />
             <List className={classes.list}>
                 <ListItem button onClick={() => setOpenSettings(!openSettings)}>

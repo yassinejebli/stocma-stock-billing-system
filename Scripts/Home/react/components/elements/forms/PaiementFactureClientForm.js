@@ -135,11 +135,11 @@ const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) =>
             _errors['type'] = 'Ce champs est obligatoire.'
         if (!formState.date)
             _errors['date'] = 'Ce champs est obligatoire.'
-        if (!formState.dueDate && formState.type?.isBankRelatedItem)
+        if (!formState.dueDate && formState.type?.IsBankRelated)
             _errors['dueDate'] = 'Ce champs est obligatoire.'
-        if (!formState.comment && formState.type?.isBankRelatedItem)
+        if (!formState.comment && formState.type?.IsBankRelated)
             _errors['comment'] = 'Ce champs est obligatoire.'
-        if (!formState.comment && formState.type?.isBankRelatedItem)
+        if (!formState.comment && formState.type?.IsBankRelated)
             _errors['client'] = 'Ce champs est obligatoire.'
 
         setFormErrors(_errors);
@@ -202,7 +202,7 @@ const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) =>
                     error={Boolean(formErrors.date)}
                     helperText={formErrors.date}
                 />
-                {formState.type?.isBankRelatedItem && <DatePicker
+                {formState.type?.IsBankRelated && <DatePicker
                     value={formState.dueDate}
                     onChange={(_date) => setFormState(_formState => ({ ...formState, dueDate: _date }))}
                     margin="normal"

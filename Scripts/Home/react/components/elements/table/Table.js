@@ -8,7 +8,7 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { useSite } from '../../providers/SiteProvider';
-import {confirmDialog} from '../../elements/dialogs/ConfirmDialog'
+import { confirmDialog } from '../../elements/dialogs/ConfirmDialog'
 const border = '1px solid #d8d8d8';
 
 const useStyles = makeStyles(theme => ({
@@ -37,6 +37,7 @@ function Table({
     data,
     updateMyData,
     updateRow,
+    updateRow2,
     deleteRow,
     customAction,
     skipPageReset,
@@ -78,14 +79,15 @@ function Table({
             autoResetPage: !skipPageReset,
             updateMyData,
             addNewRow,
-            deleteRow: async (params)=>{
-                const ok = await confirmDialog({text: "Voulez vous vraiment supprimer cet enregistrement?"})
-                if(deleteRow && ok)
+            deleteRow: async (params) => {
+                const ok = await confirmDialog({ text: "Voulez vous vraiment supprimer cet enregistrement?" })
+                if (deleteRow && ok)
                     deleteRow(params)
             },
             customAction,
             showImage,
             updateRow,
+            updateRow2,
             disableRow,
             print,
             convert,

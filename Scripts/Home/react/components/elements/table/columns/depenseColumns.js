@@ -70,7 +70,6 @@ export const depenseColumns = () => ([
 ])
 
 
-
 export const depenseListColumns = () => ([
     {
         Id: 'Date',
@@ -79,13 +78,21 @@ export const depenseListColumns = () => ([
         accessor: props => {
             return format(new Date(props.Date), 'dd/MM/yyyy')
         },
-        width: 60
+        width: 60,
     },
     {
-        Header: 'Dépense',
+        Header: 'Titre',
         accessor: 'Titre',
         type: inputTypes.text.description,
-        width: 100
+        width: 100,
+    },
+    {
+        Header: 'Dépenses',
+        accessor: props=>{
+            return props.DepenseItems.map(x=>(x.Name + " : " + formatMoney(x.Montant))).filter(x=>x).join("\n")
+        },
+        type: inputTypes.text.description,
+        width: 200,
     },
     {
         id: 'Total',
@@ -118,6 +125,6 @@ export const depenseListColumns = () => ([
                 </Box>
             )
         },
-        width: 24
+        width: 24,
     },
 ])

@@ -21,7 +21,7 @@ namespace WebApplication1.DATA.OData
         [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<BonLivraison> GetBonLivraisons()
         {
-            return db.BonLivraisons.OrderByDescending(x=>x.Date);
+            return db.BonLivraisons.OrderByDescending(x => x.Date);
         }
 
         [EnableQuery]
@@ -37,9 +37,10 @@ namespace WebApplication1.DATA.OData
             if (bonLivraison == null)
                 return NotFound();
 
+            var oldNumBon = bonLivraison.NumBon;
             /////////////////////////////////////////////
             //----------------------------------------------Updating QteStock
-            foreach(var biOld in bonLivraison.BonLivraisonItems)
+            foreach (var biOld in bonLivraison.BonLivraisonItems)
             {
                 var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonLivraison.IdSite && x.IdArticle == biOld.IdArticle);
                 articleSite.QteStock += biOld.Qte;
@@ -88,9 +89,37 @@ namespace WebApplication1.DATA.OData
                     IdClient = newBonLivraison.IdClient,
                     Debit = Total,
                     IdTypePaiement = new Guid(ACHAT_PAIEMENT_TYPE_ID),
-                    Date = newBonLivraison.Date
+                    Date = newBonLivraison.Date,
                 };
                 db.Paiements.Add(paiement);
+            }
+
+            if (db.Clients.Find(bonLivraison.IdClient).IsClientDivers)
+            {
+                var ESPECE_PAIEMENT_TYPE_ID = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
+                var paymentClientDivers = db.Paiements.FirstOrDefault(x => x.Comment == "BL " + oldNumBon);
+                if (paymentClientDivers != null)
+                {
+                    paymentClientDivers.Credit = Total;
+                    paymentClientDivers.Date = newBonLivraison.Date;
+                    paymentClientDivers.Comment = "BL " + newBonLivraison.NumBon;
+                    paymentClientDivers.IdTypePaiement = newBonLivraison.IdTypePaiement ?? ESPECE_PAIEMENT_TYPE_ID;
+                }
+                else
+                {
+                    Paiement paiementClientDivers = new Paiement()
+                    {
+                        Id = Guid.NewGuid(),
+                        //IdBonLivraison = bonLivraison.Id,
+                        IdClient = bonLivraison.IdClient,
+                        Credit = Total,
+                        IdTypePaiement = newBonLivraison.IdTypePaiement ?? ESPECE_PAIEMENT_TYPE_ID,
+                        Date = bonLivraison.Date,
+                        Comment = "BL " + newBonLivraison.NumBon,
+                    };
+                    db.Paiements.Add(paiementClientDivers);
+                }
+
             }
             ////////////////////////////////////////////
 
@@ -117,12 +146,12 @@ namespace WebApplication1.DATA.OData
                 return BadRequest(this.ModelState);
             var numBonGenerator = new DocNumberGenerator();
             var currentYear = DateTime.Now.Year;
-            var lastDoc = db.BonLivraisons.Where(x=>x.Date.Year == currentYear && x.IdSite == bonLivraison.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();
+            var lastDoc = db.BonLivraisons.Where(x => x.Date.Year == currentYear && x.IdSite == bonLivraison.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();
             var lastRef = lastDoc != null ? lastDoc.Ref : 0;
             bonLivraison.User = User.Identity.Name;
             bonLivraison.IdUser = User.Identity.GetUserId();
             bonLivraison.Ref = lastRef + 1;
-            foreach(var bi in bonLivraison.BonLivraisonItems)
+            foreach (var bi in bonLivraison.BonLivraisonItems)
             {
                 var article = db.Articles.Find(bi.IdArticle);
                 bi.PA = article.PA;
@@ -151,10 +180,27 @@ namespace WebApplication1.DATA.OData
                     Date = bonLivraison.Date
                 };
                 db.Paiements.Add(paiement);
+
+                if (db.Clients.Find(bonLivraison.IdClient).IsClientDivers)
+                {
+                    var ESPECE_PAIEMENT_TYPE_ID = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
+                    Paiement paiementClientDivers = new Paiement()
+                    {
+                        Id = Guid.NewGuid(),
+                        //IdBonLivraison = bonLivraison.Id,
+                        IdClient = bonLivraison.IdClient,
+                        Credit = Total,
+                        IdTypePaiement = bonLivraison.IdTypePaiement ?? ESPECE_PAIEMENT_TYPE_ID,
+                        Date = bonLivraison.Date,
+                        Comment = "BL " + bonLivraison.NumBon,
+                    };
+                    db.Paiements.Add(paiementClientDivers);
+                }
+
             }
 
             //-------------------------------------------updating QteStock
-            foreach(var bi in bonLivraison.BonLivraisonItems)
+            foreach (var bi in bonLivraison.BonLivraisonItems)
             {
                 var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bonLivraison.IdSite);
                 articleSite.QteStock -= bi.Qte;
@@ -171,7 +217,7 @@ namespace WebApplication1.DATA.OData
                     return (IHttpActionResult)this.Conflict();
                 throw;
             }
-            var bonLivraisonWithItems = db.BonLivraisons.Where(x=>x.Id == bonLivraison.Id);
+            var bonLivraisonWithItems = db.BonLivraisons.Where(x => x.Id == bonLivraison.Id);
             return Content(HttpStatusCode.Created, SingleResult.Create(bonLivraisonWithItems));
         }
 
@@ -189,6 +235,17 @@ namespace WebApplication1.DATA.OData
             }
 
             db.Paiements.RemoveRange(async.Paiements);
+
+            if (db.Clients.Find(async.IdClient).IsClientDivers)
+            {
+                var ESPECE_PAIEMENT_TYPE_ID = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
+                var paymentClientDivers = db.Paiements.FirstOrDefault(x => x.Comment == "BL " + async.NumBon);
+                if (paymentClientDivers != null)
+                {
+                    db.Paiements.Remove(paymentClientDivers);
+                }
+            }
+
             db.BonLivraisonItems.RemoveRange(async.BonLivraisonItems);
             db.BonLivraisons.Remove(async);
             int num = await db.SaveChangesAsync();

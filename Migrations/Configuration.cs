@@ -29,7 +29,13 @@ namespace WebApplication1.Migrations
         protected override void Seed(MySaniSoftContext context)
         {
 
-
+            
+            var articlesMinStockNull = context.Articles.Where(x => x.MinStock == null);
+            if (articlesMinStockNull.Count() > 0)
+            {
+                articlesMinStockNull.ForEach(x => x.MinStock = 1);
+                context.SaveChanges();
+            }
             //TODO: remove asap
             var articlesTVANull = context.Articles.Where(x => x.TVA == null);
             if (articlesTVANull.Count() > 0)
@@ -69,6 +75,7 @@ namespace WebApplication1.Migrations
                 {
                     Id = 1,
                     Name = "Magasin 1",
+                    Code = "M1",
                     ArticleSites = new List<ArticleSite>()
                 };
                 context.Sites.Add(mainSite);
@@ -83,6 +90,12 @@ namespace WebApplication1.Migrations
                     });
                 }
 
+                context.SaveChanges();
+            }
+            else
+            {
+                var mainSite = context.Sites.Find(1);
+                if (mainSite != null) mainSite.Code = "M1";
                 context.SaveChanges();
             }
 

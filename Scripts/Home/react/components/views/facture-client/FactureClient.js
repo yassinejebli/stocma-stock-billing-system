@@ -328,7 +328,7 @@ const Facture = () => {
                             )}
                         />
                     </Box>}
-                    {factureCheque?.Enabled && paymentType?.isBankRelatedItem && <Box width={240}><TextField
+                    {factureCheque?.Enabled && paymentType?.IsBankRelated && <Box width={240}><TextField
                         value={chequeNumber}
                         onChange={({ target: { value } }) => setChequeNumber(value)}
                         variant="outlined"

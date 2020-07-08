@@ -10,7 +10,7 @@ import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
 import { format } from 'date-fns';
 
-export const getPaiementClientListColumns = ({isFiltered}) => ([
+export const getPaiementClientListColumns = ({ isFiltered }) => ([
     (isFiltered && {
         Header: 'Client',
         accessor: 'Client.Name',
@@ -74,9 +74,14 @@ export const getPaiementClientListColumns = ({isFiltered}) => ([
     {
         id: 'actions',
         Header: '',
-        Cell: ({ row: { original }, print, deleteRow, updateRow, disableRow, customAction }) => {
+        Cell: ({ row: { original }, print, deleteRow, updateRow, disableRow, customAction, updateRow2 }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
+                    {original.IdBonLivraison && <IconButton tabIndex={-1} size="small" onClick={() => updateRow2(original.IdBonLivraison)}>
+                        <Tooltip title="Modifier ce document">
+                            <EditOutlinedIcon />
+                        </Tooltip>
+                    </IconButton>}
                     {original.IdBonLivraison && <IconButton tabIndex={-1} size="small" onClick={() => print(original.BonLivraison)}>
                         <PrintOutlinedIcon />
                     </IconButton>}
@@ -88,7 +93,7 @@ export const getPaiementClientListColumns = ({isFiltered}) => ([
                             <PrintDisabledIcon />
                         </Tooltip>
                     </IconButton>
-                    {original?.TypePaiement?.IsBankRelated&&<IconButton tabIndex={-1} size="small" onClick={() => customAction(original)}>
+                    {original?.TypePaiement?.IsBankRelated && <IconButton tabIndex={-1} size="small" onClick={() => customAction(original)}>
                         <Tooltip title="Chèque/Effet impayé">
                             <KeyboardReturnIcon />
                         </Tooltip>
@@ -101,4 +106,4 @@ export const getPaiementClientListColumns = ({isFiltered}) => ([
         },
         width: 24
     },
-]).filter(x=>x)
+]).filter(x => x)

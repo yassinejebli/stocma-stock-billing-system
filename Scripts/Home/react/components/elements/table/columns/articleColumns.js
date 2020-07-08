@@ -188,7 +188,7 @@ export const articlesMarginColumns = () => ([
     },
     {
         Id: 'Turnover',
-        Header: 'Chiffre d\'affaire',
+        Header: 'Total',
         accessor: (props) => {
             return formatMoney(props.Turnover);
         },

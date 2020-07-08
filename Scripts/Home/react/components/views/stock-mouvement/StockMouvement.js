@@ -81,6 +81,12 @@ const StockMouvement = () => {
         setSkipPageReset(false)
     }, [data])
 
+    React.useEffect(() => {
+        setSiteFrom(null)
+        setSiteTo(null)
+        setData([emptyLine])
+    }, [siteId])
+
 
     React.useEffect(() => {
         setTitle('Mouvement de stock')
@@ -225,7 +231,14 @@ const StockMouvement = () => {
                 <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                     <SiteAutocomplete
                         value={siteFrom}
-                        onChange={(_, value) => setSiteFrom(value)}
+                        onChange={(_, value) => {
+                            if(siteId !== value?.Id)
+                                return showSnackBar({
+                                    error: true,
+                                    text: "Vous devez choisir le même magasin actuel dans le menu déroulant!"
+                                })
+                            setSiteFrom(value)
+                        }}
                         errorText={errors.siteFrom}
                     />
                     <UndoIcon className={classes.icon} color="primary" />
