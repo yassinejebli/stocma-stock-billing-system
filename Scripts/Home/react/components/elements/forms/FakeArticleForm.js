@@ -64,18 +64,20 @@ const FakeArticleForm = ({ data, onSuccess }) => {
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
-                    error: true
+                    error: true,
+                    text: 'Erreur!'
                 });
             }
         } else {
-            const response = await saveData('ArticleFactures', formState);
+            const response = await saveData('ArticleFactures', {...formState, Id: uuidv4()});
             if (response?.Id) {
                 setFormState({ ...initialState, Id: uuidv4() });
                 showSnackBar();
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
-                    error: true
+                    error: true,
+                    text: 'Erreur!'
                 });
             }
         }

@@ -115,7 +115,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                 });
             }
         } else {
-            const response = await saveArticle(preparedData, formState.QteStock, siteId);
+            const response = await saveArticle({ ...preparedData, Id: uuidv4() }, formState.QteStock, siteId);
             if (response?.Id) {
                 setFormState({ ...initialState, Id: uuidv4() });
                 showSnackBar();
@@ -168,7 +168,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                 variant="outlined"
                 size="small"
                 fullWidth
-                disabled={!canUpdateQteStock&&editMode}
+                disabled={!canUpdateQteStock && editMode}
                 margin="normal"
                 type="number"
                 onChange={onFieldChange}
