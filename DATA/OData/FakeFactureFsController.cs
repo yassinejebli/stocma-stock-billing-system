@@ -14,10 +14,10 @@ namespace WebApplication1.DATA.OData
         private MySaniSoftContext db = new MySaniSoftContext();
 
         // GET: odata/FakeFactureFs
-        [EnableQuery]
+        [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<FakeFactureF> GetFakeFactureFs()
         {
-            return db.FakeFacturesF;
+            return db.FakeFacturesF.OrderByDescending(x=>x.Date);
         }
 
         // GET: odata/FakeFactureFs(5)

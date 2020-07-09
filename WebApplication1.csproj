@@ -970,6 +970,7 @@
     <Compile Include="Migrations\202007071611204_Facture_DateEcheance.designer.cs">
       <DependentUpon>202007071611204_Facture_DateEcheance.cs</DependentUpon>
     </Compile>
+    <Compile Include="Statistics\BonLivraisonStatistics.cs" />
     <Compile Include="UserStatisticsController.cs" />
     <Compile Include="Datasets\DataSetATF1.Designer.cs">
       <AutoGen>True</AutoGen>

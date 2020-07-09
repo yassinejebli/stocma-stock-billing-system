@@ -25,6 +25,7 @@ const BonLivraisonList = () => {
     const {
         canUpdateBonLivraisons,
         canDeleteBonLivraisons,
+        isAdmin,
     } = useAuth();
     const { showLoader } = useLoader();
     const { siteId } = useSite();
@@ -59,7 +60,7 @@ const BonLivraisonList = () => {
     const history = useHistory();
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getBonLivraisonListColumns({canUpdateBonLivraisons, canDeleteBonLivraisons}),
+        () => getBonLivraisonListColumns({canUpdateBonLivraisons, canDeleteBonLivraisons, isAdmin}),
         []
     );
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {

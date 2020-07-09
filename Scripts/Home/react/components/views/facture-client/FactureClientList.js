@@ -36,6 +36,9 @@ const FactureList = () => {
                         },
                         'NumBon': {
                             contains: debouncedSearchText
+                        },
+                        'ClientName': {
+                            contains: debouncedSearchText
                         }
                     }
                 }

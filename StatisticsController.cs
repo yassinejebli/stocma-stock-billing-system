@@ -31,6 +31,5 @@ namespace WebApplication1
             return Json(statistics.ArticlesWithMargin(IdSite, Skip, SearchText, From, To), JsonRequestBehavior.AllowGet);
         }
 
-
     }
 }

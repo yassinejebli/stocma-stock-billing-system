@@ -80,7 +80,7 @@ const ArticlesStatistics = ({ onLowStockCountClick, lowStockSelected }) => {
                             {lowStockCount}
                         </div>
                         <div className={classes.text}>
-                            Faibles stocks
+                            Stocks faibles 
                         </div>
                     </div>
                 </Box>

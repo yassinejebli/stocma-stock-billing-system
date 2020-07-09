@@ -62,6 +62,9 @@ const PaiementFournisseurList = () => {
                         contains: debouncedSearchText
                     }
                 },
+                {
+                    'Credit': !isNaN(debouncedSearchText) ? Number(debouncedSearchText) : undefined
+                },
             ]
         }
     }, [debouncedSearchText, fournisseur, dateFrom, dateTo]);

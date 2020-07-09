@@ -17,7 +17,7 @@ import { fakeFactureAchatListColumns } from '../../elements/table/columns/fakeFa
 import AddIcon from '@material-ui/icons/Add';
 
 const DOCUMENT = 'FakeFactureFs'
-const EXPAND = ['Fournisseur', 'FakeFactureFItems']
+const EXPAND = ['Fournisseur', 'FakeFactureFItems', 'TypePaiement']
 
 const FakeFactureAchatList = () => {
     const { showSnackBar } = useSnackBar();
@@ -33,6 +33,9 @@ const FakeFactureAchatList = () => {
                             contains: debouncedSearchText
                         },
                         'NumBon': {
+                            contains: debouncedSearchText
+                        },
+                        'Comment': {
                             contains: debouncedSearchText
                         }
                     }

@@ -69,6 +69,12 @@ export const factureListColumns = () => ([
         width: 100
     },
     {
+        Header: 'Société',
+        accessor: 'ClientName',
+        type: inputTypes.text.description,
+        width: 100
+    },
+    {
         Header: 'N#',
         accessor: 'NumBon',
         type: inputTypes.text.description,

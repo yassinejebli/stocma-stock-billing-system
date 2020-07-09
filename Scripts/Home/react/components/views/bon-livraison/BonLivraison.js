@@ -99,6 +99,10 @@ const BonLivraison = () => {
     }, [data])
 
     React.useEffect(() => {
+        setData([emptyLine])
+    }, [siteId])
+
+    React.useEffect(() => {
         if (!BLDiscount?.Enabled)
             setData(_data => _data.map(x => ({ ...x, Discount: '' })));
     }, [BLDiscount])

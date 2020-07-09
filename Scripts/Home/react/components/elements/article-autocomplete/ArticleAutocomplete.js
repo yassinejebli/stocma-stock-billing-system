@@ -18,6 +18,9 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
   const classes = useStyles();
   const [articles, setArticles] = React.useState([]);
 
+  React.useEffect(()=>{
+    setArticles([]);
+  }, [siteId])
   const onChangeHandler = async ({ target: { value } }) => {
     const data = await getArticles({
       'Article/Designation': value ? {

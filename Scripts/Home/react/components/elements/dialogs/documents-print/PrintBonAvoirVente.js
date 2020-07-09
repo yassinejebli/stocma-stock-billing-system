@@ -4,10 +4,12 @@ import { Box, FormControlLabel, Switch } from '@material-ui/core';
 import { getPrintBonAvoirVenteURL } from '../../../../utils/urlBuilder';
 import PaiementClientForm from '../../forms/PaiementClientForm';
 import { useSite } from '../../../providers/SiteProvider';
+import { useAuth } from '../../../providers/AuthProvider';
 
 const DOCUMENT_ITEMS = 'BonAvoirCItems'
 
 const PrintBonAvoirVente = ({ document, onClose, onExited, open }) => {
+    const { canManagePaiementsClients } = useAuth();
     const isClientDivers = document?.Client?.IsClientDivers;
     const { useVAT } = useSite();
     const [showForm, setShowForm] = React.useState(false);
@@ -43,7 +45,7 @@ const PrintBonAvoirVente = ({ document, onClose, onExited, open }) => {
                                 label="Afficher le cachet"
                             />
                         </Box>
-                        {!isClientDivers&&<div>
+                        {!isClientDivers&&canManagePaiementsClients&&<div>
                             <FormControlLabel
                                 control={<Switch
                                     checked={showForm}

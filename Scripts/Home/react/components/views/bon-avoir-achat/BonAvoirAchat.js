@@ -75,7 +75,10 @@ const BonAvoirAchat = () => {
     React.useEffect(() => {
         setSkipPageReset(false)
     }, [data])
-
+    
+    React.useEffect(() => {
+        setData([emptyLine])
+    }, [siteId])
 
     React.useEffect(() => {
         setTitle('Bon d\'avoir (achat)')

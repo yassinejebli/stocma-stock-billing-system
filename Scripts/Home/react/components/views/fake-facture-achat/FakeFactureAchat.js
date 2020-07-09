@@ -40,6 +40,7 @@ const FakeFactureAchat = () => {
     const [numDoc, setNumDoc] = React.useState('');
     const [data, setData] = React.useState([emptyLine]);
     const [fournisseur, setFournisseur] = React.useState(null);
+    const [chequeNumber, setChequeNumber] = React.useState('');
     const [date, setDate] = React.useState(new Date());
     const [errors, setErrors] = React.useState({});
     const [paymentType, setPaymentType] = React.useState(null);
@@ -81,6 +82,7 @@ const FakeFactureAchat = () => {
             getSingleData(DOCUMENT, FakeFactureAchatId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'ArticleFacture'])
                 .then(response => {
                     setFournisseur(response.Fournisseur);
+                    setChequeNumber(response.Comment);
                     setDate(response.Date);
                     setData(response.FakeFactureFItems?.map(x => ({
                         Article: x.ArticleFacture,
@@ -169,6 +171,7 @@ const FakeFactureAchat = () => {
             })),
             IdTypePaiement: paymentType?.Id,
             IdFournisseur: fournisseur.Id,
+            Comment: chequeNumber,
             Date: date
         };
 
@@ -241,6 +244,14 @@ const FakeFactureAchat = () => {
                         value={paymentType}
                     />
                 </Box>
+                {paymentType?.IsBankRelated && <Box mt={2} width={240}><TextField
+                    value={chequeNumber}
+                    onChange={({ target: { value } }) => setChequeNumber(value)}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    label="Numéro de chèque/effet"
+                /></Box>}
                 <Box mt={4}>
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>

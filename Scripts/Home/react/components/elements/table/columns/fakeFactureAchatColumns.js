@@ -111,6 +111,17 @@ export const fakeFactureAchatListColumns = () => ([
         width: 60
     },
     {
+        Header: 'Mode de paiement',
+        accessor: 'TypePaiement.Name',
+        type: inputTypes.text.description,
+        width: 80,
+    },
+    {
+        Header: 'Note',
+        accessor: 'Comment',
+        type: inputTypes.text.description,
+    },
+    {
         id: 'Total',
         Header: 'Total',
         type: inputTypes.text.description,

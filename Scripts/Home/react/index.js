@@ -50,6 +50,8 @@ import TypeDepenseList from './components/views/type-depense/TypeDepenseList';
 import UtilisateurList from './components/views/utilisateurs/UtilisateurList';
 import AuthProvider, { useAuth } from './components/providers/AuthProvider';
 import TypePaiementList from './components/views/type-paiement/TypePaiementList';
+import BankPaiementsClientList from './components/views/paiement-client/BankPaiementsClientList';
+import BankPaiementsFournisseurList from './components/views/paiement-fournisseur/BankPaiementsFournisseurList';
 
 const Routes = () => {
     const {
@@ -81,6 +83,8 @@ const Routes = () => {
 
         {canManagePaiementsFournisseurs && <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />}
         {canManagePaiementsClients && <Route path="/liste-paiements-des-clients" component={PaiementClientList} />}
+        {canManagePaiementsClients && <Route path="/liste-cheques-et-effets-des-clients" component={BankPaiementsClientList} />}
+        {canManagePaiementsFournisseurs && <Route path="/liste-cheques-et-effets-des-fournisseurs" component={BankPaiementsFournisseurList} />}
 
         <Route path="/suivi-des-ventes" component={SuiviVentes} />
         <Route path="/suivi-des-achats" component={SuiviAchats} />
@@ -116,7 +120,7 @@ const Routes = () => {
         {canManageArticles && <Route path="/ArticleList" component={ArticleList} />}
         {canManageArticles && <Route path="/_ArticleList" component={FakeArticleList} />}
         {canManageSites && <Route path="/SiteList" component={SiteList} />}
-        <Route path="/marge-articles" component={ArticlesMarginList} />
+        {isAdmin&&<Route path="/marge-articles" component={ArticlesMarginList} />}
         {canManageClients && <Route path="/ClientList" component={ClientList} />}
         {canManageFournisseurs && <Route path="/SupplierList" component={SupplierList} />}
         {isAdmin && <Route path="/liste-methodes-de-paiement" component={TypePaiementList} />}

@@ -11,7 +11,7 @@ import { getLastPriceSale } from '../queries/articleQueries';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import { Box } from '@material-ui/core';
 
-export const getBonLivraisonColumns = ({BLDiscount}) => ([
+export const getBonLivraisonColumns = ({ BLDiscount }) => ([
     {
         Header: 'Article',
         accessor: 'Article',
@@ -97,10 +97,10 @@ export const getBonLivraisonColumns = ({BLDiscount}) => ([
         width: 24,
         align: 'right'
     },
-].filter(x=>x))
+].filter(x => x))
 
 
-export const getClientColumns = ({useVAT}) => ([
+export const getClientColumns = ({ useVAT }) => ([
     {
         Header: 'Client',
         accessor: 'Name',
@@ -140,7 +140,7 @@ export const getClientColumns = ({useVAT}) => ([
         Header: 'Plafond',
         accessor: (props) => {
             return props.Plafond ? formatMoney(props.Plafond) : ''
-        },        
+        },
         type: inputTypes.text.description,
         align: 'right'
     },
@@ -235,7 +235,7 @@ export const getFournisseurColumns = () => ([
 ])
 
 
-export const getBonLivraisonListColumns = ({canUpdateBonLivraisons, canDeleteBonLivraisons}) => ([
+export const getBonLivraisonListColumns = ({ canUpdateBonLivraisons, canDeleteBonLivraisons, isAdmin }) => ([
     {
         Header: 'Client',
         accessor: 'Client.Name',
@@ -292,6 +292,29 @@ export const getBonLivraisonListColumns = ({canUpdateBonLivraisons, canDeleteBon
         },
         align: 'right'
     },
+    (isAdmin && {
+        id: 'Marge',
+        Header: 'Marge',
+        type: inputTypes.text.description,
+        width: 30,
+        accessor: (props) => {
+            const discount = props.BonLivraisonItems.reduce((sum, curr) => {
+                const total = curr.Pu * curr.Qte;
+                if (curr.Discount) {
+                    if (!curr.PercentageDiscount)
+                        sum += Number(curr.Discount)
+                    else
+                        sum += total * parseFloat(curr.Discount) / 100;
+                }
+                return sum;
+            }, 0);
+            const marge = props.BonLivraisonItems.reduce((sum, curr) => (
+                sum += (curr.Pu - curr.PA) * curr.Qte
+            ), 0);
+            return formatMoney(marge - discount);
+        },
+        align: 'right'
+    }),
     {
         id: 'actions',
         Header: '',
@@ -301,10 +324,10 @@ export const getBonLivraisonListColumns = ({canUpdateBonLivraisons, canDeleteBon
                     <IconButton tabIndex={-1} size="small" onClick={() => print(original)}>
                         <PrintOutlinedIcon />
                     </IconButton>
-                    {canUpdateBonLivraisons&&<IconButton tabIndex={-1} size="small" onClick={() => updateRow(original.Id)}>
+                    {canUpdateBonLivraisons && <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original.Id)}>
                         <EditOutlinedIcon />
                     </IconButton>}
-                    {canDeleteBonLivraisons&&<IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
+                    {canDeleteBonLivraisons && <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
                         <DeleteForeverOutlinedIcon />
                     </IconButton>}
                 </Box>
@@ -312,4 +335,4 @@ export const getBonLivraisonListColumns = ({canUpdateBonLivraisons, canDeleteBon
         },
         width: 24
     },
-])
+].filter(x => x))

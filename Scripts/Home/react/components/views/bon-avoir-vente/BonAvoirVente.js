@@ -94,6 +94,10 @@ const BonAvoirVente = () => {
 
 
     React.useEffect(() => {
+        setData([emptyLine])
+    }, [siteId])
+    
+    React.useEffect(() => {
         setTitle('Bon d\'avoir (vente)')
         if (isEditMode) {
             setLoading(true);

@@ -8,6 +8,7 @@ import ClientAutocomplete from '../client-autocomplete/ClientAutocomplete';
 import { saveData, updateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import TypePaiementAutocomplete from '../type-paiement-autocomplete/TypePaiementAutocomplete';
+import { useAuth } from '../../providers/AuthProvider';
 
 export const useStyles = makeStyles(theme => ({
     root: {
@@ -79,6 +80,8 @@ const initialState = {
 
 const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSuccess, isAvoir }) => {
     const { showSnackBar } = useSnackBar();
+    const { canManagePaiementsClients } = useAuth();
+    if(!canManagePaiementsClients) return null;
     const [formState, setFormState] = React.useState({
         ...initialState,
         date: new Date()

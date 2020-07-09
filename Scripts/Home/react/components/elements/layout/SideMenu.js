@@ -12,7 +12,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { BarcodeScan } from 'mdi-material-ui'
+import { BarcodeScan, PlaylistEdit } from 'mdi-material-ui'
 import TopBar from './TopBar';
 import { useModal } from 'react-modal-hook';
 import SettingsDialog from '../dialogs/SettingsDialog';
@@ -130,6 +130,7 @@ const MenuItems = () => {
     ));
     const [openAccounts, setOpenAccounts] = React.useState(false);
     const [openSettings, setOpenSettings] = React.useState(false);
+    const [openChequesEffets, setOpenChequesEffets] = React.useState(false);
     const [openSales, setOpenSales] = React.useState(false);
     const [openSituations, setOpenSituations] = React.useState(false);
     const [openTresorery, setOpenTresorery] = React.useState(false);
@@ -179,7 +180,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Bon de livraison" />
                         </ListItem>
-                        {canManageFacturesVente&&<ListItem button className={classes.nested} component={Link} to="/_Facture">
+                        {canManageFacturesVente && <ListItem button className={classes.nested} component={Link} to="/_Facture">
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>}
@@ -187,7 +188,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Devis" />
                         </ListItem>
-                        {canManageBonAvoirsVente&&<ListItem button className={classes.nested} component={Link} to="/bon-avoir-vente">
+                        {canManageBonAvoirsVente && <ListItem button className={classes.nested} component={Link} to="/bon-avoir-vente">
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>}
@@ -195,7 +196,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
                         </ListItem>
-                        {isAdmin&&<ListItem button className={classes.nested} component={Link} to="/rapports-des-ventes">
+                        {isAdmin && <ListItem button className={classes.nested} component={Link} to="/rapports-des-ventes">
                             <ListItemIcon />
                             <ListItemText primary="Rapports" />
                         </ListItem>}
@@ -211,11 +212,11 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openPurchases} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        {canManageBonReceptions&&<ListItem button className={classes.nested} component={Link} to="/BonReception">
+                        {canManageBonReceptions && <ListItem button className={classes.nested} component={Link} to="/BonReception">
                             <ListItemIcon />
                             <ListItemText primary="Bon de réception" />
                         </ListItem>}
-                        {canManageFacturesAchat&&<ListItem button className={classes.nested} component={Link} to="/_FactureAchat">
+                        {canManageFacturesAchat && <ListItem button className={classes.nested} component={Link} to="/_FactureAchat">
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>}
@@ -223,7 +224,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Commande" />
                         </ListItem>
-                        {canManageBonAvoirsAchat&&<ListItem button className={classes.nested} component={Link} to="/bon-avoir-achat">
+                        {canManageBonAvoirsAchat && <ListItem button className={classes.nested} component={Link} to="/bon-avoir-achat">
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>}
@@ -231,10 +232,6 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
                         </ListItem>
-                        {/* <ListItem button className={classes.nested} onClick={() => history.push('/rapports-des-achats')}>
-                            <ListItemIcon />
-                            <ListItemText primary="Rapports" />
-                        </ListItem> */}
                     </List>
                 </Collapse>
             </List>
@@ -264,7 +261,7 @@ const MenuItems = () => {
                 </Collapse>
             </List>
                 <Divider className={classes.divider} /></>}
-            {(canManagePaiementsFournisseurs||canManagePaiementsClients) && <List className={classes.list}>
+            {(canManagePaiementsFournisseurs || canManagePaiementsClients) && <List className={classes.list}>
                 <ListItem button onClick={() => setOpenSituations(!openSituations)}>
                     <ListItemIcon><AccountBalanceIcon className={classes.icon} /></ListItemIcon>
                     <ListItemText primary="Situation" />
@@ -272,17 +269,37 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openSituations} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        {canManagePaiementsClients&&<ListItem button component={Link} to="/liste-paiements-des-clients">
+                        {canManagePaiementsClients && <ListItem button component={Link} to="/liste-paiements-des-clients">
                             <ListItemIcon />
                             <ListItemText primary="Clients" />
                         </ListItem>}
-                        {canManagePaiementsFournisseurs&&<ListItem button component={Link} to="/liste-paiements-des-fournisseurs">
+                        {canManagePaiementsFournisseurs && <ListItem button component={Link} to="/liste-paiements-des-fournisseurs">
                             <ListItemIcon />
                             <ListItemText primary="Fournisseurs" />
                         </ListItem>}
                     </List>
                 </Collapse>
             </List>}
+            {(canManagePaiementsClients || canManagePaiementsFournisseurs)&&<><Divider className={classes.divider} />
+            <List className={classes.list}>
+                <ListItem button onClick={() => setOpenChequesEffets(!openChequesEffets)}>
+                    <ListItemIcon><PlaylistEdit className={classes.icon} /></ListItemIcon>
+                    <ListItemText primary="Chèques / Effet" />
+                    {openChequesEffets ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openChequesEffets} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        {canManagePaiementsClients&&<ListItem button component={Link} to="/liste-cheques-et-effets-des-clients">
+                            <ListItemIcon />
+                            <ListItemText primary="Clients" />
+                        </ListItem>}
+                        {canManagePaiementsFournisseurs&&<ListItem button component={Link} to="/liste-cheques-et-effets-des-fournisseurs">
+                            <ListItemIcon />
+                            <ListItemText primary="Fournisseurs" />
+                        </ListItem>}
+                    </List>
+                </Collapse>
+            </List></>}
             {canManageDepenses && <><Divider className={classes.divider} />
                 <List className={classes.list}>
                     <ListItem button onClick={() => setOpenTresorery(!openTresorery)}>
@@ -316,7 +333,7 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openSettings} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        {isAdmin&&<ListItem button component={Link} to="/liste-des-utilisateurs">
+                        {isAdmin && <ListItem button component={Link} to="/liste-des-utilisateurs">
                             <ListItemIcon />
                             <ListItemText primary="Utilisateurs" />
                         </ListItem>}
@@ -344,6 +361,13 @@ const MenuItems = () => {
                 <List className={classes.list}>
                     <ListItem button onClick={() => {
                         localStorage.clear();
+                        var cookies = document.cookie.split(";");
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = cookies[i];
+                            var eqPos = cookie.indexOf("=");
+                            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                        }
                         document.getElementById('logoutForm')?.submit();
                     }}>
                         <ListItemIcon><ExitToAppIcon className={classes.icon} style={{ transform: 'scaleX(-1)', color: '#eb5752' }} /></ListItemIcon>

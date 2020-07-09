@@ -401,10 +401,11 @@ namespace WebApplication1.Controllers
         //
         // POST: /Account/LogOff
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
+            Session.Abandon();
             return RedirectToAction("Login", "Account");
         }
 

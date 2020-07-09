@@ -68,6 +68,9 @@ const PaiementClientList = () => {
                         contains: debouncedSearchText
                     }
                 },
+                {
+                    'Credit': !isNaN(debouncedSearchText) ? Number(debouncedSearchText) : undefined
+                },
             ]
         }
     }, [debouncedSearchText, client, dateFrom, dateTo]);
@@ -228,7 +231,7 @@ const PaiementClientList = () => {
     }, []);
 
     const editDocument = React.useCallback((id) => {
-        history.push(`BonLivraison?BonLivraisonId=${id}`);
+        window.open(`/Administration#/BonLivraison?BonLivraisonId=${id}`, "_blank")
     }, []);
 
     const deleteRow = React.useCallback(async (id) => {
