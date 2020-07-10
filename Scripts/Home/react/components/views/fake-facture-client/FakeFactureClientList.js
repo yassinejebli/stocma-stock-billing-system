@@ -17,7 +17,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { useLoader } from '../../providers/LoaderProvider'
 
 const DOCUMENT = 'FakeFactures'
-const EXPAND = ['Client', 'TypePaiement', 'FakeFactureItems/ArticleFacture']
+const EXPAND = ['Client($select=Id,Name)', 'TypePaiement', 'FakeFactureItems/ArticleFacture']
 
 const FakeFactureClientList = () => {
     const { showLoader } = useLoader();

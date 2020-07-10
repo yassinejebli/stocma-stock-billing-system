@@ -17,7 +17,7 @@ import PrintFacture from '../../elements/dialogs/documents-print/PrintFacture'
 import AddIcon from '@material-ui/icons/Add';
 
 const DOCUMENT = 'FactureFs'
-const EXPAND = ['Fournisseur', 'TypePaiement', 'BonReceptions/BonReceptionItems/Article']
+const EXPAND = ['Fournisseur($select=Id,Name)', 'TypePaiement', 'BonReceptions/BonReceptionItems/Article']
 
 const FactureAchatList = () => {
     const { showSnackBar } = useSnackBar();

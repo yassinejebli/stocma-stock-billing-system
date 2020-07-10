@@ -132,6 +132,7 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
             <Box flexDirection="column" display="flex" mt={2}>
                 {!isFromDocument && <FournisseurAutocomplete
                     label="Fournisseur"
+                    disabled={isEditMode}
                     value={formState.fournisseur}
                     onChange={(_, value) => setFormState(_formState => ({ ...formState, fournisseur: value }))}
                     errorText={formErrors.fournisseur}

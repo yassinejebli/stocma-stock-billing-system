@@ -9,6 +9,7 @@ import useDebounce from '../../../hooks/useDebounce';
 import TitleIcon from '../../elements/misc/TitleIcon';
 import { getPaiementClientListColumns } from '../../elements/table/columns/paiementClientColumns';
 import DatePicker from '../../elements/date-picker/DatePicker';
+import { MicrosoftExcel } from 'mdi-material-ui';
 import Table from '../../elements/table/Table';
 import { getData, deleteData, saveData } from '../../../queries/crudBuilder';
 import ClientAutocomplete from '../../elements/client-autocomplete/ClientAutocomplete';
@@ -23,10 +24,11 @@ import PrintClientAccountSummary from '../../elements/dialogs/documents-print/Pr
 import SoldeText from '../../elements/texts/SoldeText';
 import { useLoader } from '../../providers/LoaderProvider';
 import { useHistory } from 'react-router-dom';
+import { getExportClientAccountSummaryURL } from '../../../utils/urlBuilder';
 
 const TABLE = 'Paiements';
 
-const EXPAND = ['TypePaiement', 'Client', 'BonLivraison/Client', 'BonLivraisonItems'];
+const EXPAND = ['TypePaiement', 'Client($select=Id,Name)', 'BonLivraison/Client($select=Id,Name)', 'BonLivraisonItems'];
 
 const PaiementClientList = () => {
     const refreshCount = React.useRef(0)
@@ -250,14 +252,32 @@ const PaiementClientList = () => {
     return (
         <>
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                {client && dateFrom && dateTo && <Button
+                {client && dateFrom && dateTo && <><Button
                     variant="contained"
                     color="primary"
                     startIcon={<PrintIcon />}
                     onClick={printAccountSummary}
                 >
-                    Imprimer la situation de compte client
-                </Button>}
+                    Imprimer la situation
+                </Button>
+                    <Box ml={2}>
+                        <Button
+                        style={{
+                            backgroundColor: '#026f39'
+                        }}
+                            variant="contained"
+                            color="primary"
+                            startIcon={<MicrosoftExcel />}
+                            href={getExportClientAccountSummaryURL({
+                                id: client.Id,
+                                dateFrom: dateFrom.toISOString(),
+                                dateTo: dateTo.toISOString(),
+                            })}
+                        >
+                            Exporter vers Excel
+                        </Button>
+                    </Box>
+                </>}
                 <Button
                     variant="contained"
                     color="primary"

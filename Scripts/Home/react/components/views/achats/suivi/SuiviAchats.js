@@ -15,7 +15,7 @@ import DatePicker from '../../../elements/date-picker/DatePicker';
 
 const TABLE = 'BonReceptionItems';
 
-const EXPAND = ['Article', 'BonReception/Fournisseur'];
+const EXPAND = ['Article', 'BonReception/Fournisseur($select=Id,Name)'];
 
 const SuiviAchats = () => {
     const today = new Date();

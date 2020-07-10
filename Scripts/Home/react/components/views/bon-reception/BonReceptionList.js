@@ -18,7 +18,7 @@ import { bonReceptionListColumns } from '../../elements/table/columns/bonRecepti
 import AddIcon from '@material-ui/icons/Add';
 
 const DOCUMENT = 'BonReceptions'
-const EXPAND = ['Fournisseur', 'BonReceptionItems']
+const EXPAND = ['Fournisseur($select=Id,Name)', 'BonReceptionItems']
 
 const BonReceptionList = () => {
     const { siteId } = useSite();

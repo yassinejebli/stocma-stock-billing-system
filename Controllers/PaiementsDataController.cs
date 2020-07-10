@@ -11,7 +11,6 @@ namespace WebApplication1.Controllers
     {
         MySaniSoftContext db = new MySaniSoftContext();
 
-        // GET: SalesHistory
         public ActionResult getBalanceBeforeDateAndRealBalance(Guid id, DateTime date)
         {
             var soldeBeforeDate = db.Paiements.Where(x => DbFunctions.TruncateTime(x.Date) < date.Date && x.IdClient == id && !x.Client.IsClientDivers).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f;

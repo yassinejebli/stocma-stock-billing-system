@@ -2,8 +2,10 @@ import React from 'react'
 import IconButton from '@material-ui/core/IconButton';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import LaunchIcon from '@material-ui/icons/Launch';
+import PrintIcon from '@material-ui/icons/Print';
+import PrintDisabledIcon from '@material-ui/icons/PrintDisabled';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { Box, Tooltip } from '@material-ui/core';
 import { inputTypes } from '../../../../types/input';
@@ -77,13 +79,21 @@ export const getPaiementClientListColumns = ({ isFiltered }) => ([
         Cell: ({ row: { original }, print, deleteRow, updateRow, disableRow, customAction, updateRow2 }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
-                     {original.EnCaisse && <IconButton tabIndex={-1} size="small" disableRipple>
+                    {original.IdBonLivraison && <IconButton tabIndex={-1} size="small" onClick={() => print(original.BonLivraison)}>
+                        <PrintIcon />
+                    </IconButton>}
+                    {original.EnCaisse && <IconButton tabIndex={-1} size="small" disableRipple>
                         <Tooltip title="Encaissé">
-                            <CheckCircleIcon style={{
+                            <MonetizationOnIcon style={{
                                 color: 'green'
                             }} />
                         </Tooltip>
                     </IconButton>}
+                    <IconButton tabIndex={-1} size="small" onClick={() => disableRow(original)}>
+                        <Tooltip title="Supprimer cette ligne lors de l'impression">
+                            <PrintDisabledIcon />
+                        </Tooltip>
+                    </IconButton>
                     {original.IdBonLivraison && <IconButton tabIndex={-1} size="small" onClick={() => updateRow2(original.IdBonLivraison)}>
                         <Tooltip title="Modifier ce document">
                             <LaunchIcon />
@@ -171,7 +181,7 @@ export const getBankPaiementsClientListColumns = ({ isFiltered }) => ([
                 <Box display="flex" justifyContent="flex-end">
                     {original.EnCaisse && <IconButton tabIndex={-1} size="small" disableRipple>
                         <Tooltip title="Encaissé">
-                            <CheckCircleIcon style={{
+                            <MonetizationOnIcon style={{
                                 color: 'green'
                             }} />
                         </Tooltip>

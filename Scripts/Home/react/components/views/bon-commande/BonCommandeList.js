@@ -17,7 +17,7 @@ import { bonCommandeListColumns } from '../../elements/table/columns/bonCommande
 import AddIcon from '@material-ui/icons/Add';
 
 const DOCUMENT = 'BonCommandes'
-const EXPAND = ['Fournisseur', 'BonCommandeItems']
+const EXPAND = ['Fournisseur($select=Name)', 'BonCommandeItems']
 
 const BonCommandeList = () => {
     const { showSnackBar } = useSnackBar();

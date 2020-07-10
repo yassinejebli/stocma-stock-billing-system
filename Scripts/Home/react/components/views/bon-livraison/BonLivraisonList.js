@@ -19,7 +19,7 @@ import { useLoader } from '../../providers/LoaderProvider'
 import { useAuth } from '../../providers/AuthProvider'
 
 const DOCUMENT = 'BonLivraisons'
-const EXPAND = ['Client', 'TypePaiement', 'BonLivraisonItems']
+const EXPAND = ['Client($select=Id,Name)', 'TypePaiement', 'BonLivraisonItems']
 
 const BonLivraisonList = () => {
     const {

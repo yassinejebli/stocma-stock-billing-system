@@ -19,7 +19,7 @@ import PrintDevis from '../../elements/dialogs/documents-print/PrintDevis'
 import { useLoader } from '../../providers/LoaderProvider'
 
 const DOCUMENT = 'Devises'
-const EXPAND = ['Client', 'DevisItems']
+const EXPAND = ['Client($select=Id,Name)', 'DevisItems']
 
 const DevisList = () => {
     const { showLoader } = useLoader();

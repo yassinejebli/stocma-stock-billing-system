@@ -22,7 +22,7 @@ import { useHistory } from 'react-router-dom';
 
 const TABLE = 'PaiementFs';
 
-const EXPAND = ['TypePaiement', 'Fournisseur'];
+const EXPAND = ['TypePaiement', 'Fournisseur($select=Id,Name)'];
 
 const BankPaiementsFournisseurList = () => {
     const refreshCount = React.useRef(0)

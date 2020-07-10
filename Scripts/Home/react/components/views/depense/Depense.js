@@ -44,7 +44,7 @@ const Depense = () => {
     );
     const [skipPageReset, setSkipPageReset] = React.useState(false);
     const total = data.reduce((sum, curr) => (
-        sum += curr.Montant
+        sum += Number(curr.Montant)
     ), 0);
 
     React.useEffect(() => {

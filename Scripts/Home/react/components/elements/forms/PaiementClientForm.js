@@ -81,7 +81,7 @@ const initialState = {
 const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSuccess, isAvoir }) => {
     const { showSnackBar } = useSnackBar();
     const { canManagePaiementsClients } = useAuth();
-    if(!canManagePaiementsClients) return null;
+    if (!canManagePaiementsClients) return null;
     const [formState, setFormState] = React.useState({
         ...initialState,
         date: new Date()
@@ -190,6 +190,7 @@ const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSucces
             <Box flexDirection="column" display="flex" mt={2}>
                 {!isFromDocument && <ClientAutocomplete
                     label="Client"
+                    disabled={isEditMode}
                     value={formState.client}
                     onChange={(_, value) => setFormState(_formState => ({ ...formState, client: value }))}
                     errorText={formErrors.client}
@@ -210,6 +211,7 @@ const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSucces
                     <TypePaiementAutocomplete
                         showAllPaymentMethods
                         value={formState.type}
+                        errorText={formErrors.type}
                         onChange={(_, value) => setFormState(_formState => ({ ...formState, type: value }))}
                     />
                 </Box>

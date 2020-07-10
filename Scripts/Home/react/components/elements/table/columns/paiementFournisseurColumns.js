@@ -6,7 +6,7 @@ import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { Box, Tooltip } from '@material-ui/core';
 import { inputTypes } from '../../../../types/input';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { formatMoney } from '../../../../utils/moneyUtils';
 import { format } from 'date-fns';
 
@@ -77,7 +77,7 @@ export const getPaiementFournisseurListColumns = ({ isFiltered }) => ([
                 <Box display="flex" justifyContent="flex-end">
                     {original.EnCaisse && <IconButton tabIndex={-1} size="small" disableRipple>
                         <Tooltip title="Encaissé">
-                            <CheckCircleIcon style={{
+                            <MonetizationOnIcon style={{
                                 color: 'green'
                             }} />
                         </Tooltip>
@@ -168,7 +168,7 @@ export const getBankPaiementsFournisseurListColumns = ({ isFiltered }) => ([
                 <Box display="flex" justifyContent="flex-end">
                      {original.EnCaisse && <IconButton tabIndex={-1} size="small" disableRipple>
                         <Tooltip title="Encaissé">
-                            <CheckCircleIcon style={{
+                            <MonetizationOnIcon style={{
                                 color: 'green'
                             }} />
                         </Tooltip>

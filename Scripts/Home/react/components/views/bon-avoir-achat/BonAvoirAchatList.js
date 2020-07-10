@@ -18,7 +18,7 @@ import AddIcon from '@material-ui/icons/Add'
 import { useSite } from '../../providers/SiteProvider'
 
 const DOCUMENT = 'BonAvoirs'
-const EXPAND = ['Fournisseur', 'BonAvoirItems']
+const EXPAND = ['Fournisseur($select=Id,Name)', 'BonAvoirItems']
 
 const BonAvoirAchatList = () => {
     const { siteId } = useSite();

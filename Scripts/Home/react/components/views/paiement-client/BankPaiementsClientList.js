@@ -24,7 +24,7 @@ import { useHistory } from 'react-router-dom';
 
 const TABLE = 'Paiements';
 
-const EXPAND = ['TypePaiement', 'Client'];
+const EXPAND = ['TypePaiement', 'Client($select=Id,Name)'];
 
 const BankPaiementsClientList = () => {
     const refreshCount = React.useRef(0)

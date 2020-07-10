@@ -22,7 +22,7 @@ import { useLoader } from '../../providers/LoaderProvider';
 
 const TABLE = 'PaiementFs';
 
-const EXPAND = ['TypePaiement', 'Fournisseur', 'BonReception/Fournisseur'];
+const EXPAND = ['TypePaiement', 'Fournisseur($select=Id,Name)', 'BonReception/Fournisseur'];
 
 const PaiementFournisseurList = () => {
     const refreshCount = React.useRef(0)

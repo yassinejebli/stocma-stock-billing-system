@@ -18,7 +18,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { useLoader } from '../../providers/LoaderProvider'
 
 const DOCUMENT = 'Factures'
-const EXPAND = ['Client', 'TypePaiement', 'BonLivraisons/BonLivraisonItems/Article']
+const EXPAND = ['Client($select=Name)', 'TypePaiement', 'BonLivraisons/BonLivraisonItems/Article']
 
 const FactureList = () => {
     const { showLoader } = useLoader();
