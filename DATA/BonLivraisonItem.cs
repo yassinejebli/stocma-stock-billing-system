@@ -21,6 +21,7 @@ namespace WebApplication1.DATA
         public float PA { get; set; }
 
         public Guid IdArticle { get; set; }
+        public int? IdSite { get; set; }
 
         public int? Index { get; set; }
 
@@ -35,5 +36,6 @@ namespace WebApplication1.DATA
         public virtual BonLivraison BonLivraison { get; set; }
 
         public virtual Article Article { get; set; }
+        public virtual Site Site { get; set; }
     }
 }

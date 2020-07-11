@@ -17,7 +17,7 @@ export const useSite = () => {
 }
 
 const SiteProvider = ({ children }) => {
-    const savedSiteId = localStorage.getItem('site') ?  Number(localStorage.getItem('site')) : 1;
+    const savedSiteId = localStorage.getItem('site') ? Number(localStorage.getItem('site')) : 1;
     const [siteId, setSiteId] = React.useState(savedSiteId);
     const [siteName, setSiteName] = React.useState('Magasin 1');
     const [company, setCompany] = React.useState({});
@@ -30,15 +30,16 @@ const SiteProvider = ({ children }) => {
 
     const fetchSites = () => {
         getAllData('Sites')
-        .then(res => setSites(res.filter(x=>!x.Disabled)))
-        .catch(err => console.error(err));
+            .then(res => setSites(res.filter(x => !x.Disabled)))
+            .catch(err => console.error(err));
     }
 
     const fetchCompany = () => {
         getAllData('Companies')
-        .then(res => setCompany(res[0]))
-        .catch(err => console.error(err));
+            .then(res => setCompany(res[0]))
+            .catch(err => console.error(err));
     }
+    
     const setSite = (site) => {
         if (site) {
             setSiteId(site.Id)
@@ -50,9 +51,15 @@ const SiteProvider = ({ children }) => {
     return (
         <SiteContext.Provider value={{
             siteId,
+            hasMultipleSites: sites?.length > 1,
             siteName,
             setSite,
             sites,
+            //TODO: remove this
+            site: {
+                Id: siteId,
+                Name: sites?.find(x=>x.Id === siteId)?.Name
+            },
             fetchSites,
             useVAT: company?.UseVAT
         }}>

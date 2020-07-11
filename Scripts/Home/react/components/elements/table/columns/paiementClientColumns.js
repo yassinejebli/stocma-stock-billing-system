@@ -12,7 +12,7 @@ import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
 import { format } from 'date-fns';
 
-export const getPaiementClientListColumns = ({ isFiltered }) => ([
+export const getPaiementClientListColumns = ({ isFiltered, canUpdateBonLivraisons }) => ([
     (isFiltered && {
         Header: 'Client',
         accessor: 'Client.Name',
@@ -94,7 +94,7 @@ export const getPaiementClientListColumns = ({ isFiltered }) => ([
                             <PrintDisabledIcon />
                         </Tooltip>
                     </IconButton>
-                    {original.IdBonLivraison && <IconButton tabIndex={-1} size="small" onClick={() => updateRow2(original.IdBonLivraison)}>
+                    {original.IdBonLivraison && canUpdateBonLivraisons && <IconButton tabIndex={-1} size="small" onClick={() => updateRow2(original.IdBonLivraison)}>
                         <Tooltip title="Modifier ce document">
                             <LaunchIcon />
                         </Tooltip>

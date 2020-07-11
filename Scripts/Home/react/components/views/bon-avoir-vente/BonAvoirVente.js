@@ -26,6 +26,7 @@ const DOCUMENT_ITEMS = 'BonAvoirCItems'
 const DOCUMENT_OWNER = 'Client'
 const emptyLine = {
     Article: null,
+    Site: null,
     Qte: 1,
     Pu: ''
 }
@@ -49,7 +50,7 @@ export const paymentMethods = [
 ]
 
 const BonAvoirVente = () => {
-    const { siteId } = useSite();
+    const { siteId, hasMultipleSites } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
@@ -67,7 +68,7 @@ const BonAvoirVente = () => {
     const isEditMode = Boolean(BonAvoirVenteId);
 
     const columns = React.useMemo(
-        () => bonAvoirVenteColumns(),
+        () => bonAvoirVenteColumns({hasMultipleSites}),
         []
     );
     const [skipPageReset, setSkipPageReset] = React.useState(false);
@@ -92,22 +93,18 @@ const BonAvoirVente = () => {
         setSkipPageReset(false)
     }, [data])
 
-
-    React.useEffect(() => {
-        setData([emptyLine])
-    }, [siteId])
-    
     React.useEffect(() => {
         setTitle('Bon d\'avoir (vente)')
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, BonAvoirVenteId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
+            getSingleData(DOCUMENT, BonAvoirVenteId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article', 'Site'])
                 .then(response => {
                     setClient(response.Client);
                     setDate(response.Date);
                     setNote(response.Note);
                     setData(response.BonAvoirCItems?.map(x => ({
                         Article: x.Article,
+                        Site: x.Site,
                         Qte: x.Qte,
                         Pu: x.Pu,
                     })));
@@ -188,6 +185,7 @@ const BonAvoirVente = () => {
                 IdBonAvoirC: Id,
                 Qte: d.Qte,
                 Pu: d.Pu,
+                IdSite: d.Site.Id,
                 IdArticle: d.Article.Id,
             })),
             IdClient: client.Id,
@@ -216,7 +214,9 @@ const BonAvoirVente = () => {
     const resetData = () => {
         setClient(null);
         setNote('');
-        setDate(new Date());
+        setTimeout(() => {
+            setDate(new Date());
+        }, 1000)
         setData([]);
         addNewRow();
     }

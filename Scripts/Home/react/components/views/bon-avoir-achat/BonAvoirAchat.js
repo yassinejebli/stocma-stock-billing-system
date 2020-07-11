@@ -47,7 +47,7 @@ export const paymentMethods = [
 ]
 
 const BonAvoirAchat = () => {
-    const { siteId } = useSite();
+    const { siteId, hasMultipleSites } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
@@ -64,7 +64,7 @@ const BonAvoirAchat = () => {
     const isEditMode = Boolean(BonAvoirAchatId);
 
     const columns = React.useMemo(
-        () => bonAvoirAchatColumns(),
+        () => bonAvoirAchatColumns({hasMultipleSites}),
         []
     );
     const [skipPageReset, setSkipPageReset] = React.useState(false);
@@ -75,21 +75,18 @@ const BonAvoirAchat = () => {
     React.useEffect(() => {
         setSkipPageReset(false)
     }, [data])
-    
-    React.useEffect(() => {
-        setData([emptyLine])
-    }, [siteId])
 
     React.useEffect(() => {
         setTitle('Bon d\'avoir (achat)')
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, BonAvoirAchatId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
+            getSingleData(DOCUMENT, BonAvoirAchatId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article', 'Site'])
                 .then(response => {
                     setFournisseur(response.Fournisseur);
                     setDate(response.Date);
                     setData(response.BonAvoirItems?.map(x => ({
                         Article: x.Article,
+                        Site: x.Site,
                         Qte: x.Qte,
                         Pu: x.Pu,
                     })));
@@ -174,6 +171,7 @@ const BonAvoirAchat = () => {
                 Qte: d.Qte,
                 Pu: d.Pu,
                 IdArticle: d.Article.Id,
+                IdSite: d.Site.Id,
             })),
             IdFournisseur: fournisseur.Id,
             Date: date

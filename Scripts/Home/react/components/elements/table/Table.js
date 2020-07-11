@@ -53,7 +53,7 @@ function Table({
     filters,
     totalItems }) {
     const classes = useStyles();
-    const { siteId } = useSite();
+    const { siteId, site } = useSite();
     const [showConfirmDialog, setShowConfimDialog] = React.useState(false);
     const {
         getTableProps,
@@ -96,7 +96,8 @@ function Table({
             manualPagination: Boolean(serverPagination),
             manualFilters: Boolean(serverPagination),
             pageCount: _pageCount,
-            siteId
+            siteId,
+            site,
         },
         usePagination
     );
@@ -116,7 +117,7 @@ function Table({
 
     return (
         <>
-            <table {...getTableProps()} className={classes.root} border="0" width="100%">
+            <table id="my-table" {...getTableProps()} className={classes.root} border="0" width="100%">
                 <colgroup>
                     {
                         columns.map((column, index) => (
@@ -140,7 +141,7 @@ function Table({
                         return (
                             <tr key={i} {...row.getRowProps()}>
                                 {row.cells.map((cell, index) => {
-                                    return <td key={index} style={{ color: disabled ? 'rgb(172, 174, 176)' : '#000' }} {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                    return <td id={`${cell.column?.id}-${i}`} key={index} style={{ color: disabled ? 'rgb(172, 174, 176)' : '#000' }} {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                 })}
                             </tr>
                         )
@@ -204,6 +205,7 @@ const EditableCell = ({
         align={align}
         onChange={onChange}
         onBlur={onBlur}
+        onFocus={(event) => event.target.select()}
         type={type}
         style={{
             color: disabled ? 'rgb(172, 174, 176)' : '#000'

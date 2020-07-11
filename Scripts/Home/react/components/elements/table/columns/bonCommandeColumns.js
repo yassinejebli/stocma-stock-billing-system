@@ -44,6 +44,12 @@ export const bonCommandeColumns = () => ([
 
                         if (data.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
+                        const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
+                        if (qteCell) {
+                            setTimeout(() => {
+                                qteCell.focus();
+                            }, 200)
+                        }
                     }}
 
                 />

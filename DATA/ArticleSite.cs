@@ -10,7 +10,6 @@ namespace WebApplication1.DATA
 {
     public class ArticleSite
     {
-       
         [DefaultValue(0)]
         public float QteStock { get; set; }
 
@@ -23,8 +22,5 @@ namespace WebApplication1.DATA
         [Key, Column(Order = 1)]
         public int IdSite { get; set; }
         public bool Disabled { get; set; } = false;
-
-
-
     }
 }

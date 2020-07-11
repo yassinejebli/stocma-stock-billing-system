@@ -24,6 +24,9 @@ namespace WebApplication1.DATA
 
         public virtual ICollection<ArticleSite> ArticleSites { get; set; }
         public virtual ICollection<BonLivraison> BonLivraisons { get; set; }
+        public virtual ICollection<BonLivraisonItem> BonLivraisonItems { get; set; }
+        public virtual ICollection<BonAvoirCItem> BonAvoirCItems { get; set; }
+        public virtual ICollection<BonAvoirItem> BonAvoirItems { get; set; }
         public virtual ICollection<BonReception> BonReceptions { get; set; }
         public virtual ICollection<Devis> Devises { get; set; }
         public virtual ICollection<Facture> Factures { get; set; }

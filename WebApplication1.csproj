@@ -975,6 +975,14 @@
     <Compile Include="Migrations\202007071611204_Facture_DateEcheance.designer.cs">
       <DependentUpon>202007071611204_Facture_DateEcheance.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007110724482_Site_BLItem.cs" />
+    <Compile Include="Migrations\202007110724482_Site_BLItem.designer.cs">
+      <DependentUpon>202007110724482_Site_BLItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007111209360_Site_BAItem_BACItem.cs" />
+    <Compile Include="Migrations\202007111209360_Site_BAItem_BACItem.designer.cs">
+      <DependentUpon>202007111209360_Site_BAItem_BACItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Statistics\BonLivraisonStatistics.cs" />
     <Compile Include="UserStatisticsController.cs" />
     <Compile Include="Datasets\DataSetATF1.Designer.cs">
@@ -4358,6 +4366,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007071611204_Facture_DateEcheance.resx">
       <DependentUpon>202007071611204_Facture_DateEcheance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007110724482_Site_BLItem.resx">
+      <DependentUpon>202007110724482_Site_BLItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007111209360_Site_BAItem_BACItem.resx">
+      <DependentUpon>202007111209360_Site_BAItem_BACItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

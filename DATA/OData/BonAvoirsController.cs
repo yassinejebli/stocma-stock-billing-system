@@ -44,12 +44,12 @@ namespace WebApplication1.DATA.OData
             //----------------------------------------------Updating QteStock
             foreach (var biOld in bonAvoir.BonAvoirItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonAvoir.IdSite && x.IdArticle == biOld.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == biOld.IdSite && x.IdArticle == biOld.IdArticle);
                 articleSite.QteStock += biOld.Qte;
             }
             foreach (var biNew in newBonAvoir.BonAvoirItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == newBonAvoir.IdSite && x.IdArticle == biNew.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == biNew.IdSite && x.IdArticle == biNew.IdArticle);
                 articleSite.QteStock -= biNew.Qte;
             }
 
@@ -60,6 +60,7 @@ namespace WebApplication1.DATA.OData
 
             bonAvoir.Date = newBonAvoir.Date;
             bonAvoir.NumBon = newBonAvoir.NumBon;
+            bonAvoir.IdSite = newBonAvoir.IdSite;
 
 
             //-----------------------------------------------Updating payment
@@ -92,7 +93,7 @@ namespace WebApplication1.DATA.OData
             }
             else
             {
-                var payment = db.Paiements.FirstOrDefault(x => x.IdBonAvoirC == bonAvoir.Id);
+                var payment = db.PaiementFs.FirstOrDefault(x => x.IdBonAvoir == bonAvoir.Id);
                 var Total = newBonAvoir.BonAvoirItems.Sum(x => x.Qte * x.Pu);
                 if (payment != null)
                 {
@@ -142,7 +143,7 @@ namespace WebApplication1.DATA.OData
             //---------------------------Updating Qte stock
             foreach (var bi in bonAvoir.BonAvoirItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bonAvoir.IdSite);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bi.IdSite);
                 articleSite.QteStock -= bi.Qte;
             }
 
@@ -227,7 +228,7 @@ namespace WebApplication1.DATA.OData
             //--------------------------updating QteStock
             foreach (var bi in async.BonAvoirItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == async.IdSite && x.IdArticle == bi.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bi.IdSite && x.IdArticle == bi.IdArticle);
                 articleSite.QteStock += bi.Qte;
             }
 

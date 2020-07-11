@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WebApplication1.DATA.MySaniSoftContext
-// Assembly: WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
-// Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq.Expressions;
@@ -119,6 +113,20 @@ namespace WebApplication1.DATA
             modelBuilder.Entity<ArticleSite>().HasRequired(x => x.Site).WithMany(x => x.ArticleSites).HasForeignKey(x => x.IdSite).WillCascadeOnDelete(true);
             modelBuilder.Entity<ArticleSite>().HasRequired(x => x.Article).WithMany(x => x.ArticleSites).HasForeignKey(x => x.IdArticle).WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<BonLivraisonItem>()
+                .HasOptional(t => t.Site)
+                .WithMany(t => t.BonLivraisonItems)
+                .HasForeignKey(d =>d.IdSite).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<BonAvoirCItem>()
+                .HasOptional(t => t.Site)
+                .WithMany(t => t.BonAvoirCItems)
+                .HasForeignKey(d => d.IdSite).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<BonAvoirItem>()
+                .HasOptional(t => t.Site)
+                .WithMany(t => t.BonAvoirItems)
+                .HasForeignKey(d => d.IdSite).WillCascadeOnDelete(false);
             //modelBuilder.Entity<Article>().HasMany(x => x.ArticleSites).WithRequired().HasForeignKey(x => x.IdArticle).WillCascadeOnDelete(true);
             //modelBuilder.Entity<Site>().HasMany(x => x.ArticleSites).WithRequired().HasForeignKey(x => x.IdSite).WillCascadeOnDelete(true);
             ////////

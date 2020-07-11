@@ -1,4 +1,4 @@
-﻿import { Button, TextField } from '@material-ui/core'
+﻿import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -23,31 +23,32 @@ import { useSite } from '../../providers/SiteProvider'
 import { useSettings } from '../../providers/SettingsProvider'
 import { useAuth } from '../../providers/AuthProvider'
 import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
+import BarCodeScanning from '../../elements/animated-icons/BarCodeScanning'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
 const DOCUMENT_OWNER = 'Client'
 const emptyLine = {
     Article: null,
+    Site: null,
     Qte: 1,
-    Pu: ''
+    Pu: '',
 }
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
 const BonLivraison = () => {
-    const { canAddBonLivraison, canUpdateBonLivraison } = useAuth();
     const {
         BLDiscount,
         setBLDiscount,
         BLPayment
     } = useSettings();
-    console.log({ BLPayment, BLDiscount })
-    const { siteId } = useSite();
+    const { siteId, hasMultipleSites } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
     const [numDoc, setNumDoc] = React.useState('');
     const [ref, setRef] = React.useState(0);
+    const [barcodeScannerEnabled, setBarcodeScannerEnabled] = React.useState(false);
     const [data, setData] = React.useState([emptyLine]);
     const [client, setClient] = React.useState(null);
     const [date, setDate] = React.useState(new Date());
@@ -77,8 +78,8 @@ const BonLivraison = () => {
     }, 0);
 
     const columns = React.useMemo(
-        () => getBonLivraisonColumns({ BLDiscount }),
-        [BLDiscount]
+        () => getBonLivraisonColumns({ BLDiscount, hasMultipleSites }),
+        [BLDiscount, hasMultipleSites]
     )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
         return (
@@ -99,10 +100,6 @@ const BonLivraison = () => {
     }, [data])
 
     React.useEffect(() => {
-        setData([emptyLine])
-    }, [siteId])
-
-    React.useEffect(() => {
         if (!BLDiscount?.Enabled)
             setData(_data => _data.map(x => ({ ...x, Discount: '' })));
     }, [BLDiscount])
@@ -112,7 +109,7 @@ const BonLivraison = () => {
         //load bon de livraison
         if (isEditMode) {
             setLoading(true);
-            getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article'])
+            getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article', 'Site'])
                 .then(response => {
                     if (response.WithDiscount)
                         setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: true }));
@@ -125,6 +122,7 @@ const BonLivraison = () => {
                         Article: x.Article,
                         Qte: x.Qte,
                         Pu: x.Pu,
+                        Site: x.Site,
                         Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
                     })));
                     setNumDoc(response.NumBon);
@@ -163,7 +161,6 @@ const BonLivraison = () => {
                         [columnId]: value,
                     }
                 }
-
                 return row
             })
         )
@@ -211,8 +208,13 @@ const BonLivraison = () => {
     const save = async () => {
         if (!areDataValid()) return;
 
-        const expand = ['TypePaiement' ,DOCUMENT_ITEMS, DOCUMENT_OWNER];
+        const expand = ['TypePaiement', DOCUMENT_ITEMS, DOCUMENT_OWNER];
         const Id = isEditMode ? BonLivraisonId : uuidv4();
+        if (!isEditMode) {
+            const currentDateTime = new Date();
+            date.setHours(currentDateTime.getHours(), currentDateTime.getMinutes(), currentDateTime.getSeconds());
+        }
+
         const preparedData = {
             Id: Id,
             IdSite: siteId,
@@ -227,6 +229,7 @@ const BonLivraison = () => {
                 Qte: d.Qte,
                 Pu: d.Pu,
                 IdArticle: d.Article.Id,
+                IdSite: d.Site.Id,
                 Discount: parseFloat(d.Discount),
                 PercentageDiscount: (/^\d+(\.\d+)?%$/.test(d.Discount))
             })),
@@ -235,10 +238,14 @@ const BonLivraison = () => {
         };
 
         setLoading(true);
-        const response = isEditMode ? await (await updateData(DOCUMENT, preparedData, Id, expand)).json()
+        let response = isEditMode ? await updateData(DOCUMENT, preparedData, Id, expand)
             : await saveData(DOCUMENT, preparedData, expand);
         setLoading(false);
 
+        if(isEditMode && response.ok){
+            response = await response.json()
+        }
+        
         if (response?.Id) {
             setSavedDocument(response)
             resetData();
@@ -246,9 +253,17 @@ const BonLivraison = () => {
             showModal();
             history.replace('/BonLivraison')
         } else {
-            showSnackBar({
-                error: true
-            });
+            console.log({ response })
+            if (response.status === 406)
+                showSnackBar({
+                    error: true,
+                    text: `${client?.Name} a dépassé la limite de crédit ${client?.Plafond}DH`
+                });
+            else
+                showSnackBar({
+                    error: true,
+                    text: "Erreur!"
+                });
         }
     }
 
@@ -256,9 +271,9 @@ const BonLivraison = () => {
         setClient(null);
         setNote('');
         setPaymentType(null);
-        setTimeout(()=>{
+        setTimeout(() => {
             setDate(new Date());
-        }, 500)
+        }, 1000)
         setData([]);
         addNewRow();
     }
@@ -320,6 +335,14 @@ const BonLivraison = () => {
                     </Box>}
                 </Box>
                 <Box mt={4}>
+                    <Box mb={2}>
+                        <FormControlLabel
+                            control={<Switch
+                                checked={barcodeScannerEnabled}
+                                onChange={(_, checked) => setBarcodeScannerEnabled(checked)} />}
+                            label={<BarCodeScanning scanning={barcodeScannerEnabled} />}
+                        />
+                    </Box>
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>
                             Ajouter une ligne

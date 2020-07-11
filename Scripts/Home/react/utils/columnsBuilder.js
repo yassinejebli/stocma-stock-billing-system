@@ -10,8 +10,9 @@ import { formatMoney } from './moneyUtils';
 import { getLastPriceSale } from '../queries/articleQueries';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import { Box } from '@material-ui/core';
+import Input from '../components/elements/input/Input';
 
-export const getBonLivraisonColumns = ({ BLDiscount }) => ([
+export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
     {
         Header: 'Article',
         accessor: 'Article',
@@ -25,7 +26,8 @@ export const getBonLivraisonColumns = ({ BLDiscount }) => ([
             updateMyData,
             addNewRow,
             owner,
-            data
+            data,
+            site,
         }) => {
             return (
                 <ArticleAutocomplete
@@ -35,6 +37,7 @@ export const getBonLivraisonColumns = ({ BLDiscount }) => ([
                     onBlur={() => updateMyData(index, id, value)}
                     onChange={(_, selectedValue) => {
                         updateMyData(index, id, selectedValue);
+                        updateMyData(index, 'Site', site);
                         if (selectedValue && owner)
                             getLastPriceSale(selectedValue.Id, owner.Id).then(lastPriceSale => {
                                 updateMyData(index, 'Pu', lastPriceSale);
@@ -44,12 +47,30 @@ export const getBonLivraisonColumns = ({ BLDiscount }) => ([
 
                         if (data.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
+
+                        const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
+                        if (qteCell) {
+                            setTimeout(() => {
+                                qteCell.focus();
+                            }, 200)
+                        }
                     }}
 
                 />
             )
         }
     },
+    (hasMultipleSites && {
+        id: 'Site',
+        Header: 'Dépôt/Magasin',
+        Cell: ({ row: { original } }) => {
+            return (
+                <Input disabled tabIndex={-1} inTable value={original.Site?.Name} />
+            )
+        },
+        type: inputTypes.text.description,
+        width: 80,
+    }),
     {
         Header: 'Qte.',
         accessor: 'Qte',
@@ -75,7 +96,6 @@ export const getBonLivraisonColumns = ({ BLDiscount }) => ([
         id: 'TotalHT',
         Header: 'Montant',
         accessor: (props) => {
-            console.log(props.Pu, props.Qte);
             return formatMoney(props.Pu * props.Qte);
         },
         type: inputTypes.text.description,
@@ -249,7 +269,7 @@ export const getBonLivraisonListColumns = ({ canUpdateBonLivraisons, canDeleteBo
         width: 60
     },
     {
-        Id: 'Date',
+        id: 'Date',
         Header: 'Date',
         type: inputTypes.text.description,
         accessor: props => {

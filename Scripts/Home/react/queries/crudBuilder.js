@@ -3,13 +3,13 @@ import buildQuery from 'odata-query'
 const ODATA_URL = '/Odata/'
 
 export const saveData = async (table, data, expand) => {
-    const allParams = buildQuery({ 
+    const allParams = buildQuery({
         expand: expand?.join(',')
     })
     const URL = ODATA_URL + table + allParams
 
     try {
-        const res = await (await fetch(URL, {
+        const res = await fetch(URL, {
             method: 'POST',
             cache: 'no-cache',
             headers: {
@@ -17,15 +17,20 @@ export const saveData = async (table, data, expand) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-        })).json();
-        return res;
+        });
+
+        if (res.ok) {
+            return await res.json();
+        }else{
+            return res;
+        }
     } catch (e) {
         console.error(e);
     }
 }
 
 export const updateData = async (table, data, id, expand) => {
-    const allParams = buildQuery({ 
+    const allParams = buildQuery({
         expand: expand?.join(',')
     })
     const URL = ODATA_URL + table + `(${id})` + allParams;
@@ -47,7 +52,7 @@ export const updateData = async (table, data, id, expand) => {
 }
 
 export const partialUpdateData = async (table, data, id, expand) => {
-    const allParams = buildQuery({ 
+    const allParams = buildQuery({
         expand: expand?.join(',')
     })
     const URL = ODATA_URL + table + `(${id})` + allParams;
@@ -83,11 +88,11 @@ export const deleteData = async (table, id) => {
 }
 
 export const getData = async (table, params, filters, expand) => {
-    const allParams = buildQuery({ 
-        filter: filters, 
-        count: true, 
-        top: 10, 
-        skip: params?.$skip||0,
+    const allParams = buildQuery({
+        filter: filters,
+        count: true,
+        top: 10,
+        skip: params?.$skip || 0,
         expand: expand?.join(',')
     })
 
@@ -95,14 +100,14 @@ export const getData = async (table, params, filters, expand) => {
 
     try {
         const res = await (await fetch(URL)).json();
-        return {data: res?.value||[],totalItems: res?.['@odata.count']};
+        return { data: res?.value || [], totalItems: res?.['@odata.count'] };
     } catch (e) {
         console.log(e);
     }
 }
 
-export const getSingleData = async (table, id,expand) => {
-    const allParams = buildQuery({ 
+export const getSingleData = async (table, id, expand) => {
+    const allParams = buildQuery({
         expand: expand?.join(',')
     })
 
@@ -116,12 +121,12 @@ export const getSingleData = async (table, id,expand) => {
     }
 }
 
-export const getAllData = async (table, filters,expand) => {
-    const allParams = buildQuery({ 
-        filter: filters, 
+export const getAllData = async (table, filters, expand) => {
+    const allParams = buildQuery({
+        filter: filters,
         expand: expand?.join(',')
     })
-    
+
     const URL = ODATA_URL + table + allParams;
 
     try {

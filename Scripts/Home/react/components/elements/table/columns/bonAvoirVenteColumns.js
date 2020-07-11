@@ -10,8 +10,9 @@ import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import ArticleAutocomplete from '../../article-autocomplete/ArticleAutocomplete';
 import { format } from 'date-fns';
 import { Box } from '@material-ui/core';
+import Input from '../../input/Input';
 
-export const bonAvoirVenteColumns = () => ([
+export const bonAvoirVenteColumns = ({ hasMultipleSites }) => ([
     {
         Header: 'Article',
         accessor: 'Article',
@@ -25,7 +26,8 @@ export const bonAvoirVenteColumns = () => ([
             updateMyData,
             addNewRow,
             owner,
-            data
+            data,
+            site,
         }) => {
             return (
                 <ArticleAutocomplete
@@ -35,6 +37,7 @@ export const bonAvoirVenteColumns = () => ([
                     onBlur={() => updateMyData(index, id, value)}
                     onChange={(_, selectedValue) => {
                         updateMyData(index, id, selectedValue);
+                        updateMyData(index, 'Site', site);
                         if (selectedValue && owner)
                             getLastPricePurchase(selectedValue.Id, owner.Id).then(lastPricePurchase => {
                                 updateMyData(index, 'Pu', lastPricePurchase);
@@ -44,12 +47,30 @@ export const bonAvoirVenteColumns = () => ([
 
                         if (data.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
+
+                        const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
+                        if (qteCell) {
+                            setTimeout(() => {
+                                qteCell.focus();
+                            }, 200)
+                        }
                     }}
 
                 />
             )
         }
     },
+    (hasMultipleSites && {
+        Id: 'Site',
+        Header: 'Dépôt/Magasin',
+        Cell: ({ row: { original } }) => {
+            return (
+                <Input disabled tabIndex={-1} inTable value={original.Site?.Name} />
+            )
+        },
+        type: inputTypes.text.description,
+        width: 80,
+    }),
     {
         Header: 'Qte.',
         accessor: 'Qte',
@@ -90,7 +111,7 @@ export const bonAvoirVenteColumns = () => ([
         width: 24,
         align: 'right'
     },
-])
+].filter(x => x))
 
 
 

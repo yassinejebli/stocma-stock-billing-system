@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WebApplication1.DATA.OData.BonAvoirCsController
-// Assembly: WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
-// Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -48,12 +42,12 @@ namespace WebApplication1.DATA.OData
             //----------------------------------------------Updating QteStock
             foreach (var biOld in bonAvoirC.BonAvoirCItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonAvoirC.IdSite && x.IdArticle == biOld.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == biOld.IdSite && x.IdArticle == biOld.IdArticle);
                 articleSite.QteStock -= biOld.Qte;
             }
             foreach (var biNew in newBonAvoiC.BonAvoirCItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == newBonAvoiC.IdSite && x.IdArticle == biNew.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == biNew.IdSite && x.IdArticle == biNew.IdArticle);
                 articleSite.QteStock += biNew.Qte;
             }
 
@@ -64,6 +58,7 @@ namespace WebApplication1.DATA.OData
 
             bonAvoirC.Date = newBonAvoiC.Date;
             bonAvoirC.Ref = newBonAvoiC.Ref;
+            bonAvoirC.IdSite = newBonAvoiC.IdSite;
             bonAvoirC.Note = newBonAvoiC.Note;
             var numBonGenerator = new DocNumberGenerator();
             bonAvoirC.NumBon = numBonGenerator.getNumDocByCompany(newBonAvoiC.Ref - 1, newBonAvoiC.Date);
@@ -191,7 +186,7 @@ namespace WebApplication1.DATA.OData
             //---------------------------Updating Qte stock
             foreach (var bi in bonAvoirC.BonAvoirCItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bonAvoirC.IdSite);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bi.IdSite);
                 articleSite.QteStock += bi.Qte;
             }
 
@@ -293,7 +288,7 @@ namespace WebApplication1.DATA.OData
             //--------------------------updating QteStock
             foreach (var bi in async.BonAvoirCItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == async.IdSite && x.IdArticle == bi.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bi.IdSite && x.IdArticle == bi.IdArticle);
                 articleSite.QteStock -= bi.Qte;
             }
 

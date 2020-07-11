@@ -24,11 +24,13 @@ namespace WebApplication1.DATA
         public float Pu { get; set; }
 
         public Guid IdArticle { get; set; }
+        public int? IdSite { get; set; }
 
         public float TotalHT { get; set; }
 
         public virtual BonAvoir BonAvoir { get; set; }
 
         public virtual Article Article { get; set; }
+        public virtual Site Site { get; set; }
     }
 }

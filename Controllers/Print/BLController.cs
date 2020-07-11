@@ -69,6 +69,8 @@ namespace WebApplication1.Controllers.Print
             if (reportDocument.ParameterFields["IsEspece"] != null)
                 reportDocument.SetParameterValue("IsEspece", BonLivraisonById.IdTypePaiement.HasValue ? BonLivraisonById.IdTypePaiement == ESPECE_PAYMENT_TYPE : false);
 
+            reportDocument.PrintOptions.PaperSize = PaperSize.PaperA4;
+           // reportDocument.PrintOptions.ApplyPageMargins(new PageMargins(0, 0, 0, 0));
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition

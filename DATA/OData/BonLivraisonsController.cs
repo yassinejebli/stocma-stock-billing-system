@@ -42,12 +42,12 @@ namespace WebApplication1.DATA.OData
             //----------------------------------------------Updating QteStock
             foreach (var biOld in bonLivraison.BonLivraisonItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonLivraison.IdSite && x.IdArticle == biOld.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == biOld.IdSite && x.IdArticle == biOld.IdArticle);
                 articleSite.QteStock += biOld.Qte;
             }
             foreach (var biNew in newBonLivraison.BonLivraisonItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bonLivraison.IdSite && x.IdArticle == biNew.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == biNew.IdSite && x.IdArticle == biNew.IdArticle);
                 articleSite.QteStock -= biNew.Qte;
             }
 
@@ -58,6 +58,7 @@ namespace WebApplication1.DATA.OData
 
             bonLivraison.ModificationDate = DateTime.Now;
             bonLivraison.Date = newBonLivraison.Date;
+            bonLivraison.IdSite = newBonLivraison.IdSite;
             bonLivraison.Ref = newBonLivraison.Ref;
             bonLivraison.Note = newBonLivraison.Note;
             bonLivraison.IdTypePaiement = newBonLivraison.IdTypePaiement;
@@ -75,6 +76,13 @@ namespace WebApplication1.DATA.OData
             var payment = db.Paiements.FirstOrDefault(x => x.IdBonLivraison == bonLivraison.Id);
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb6";
             var Total = newBonLivraison.BonLivraisonItems.Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
+
+            //Checking solde
+            var client = db.Clients.Find(bonLivraison.IdClient);
+            var hasSurpassedPlafond = !client.IsClientDivers && client.Plafond != 0 && (client.Solde + Total) > client.Plafond;
+            if (hasSurpassedPlafond)
+                return StatusCode(HttpStatusCode.NotAcceptable);
+
             if (payment != null)
             {
                 payment.Debit = Total;
@@ -163,6 +171,14 @@ namespace WebApplication1.DATA.OData
             var payment = db.Paiements.FirstOrDefault(x => x.IdBonLivraison == bonLivraison.Id);
             var ACHAT_PAIEMENT_TYPE_ID = "399d159e-9ce0-4fcc-957a-08a65bbeecb6";
             var Total = bonLivraison.BonLivraisonItems.Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
+
+
+            //Check solde
+            var client = db.Clients.Find(bonLivraison.IdClient);
+            var hasSurpassedPlafond = !client.IsClientDivers && client.Plafond != 0 && (client.Solde + Total) > client.Plafond;
+            if(hasSurpassedPlafond)
+                return StatusCode(HttpStatusCode.NotAcceptable);
+
             if (payment != null)
             {
                 payment.Debit = Total;
@@ -202,7 +218,7 @@ namespace WebApplication1.DATA.OData
             //-------------------------------------------updating QteStock
             foreach (var bi in bonLivraison.BonLivraisonItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bonLivraison.IdSite);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bi.IdSite);
                 articleSite.QteStock -= bi.Qte;
             }
             //-------------------------------------------
@@ -230,7 +246,7 @@ namespace WebApplication1.DATA.OData
             //--------------------------updating QteStock
             foreach (var bi in async.BonLivraisonItems)
             {
-                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == async.IdSite && x.IdArticle == bi.IdArticle);
+                var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdSite == bi.IdSite && x.IdArticle == bi.IdArticle);
                 articleSite.QteStock += bi.Qte;
             }
 

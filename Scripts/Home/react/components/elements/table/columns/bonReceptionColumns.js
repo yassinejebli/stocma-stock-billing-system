@@ -44,6 +44,13 @@ export const bonReceptionColumns = () => ([
 
                         if (data.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
+
+                        const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
+                        if (qteCell) {
+                            setTimeout(() => {
+                                qteCell.focus();
+                            }, 200)
+                        }
                     }}
 
                 />
@@ -68,7 +75,6 @@ export const bonReceptionColumns = () => ([
         id: 'TotalHT',
         Header: 'Montant',
         accessor: (props) => {
-            console.log(props.Pu, props.Qte);
             return formatMoney(props.Pu * props.Qte);
         },
         type: inputTypes.text.description,

@@ -1,5 +1,4 @@
 import buildQuery from 'odata-query'
-import { format } from 'date-fns';
 
 const TABLE = 'Articles';
 const ODATA_URL = '/Odata/'

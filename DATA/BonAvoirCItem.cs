@@ -27,6 +27,7 @@ namespace WebApplication1.DATA
         public float PA { get; set; } = 0;
 
         public Guid IdArticle { get; set; }
+        public int? IdSite { get; set; }
 
         public float TotalHT { get; set; }
 
@@ -38,5 +39,6 @@ namespace WebApplication1.DATA
         public virtual BonAvoirC BonAvoirC { get; set; }
 
         public virtual Article Article { get; set; }
+        public virtual Site Site { get; set; }
     }
 }

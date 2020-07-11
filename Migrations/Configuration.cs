@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WebApplication1.Migrations.Configuration
-// Assembly: WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
-// Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
-
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -28,27 +22,24 @@ namespace WebApplication1.Migrations
 
         protected override void Seed(MySaniSoftContext context)
         {
-
             
+
             var articlesMinStockNull = context.Articles.Where(x => x.MinStock == null);
             if (articlesMinStockNull.Count() > 0)
             {
                 articlesMinStockNull.ForEach(x => x.MinStock = 1);
-                context.SaveChanges();
             }
             //TODO: remove asap
             var articlesTVANull = context.Articles.Where(x => x.TVA == null);
             if (articlesTVANull.Count() > 0)
             {
                 articlesTVANull.ForEach(x => x.TVA = 20);
-                context.SaveChanges();
             }
 
             var articlesFactureTVANull = context.ArticleFactures.Where(x => x.TVA == null);
             if (articlesFactureTVANull.Count() > 0)
             {
                 articlesFactureTVANull.ForEach(x => x.TVA = 20);
-                context.SaveChanges();
             }
 
             var bonLivraisonItems = context.BonLivraisonItems.Where(x => x.PA == 0);
@@ -56,7 +47,6 @@ namespace WebApplication1.Migrations
             if (bonLivraisonItems.Count() > 0)
             {
                 bonLivraisonItems.ForEach(x => x.PA = x.Article.PA);
-                context.SaveChanges();
             }
 
             var bonAvoirCItems = context.BonAvoirCItems.Where(x => x.PA == 0);
@@ -64,7 +54,6 @@ namespace WebApplication1.Migrations
             if (bonAvoirCItems.Count() > 0)
             {
                 bonAvoirCItems.ForEach(x => x.PA = x.Article.PA);
-                context.SaveChanges();
             }
 
 
@@ -89,14 +78,11 @@ namespace WebApplication1.Migrations
                         Site = mainSite
                     });
                 }
-
-                context.SaveChanges();
             }
             else
             {
                 var mainSite = context.Sites.Find(1);
                 if (mainSite != null) mainSite.Code = "M1";
-                context.SaveChanges();
             }
 
             var bonLivraisons = context.BonLivraisons.Where(x => x.IdSite == null);
@@ -106,7 +92,6 @@ namespace WebApplication1.Migrations
                 {
                     b.IdSite = 1;
                 }
-                context.SaveChanges();
             }
 
             var bonAvoirVentes = context.BonAvoirCs.Where(x => x.IdSite == null);
@@ -116,7 +101,6 @@ namespace WebApplication1.Migrations
                 {
                     b.IdSite = 1;
                 }
-                context.SaveChanges();
             }
 
             var devises = context.Devises.Where(x => x.IdSite == null);
@@ -126,7 +110,6 @@ namespace WebApplication1.Migrations
                 {
                     b.IdSite = 1;
                 }
-                context.SaveChanges();
             }
 
             var bonReceptions = context.BonReceptions.Where(x => x.IdSite == null);
@@ -136,7 +119,6 @@ namespace WebApplication1.Migrations
                 {
                     b.IdSite = 1;
                 }
-                context.SaveChanges();
             }
 
             var factures = context.Factures.Where(x => x.IdSite == null);
@@ -146,7 +128,25 @@ namespace WebApplication1.Migrations
                 {
                     f.IdSite = 1;
                 }
-                context.SaveChanges();
+            }
+
+            //
+            var blItemsSiteNull = context.BonLivraisonItems.Where(x => x.IdSite == null);
+            if (blItemsSiteNull.Count() > 0)
+            {
+                blItemsSiteNull.ForEach(x => x.IdSite = 1);
+            }
+
+            var bacItemsSiteNull = context.BonAvoirCItems.Where(x => x.IdSite == null);
+            if (bacItemsSiteNull.Count() > 0)
+            {
+                bacItemsSiteNull.ForEach(x => x.IdSite = 1);
+            }
+
+            var baItemsSiteNull = context.BonAvoirItems.Where(x => x.IdSite == null);
+            if (baItemsSiteNull.Count() > 0)
+            {
+                baItemsSiteNull.ForEach(x => x.IdSite = 1);
             }
 
             if (!context.Familles.Any())
@@ -159,7 +159,6 @@ namespace WebApplication1.Migrations
                         Name = "Autre famille"
                     }
                 });
-                context.SaveChanges();
             }
             if (!context.Companies.Any<Company>())
             {
@@ -167,7 +166,6 @@ namespace WebApplication1.Migrations
                 {
                     new Company() {Id = Guid.NewGuid()}
                 });
-                context.SaveChanges();
             }
             if (!context.Clients.Any<Client>())
             {
@@ -181,7 +179,6 @@ namespace WebApplication1.Migrations
                         IsClientDivers = true,
                     }
                 });
-                context.SaveChanges();
             }
             if (!context.TypeDepences.Any<TypeDepence>())
             {
@@ -208,7 +205,6 @@ namespace WebApplication1.Migrations
                         Name = "Gazoil"
                     }
                 });
-                context.SaveChanges();
             }
 
             //context.Database.ExecuteSqlCommand("DELETE DepenseItems");
@@ -227,7 +223,6 @@ namespace WebApplication1.Migrations
 
                     context.TypeDepenses.Add(TypeDepense);
                 });
-                context.SaveChanges();
             }
 
 
@@ -252,7 +247,6 @@ namespace WebApplication1.Migrations
                     });
                     context.Depenses.Add(Depense);
                 });
-                context.SaveChanges();
             }
 
 
@@ -481,7 +475,6 @@ namespace WebApplication1.Migrations
                         IsAncien = true,
                     }
                 });
-                context.SaveChanges();
             }
             else
             {
@@ -526,7 +519,6 @@ namespace WebApplication1.Migrations
                 if (TypePaiementAvoir != null)
                     TypePaiementAvoir.IsAvoir = true;
 
-                context.SaveChanges();
             }
 
             var TypePaiementAncien = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecc9"));

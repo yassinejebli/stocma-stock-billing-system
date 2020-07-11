@@ -23,17 +23,17 @@ import { useSnackBar } from '../../providers/SnackBarProvider';
 import PrintClientAccountSummary from '../../elements/dialogs/documents-print/PrintClientAccountSummary';
 import SoldeText from '../../elements/texts/SoldeText';
 import { useLoader } from '../../providers/LoaderProvider';
-import { useHistory } from 'react-router-dom';
 import { getExportClientAccountSummaryURL } from '../../../utils/urlBuilder';
+import { useAuth } from '../../providers/AuthProvider';
 
 const TABLE = 'Paiements';
 
 const EXPAND = ['TypePaiement', 'Client($select=Id,Name)', 'BonLivraison/Client($select=Id,Name)', 'BonLivraisonItems'];
 
 const PaiementClientList = () => {
+    const { canUpdateBonLivraisons } = useAuth();
     const refreshCount = React.useRef(0)
     const { showLoader } = useLoader();
-    const history = useHistory();
     const today = new Date();
     const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDayCurrentMonth = new Date();
@@ -130,20 +130,9 @@ const PaiementClientList = () => {
     const [pageCount, setTotalCount] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getPaiementClientListColumns({ isFiltered: Boolean(!client) }),
+        () => getPaiementClientListColumns({ isFiltered: Boolean(!client), canUpdateBonLivraisons }),
         [client]
     )
-
-
-    const areDataValid = () => {
-        const _errors = [];
-        if (!client) {
-            _errors['client'] = defaultErrorMsg;
-        }
-
-        setErrors(_errors);
-        return Object.keys(_errors).length === 0;
-    }
 
     React.useEffect(() => {
         setTitle('Liste des paiements')
@@ -262,9 +251,9 @@ const PaiementClientList = () => {
                 </Button>
                     <Box ml={2}>
                         <Button
-                        style={{
-                            backgroundColor: '#026f39'
-                        }}
+                            style={{
+                                backgroundColor: '#026f39'
+                            }}
                             variant="contained"
                             color="primary"
                             startIcon={<MicrosoftExcel />}

@@ -37,6 +37,13 @@ export const fakeFactureColumns = () => ([
                             updateMyData(index, 'Pu', selectedValue.PVD);
                         if (data.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
+
+                        const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
+                        if (qteCell) {
+                            setTimeout(() => {
+                                qteCell.focus();
+                            }, 200)
+                        }
                     }}
 
                 />
@@ -121,7 +128,7 @@ export const fakeFactureListColumns = () => ([
         width: 80,
     },
     {
-        Header: 'Note',
+        Header: 'Note (numéro de chèque...)',
         accessor: 'Comment',
         type: inputTypes.text.description,
     },
