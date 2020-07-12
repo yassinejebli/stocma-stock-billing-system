@@ -1,4 +1,4 @@
-﻿import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core'
+﻿import { Button, TextField, Switch, FormControlLabel, Dialog } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -17,6 +17,7 @@ import { useTitle } from '../../providers/TitleProvider'
 import { useModal } from 'react-modal-hook'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { useLocation, useHistory } from 'react-router-dom'
+import RestoreIcon from '@material-ui/icons/Restore';
 import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import qs from 'qs'
 import { useSite } from '../../providers/SiteProvider'
@@ -24,6 +25,7 @@ import { useSettings } from '../../providers/SettingsProvider'
 import { useAuth } from '../../providers/AuthProvider'
 import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 import BarCodeScanning from '../../elements/animated-icons/BarCodeScanning'
+import BonLivraisonUnsavedList, { AUTO_SAVED_BL } from './BonLivraisonUnsavedList'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -95,9 +97,75 @@ const BonLivraison = () => {
             />)
     }, [savedDocument]);
 
+    const [showModalUnsavedDocs, hideModalUnsavedDocs] = useModal(({ in: open, onExited }) => {
+        return (
+            <Dialog
+                onExited={onExited}
+                open={open}
+                maxWidth="sm"
+                fullWidth
+                onClose={() => {
+                    hideModalUnsavedDocs();
+                }}
+            >
+                <BonLivraisonUnsavedList
+                    onImport={(document) => {
+                        setClient(document.client);
+                        setData(document.data);
+                        setDate(new Date(document.date));
+                        setPaymentType(document.paymentType);
+                        hideModalUnsavedDocs();
+                    }}
+                />
+            </Dialog>)
+    }, []);
+
     React.useEffect(() => {
         setSkipPageReset(false)
     }, [data])
+
+    React.useEffect(() => {
+        if (!isEditMode) {
+            try {
+                let savedDocuments = [];
+                const autoSavedBonLivraisons = localStorage.getItem(AUTO_SAVED_BL);
+                if (autoSavedBonLivraisons) {
+                    const savedDocumentsStorage = JSON.parse(autoSavedBonLivraisons);
+                    let currentSavedDocument = savedDocumentsStorage.find(x => x.date === date.getTime());
+                    const otherSavedDocuments = savedDocumentsStorage.filter(x => x.date !== date.getTime() && x.data.filter(x => x.Article).length > 0);
+
+                    if (currentSavedDocument) {
+                        currentSavedDocument.data = data;
+                        currentSavedDocument.client = client;
+                        currentSavedDocument.paymentType = paymentType;
+                    } else if (data.filter(x => x.Article).length > 0) {
+                        currentSavedDocument = {
+                            client,
+                            data,
+                            paymentType,
+                            date: date.getTime()
+                        }
+                    }
+
+                    savedDocuments = [...otherSavedDocuments];
+                    if (currentSavedDocument) {
+                        savedDocuments.push(currentSavedDocument)
+                    }
+                } else {
+                    if (data.filter(x => x.Article).length > 0)
+                        savedDocuments = [{
+                            client,
+                            data,
+                            paymentType,
+                            date: date.getTime()
+                        }];
+                }
+                localStorage.setItem(AUTO_SAVED_BL, JSON.stringify(savedDocuments));
+            } catch {
+                localStorage.removeItem(AUTO_SAVED_BL);
+            }
+        }
+    }, [data, client, date])
 
     React.useEffect(() => {
         if (!BLDiscount?.Enabled)
@@ -210,10 +278,13 @@ const BonLivraison = () => {
 
         const expand = ['TypePaiement', DOCUMENT_ITEMS, DOCUMENT_OWNER];
         const Id = isEditMode ? BonLivraisonId : uuidv4();
+        let oldDate = null;
         if (!isEditMode) {
+            oldDate = new Date(date.getTime());
             const currentDateTime = new Date();
             date.setHours(currentDateTime.getHours(), currentDateTime.getMinutes(), currentDateTime.getSeconds());
         }
+        console.log('after', { oldDate })
 
         const preparedData = {
             Id: Id,
@@ -242,22 +313,27 @@ const BonLivraison = () => {
             : await saveData(DOCUMENT, preparedData, expand);
         setLoading(false);
 
-        if(isEditMode && response.ok){
+        if (isEditMode && response.ok) {
             response = await response.json()
         }
-        
+
         if (response?.Id) {
             setSavedDocument(response)
-            resetData();
             showSnackBar();
             showModal();
-            history.replace('/BonLivraison')
+            resetData();
+            history.replace('/BonLivraison');
+            const autoSavedBonLivraisons = localStorage.getItem(AUTO_SAVED_BL);
+            if (autoSavedBonLivraisons && !isEditMode) {
+                const savedDocumentsStorage = JSON.parse(autoSavedBonLivraisons);
+                const otherSavedDocuments = savedDocumentsStorage.filter(x => x.date !== oldDate?.getTime() && x.data.filter(x => x.Article).length > 0);
+                localStorage.setItem(AUTO_SAVED_BL, JSON.stringify(otherSavedDocuments))
+            }
         } else {
-            console.log({ response })
             if (response.status === 406)
                 showSnackBar({
                     error: true,
-                    text: `${client?.Name} a dépassé la limite de crédit ${client?.Plafond}DH`
+                    text: `${client?.Name} a dépassé la limite de crédit ${client?.Plafond} DH`
                 });
             else
                 showSnackBar({
@@ -281,7 +357,15 @@ const BonLivraison = () => {
     return (
         <>
             <Loader loading={loading} />
-            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+            <Box mt={1} mb={2} display="flex" justifyContent="space-between">
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<RestoreIcon />}
+                    onClick={showModalUnsavedDocs}
+                >
+                    récupérer un BL non enregistré
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"

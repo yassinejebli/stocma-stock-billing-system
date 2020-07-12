@@ -126,7 +126,7 @@ export const bonReceptionListColumns = () => ([
         id: 'Total',
         Header: 'Total',
         type: inputTypes.text.description,
-        width: 30,
+        width: 50,
         accessor: (props) => {
             const total = props.BonReceptionItems.reduce((sum, curr) => (
                 sum += curr.Pu * curr.Qte
