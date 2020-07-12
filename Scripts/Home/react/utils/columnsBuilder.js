@@ -30,33 +30,40 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
             site,
         }) => {
             return (
-                <ArticleAutocomplete
-                    value={value}
-                    inTable
-                    placeholder="Entrer un article..."
-                    onBlur={() => updateMyData(index, id, value)}
-                    onChange={(_, selectedValue) => {
-                        updateMyData(index, id, selectedValue);
-                        updateMyData(index, 'Site', site);
-                        if (selectedValue && owner)
-                            getLastPriceSale(selectedValue.Id, owner.Id).then(lastPriceSale => {
-                                updateMyData(index, 'Pu', lastPriceSale);
-                            });
-                        else if (selectedValue)
-                            updateMyData(index, 'Pu', selectedValue.PVD);
+                <>
+                    <ArticleAutocomplete
+                        value={value}
+                        inTable
+                        placeholder="Entrer un article..."
+                        onBlur={() => updateMyData(index, id, value)}
+                        onChange={(_, selectedValue) => {
+                            updateMyData(index, id, selectedValue);
+                            updateMyData(index, 'Site', site);
+                            if (selectedValue && owner)
+                                getLastPriceSale(selectedValue.Id, owner.Id).then(lastPriceSale => {
+                                    updateMyData(index, 'Pu', lastPriceSale);
+                                });
+                            else if (selectedValue)
+                                updateMyData(index, 'Pu', selectedValue.PVD);
 
-                        if (data.filter(x => !x.Article).length === 1 || data.length === 1)
-                            addNewRow();
+                            if (data.filter(x => !x.Article).length === 1 || data.length === 1)
+                                addNewRow();
 
-                        const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
-                        if (qteCell) {
-                            setTimeout(() => {
-                                qteCell.focus();
-                            }, 200)
-                        }
-                    }}
+                            const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
+                            if (qteCell) {
+                                setTimeout(() => {
+                                    qteCell.focus();
+                                }, 200)
+                            }
+                        }}
 
-                />
+                    />
+                    {value && <Box mb={1} style={{
+                        color: value.MinStock > value.QteStock ? 'red' : 'green'
+                    }}>
+                        {value.QteStock} en stock
+                    </Box>}
+                </>
             )
         }
     },

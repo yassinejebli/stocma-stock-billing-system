@@ -16,13 +16,17 @@ import { TextField, Button } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import { useSite } from '../../providers/SiteProvider'
 import AddIcon from '@material-ui/icons/Add';
-
+import { useHistory } from 'react-router-dom';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import { useAuth } from '../../providers/AuthProvider'
 const TABLE = 'Clients';
 
 const ClientList = () => {
+    const { isAdmin } = useAuth();
     const { showSnackBar } = useSnackBar();
-    const {useVAT} = useSite();
+    const { useVAT } = useSite();
     const { setTitle } = useTitle();
+    const history = useHistory();
     const [searchText, setSearchText] = React.useState('');
     const debouncedSearchText = useDebounce(searchText);
     const filters = React.useMemo(() => {
@@ -48,16 +52,16 @@ const ClientList = () => {
     const [pageCount, setTotalCount] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getClientColumns({useVAT: useVAT}),
+        () => getClientColumns({ useVAT: useVAT }),
         [useVAT]
     )
     const [showClientModal, hideClientModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideClientModal}>
-            <ClientForm 
-                onSuccess={()=>{
+            <ClientForm
+                onSuccess={() => {
                     refetchData();
                 }}
-             />
+            />
         </SideDialogWrapper>
     ), [filters]);
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
@@ -81,7 +85,7 @@ const ClientList = () => {
         }).catch((err) => {
             console.log({ err });
         })
-    },[filters])
+    }, [filters])
 
     const deleteRow = React.useCallback(async (id) => {
         setLoading(true);
@@ -124,11 +128,22 @@ const ClientList = () => {
     return (
         <>
             <Loader loading={loading} />
-            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+            <Box mt={1} mb={2} display="flex" justifyContent="space-between">
+                {isAdmin && <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<LocalAtmIcon />}
+                    onClick={() => history.push("marge-clients")}
+                >
+                    Marge par client
+                </Button>}
                 <Button
                     variant="contained"
                     color="primary"
                     startIcon={<AddIcon />}
+                    style={{
+                        marginLeft: 'auto'
+                    }}
                     onClick={showClientModal}
                 >
                     Nouveau client

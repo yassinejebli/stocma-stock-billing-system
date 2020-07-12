@@ -25,7 +25,6 @@ const ArticlesMarginList = () => {
     const { setTitle } = useTitle();
     const [data, setData] = React.useState([]);
     const [searchText, setSearchText] = React.useState('');
-    const filteredData = data.filter(x=>x.Article.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()))
     const [dateFrom, setDateFrom] = React.useState(firstDayCurrentMonth);
     const [dateTo, setDateTo] = React.useState(lastDayCurrentMonth);
     const [totalItems, setTotalItems] = React.useState(0);
@@ -107,7 +106,7 @@ const ArticlesMarginList = () => {
                 <Box mt={4}>
                     <Table
                         columns={columns}
-                        data={filteredData}
+                        data={data}
                         serverPagination
                         totalItems={totalItems}
                         pageCount={pageCount}

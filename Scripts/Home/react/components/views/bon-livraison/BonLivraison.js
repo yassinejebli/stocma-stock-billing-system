@@ -358,15 +358,18 @@ const BonLivraison = () => {
         <>
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                <Button
+                {!isEditMode&&<Button
                     variant="contained"
                     color="secondary"
                     startIcon={<RestoreIcon />}
                     onClick={showModalUnsavedDocs}
                 >
                     récupérer un BL non enregistré
-                </Button>
+                </Button>}
                 <Button
+                    style={{
+                        marginLeft: 'auto'
+                    }}
                     variant="contained"
                     color="primary"
                     startIcon={<DescriptionIcon />}

@@ -30,3 +30,21 @@ export const getAllClients = async () => {
           return [];
     }
 }
+
+export const getClientsProfit = async (skip, filters) => {
+    const parsedParams = new URLSearchParams({
+        Skip: skip,
+        SearchText: filters.searchText,
+        From: filters.dateFrom?.toISOString(),
+        To: filters.dateTo?.toISOString(),
+    }).toString();
+    const URL = '/Statistics/ClientsProfit?' + parsedParams;
+    try {
+        const res = await (await fetch(URL)).json();
+        console.log({ res })
+        return res;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}

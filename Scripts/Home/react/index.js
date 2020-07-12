@@ -52,6 +52,7 @@ import AuthProvider, { useAuth } from './components/providers/AuthProvider';
 import TypePaiementList from './components/views/type-paiement/TypePaiementList';
 import BankPaiementsClientList from './components/views/paiement-client/BankPaiementsClientList';
 import BankPaiementsFournisseurList from './components/views/paiement-fournisseur/BankPaiementsFournisseurList';
+import ClientsMarginList from './components/views/client/ClientsMarginList';
 
 const Routes = () => {
     const {
@@ -121,6 +122,7 @@ const Routes = () => {
         {canManageArticles && <Route path="/_ArticleList" component={FakeArticleList} />}
         {canManageSites && <Route path="/SiteList" component={SiteList} />}
         {isAdmin&&<Route path="/marge-articles" component={ArticlesMarginList} />}
+        {isAdmin&&<Route path="/marge-clients" component={ClientsMarginList} />}
         {canManageClients && <Route path="/ClientList" component={ClientList} />}
         {canManageFournisseurs && <Route path="/SupplierList" component={SupplierList} />}
         {isAdmin && <Route path="/liste-methodes-de-paiement" component={TypePaiementList} />}

@@ -260,8 +260,8 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\AQK\BonCommandeAQK.cs">
-      <DependentUpon>BonCommandeAQK.rpt</DependentUpon>
+    <Compile Include="CrystalReports\AQK\BonCommandeChiffre.cs">
+      <DependentUpon>BonCommandeChiffre.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
@@ -984,6 +984,7 @@
       <DependentUpon>202007111209360_Site_BAItem_BACItem.cs</DependentUpon>
     </Compile>
     <Compile Include="Statistics\BonLivraisonStatistics.cs" />
+    <Compile Include="Statistics\ClientStatistics.cs" />
     <Compile Include="UserStatisticsController.cs" />
     <Compile Include="Datasets\DataSetATF1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -3664,9 +3665,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK\BonCommandeAQK.rpt">
+    <Content Include="CrystalReports\AQK\BonCommandeChiffre.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BonCommandeAQK.cs</LastGenOutput>
+      <LastGenOutput>BonCommandeChiffre.cs</LastGenOutput>
     </Content>
     <Content Include="CrystalReports\AQK\DevisAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
