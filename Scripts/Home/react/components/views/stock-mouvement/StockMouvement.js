@@ -28,23 +28,6 @@ const emptyLine = {
 }
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
-export const paymentMethods = [
-    {
-        Id: '399d159e-9ce0-4fcc-957a-08a65bbeecb2',
-        Name: 'Espéce',
-    },
-    {
-        Id: '399d159e-9ce0-4fcc-957a-08a65bbeecb3',
-        Name: 'Chéque',
-        isBankRelatedItem: true,
-    },
-    {
-        Id: '399d159e-9ce0-4fcc-957a-08a65bbeecb4',
-        Name: 'Effet',
-        isBankRelatedItem: true,
-    },
-]
-
 const useStyles = makeStyles({
     icon: {
         width: 28,

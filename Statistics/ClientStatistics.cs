@@ -17,11 +17,15 @@ namespace WebApplication1.Statistics
             var clientsProfit = db.Clients.Where(x => !x.Disabled).Select(x => new
             {
                 client = x.Name,
-                turnover = x.BonLivraisons.SelectMany(y=>y.BonLivraisonItems).Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To).
+                turnover = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems).Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To).
+                Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f -
+                x.BonAvoirCs.SelectMany(y => y.BonAvoirCItems).Where(y => y.BonAvoirC.Date >= From && y.BonAvoirC.Date <= To).
                 Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f,
                 margin = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems).Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To)
+                .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f -
+                x.BonAvoirCs.SelectMany(y => y.BonAvoirCItems).Where(y => y.BonAvoirC.Date >= From && y.BonAvoirC.Date <= To)
                 .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f,
-                solde = x.IsClientDivers ? 0 : x.Paiements.Sum(y=> (float?)(y.Debit - y.Credit)) ?? 0f,
+                solde = x.IsClientDivers ? 0 : x.Paiements.Sum(y => (float?)(y.Debit - y.Credit)) ?? 0f,
             }).Where(x => x.turnover > 0 && (SearchText == "" || x.client.ToLower().Contains(SearchText.ToLower())));
 
             var totalItems = clientsProfit.Count();

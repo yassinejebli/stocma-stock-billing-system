@@ -40,7 +40,7 @@ const useStyles = makeStyles({
         animation: '$beam 0.01s infinite',
     },
     barcode: {
-        fontFamily: "'Libre Barcode 39'",
+        fontFamily: "'Libre Barcode 128'",
         fontSize: 36,
         width: '100%',
         height: '100%',
@@ -53,7 +53,7 @@ const BarCodeScanning = ({ scanning }) => {
     return (
         <div className={classes.root}>
             <div className={classes.barcode}>
-                1234
+                123456
             </div>
             {scanning && <div className={classes.diode}>
                 <div className={classes.laser}></div>

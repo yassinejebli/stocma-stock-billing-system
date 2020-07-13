@@ -61,6 +61,23 @@ export const getLastPriceSale = async (articleId, clientId) => {
     }
 }
 
+export const getArticleByBarCode = async (barCode, clientId) => {
+    const parsedParams = new URLSearchParams({
+        IdClient: clientId,
+        BarCode: barCode
+    }).toString();
+
+    const URL = '/SalesHistory/GetArticleByBarCode?' + parsedParams;
+
+    try {
+        const res = await (await fetch(URL, {})).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+        return 0;
+    }
+}
+
 export const getLastPricePurchase = async (articleId, fournisseurId) => {
     const parsedParams = new URLSearchParams({
         IdFournisseur: fournisseurId,

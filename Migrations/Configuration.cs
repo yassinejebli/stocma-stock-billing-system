@@ -22,7 +22,14 @@ namespace WebApplication1.Migrations
 
         protected override void Seed(MySaniSoftContext context)
         {
-            
+
+            var articleBarCodeNull = context.Articles.Where(x => x.BarCode == null);
+            //var articleBarCodeNull = context.Articles;
+            Random randomGenerator = new Random();
+            if (articleBarCodeNull.Count() > 0)
+            {
+                articleBarCodeNull.ForEach(x => x.BarCode = "A"+ randomGenerator.Next(1000, 100000));
+            }
 
             var articlesMinStockNull = context.Articles.Where(x => x.MinStock == null);
             if (articlesMinStockNull.Count() > 0)

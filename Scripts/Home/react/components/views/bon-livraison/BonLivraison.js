@@ -26,6 +26,8 @@ import { useAuth } from '../../providers/AuthProvider'
 import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 import BarCodeScanning from '../../elements/animated-icons/BarCodeScanning'
 import BonLivraisonUnsavedList, { AUTO_SAVED_BL } from './BonLivraisonUnsavedList'
+import { getArticleByBarCode } from '../../../queries/articleQueries'
+import BarcodeReader from 'react-barcode-reader'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -44,7 +46,7 @@ const BonLivraison = () => {
         setBLDiscount,
         BLPayment
     } = useSettings();
-    const { siteId, hasMultipleSites } = useSite();
+    const { siteId, site, hasMultipleSites } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
@@ -356,9 +358,25 @@ const BonLivraison = () => {
 
     return (
         <>
+            <BarcodeReader
+                onError={console.error}
+                onScan={async (result) => {
+                    if (barcodeScannerEnabled && result) {
+                        const response = await getArticleByBarCode(result, client?.Id)
+                        console.log({ response })
+                        if(response?.Id)
+                            setData(_data => ([{
+                                Article: response,
+                                Qte: 1,
+                                Site: site,
+                                Pu: response.PVD
+                            }, ..._data]))
+                    }
+                }}
+            />
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                {!isEditMode&&<Button
+                {!isEditMode && <Button
                     variant="contained"
                     color="secondary"
                     startIcon={<RestoreIcon />}

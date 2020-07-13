@@ -75,3 +75,12 @@ export const getPrintRapportTransactionURL = (params) => {
     const parsedParams = new URLSearchParams(params).toString();
     return `/RapportsVentes/Transactions?${parsedParams}`
 }
+
+export const getPrintCodeBarreEtiquetteURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Barcode/SingleEtiquette?${parsedParams}`
+}
+
+export const getPrintMultipleCodeBarreEtiquetteURL = (ids) => {
+    return `/Barcode/MultipleEtiquettes?${ids}`
+}

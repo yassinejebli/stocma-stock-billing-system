@@ -24,7 +24,7 @@ namespace WebApplication1
         public float TotalStock(int IdSite)
         {
             var counter = db.ArticleSites
-                .Where(x =>x.QteStock > 0 && x.IdSite == IdSite && !x.Disabled && !x.Site.Disabled)
+                .Where(x => x.QteStock > 0 && x.IdSite == IdSite && !x.Disabled && !x.Site.Disabled)
                 .Sum(x => (float?)(x.QteStock * x.Article.PA)) ?? 0;
 
             return counter;
@@ -43,16 +43,21 @@ namespace WebApplication1
         {
             if (!From.HasValue) From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             if (!To.HasValue) To = DateTime.Now;
-            var articlesWithMargin = db.ArticleSites.Where(x => x.IdSite == IdSite && !x.Disabled && !x.Site.Disabled).Select(x => new
+            var articlesWithMargin = db.ArticleSites.Where(x => !x.Disabled && !x.Site.Disabled).Select(x => new
             {
                 Article = x.Article.Designation,
                 QteStock = x.QteStock,
-                QteSold = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite).Sum(y => (int?)y.Qte) ?? 0,
+                QteSold = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To).Sum(y => (int?)y.Qte) ?? 0 -
+                x.Article.BonAvoirCItems.Where(y => y.BonAvoirC.Date >= From && y.BonAvoirC.Date <= To).Sum(y => (int?)y.Qte) ?? 0,
                 PA = x.Article.PA,
-                Turnover = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite).
+                Turnover = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To).
+                Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f
+                - x.Article.BonAvoirCItems.Where(y => y.BonAvoirC.Date >= From && y.BonAvoirC.Date <= To).
                 Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f,
-                Margin = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To && y.BonLivraison.IdSite == IdSite)
+                Margin = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= From && y.BonLivraison.Date <= To)
                 .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f
+                - x.Article.BonAvoirCItems.Where(y => y.BonAvoirC.Date >= From && y.BonAvoirC.Date <= To)
+                .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f,
             }).Where(x => x.Turnover > 0 && (SearchText == "" || x.Article.ToLower().Contains(SearchText.ToLower())));
 
             var totalItems = articlesWithMargin.Count();
@@ -60,5 +65,6 @@ namespace WebApplication1
 
             return new { data = articlesWithMargin.OrderByDescending(x => x.Margin).Skip(Skip).Take(10), totalItems };
         }
+
     }
 }

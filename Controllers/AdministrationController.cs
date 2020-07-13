@@ -2333,8 +2333,6 @@ namespace WebApplication1.Controllers
             return File(stream, "application/pdf");
         }
 
-
-
         public ActionResult ExportArticlesGaz(DateTime DateDebut,DateTime DateFin)
         {
             ReportDocument reportDocument = new ReportDocument();

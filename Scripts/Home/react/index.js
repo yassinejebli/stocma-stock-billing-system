@@ -53,6 +53,7 @@ import TypePaiementList from './components/views/type-paiement/TypePaiementList'
 import BankPaiementsClientList from './components/views/paiement-client/BankPaiementsClientList';
 import BankPaiementsFournisseurList from './components/views/paiement-fournisseur/BankPaiementsFournisseurList';
 import ClientsMarginList from './components/views/client/ClientsMarginList';
+import CodeBarreEtiquettes from './components/views/code-barres/CodeBarreEtiquettes';
 
 const Routes = () => {
     const {
@@ -112,6 +113,8 @@ const Routes = () => {
         {canManageFacturesVente && <Route path="/_FactureList" component={FakeFactureClientList} />}
         {canManageFacturesVente && <Route path="/Facture" component={Facture} />}
         {canManageFacturesVente && <Route path="/FactureList" component={FactureList} />}
+
+        <Route path="/code-barres" component={CodeBarreEtiquettes} />
 
         {canManageBonReceptions && <Route path="/BonReception" component={BonReception} />}
         <Route path="/BonLivraison" component={BonLivraison} />

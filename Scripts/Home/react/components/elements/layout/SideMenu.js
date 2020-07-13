@@ -319,9 +319,9 @@ const MenuItems = () => {
             </>}
             <Divider className={classes.divider} />
             <List className={classes.list}>
-                <ListItem button component={Link} to="/">
+                <ListItem button component={Link} to="/code-barres">
                     <ListItemIcon><BarcodeScan className={classes.icon} /></ListItemIcon>
-                    <ListItemText primary="Code barres" />
+                    <ListItemText primary="Code à barres" />
                 </ListItem>
             </List>
             <Divider className={classes.divider} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, Box, Avatar, FormControlLabel, Switch, makeStyles } from '@material-ui/core';
+import { TextField, Button, Box, Avatar, FormControlLabel, Switch, makeStyles, IconButton } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid'
 import Loader from '../loaders/Loader';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
@@ -13,6 +13,10 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { uploadArticleImage } from '../../../queries/fileUploader';
 import { getImageURL } from '../../../utils/urlBuilder';
 import { useAuth } from '../../providers/AuthProvider';
+import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
+import PrintCodeBarreEtiquette from '../dialogs/PrintCodeBarreEtiquette';
+import { useModal } from 'react-modal-hook';
+import { getRandomInt } from '../../../utils/numberUtils';
 
 const initialState = {
     Id: uuidv4(),
@@ -24,7 +28,8 @@ const initialState = {
     QteStock: 0,
     Disabled: false,
     MinStock: 1,
-    Image: null
+    Image: null,
+    BarCode: "A" + getRandomInt(1000, 100000),
 }
 
 const useStyles = makeStyles(theme => ({
@@ -43,6 +48,16 @@ const useStyles = makeStyles(theme => ({
         height: 16,
         width: 16,
         cursor: 'pointer'
+    },
+    barcodeWrapper: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    barcode: {
+        fontFamily: "'Libre Barcode 128'",
+        fontSize: 30,
+        height: 30,
+        color: '#000',
     }
 }))
 
@@ -56,6 +71,19 @@ const ArticleForm = ({ data, onSuccess }) => {
     const [formErrors, setFormErrors] = React.useState({});
     const [base64, setBase64] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
+    const [showPrintBarcodeLabelModal, hidePrintBarcodeLabelModal] = useModal(({ in: open, onExited }) => {
+        return (
+            <PrintCodeBarreEtiquette
+                onExited={onExited}
+                open={open}
+                designation={formState.Designation}
+                barCode={formState.BarCode}
+                onClose={() => {
+                    hidePrintBarcodeLabelModal(null);
+                }}
+            />
+        )
+    }, [formState.Designation, formState.BarCode]);
 
     React.useEffect(() => {
         console.log({ data })
@@ -73,7 +101,8 @@ const ArticleForm = ({ data, onSuccess }) => {
                 Unite: Article.Unite,
                 Disabled: Disabled,
                 Image: Article.Image,
-                MinStock: Article.MinStock
+                MinStock: Article.MinStock,
+                BarCode: Article.BarCode,
             });
         }
     }, [])
@@ -117,7 +146,7 @@ const ArticleForm = ({ data, onSuccess }) => {
         } else {
             const response = await saveArticle({ ...preparedData, Id: uuidv4() }, formState.QteStock, siteId);
             if (response?.Id) {
-                setFormState({ ...initialState, Id: uuidv4() });
+                setFormState({ ...initialState, Id: uuidv4(), BarCode: "A"+getRandomInt(1000, 100000) });
                 showSnackBar();
                 if (onSuccess) onSuccess();
             } else {
@@ -241,6 +270,29 @@ const ArticleForm = ({ data, onSuccess }) => {
                 helperText={formErrors.Unite}
                 error={Boolean(formErrors.Unite)}
             />
+            <TextField
+                name="BarCode"
+                label="Code à barre"
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+                inputProps={{ maxLength: 14 }}
+                onChange={onFieldChange}
+                value={formState.BarCode}
+                helperText={formErrors.BarCode}
+                error={Boolean(formErrors.BarCode)}
+            />
+            {formState.BarCode && formState.Designation && <div className={classes.barcodeWrapper}>
+                <div className={classes.barcode}>
+                    {formState.BarCode}
+                </div>
+                <Box ml={0.5}>
+                    <IconButton onClick={showPrintBarcodeLabelModal}>
+                        <PrintOutlinedIcon />
+                    </IconButton>
+                </Box>
+            </div>}
             <Box my={2}>
                 <Box my={2}>
                     {formState.Image && <div className={classes.image} style={{
