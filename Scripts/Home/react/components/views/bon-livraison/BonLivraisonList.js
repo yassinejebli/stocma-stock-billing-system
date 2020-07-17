@@ -36,7 +36,7 @@ const BonLivraisonList = () => {
     const filters = React.useMemo(() => {
         return {
             and: [
-                { IdSite: siteId },
+                // { IdSite: siteId },
                 {
                     or: {
                         'Client/Name': {
@@ -52,7 +52,7 @@ const BonLivraisonList = () => {
                 }
             ]
         }
-    }, [debouncedSearchText, siteId]);
+    }, [debouncedSearchText]);
     const [data, setData] = React.useState([]);
     const [totalItems, setTotalItems] = React.useState(0);
     const [pageCount, setTotalCount] = React.useState(0);
@@ -61,7 +61,7 @@ const BonLivraisonList = () => {
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
         () => getBonLivraisonListColumns({canUpdateBonLivraisons, canDeleteBonLivraisons, isAdmin}),
-        []
+        [canUpdateBonLivraisons, canDeleteBonLivraisons, isAdmin]
     );
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
         return (

@@ -23,12 +23,14 @@ namespace WebApplication1.Migrations
         protected override void Seed(MySaniSoftContext context)
         {
 
+            return;
+
             var articleBarCodeNull = context.Articles.Where(x => x.BarCode == null);
             //var articleBarCodeNull = context.Articles;
             Random randomGenerator = new Random();
             if (articleBarCodeNull.Count() > 0)
             {
-                articleBarCodeNull.ForEach(x => x.BarCode = "A"+ randomGenerator.Next(1000, 100000));
+                articleBarCodeNull.ForEach(x => x.BarCode = "A" + randomGenerator.Next(1000, 100000));
             }
 
             var articlesMinStockNull = context.Articles.Where(x => x.MinStock == null);
@@ -394,6 +396,19 @@ namespace WebApplication1.Migrations
                     Enabled = true
                 });
             }
+
+            var blActivatedSetting = context.Settings.Where(x => x.Code == "barcode")
+                    .FirstOrDefault();
+
+            if (
+                blActivatedSetting == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "barcode",
+                    Name = "Code à barres"
+                });
+            }
             ///////////////////////////////////////////////// end Settings
 
             if (!context.TypePaiements.Any<TypePaiement>())
@@ -564,8 +579,9 @@ namespace WebApplication1.Migrations
             }
 
             var ClientDivers = context.Clients.Find(new Guid("45c8b294-3a63-487c-821e-70bf4f9bdc39"));
-            if(ClientDivers != null)
+            if (ClientDivers != null)
             {
+                ClientDivers.Name = "Client Divers";
                 ClientDivers.IsClientDivers = true;
             }
 

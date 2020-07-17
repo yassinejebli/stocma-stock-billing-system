@@ -2,7 +2,7 @@ import React from 'react'
 import IconButton from '@material-ui/core/IconButton';
 import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
-import { getLastPricePurchase } from '../../../../queries/articleQueries';
+import { getLastPricePurchase, getLastPriceSale } from '../../../../queries/articleQueries';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -39,7 +39,7 @@ export const bonAvoirVenteColumns = ({ hasMultipleSites }) => ([
                         updateMyData(index, id, selectedValue);
                         updateMyData(index, 'Site', site);
                         if (selectedValue && owner)
-                            getLastPricePurchase(selectedValue.Id, owner.Id).then(lastPricePurchase => {
+                            getLastPriceSale(selectedValue.Id, owner.Id).then(lastPricePurchase => {
                                 updateMyData(index, 'Pu', lastPricePurchase);
                             });
                         else if (selectedValue)

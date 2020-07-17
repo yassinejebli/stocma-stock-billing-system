@@ -13,9 +13,10 @@ namespace WebApplication1.Controllers
         // GET: SalesHistory
         public ActionResult getPriceLastSale(Guid IdClient, Guid IdArticle)
         {
+            var currentYear = DateTime.Now.Year;
             var price = 0.0f;
             var bi = db.BonLivraisonItems
-                .Where((x => x.IdArticle == IdArticle && x.BonLivraison.IdClient == IdClient))
+                .Where((x => x.IdArticle == IdArticle && x.BonLivraison.IdClient == IdClient && x.BonLivraison.Date.Year == currentYear))
                 .OrderByDescending(q => q.BonLivraison.Date).Take(1).FirstOrDefault();
             if (bi != null)
                 price = bi.Pu;
@@ -27,9 +28,10 @@ namespace WebApplication1.Controllers
 
         public ActionResult getPriceLastPurchase(Guid IdFournisseur, Guid IdArticle)
         {
+            var currentYear = DateTime.Now.Year;
             var price = 0.0f;
             var bi = db.BonReceptionItems
-                .Where((x => x.IdArticle == IdArticle && x.BonReception.IdFournisseur == IdFournisseur))
+                .Where((x => x.IdArticle == IdArticle && x.BonReception.IdFournisseur == IdFournisseur && x.BonReception.Date.Year == currentYear))
                 .OrderByDescending(q => q.BonReception.Date).Take(1).FirstOrDefault();
             if (bi != null)
                 price = bi.Pu;
@@ -39,12 +41,13 @@ namespace WebApplication1.Controllers
             return this.Json(price, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetArticleByBarCode(string BarCode, Guid? IdClient)
+        public ActionResult GetArticleByBarCode(string BarCode, Guid? IdClient, int IdSite)
         {
-            var article = db.Articles.ToList().FirstOrDefault(x => x.BarCode == BarCode);
+            var currentYear = DateTime.Now.Year;
+            var article = db.ArticleSites.ToList().FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite).Article;
             if (IdClient.HasValue && article != null)
             {
-                var lastSoldeTime = article.BonLivraisonItems.Where(x => x.BonLivraison.IdClient == IdClient && x.IdArticle == article.Id)
+                var lastSoldeTime = article.BonLivraisonItems.Where(x => x.BonLivraison.IdClient == IdClient && x.IdArticle == article.Id && x.BonLivraison.Date.Year == currentYear)
                 .OrderByDescending(x => x.BonLivraison.Date).Take(1).FirstOrDefault();
                 if (lastSoldeTime != null)
                     article.PVD = lastSoldeTime.Pu;
@@ -61,6 +64,7 @@ namespace WebApplication1.Controllers
                 article.MinStock,
                 article.PA,
                 article.Ref,
+                article.QteStock,
             }, JsonRequestBehavior.AllowGet);
         }
     }

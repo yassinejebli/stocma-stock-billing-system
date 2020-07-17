@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import { formatMoney } from './moneyUtils';
 import { getLastPriceSale } from '../queries/articleQueries';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
-import { Box } from '@material-ui/core';
+import { Box, Tooltip } from '@material-ui/core';
 import Input from '../components/elements/input/Input';
 
 export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
@@ -61,7 +61,13 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
                     {value && <Box mb={1} style={{
                         color: value.MinStock > value.QteStock ? 'red' : 'green'
                     }}>
-                        {value.QteStock} en stock
+                        <Tooltip title={"CODE:" + Math.floor(1000 + Math.random() * 9000) +
+                            "-" + formatMoney(value.PA) +
+                            "-" + Math.floor(1000 + Math.random() * 9000)}>
+                            <span>
+                                {value.QteStock} en stock
+                            </span>
+                        </Tooltip>
                     </Box>}
                 </>
             )
@@ -86,11 +92,41 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
         align: 'right'
     },
     {
+        id: 'Pu',
         Header: 'P.U.',
         accessor: 'Pu',
         editable: true,
         type: inputTypes.number.description,
-        align: 'right'
+        align: 'right',
+        Cell: ({
+            value,
+            row: { original, index },
+            column: { id },
+            updateMyData,
+        }) => {
+            return (
+                <>
+
+                    <Input
+                        value={value||''}
+                        inTable
+                        align="right"
+                        onFocus={(event) => event.target.select()}
+                        onChange={({ target: { value: _value } }) => updateMyData(index, id, _value)}
+                        onBlur={() => updateMyData(index, id, value)}
+                    />
+                    {Boolean(value && original?.Article?.PA >= value) && <Box mb={1}>
+                        <div style={{
+                            marginLeft: 'auto',
+                            color: 'red',
+                            width: 'fit-content',
+                        }}>
+                            Vérifier ce prix!
+                        </div>
+                    </Box>}
+                </>
+            )
+        }
     },
     ((BLDiscount?.Enabled) && {
         Header: 'Remise',
@@ -298,7 +334,7 @@ export const getBonLivraisonListColumns = ({ canUpdateBonLivraisons, canDeleteBo
         id: 'Total',
         Header: 'Total',
         type: inputTypes.text.description,
-        width: 30,
+        width: 50,
         accessor: (props) => {
             const discount = props.BonLivraisonItems.reduce((sum, curr) => {
                 const total = curr.Pu * curr.Qte;

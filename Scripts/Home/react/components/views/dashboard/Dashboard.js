@@ -3,6 +3,7 @@ import { useTitle } from '../../providers/TitleProvider';
 import ProfitAndExpenses from './ProfitAndExpenses';
 import MonthlyProfitAndExpenses from './MonthlyProfitAndExpenses';
 import { Box, FormControl, Select, withStyles, InputBase, MenuItem } from '@material-ui/core';
+import MonthlyProfitAndCash from './MonthlyProfitAndCash';
 
 const currentYear = new Date().getFullYear();
 const years = [ currentYear, currentYear - 1, currentYear - 2 ]
@@ -35,6 +36,7 @@ const Dashboard = () => {
             <div>
                 <ProfitAndExpenses year={selectedYear} />
                 <MonthlyProfitAndExpenses year={selectedYear} />
+                <MonthlyProfitAndCash year={selectedYear} />
             </div>
         </div>
     )

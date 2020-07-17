@@ -28,6 +28,7 @@ import BarCodeScanning from '../../elements/animated-icons/BarCodeScanning'
 import BonLivraisonUnsavedList, { AUTO_SAVED_BL } from './BonLivraisonUnsavedList'
 import { getArticleByBarCode } from '../../../queries/articleQueries'
 import BarcodeReader from 'react-barcode-reader'
+import { looseFocus } from '../../../utils/miscUtils'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -44,7 +45,8 @@ const BonLivraison = () => {
     const {
         BLDiscount,
         setBLDiscount,
-        BLPayment
+        BLPayment,
+        barcode
     } = useSettings();
     const { siteId, site, hasMultipleSites } = useSite();
     const { showSnackBar } = useSnackBar();
@@ -125,6 +127,10 @@ const BonLivraison = () => {
     React.useEffect(() => {
         setSkipPageReset(false)
     }, [data])
+
+    React.useEffect(() => {
+        setBarcodeScannerEnabled(barcode?.Enabled);
+    }, [barcode])
 
     React.useEffect(() => {
         if (!isEditMode) {
@@ -269,6 +275,11 @@ const BonLivraison = () => {
                 _errors['table'] = 'Compléter les lignes.';
                 return;
             }
+
+            if (_row.Pu <= _row.Article.PA) {
+                _errors['table'] = 'Vérifier les prix de ventes.';
+                return;
+            }
         });
 
         setErrors(_errors);
@@ -362,16 +373,29 @@ const BonLivraison = () => {
                 onError={console.error}
                 onScan={async (result) => {
                     if (barcodeScannerEnabled && result) {
-                        const response = await getArticleByBarCode(result, client?.Id)
-                        console.log({ response })
-                        if(response?.Id)
+                        setLoading(true)
+                        const response = await getArticleByBarCode(result, client?.Id, siteId)
+                        if (response?.Id)
                             setData(_data => ([{
                                 Article: response,
                                 Qte: 1,
                                 Site: site,
                                 Pu: response.PVD
                             }, ..._data]))
+                        else {
+                            showSnackBar({
+                                error: true,
+                                text: "L'article scanné n'existe pas dans la base de données!"
+                            })
+                        }
+
+                        setLoading(false)
                     }
+                    if (!barcodeScannerEnabled)
+                        showSnackBar({
+                            error: true,
+                            text: "Vous devez activer la lecture de code à barres!"
+                        })
                 }}
             />
             <Loader loading={loading} />
@@ -401,13 +425,19 @@ const BonLivraison = () => {
                     <ClientAutocomplete
                         disabled={isEditMode}
                         value={client}
-                        onChange={(_, value) => setClient(value)}
+                        onChange={(_, value) => {
+                            setClient(value);
+                            looseFocus();
+                        }}
                         errorText={errors.client}
                     />
 
                     <DatePicker
                         value={date}
-                        onChange={(_date) => setDate(_date)}
+                        onChange={(_date) => {
+                            setDate(_date)
+                            looseFocus();
+                        }}
                     />
                 </Box>
                 {isEditMode && <Box width={240} mt={2}>
@@ -434,7 +464,10 @@ const BonLivraison = () => {
                 <Box mt={2} display="flex" flexWrap="wrap">
                     {BLPayment?.Enabled && <Box mr={2} width={240}>
                         <TypePaiementAutocomplete
-                            onChange={(_, value) => setPaymentType(value)}
+                            onChange={(_, value) => {
+                                setPaymentType(value);
+                                looseFocus();
+                            }}
                             value={paymentType}
                         />
                     </Box>}
@@ -444,7 +477,10 @@ const BonLivraison = () => {
                         <FormControlLabel
                             control={<Switch
                                 checked={barcodeScannerEnabled}
-                                onChange={(_, checked) => setBarcodeScannerEnabled(checked)} />}
+                                onChange={(_, checked) => {
+                                    setBarcodeScannerEnabled(checked);
+                                    looseFocus();
+                                }} />}
                             label={<BarCodeScanning scanning={barcodeScannerEnabled} />}
                         />
                     </Box>

@@ -174,7 +174,7 @@ namespace WebApplication1.DATA.OData
 
             var numBonGenerator = new DocNumberGenerator();
             var currentYear = DateTime.Now.Year;
-            var lastDoc = db.BonAvoirCs.Where(x => x.Date.Year == currentYear && x.IdSite == bonAvoirC.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();
+            var lastDoc = db.BonAvoirCs.Where(x => x.Date.Year == currentYear).OrderByDescending(x => x.Ref).FirstOrDefault();
             var lastRef = lastDoc != null ? lastDoc.Ref : 0;
             bonAvoirC.Ref = lastRef + 1;
             bonAvoirC.NumBon = numBonGenerator.getNumDocByCompany(lastRef, bonAvoirC.Date);

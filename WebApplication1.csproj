@@ -339,8 +339,8 @@
       <DependentUpon>MiniBonReceptionATF.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\BarcodeLabelsOrigin.cs">
-      <DependentUpon>BarcodeLabelsOrigin.rpt</DependentUpon>
+    <Compile Include="CrystalReports\BarcodeLabels.cs">
+      <DependentUpon>BarcodeLabels.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -353,10 +353,10 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="CrystalReports\BarcodeLabels.cs">
+    <Compile Include="CrystalReports\BarcodeLabelsOld.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BarcodeLabels.rpt</DependentUpon>
+      <DependentUpon>BarcodeLabelsOld.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
@@ -369,6 +369,12 @@
     </Compile>
     <Compile Include="CrystalReports\EAS\BonCommandeChiffre.cs">
       <DependentUpon>BonCommandeChiffre.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\EAS\DevisEAS.cs">
+      <DependentUpon>DevisEAS.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
@@ -640,8 +646,8 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="CrystalReports\EAS\DevisEAS.cs">
-      <DependentUpon>DevisEAS.rpt</DependentUpon>
+    <Compile Include="CrystalReports\EAS\DevisEASOrig.cs">
+      <DependentUpon>DevisEASOrig.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
@@ -3730,9 +3736,9 @@
       <LastGenOutput>CrystalReport21.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="CrystalReports\BarcodeLabels.rpt">
+    <Content Include="CrystalReports\BarcodeLabelsOld.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BarcodeLabels.cs</LastGenOutput>
+      <LastGenOutput>BarcodeLabelsOld.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CrystalReports\CrystalReportCompteClient.rpt">
@@ -3922,9 +3928,9 @@
       <LastGenOutput>CrystalReportTest.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="CrystalReports\EAS\DevisEAS.rpt">
+    <Content Include="CrystalReports\EAS\DevisEASOrig.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>DevisEAS.cs</LastGenOutput>
+      <LastGenOutput>DevisEASOrig.cs</LastGenOutput>
     </Content>
     <Content Include="CrystalReports\H9S\BonCommandeH9S.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -4158,10 +4164,14 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionTSR1.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\BarcodeLabelsOrigin.rpt">
+    <Content Include="CrystalReports\BarcodeLabels.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BarcodeLabelsOrigin.cs</LastGenOutput>
+      <LastGenOutput>BarcodeLabels.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\EAS\DevisEAS.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DevisEAS.cs</LastGenOutput>
     </Content>
     <EmbeddedResource Include="Migrations\201702231840475_init.resx">
       <DependentUpon>201702231840475_init.cs</DependentUpon>

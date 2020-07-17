@@ -37,7 +37,7 @@ const Input = ({ inTable,
     style,
     ...props }) => {
     const classes = useInputStyles({ align });
-    
+
     return (
         <TextField
             {...(inTable && { className: classes.input })}

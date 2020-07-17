@@ -80,9 +80,14 @@ function Table({
             updateMyData,
             addNewRow,
             deleteRow: async (params) => {
-                const ok = await confirmDialog({ text: "Voulez vous vraiment supprimer cet enregistrement?" })
-                if (deleteRow && ok)
+                if (serverPagination) {
+                    const ok = await confirmDialog({ text: "Voulez vous vraiment supprimer cet enregistrement?" })
+                    if (deleteRow && ok)
+                        deleteRow(params)
+                } else {
                     deleteRow(params)
+                }
+
             },
             customAction,
             showImage,

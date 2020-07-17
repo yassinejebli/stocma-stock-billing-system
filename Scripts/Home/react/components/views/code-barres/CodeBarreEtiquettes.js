@@ -163,7 +163,7 @@ export const codeBarreListColumns = () => ([
         }
     },
     {
-        Header: 'Code à barre',
+        Header: 'Code à barres',
         id: 'BarCode',
         accessor: 'Article.BarCode',
         Cell: ({

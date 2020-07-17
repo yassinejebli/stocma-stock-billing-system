@@ -29,7 +29,7 @@ const BonAvoirVenteList = () => {
     const filters = React.useMemo(() => {
         return {
             and: [
-                { IdSite: siteId },
+                // { IdSite: siteId },
                 {
                     or: {
                         'Client/Name': {
@@ -42,7 +42,7 @@ const BonAvoirVenteList = () => {
                 }
             ]
         }
-    }, [debouncedSearchText, siteId]);
+    }, [debouncedSearchText]);
     const [data, setData] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [totalItems, setTotalItems] = React.useState(0);

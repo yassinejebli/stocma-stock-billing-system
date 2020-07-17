@@ -29,6 +29,7 @@ namespace WebApplication1.DATA
         public bool WithDiscount { get; set; } = false;
 
         public string ClientName { get; set; }
+        public string ClientICE { get; set; }
 
         public Guid IdClient { get; set; }
 

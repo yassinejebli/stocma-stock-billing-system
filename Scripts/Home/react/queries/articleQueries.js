@@ -61,10 +61,11 @@ export const getLastPriceSale = async (articleId, clientId) => {
     }
 }
 
-export const getArticleByBarCode = async (barCode, clientId) => {
+export const getArticleByBarCode = async (barCode, clientId, siteId) => {
     const parsedParams = new URLSearchParams({
         IdClient: clientId,
-        BarCode: barCode
+        BarCode: barCode,
+        IdSite: siteId,
     }).toString();
 
     const URL = '/SalesHistory/GetArticleByBarCode?' + parsedParams;

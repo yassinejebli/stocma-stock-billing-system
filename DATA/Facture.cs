@@ -29,6 +29,8 @@ namespace WebApplication1.DATA
         public string Comment { get; set; }
 
         public string ClientName { get; set; }
+        public string ClientICE { get; set; }
+
 
         public string TypeReglement { get; set; }
 

@@ -38,6 +38,9 @@ namespace WebApplication1.Controllers.Print
             if (reportDocument.ParameterFields["header"] != null)
                 reportDocument.SetParameterValue("header", solde);
 
+            reportDocument.PrintOptions.PaperSize = PaperSize.PaperA4;
+            reportDocument.PrintOptions.ApplyPageMargins(new PageMargins(0, 0, 0, 0));
+
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition
             {

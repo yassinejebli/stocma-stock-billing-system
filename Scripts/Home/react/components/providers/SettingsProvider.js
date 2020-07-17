@@ -30,6 +30,9 @@ const SettingsProvider = ({ children }) => {
     const [devisTransport, setDevisTransport] = React.useState(null);
     const [devisDeliveryTime, setDevisDeliveryTime] = React.useState(null);
 
+    //Barcode
+    const [barcode, setBarcode] = React.useState(null);
+
     React.useEffect(() => {
         fetchSettings();
     }, []);
@@ -45,6 +48,12 @@ const SettingsProvider = ({ children }) => {
         if (factureCheque)
             updateData(TABLE, factureCheque, factureCheque?.Id);
     }, [factureCheque]);
+
+    //Barcode
+    React.useEffect(() => {
+        if (barcode)
+            updateData(TABLE, barcode, barcode?.Id);
+    }, [barcode]);
 
     //BL
     React.useEffect(() => {
@@ -98,6 +107,10 @@ const SettingsProvider = ({ children }) => {
                 setFactureDiscount(res.find(x => x.Code === 'fa_discount'));
                 setFacturePayment(res.find(x => x.Code === 'fa_payment'));
                 setFactureCheque(res.find(x => x.Code === 'fa_cheque'));
+
+                //Barcode
+                setBarcode(res.find(x => x.Code === 'barcode'));
+
             })
             .catch(err => console.error(err));
     }
@@ -125,7 +138,10 @@ const SettingsProvider = ({ children }) => {
             facturePayment,
             setFacturePayment,
             factureCheque,
-            setFactureCheque
+            setFactureCheque,
+            //Barcode,
+            barcode,
+            setBarcode
         }}>
             {children}
         </SettingsContext.Provider>)

@@ -31,17 +31,21 @@ namespace WebApplication1.Controllers.Print
                 {
                     Client = x.Client.Name,
                     NumBon = x.NumBon,
+                    Ref = x.Ref,
                     Date = x.Date,
                     Debit = x.BonLivraisonItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
                     Credit = 0,
-                }).OrderBy(x => x.Date).ToList();
+                }).OrderBy(x => new { x.Ref, x.Date.Year }).ToList();
 
             reportDocument.SetDataSource(dataSource);
             if (reportDocument.ParameterFields["document"] != null)
                 reportDocument.SetParameterValue("document", "BL");
             if (reportDocument.ParameterFields["total"] != null)
                 reportDocument.SetParameterValue("total", dataSource.Sum(x => x.Debit));
+
+            reportDocument.PrintOptions.PaperSize = PaperSize.PaperA4;
+            reportDocument.PrintOptions.ApplyPageMargins(new PageMargins(0, 0, 0, 0));
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition
@@ -71,6 +75,7 @@ namespace WebApplication1.Controllers.Print
                 {
                     Client = x.Client.Name,
                     NumBon = x.NumBon,
+                    Ref = x.Ref,
                     Date = x.Date,
                     Debit = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems).Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Credit = 0,
@@ -81,11 +86,12 @@ namespace WebApplication1.Controllers.Print
                 {
                     Client = x.Client.Name,
                     NumBon = x.NumBon,
+                    Ref = x.Ref,
                     Date = x.Date,
                     Debit = x.FakeFactureItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
-                }).OrderBy(x => x.Date).ToList();
+                }).OrderBy(x => new { x.Ref, x.Date.Year }).ToList();
 
             reportDocument.SetDataSource(dataSource);
 
@@ -93,6 +99,9 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("document", "FA");
             if (reportDocument.ParameterFields["total"] != null)
                 reportDocument.SetParameterValue("total", dataSource.Sum(x => x.Debit));
+
+            reportDocument.PrintOptions.PaperSize = PaperSize.PaperA4;
+            reportDocument.PrintOptions.ApplyPageMargins(new PageMargins(0, 0, 0, 0));
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition
@@ -241,6 +250,9 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("totalEspece", PaiementClients.Where(x => x.IsEspece).Sum(x => x.Debit));
             if (reportDocument.ParameterFields["totalCaisse"] != null)
                 reportDocument.SetParameterValue("totalCaisse", PaiementClients.Where(x => x.IsEspece).Sum(x => x.Debit) - Depenses.Sum(x => x.Debit) - PaiementClients.Where(x => x.IsRemboursement).Sum(x => x.Debit));
+
+            reportDocument.PrintOptions.PaperSize = PaperSize.PaperA4;
+            reportDocument.PrintOptions.ApplyPageMargins(new PageMargins(0, 0, 0, 0));
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition

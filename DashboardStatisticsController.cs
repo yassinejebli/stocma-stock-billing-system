@@ -16,5 +16,11 @@ namespace WebApplication1
             DashboardStatistics statistics = new DashboardStatistics();
             return Json(statistics.DailyProfitAndTurnover(IdSite, year), JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult MonthlyProfitAndCash(int year)
+        {
+            DashboardStatistics statistics = new DashboardStatistics();
+            return Json(statistics.MonthlyProfitAndCash(year), JsonRequestBehavior.AllowGet);
+        }
     }
 }

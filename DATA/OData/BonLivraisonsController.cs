@@ -21,7 +21,7 @@ namespace WebApplication1.DATA.OData
         [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<BonLivraison> GetBonLivraisons()
         {
-            return db.BonLivraisons.OrderByDescending(x => x.Date);
+            return db.BonLivraisons.OrderByDescending(x => new { x.Date.Year, x.Ref });
         }
 
         [EnableQuery]
@@ -154,7 +154,7 @@ namespace WebApplication1.DATA.OData
                 return BadRequest(this.ModelState);
             var numBonGenerator = new DocNumberGenerator();
             var currentYear = DateTime.Now.Year;
-            var lastDoc = db.BonLivraisons.Where(x => x.Date.Year == currentYear && x.IdSite == bonLivraison.IdSite).OrderByDescending(x => x.Ref).FirstOrDefault();
+            var lastDoc = db.BonLivraisons.Where(x => x.Date.Year == currentYear).OrderByDescending(x => x.Ref).FirstOrDefault();
             var lastRef = lastDoc != null ? lastDoc.Ref : 0;
             bonLivraison.User = User.Identity.Name;
             bonLivraison.IdUser = User.Identity.GetUserId();

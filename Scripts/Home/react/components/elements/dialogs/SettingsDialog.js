@@ -4,6 +4,7 @@ import { Drawer, Box, Switch, FormControlLabel } from '@material-ui/core';
 import TitleIcon from '../misc/TitleIcon';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import { useSettings } from '../../providers/SettingsProvider';
+import { BarcodeScan } from 'mdi-material-ui'
 
 export const useStyles = makeStyles(theme => ({
     root: {
@@ -40,7 +41,9 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
         facturePayment,
         setFacturePayment,
         factureCheque,
-        setFactureCheque
+        setFactureCheque,
+        barcode,
+        setBarcode,
     } = useSettings();
     const classes = useStyles();
 
@@ -48,6 +51,17 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
         <Drawer anchor="right" {...props}>
             <div className={classes.root}>
                 <div className={classes.header}>Paramétrage</div>
+                <Box flexDirection="column" display="flex" mt={2}>
+                    <TitleIcon title="Code à barres" Icon={BarcodeScan} />
+                    <Box mt={2}>
+                        <FormControlLabel
+                            control={<Switch
+                                checked={barcode?.Enabled}
+                                onChange={(_, checked) => setBarcode(_setting => ({ ..._setting, Enabled: checked }))} />}
+                            label="Activer le scanner toujours"
+                        />
+                    </Box>
+                </Box>
                 <Box flexDirection="column" display="flex" mt={2}>
                     <TitleIcon title="Devis" Icon={DescriptionOutlinedIcon} />
                     <Box mt={2}>

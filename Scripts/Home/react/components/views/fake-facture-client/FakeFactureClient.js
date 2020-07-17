@@ -49,6 +49,7 @@ const FakeFacture = () => {
     const [note, setNote] = React.useState('');
     const [chequeNumber, setChequeNumber] = React.useState('');
     const [clientName, setClientName] = React.useState('');
+    const [clientICE, setClientICE] = React.useState('');
     const [errors, setErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
@@ -101,6 +102,7 @@ const FakeFacture = () => {
                         // Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
                     })));
                     setClientName(response.ClientName);
+                    setClientICE(response.ClientICE);
                     setNumDoc(response.NumBon);
                     setPaymentType(response.TypePaiement);
                     setRef(response.Ref);
@@ -176,6 +178,7 @@ const FakeFacture = () => {
             Comment: chequeNumber,
             IdTypePaiement: paymentType?.Id,
             ClientName: clientName,
+            ClientICE: clientICE,
             FakeFactureItems: data.filter(x => x.Article).map(d => ({
                 Id: uuidv4(),
                 IdFakeFacture: Id,
@@ -210,6 +213,7 @@ const FakeFacture = () => {
     const resetData = () => {
         setClient(null);
         setClientName('');
+        setClientICE('');
         setNote('');
         setData([]);
         setDate(new Date());
@@ -238,6 +242,7 @@ const FakeFacture = () => {
                         onChange={(_, value) => {
                             setClient(value);
                             setClientName(value?.Name);
+                            setClientICE(value?.ICE||'');
                         }}
                         errorText={errors.client}
                     />
@@ -281,7 +286,17 @@ const FakeFacture = () => {
                         value={dueDate}
                         onChange={(_date) => setDueDate(_date)}
                         clearable
-                        />
+                    />
+                </Box>
+                <Box mt={2} width={240}>
+                    <TextField
+                        value={clientICE}
+                        onChange={({ target: { value } }) => setClientICE(value)}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                        label="ICE"
+                    />
                 </Box>
                 <Box mt={2} display="flex" flexWrap="wrap">
                     {facturePayment?.Enabled && <Box mr={2} width={240}>

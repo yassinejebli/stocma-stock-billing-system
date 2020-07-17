@@ -6,6 +6,7 @@ import { getDailyProfitAndTurnover } from '../../../queries/DashboardQueries';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { formatMoney } from '../../../utils/moneyUtils';
+import { TrendingDown, TrendingUp, CurrencyUsd } from 'mdi-material-ui'
 
 const useStyles = makeStyles(theme => ({
     wrapper: {
@@ -14,7 +15,7 @@ const useStyles = makeStyles(theme => ({
         marginTop: 16
     },
     card: {
-        paddingTop: 26,
+        paddingTop: 16,
         width: '30%',
         backgroundColor: '#FFF',
         boxShadow: '0px 1px 22px -12px #607D8B',
@@ -24,6 +25,7 @@ const useStyles = makeStyles(theme => ({
         paddingLeft: 28
     },
     amount: {
+        marginTop: 8,
         fontWeight: 600,
         fontSize: 22,
         fontFamily: 'Helvetica, Arial, sans-serif',
@@ -36,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const ProfitAndExpenses = ({year}) => {
+const ProfitAndExpenses = ({ year }) => {
     const theme = useTheme();
     const { siteId } = useSite();
     const classes = useStyles();
@@ -55,7 +57,7 @@ const ProfitAndExpenses = ({year}) => {
         setTurnoverData(null)
         setProfitData(null)
         setExpensesData(null)
-        
+
         getDailyProfitAndTurnover(siteId, year).then(res => {
             const categories = res.map(x => {
                 const date = new Date(year, today.getMonth(), x.day);
@@ -162,11 +164,14 @@ const ProfitAndExpenses = ({year}) => {
         <div className={classes.wrapper}>
             <div className={classes.card}>
                 <div className={classes.textWrapper}>
+                    <Box display="flex" alignItems="center">
+                        <TrendingUp />
+                        <div className={classes.text} style={{ marginLeft: 4 }}>
+                            Ventes
+                        </div>
+                    </Box>
                     <div className={classes.amount}>
                         {formatMoney(totalTurnover)} DH
-                    </div>
-                    <div className={classes.text}>
-                        Ventes
                     </div>
                 </div>
                 <Box height={80}>
@@ -181,11 +186,14 @@ const ProfitAndExpenses = ({year}) => {
             </div>
             <div className={classes.card}>
                 <div className={classes.textWrapper}>
+                    <Box display="flex" alignItems="center">
+                        <TrendingDown />
+                        <div className={classes.text} style={{ marginLeft: 4 }}>
+                            Dépenses
+                        </div>
+                    </Box>
                     <div className={classes.amount}>
                         {formatMoney(totalExpenses)} DH
-                    </div>
-                    <div className={classes.text}>
-                        Dépenses
                     </div>
                 </div>
                 <Box height={80}>
@@ -200,11 +208,14 @@ const ProfitAndExpenses = ({year}) => {
             </div>
             <div className={classes.card}>
                 <div className={classes.textWrapper}>
+                    <Box display="flex" alignItems="center">
+                        <CurrencyUsd style={{marginLeft: -4}} />
+                        <div className={classes.text} style={{ marginLeft: 2 }}>
+                            Bénéfices
+                        </div>
+                    </Box>
                     <div className={classes.amount}>
                         {formatMoney(totalProfit)} DH
-                    </div>
-                    <div className={classes.text}>
-                        Bénéfices
                     </div>
                 </div>
                 <Box height={80}>
