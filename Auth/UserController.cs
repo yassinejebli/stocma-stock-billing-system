@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -68,13 +70,7 @@ namespace WebApplication1.Auth
         [HttpPost]
         public ActionResult HasClaim(string userId, string claim)
         {
-            var userStore = new UserStore<ApplicationUser>(db);
-            var userManager = new UserManager<ApplicationUser>(userStore);
-            var applicationUser = userManager.FindById(userId);
-            var userClaim = userManager.GetClaims(userId).FirstOrDefault(x => x.Type == claim);
-            var userHasClaim = userClaim != null;
-
-            return Json(new { userHasClaim }, JsonRequestBehavior.AllowGet);
+            return Json(new { userHasClaim = AuthManager.UserHasClaim(userId, claim) }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

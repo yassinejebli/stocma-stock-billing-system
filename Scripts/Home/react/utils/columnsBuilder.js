@@ -121,7 +121,7 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
                             color: 'red',
                             width: 'fit-content',
                         }}>
-                            Vérifier ce prix!
+                            Vérifier le prix!
                         </div>
                     </Box>}
                 </>

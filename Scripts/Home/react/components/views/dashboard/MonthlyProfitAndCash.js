@@ -6,12 +6,28 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { formatMoney } from '../../../utils/moneyUtils';
 import { getMonthlyProfitAndCash } from '../../../queries/DashboardQueries';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
 const useStyles = makeStyles(theme => ({
     wrapper: {
         display: 'flex',
         justifyContent: 'space-between',
         marginTop: 16
+    },
+    titleWrapper: {
+        marginTop: 16,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    title: {
+        fontWeight: 500,
+        fontSize: 24,
+        marginLeft: 4,
+    },
+    icon: {
+        width: 30,
+        height: 30,
+        color: 'gold',
     },
     card: {
         paddingTop: 26,
@@ -132,57 +148,65 @@ const MonthlyProfitAndCash = ({ year }) => {
                     name: 'Espèce',
                     data: res.map(x => x.cashProfit)
                 }, {
+                    name: 'Espèce net',
+                    data: res.map(x => x.netProfit)
+                }, {
                     name: 'Dépense',
                     data: res.map(x => x.expenses)
                 },
-                {
-                    name: 'Espèce net',
-                    data: res.map(x => x.netProfit)
-                }],
+                ],
             });
         });
     }
 
     return (
-        <div className={classes.wrapper}>
-            <div className={classes.card}>
-                <Box display="flex" justifyContent="space-around">
-                    <div className={classes.textWrapper}>
-                        <div className={classes.amount} >
-                            {formatMoney(totalCash)} DH
-                        </div>
-                        <div className={classes.text}>
-                            Espèce
-                        </div>
-                    </div>
-                    <div className={classes.textWrapper}>
-                        <div className={classes.amount} style={{ color: 'rgb(254, 176, 25)' }}>
-                            {formatMoney(totalExpenses)} DH
-                        </div>
-                        <div className={classes.text}>
-                            Dépense
-                        </div>
-                    </div>
-                    <div className={classes.textWrapper}>
-                        <div className={classes.amount} style={{ color: 'rgb(0, 227, 150)' }}>
-                            {formatMoney(totalNetCash)} DH
-                        </div>
-                        <div className={classes.text}>
-                            Espèce net
-                        </div>
-                    </div>
-                </Box>
-                <Box mt={1} minHeight={300}>
-                    {data && <Chart
-                        options={data.options}
-                        series={data.series}
-                        type="area"
-                        height="100%"
-                        width="100%"
-                    />}
-                </Box>
+        <>
+            <div className={classes.titleWrapper}>
+                <MonetizationOnIcon className={classes.icon} />
+                <div className={classes.title}>
+                    Liquidité en espèces
+                </div>
             </div>
-        </div>
+            <div className={classes.wrapper}>
+                <div className={classes.card}>
+                    <Box display="flex" justifyContent="space-around">
+                        <div className={classes.textWrapper}>
+                            <div className={classes.amount} >
+                                {formatMoney(totalCash)} DH
+                        </div>
+                            <div className={classes.text}>
+                                Espèce
+                        </div>
+                        </div>
+                        <div className={classes.textWrapper}>
+                            <div className={classes.amount} style={{ color: 'rgb(254, 176, 25)' }}>
+                                {formatMoney(totalExpenses)} DH
+                        </div>
+                            <div className={classes.text}>
+                                Dépense
+                        </div>
+                        </div>
+                        <div className={classes.textWrapper}>
+                            <div className={classes.amount} style={{ color: 'rgb(0, 227, 150)' }}>
+                                {formatMoney(totalNetCash)} DH
+                        </div>
+                            <div className={classes.text}>
+                                Espèce net
+                        </div>
+                        </div>
+                    </Box>
+                    <Box mt={1} minHeight={300}>
+                        {data && <Chart
+                            options={data.options}
+                            series={data.series}
+                            type="area"
+                            height="100%"
+                            width="100%"
+                        />}
+                    </Box>
+                </div>
+            </div>
+        </>
     )
 }
 

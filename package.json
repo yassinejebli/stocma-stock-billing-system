@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "webpack --mode development --watch",
-    "build": "webpack"
+    "build": "webpack",
+    "build-prod": "webpack --config webpack.config.prod.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.3",

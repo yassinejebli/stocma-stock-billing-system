@@ -17,8 +17,8 @@ namespace WebApplication1.Statistics
             var months = Enumerable.Range(1, 12).Select(i => new { I = i, M = DateTimeFormatInfo.CurrentInfo.GetMonthName(i) });
             var monthlyProfitAndCash = months.Select(x =>
             {
-                var totalCashPaymentsClients = db.Paiements.Where(y => y.Date.Year == year && y.Date.Month == x.I && (y.TypePaiement.IsEspece || y.TypePaiement.IsRemboursement || y.TypePaiement.IsRemise || (y.TypePaiement.IsBankRelated && y.EnCaisse == true))).Sum(y => (float?)(y.Credit - y.Debit)) ?? 0;
-                var totalCashPaymentsFournisseurs = db.PaiementFs.Where(y => y.Date.Year == year && y.Date.Month == x.I && (y.TypePaiement.IsEspece || y.TypePaiement.IsRemboursement || y.TypePaiement.IsRemise || (y.TypePaiement.IsBankRelated && y.EnCaisse == true))).Sum(y => (float?)(y.Credit - y.Debit)) ?? 0;
+                var totalCashPaymentsClients = db.Paiements.Where(y => y.Date.Year == year && y.Date.Month == x.I && (y.TypePaiement.IsEspece || y.TypePaiement.IsRemboursement || (y.TypePaiement.IsBankRelated && y.EnCaisse == true))).Sum(y => (float?)(y.Credit - y.Debit)) ?? 0;
+                var totalCashPaymentsFournisseurs = db.PaiementFs.Where(y => y.Date.Year == year && y.Date.Month == x.I && (y.TypePaiement.IsEspece || y.TypePaiement.IsRemboursement || (y.TypePaiement.IsBankRelated && y.EnCaisse == true))).Sum(y => (float?)(y.Credit - y.Debit)) ?? 0;
                 var totalExpenses = db.Depenses.Where(y => y.Date.Year == year && y.Date.Month == x.I).SelectMany(y => y.DepenseItems).Sum(y => (float?)y.Montant) ?? 0;
                 return new
                 {

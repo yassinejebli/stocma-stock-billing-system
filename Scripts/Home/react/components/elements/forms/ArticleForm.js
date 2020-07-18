@@ -140,7 +140,7 @@ const ArticleForm = ({ data, onSuccess }) => {
             } else {
                 showSnackBar({
                     error: true,
-                    text: "Vous n'êtes pas autorisé à modifier l'élément!"
+                    text: "Vous n'êtes pas autorisé à modifier l'article!"
                 });
             }
         } else {

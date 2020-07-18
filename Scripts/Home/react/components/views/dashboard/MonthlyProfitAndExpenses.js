@@ -6,12 +6,28 @@ import { getMonthlyProfitAndTurnover } from '../../../queries/DashboardQueries';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { formatMoney } from '../../../utils/moneyUtils';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 
 const useStyles = makeStyles(theme => ({
     wrapper: {
         display: 'flex',
         justifyContent: 'space-between',
         marginTop: 16
+    },
+    titleWrapper: {
+        marginTop: 16,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    title: {
+        fontWeight: 500,
+        fontSize: 24,
+        marginLeft: 4,
+    },
+    icon: {
+        width: 30,
+        height: 30,
+        color: 'green',
     },
     card: {
         paddingTop: 26,
@@ -36,7 +52,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const MonthlyProfitAndExpenses = ({year}) => {
+const MonthlyProfitAndExpenses = ({ year }) => {
     const { siteId } = useSite();
     const classes = useStyles();
     const [data, setData] = React.useState();
@@ -144,45 +160,53 @@ const MonthlyProfitAndExpenses = ({year}) => {
     }
 
     return (
-        <div className={classes.wrapper}>
-            <div className={classes.card}>
-                <Box display="flex" justifyContent="space-around">
-                    <div className={classes.textWrapper}>
-                        <div className={classes.amount} >
-                            {formatMoney(totalTurnover)} DH
-                        </div>
-                        <div className={classes.text}>
-                            Total des ventes
-                        </div>
-                    </div>
-                    <div className={classes.textWrapper}>
-                        <div className={classes.amount} style={{ color: 'rgb(254, 176, 25)' }}>
-                            {formatMoney(totalProfit)} DH
-                        </div>
-                        <div className={classes.text}>
-                            Total des bénéfices
-                        </div>
-                    </div>
-                    <div className={classes.textWrapper}>
-                        <div className={classes.amount} style={{ color: 'rgb(0, 227, 150)' }}>
-                            {formatMoney(totalNetProfit)} DH
-                        </div>
-                        <div className={classes.text}>
-                            Total des bénéfices net
-                        </div>
-                    </div>
-                </Box>
-                <Box mt={1} minHeight={300}>
-                    {data && <Chart
-                        options={data.options}
-                        series={data.series}
-                        type="area"
-                        height="100%"
-                        width="100%"
-                    />}
-                </Box>
+        <>
+            <div className={classes.titleWrapper}>
+                <TrendingUpIcon className={classes.icon} />
+                <div className={classes.title}>
+                    Chiffre d'affaire & bénéfices
+                </div>
             </div>
-        </div>
+            <div className={classes.wrapper}>
+                <div className={classes.card}>
+                    <Box display="flex" justifyContent="space-around">
+                        <div className={classes.textWrapper}>
+                            <div className={classes.amount} >
+                                {formatMoney(totalTurnover)} DH
+                        </div>
+                            <div className={classes.text}>
+                                Total des ventes
+                        </div>
+                        </div>
+                        <div className={classes.textWrapper}>
+                            <div className={classes.amount} style={{ color: 'rgb(254, 176, 25)' }}>
+                                {formatMoney(totalProfit)} DH
+                        </div>
+                            <div className={classes.text}>
+                                Total des bénéfices
+                        </div>
+                        </div>
+                        <div className={classes.textWrapper}>
+                            <div className={classes.amount} style={{ color: 'rgb(0, 227, 150)' }}>
+                                {formatMoney(totalNetProfit)} DH
+                        </div>
+                            <div className={classes.text}>
+                                Total des bénéfices net
+                        </div>
+                        </div>
+                    </Box>
+                    <Box mt={1} minHeight={300}>
+                        {data && <Chart
+                            options={data.options}
+                            series={data.series}
+                            type="area"
+                            height="100%"
+                            width="100%"
+                        />}
+                    </Box>
+                </div>
+            </div>
+        </>
     )
 }
 

@@ -11,6 +11,7 @@ using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.OData;
 using System.Web.Http.OData.Routing;
 using WebApplication1.DATA;
+using WebApplication1.Auth;
 
 namespace WebApplication1.DATA.OData
 {
@@ -42,11 +43,11 @@ namespace WebApplication1.DATA.OData
 
         //[EnableQuery]
         // PUT: odata/Articles(5)
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        //[ClaimsAuthorizeAttribute(type: "CanUpdateQteStock")]
         public IHttpActionResult Put([FromODataUri] Guid key, float QteStock, int IdSite, bool Disabled, Delta<Article> patch)
         {
             
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -123,12 +124,13 @@ namespace WebApplication1.DATA.OData
         }
 
         // PATCH: odata/Articles(5)
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        //[ClaimsAuthorizeAttribute(type: "CanUpdateQteStock")]
+        [ClaimsAuthorization(ClaimType = "CanUpdateQteStock")]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] Guid key, Delta<Article> patch, float QteStock, bool Disabled, int IdSite = 1)
         {
             
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
