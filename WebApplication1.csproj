@@ -256,6 +256,12 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CrystalReports\AQK\BonCommande.cs">
+      <DependentUpon>BonCommande.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\AQK\BonLivraison.cs">
       <DependentUpon>BonLivraison.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -340,8 +346,8 @@
       <DependentUpon>MiniBonReceptionATF.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CrystalReports\BarcodeLabels.cs">
-      <DependentUpon>BarcodeLabels.rpt</DependentUpon>
+    <Compile Include="CrystalReports\BarcodeLabelsOrig.cs">
+      <DependentUpon>BarcodeLabelsOrig.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -354,10 +360,10 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="CrystalReports\BarcodeLabelsOld.cs">
+    <Compile Include="CrystalReports\BarcodeLabels.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BarcodeLabelsOld.rpt</DependentUpon>
+      <DependentUpon>BarcodeLabels.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
@@ -892,6 +898,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>rptinvoice.rpt</DependentUpon>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CrystalReports\Inventory.cs">
+      <DependentUpon>Inventory.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="CrystalReports\Tarif.cs">
       <AutoGen>True</AutoGen>
@@ -1575,6 +1588,8 @@
     <Content Include="Content\js\raphael-min.js" />
     <Content Include="Content\js\ripples.js" />
     <Content Include="Content\metro.css" />
+    <Content Include="Content\mp3\beep-failure.mp3" />
+    <Content Include="Content\mp3\beep-success.mp3" />
     <Content Include="Content\stylelogin.css" />
     <Content Include="Content\toastr.css" />
     <Content Include="Content\toastr.min.css" />
@@ -2609,8 +2624,8 @@
     <Content Include="Content\font\material-design-icons\Material-Design-Iconsd41d.eot" />
     <Content Include=".babelrc" />
     <Content Include="Scripts\dist\Home\react\bundle.js" />
-    <Content Include="Scripts\Home\react\components\elements\article-autocomplete\ArticleAutocomplete.js" />
-    <Content Include="Scripts\Home\react\components\elements\article-autocomplete\FakeArticleAutocomplete.js" />
+    <None Include="Scripts\Home\react\components\elements\article-autocomplete\ArticleAutocomplete.js" />
+    <None Include="Scripts\Home\react\components\elements\article-autocomplete\FakeArticleAutocomplete.js" />
     <Content Include="Scripts\Home\react\components\elements\bon-livraison-autocomplete\BonLivraisonAutocomplete.js" />
     <Content Include="Scripts\Home\react\components\elements\bon-reception-autocomplete\BonReceptionAutocomplete.js" />
     <Content Include="Scripts\Home\react\components\elements\button\AddButton.js" />
@@ -2653,32 +2668,32 @@
     <Content Include="Scripts\Home\react\components\elements\site-select\SiteSelect.js" />
     <Content Include="Scripts\Home\react\components\elements\snack-bars\SuccessSnackBar.js" />
     <Content Include="Scripts\Home\react\components\elements\statistics\ArticlesStatistics.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\articleColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\bonAvoirAchatColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\bonAvoirVenteColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\bonCommandeColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\bonReceptionColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\devisColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\factureAchatColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\factureColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\fakeFactureAchatColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\fakeFactureColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\fournisseurColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\paiementClientColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\paiementFournisseurColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\siteColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\stockMouvementColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\suiviAchatsColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\columns\suiviVentesColumns.js" />
-    <Content Include="Scripts\Home\react\components\elements\table\Table.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\articleColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\bonAvoirAchatColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\bonAvoirVenteColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\bonCommandeColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\bonReceptionColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\devisColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\factureAchatColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\factureColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\fakeFactureAchatColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\fakeFactureColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\fournisseurColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\paiementClientColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\paiementFournisseurColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\siteColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\stockMouvementColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\suiviAchatsColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\columns\suiviVentesColumns.js" />
+    <None Include="Scripts\Home\react\components\elements\table\Table.js" />
     <Content Include="Scripts\Home\react\components\elements\texts\SoldeText.js" />
     <Content Include="Scripts\Home\react\components\elements\texts\TotalText.js" />
-    <Content Include="Scripts\Home\react\components\providers\ArticleDataProvider.js" />
-    <Content Include="Scripts\Home\react\components\providers\SettingsProvider.js" />
-    <Content Include="Scripts\Home\react\components\providers\SiteProvider.js" />
-    <Content Include="Scripts\Home\react\components\providers\SnackBarProvider.js" />
-    <Content Include="Scripts\Home\react\components\providers\ThemeProvider.js" />
-    <Content Include="Scripts\Home\react\components\providers\TitleProvider.js" />
+    <None Include="Scripts\Home\react\components\providers\ArticleDataProvider.js" />
+    <None Include="Scripts\Home\react\components\providers\SettingsProvider.js" />
+    <None Include="Scripts\Home\react\components\providers\SiteProvider.js" />
+    <None Include="Scripts\Home\react\components\providers\SnackBarProvider.js" />
+    <None Include="Scripts\Home\react\components\providers\ThemeProvider.js" />
+    <None Include="Scripts\Home\react\components\providers\TitleProvider.js" />
     <Content Include="Scripts\Home\react\components\views\achats\suivi\SuiviAchats.js" />
     <Content Include="Scripts\Home\react\components\views\articles\ArticleList.js" />
     <Content Include="Scripts\Home\react\components\views\articles\ArticlesMarginList.js" />
@@ -2713,21 +2728,21 @@
     <Content Include="Scripts\Home\react\components\views\stock-mouvement\StockMouvement.js" />
     <Content Include="Scripts\Home\react\components\views\stock-mouvement\StockMouvementList.js" />
     <Content Include="Scripts\Home\react\components\views\ventes\suivi\SuiviVentes.js" />
-    <Content Include="Scripts\Home\react\hooks\useDebounce.js" />
+    <None Include="Scripts\Home\react\hooks\useDebounce.js" />
     <Content Include="Scripts\Home\react\images\delivery.gif" />
     <Content Include="Scripts\Home\react\images\inventory.svg" />
-    <Content Include="Scripts\Home\react\index.js" />
-    <Content Include="Scripts\Home\react\queries\articleQueries.js" />
-    <Content Include="Scripts\Home\react\queries\clientQueries.js" />
-    <Content Include="Scripts\Home\react\queries\crudBuilder.js" />
-    <Content Include="Scripts\Home\react\queries\DashboardQueries.js" />
-    <Content Include="Scripts\Home\react\queries\fileUploader.js" />
-    <Content Include="Scripts\Home\react\queries\fournisseurQueries.js" />
-    <Content Include="Scripts\Home\react\types\input.js" />
-    <Content Include="Scripts\Home\react\utils\columnsBuilder.js" />
-    <Content Include="Scripts\Home\react\utils\imageUtils.js" />
-    <Content Include="Scripts\Home\react\utils\moneyUtils.js" />
-    <Content Include="Scripts\Home\react\utils\urlBuilder.js" />
+    <None Include="Scripts\Home\react\index.js" />
+    <None Include="Scripts\Home\react\queries\articleQueries.js" />
+    <None Include="Scripts\Home\react\queries\clientQueries.js" />
+    <None Include="Scripts\Home\react\queries\crudBuilder.js" />
+    <None Include="Scripts\Home\react\queries\DashboardQueries.js" />
+    <None Include="Scripts\Home\react\queries\fileUploader.js" />
+    <None Include="Scripts\Home\react\queries\fournisseurQueries.js" />
+    <None Include="Scripts\Home\react\types\input.js" />
+    <None Include="Scripts\Home\react\utils\columnsBuilder.js" />
+    <None Include="Scripts\Home\react\utils\imageUtils.js" />
+    <None Include="Scripts\Home\react\utils\moneyUtils.js" />
+    <None Include="Scripts\Home\react\utils\urlBuilder.js" />
     <Content Include="webpack.config.js" />
     <None Include="Datasets\DataSetATF.xsd">
       <Generator>MSDataSetGenerator</Generator>
@@ -3668,6 +3683,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Mobile\" />
     <Folder Include="UserFiles\" />
     <Folder Include="Views\PrintBonLivraison\" />
   </ItemGroup>
@@ -3739,9 +3755,9 @@
       <LastGenOutput>CrystalReport21.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="CrystalReports\BarcodeLabelsOld.rpt">
+    <Content Include="CrystalReports\BarcodeLabels.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BarcodeLabelsOld.cs</LastGenOutput>
+      <LastGenOutput>BarcodeLabels.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CrystalReports\CrystalReportCompteClient.rpt">
@@ -4167,14 +4183,23 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionTSR1.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\BarcodeLabels.rpt">
+    <Content Include="CrystalReports\BarcodeLabelsOrig.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>BarcodeLabels.cs</LastGenOutput>
+      <LastGenOutput>BarcodeLabelsOrig.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CrystalReports\EAS\DevisEAS.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisEAS.cs</LastGenOutput>
+    </Content>
+    <Content Include="CrystalReports\AQK\BonCommande.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>BonCommande.cs</LastGenOutput>
+    </Content>
+    <Content Include="CrystalReports\Inventory.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Inventory.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Migrations\201702231840475_init.resx">
       <DependentUpon>201702231840475_init.cs</DependentUpon>

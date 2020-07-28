@@ -81,7 +81,7 @@ namespace WebApplication1.DATA
         public string Logo3 { get; set; }
         public string Image { get; set; }
 
-        [MaxLength(14)]
+        [MaxLength(18)]
         public string BarCode { get; set; }
 
         public DateTime? DateModification { get; set; }

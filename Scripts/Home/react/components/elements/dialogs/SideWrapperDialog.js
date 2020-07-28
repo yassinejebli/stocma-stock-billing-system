@@ -14,6 +14,7 @@ import PaiementFournisseurForm from '../forms/PaiementFournisseurForm';
 import FakeArticleForm from '../forms/FakeArticleForm';
 import { useSite } from '../../providers/SiteProvider';
 import { useAuth } from '../../providers/AuthProvider';
+import { useSettings } from '../../providers/SettingsProvider';
 
 const border = '1px solid #d8d8d8';
 
@@ -120,6 +121,9 @@ export const SideDialogWrapper = ({ children, onExited, ...props }) => {
 }
 
 const Menu = ({ open }) => {
+    const {
+        siteModule,
+    } = useSettings();
     const classes = useStyles();
     const { useVAT } = useSite();
     const {
@@ -191,7 +195,7 @@ const Menu = ({ open }) => {
                     <div className={classes.description}>Ajouter un nouveau fournisseur</div>
                 </div>
             </div>}
-            {canManageSites&&<div className={classes.item} onClick={() => open(items.site)}>
+            {canManageSites && siteModule?.Enabled &&<div className={classes.item} onClick={() => open(items.site)}>
                 <Avatar className={classes.avatar}>
                     <StorefrontOutlinedIcon className={classes.icon} />
                 </Avatar>

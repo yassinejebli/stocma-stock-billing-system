@@ -5,11 +5,12 @@ import { formatMoney } from '../../../../utils/moneyUtils';
 import { getLastPricePurchase } from '../../../../queries/articleQueries';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
+import { BarcodeScan } from 'mdi-material-ui'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import ArticleAutocomplete from '../../article-autocomplete/ArticleAutocomplete';
 import { format } from 'date-fns';
-import { Box } from '@material-ui/core';
+import { Box, Tooltip } from '@material-ui/core';
 
 export const bonReceptionColumns = () => ([
     {
@@ -100,7 +101,7 @@ export const bonReceptionColumns = () => ([
 
 
 
-export const bonReceptionListColumns = () => ([
+export const bonReceptionListColumns = ({barcodeModule}) => ([
     {
         Header: 'Fournisseur',
         accessor: 'Fournisseur.Name',
@@ -138,19 +139,24 @@ export const bonReceptionListColumns = () => ([
     {
         id: 'actions',
         Header: '',
-        Cell: ({ row: { original }, updateRow, deleteRow, print }) => {
+        Cell: ({ row: { original }, updateRow, deleteRow, customAction, print }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
                     <IconButton tabIndex={-1} size="small" onClick={() => print(original)}>
                         <PrintOutlinedIcon />
                     </IconButton>
+                    {barcodeModule?.Enabled&&<Tooltip title="Imprimer les codes-barres">
+                        <IconButton tabIndex={-1} size="small" onClick={() => customAction(original.Id)}>
+                            <BarcodeScan />
+                        </IconButton>
+                    </Tooltip>}
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original.Id)}>
                         <EditOutlinedIcon />
                     </IconButton>
                     <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
                         <DeleteForeverOutlinedIcon />
                     </IconButton>
-                </Box>
+                </Box >
             )
         },
         width: 24

@@ -10,18 +10,26 @@ namespace WebApplication1.Controllers
     {
         MySaniSoftContext db = new MySaniSoftContext();
 
-        // GET: SalesHistory
         public ActionResult getPriceLastSale(Guid IdClient, Guid IdArticle)
         {
             var currentYear = DateTime.Now.Year;
             var price = 0.0f;
-            var bi = db.BonLivraisonItems
+            var client = db.Clients.Find(IdClient);
+
+            if (!client.IsClientDivers)
+            {
+                var bi = db.BonLivraisonItems
                 .Where((x => x.IdArticle == IdArticle && x.BonLivraison.IdClient == IdClient && x.BonLivraison.Date.Year == currentYear))
                 .OrderByDescending(q => q.BonLivraison.Date).Take(1).FirstOrDefault();
-            if (bi != null)
-                price = bi.Pu;
+                if (bi != null)
+                    price = bi.Pu;
+                else
+                    price = db.Articles.Find(IdArticle).PVD ?? 0;
+            }
             else
+            {
                 price = db.Articles.Find(IdArticle).PVD ?? 0;
+            }
 
             return this.Json(price, JsonRequestBehavior.AllowGet);
         }

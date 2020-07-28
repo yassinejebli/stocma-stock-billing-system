@@ -14,10 +14,15 @@ import TitleIcon from '../../elements/misc/TitleIcon'
 import { BarcodeScan } from 'mdi-material-ui'
 import PrintCodeBarreEtiquette from '../../elements/dialogs/PrintCodeBarreEtiquette'
 import { useModal } from 'react-modal-hook'
+import { useLocation } from 'react-router-dom'
+import qs from 'qs'
+import { useLoader } from '../../providers/LoaderProvider'
+import { getSingleData } from '../../../queries/crudBuilder'
 
 const emptyLine = {
     Article: null,
     BarCode: '',
+    Qte: 1,
 }
 
 const useStyles = makeStyles({
@@ -27,6 +32,9 @@ const useStyles = makeStyles({
 const CodeBarreEtiquettes = () => {
     const classes = useStyles();
     const { setTitle } = useTitle();
+    const { showLoader } = useLoader();
+    const location = useLocation();
+    const BonReceptionId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonReceptionId;
     const [data, setData] = React.useState([emptyLine]);
     const [errors, setErrors] = React.useState({});
     const [showPrintBarcodeLabelModal, hidePrintBarcodeLabelModal] = useModal(({ in: open, onExited }) => {
@@ -34,7 +42,7 @@ const CodeBarreEtiquettes = () => {
             <PrintCodeBarreEtiquette
                 onExited={onExited}
                 open={open}
-                ids={data.filter(x => x.Article).map(x =>('ids='+x.Article.Id)).join('&')}
+                ids={data.filter(x => x.Article).map((x, i) => (`ids[${i}].key=` + x.Article.Id + `&ids[${i}].value=${x.Qte}`)).join('&')}
                 onClose={() => {
                     hidePrintBarcodeLabelModal(null);
                 }}
@@ -54,6 +62,18 @@ const CodeBarreEtiquettes = () => {
 
     React.useEffect(() => {
         setTitle('Impression des codes à barres')
+
+        if (BonReceptionId) {
+            showLoader(true);
+            getSingleData('BonReceptions', BonReceptionId, ['BonReceptionItems' + '/' + 'Article'])
+                .then(response => {
+                    setData(response.BonReceptionItems?.map(x => ({
+                        Article: x.Article,
+                        Qte: x.Qte,
+                    })));
+                }).catch(err => console.error(err))
+                .finally(() => showLoader(false));
+        }
     }, [])
 
     const updateMyData = (rowIndex, columnId, value) => {
@@ -156,11 +176,26 @@ export const codeBarreListColumns = () => ([
                         updateMyData(index, 'BarCode', value?.BarCode);
                         if (data.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
+
+                        const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
+                        if (qteCell) {
+                            setTimeout(() => {
+                                qteCell.focus();
+                            }, 200)
+                        }
                     }}
 
                 />
             )
         }
+    },
+    {
+        Header: 'Qte.',
+        accessor: 'Qte',
+        type: inputTypes.number.description,
+        editable: true,
+        align: 'left',
+        width: 40,
     },
     {
         Header: 'Code à barres',
@@ -170,13 +205,14 @@ export const codeBarreListColumns = () => ([
             value,
         }) => {
             return (
-                <div style={{
-                    fontFamily: "'Libre Barcode 128'",
+                value ? <div style={{
+                    fontFamily: "'Libre Barcode 39'",
                     fontSize: 30,
                     height: 30
                 }}>
-                    {value}
+                    *{value}*
                 </div>
+                    : null
             )
         },
         type: inputTypes.text.description,

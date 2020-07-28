@@ -14,26 +14,38 @@ const useStyles = makeStyles({
 });
 
 const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
-  const { siteId } = useSite(); 
+  const { siteId } = useSite();
   const classes = useStyles();
   const [articles, setArticles] = React.useState([]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     setArticles([]);
   }, [siteId])
+  
   const onChangeHandler = async ({ target: { value } }) => {
     const data = await getArticles({
-      'Article/Designation': value ? {
-        contains: value
-      }:undefined,
-      IdSite: siteId,
-      Disabled: false
+      and: [
+        { IdSite: siteId },
+        { Disabled: false },
+        {
+          or: value ? {
+            'Article/Designation': {
+              contains: value
+            },
+            'Article/BarCode': {
+              contains: value
+            },
+          } : undefined,
+        }
+      ]
+
     });
-    setArticles(data.map(x=>({
+    setArticles(data.map(x => ({
       ...x.Article,
-      QteStock: x.QteStock
+      QteStock: x.QteStock,
     })));
   }
+  console.log({ articles })
 
   return (
     <Autocomplete
@@ -50,13 +62,16 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       autoHighlight
       size="small"
       getOptionLabel={(option) => {
-        return option?.Designation}}
+        return option?.Designation
+      }}
       renderOption={option => (
         <div>
           <div>{option.Designation}</div>
+          <div className={classes.qte}>code: {option.BarCode}</div>
           <div className={classes.qte}>quantité en stock: {option.QteStock}</div>
         </div>
       )}
+      filterOptions={(x) => x}
       renderInput={(params) => (
         <Input
           {...params}

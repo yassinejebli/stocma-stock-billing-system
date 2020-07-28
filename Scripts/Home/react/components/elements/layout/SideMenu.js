@@ -22,6 +22,7 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { useAuth } from '../../providers/AuthProvider';
+import { useSettings } from '../../providers/SettingsProvider';
 export const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -109,6 +110,16 @@ function SideMenu(props) {
 
 const MenuItems = () => {
     const {
+        barcodeModule,
+        depenseModule,
+        siteModule,
+        suiviModule,
+        utilisateursModule,
+        rapportVenteModule,
+        mouvementModule,
+        paiementModule,
+    } = useSettings();
+    const {
         isAdmin,
         canManageClients,
         canManageFournisseurs,
@@ -124,6 +135,7 @@ const MenuItems = () => {
         canManagePaiementsFournisseurs,
         canManageBonAvoirsAchat,
         canManageBonAvoirsVente,
+        canViewSuiviAchats,
     } = useAuth();
     const [showSettingSideMenu, hideSettingSideMenu] = useModal(({ in: open, onExited }) => (
         <SettingsDialog open={open} onExited={onExited} onClose={hideSettingSideMenu} />
@@ -192,11 +204,11 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>}
-                        <ListItem button className={classes.nested} component={Link} to="/suivi-des-ventes">
+                        {suiviModule?.Enabled&&<ListItem button className={classes.nested} component={Link} to="/suivi-des-ventes">
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
-                        </ListItem>
-                        {isAdmin && <ListItem button className={classes.nested} component={Link} to="/rapports-des-ventes">
+                        </ListItem>}
+                        {isAdmin && rapportVenteModule?.Enabled && <ListItem button className={classes.nested} component={Link} to="/rapports-des-ventes">
                             <ListItemIcon />
                             <ListItemText primary="Rapports" />
                         </ListItem>}
@@ -228,10 +240,10 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Avoir" />
                         </ListItem>}
-                        <ListItem button className={classes.nested} component={Link} to="/suivi-des-achats">
+                        {canViewSuiviAchats && suiviModule?.Enabled && <ListItem button className={classes.nested} component={Link} to="/suivi-des-achats">
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
-                        </ListItem>
+                        </ListItem>}
                     </List>
                 </Collapse>
             </List>
@@ -253,7 +265,7 @@ const MenuItems = () => {
                                 <ListItemText primary="Articles (Facture)" />
                             </ListItem>
                         </>}
-                        {canManageMouvements && <ListItem button component={Link} to="/mouvement-stock">
+                        {canManageMouvements && mouvementModule?.Enabled && <ListItem button component={Link} to="/mouvement-stock">
                             <ListItemIcon />
                             <ListItemText primary="Mouvements" />
                         </ListItem>}
@@ -261,7 +273,7 @@ const MenuItems = () => {
                 </Collapse>
             </List>
                 <Divider className={classes.divider} /></>}
-            {(canManagePaiementsFournisseurs || canManagePaiementsClients) && <List className={classes.list}>
+            {(canManagePaiementsFournisseurs || canManagePaiementsClients) && paiementModule?.Enabled && <List className={classes.list}>
                 <ListItem button onClick={() => setOpenSituations(!openSituations)}>
                     <ListItemIcon><AccountBalanceIcon className={classes.icon} /></ListItemIcon>
                     <ListItemText primary="Situation" />
@@ -280,27 +292,27 @@ const MenuItems = () => {
                     </List>
                 </Collapse>
             </List>}
-            {(canManagePaiementsClients || canManagePaiementsFournisseurs)&&<><Divider className={classes.divider} />
-            <List className={classes.list}>
-                <ListItem button onClick={() => setOpenChequesEffets(!openChequesEffets)}>
-                    <ListItemIcon><PlaylistEdit className={classes.icon} /></ListItemIcon>
-                    <ListItemText primary="Chèques / Effets" />
-                    {openChequesEffets ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={openChequesEffets} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {canManagePaiementsClients&&<ListItem button component={Link} to="/liste-cheques-et-effets-des-clients">
-                            <ListItemIcon />
-                            <ListItemText primary="Clients" />
-                        </ListItem>}
-                        {canManagePaiementsFournisseurs&&<ListItem button component={Link} to="/liste-cheques-et-effets-des-fournisseurs">
-                            <ListItemIcon />
-                            <ListItemText primary="Fournisseurs" />
-                        </ListItem>}
-                    </List>
-                </Collapse>
-            </List></>}
-            {canManageDepenses && <><Divider className={classes.divider} />
+            {(canManagePaiementsClients || canManagePaiementsFournisseurs) && paiementModule?.Enabled && <><Divider className={classes.divider} />
+                <List className={classes.list}>
+                    <ListItem button onClick={() => setOpenChequesEffets(!openChequesEffets)}>
+                        <ListItemIcon><PlaylistEdit className={classes.icon} /></ListItemIcon>
+                        <ListItemText primary="Chèques / Effets" />
+                        {openChequesEffets ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={openChequesEffets} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            {canManagePaiementsClients && <ListItem button component={Link} to="/liste-cheques-et-effets-des-clients">
+                                <ListItemIcon />
+                                <ListItemText primary="Clients" />
+                            </ListItem>}
+                            {canManagePaiementsFournisseurs && <ListItem button component={Link} to="/liste-cheques-et-effets-des-fournisseurs">
+                                <ListItemIcon />
+                                <ListItemText primary="Fournisseurs" />
+                            </ListItem>}
+                        </List>
+                    </Collapse>
+                </List></>}
+            {canManageDepenses && depenseModule?.Enabled && <><Divider className={classes.divider} />
                 <List className={classes.list}>
                     <ListItem button onClick={() => setOpenTresorery(!openTresorery)}>
                         <ListItemIcon><MonetizationOnIcon className={classes.icon} /></ListItemIcon>
@@ -317,13 +329,14 @@ const MenuItems = () => {
                     </Collapse>
                 </List>
             </>}
-            <Divider className={classes.divider} />
-            <List className={classes.list}>
-                <ListItem button component={Link} to="/code-barres">
-                    <ListItemIcon><BarcodeScan className={classes.icon} /></ListItemIcon>
-                    <ListItemText primary="Code à barres" />
-                </ListItem>
-            </List>
+            {barcodeModule?.Enabled && <><Divider className={classes.divider} />
+                <List className={classes.list}>
+                    <ListItem button component={Link} to="/code-barres">
+                        <ListItemIcon><BarcodeScan className={classes.icon} /></ListItemIcon>
+                        <ListItemText primary="Code à barres" />
+                    </ListItem>
+                </List>
+            </>}
             <Divider className={classes.divider} />
             <List className={classes.list}>
                 <ListItem button onClick={() => setOpenSettings(!openSettings)}>
@@ -333,7 +346,7 @@ const MenuItems = () => {
                 </ListItem>
                 <Collapse in={openSettings} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        {isAdmin && <ListItem button component={Link} to="/liste-des-utilisateurs">
+                        {isAdmin && utilisateursModule?.Enabled && <ListItem button component={Link} to="/liste-des-utilisateurs">
                             <ListItemIcon />
                             <ListItemText primary="Utilisateurs" />
                         </ListItem>}
@@ -341,11 +354,11 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Documents" />
                         </ListItem>
-                        {canManageSites && <ListItem button component={Link} to="/SiteList">
+                        {canManageSites && siteModule?.Enabled && <ListItem button component={Link} to="/SiteList">
                             <ListItemIcon />
                             <ListItemText primary="Dépôts/Magasins" />
                         </ListItem>}
-                        {canManageDepenses && <ListItem button component={Link} to="/liste-types-de-depense">
+                        {canManageDepenses && depenseModule?.Enabled && <ListItem button component={Link} to="/liste-types-de-depense">
                             <ListItemIcon />
                             <ListItemText primary="Types Dépenses" />
                         </ListItem>}

@@ -20,9 +20,10 @@ import BonReceptionList from './components/views/bon-reception/BonReceptionList'
 import Devis from './components/views/devis/Devis';
 import DevisList from './components/views/devis/DevisList';
 import Facture from './components/views/facture-client/FactureClient';
-import SettingsProvider from './components/providers/SettingsProvider';
+import SettingsProvider, { useSettings } from './components/providers/SettingsProvider';
 import FactureList from './components/views/facture-client/FactureClientList';
 import SideMenu from './components/elements/layout/SideMenu';
+import ScrollToTop from './components/elements/misc/ScrollToTop';
 import FakeFacture from './components/views/fake-facture-client/FakeFactureClient';
 import FakeFactureClientList from './components/views/fake-facture-client/FakeFactureClientList';
 import FakeArticleList from './components/views/articles/FakeArticleList';
@@ -57,6 +58,18 @@ import CodeBarreEtiquettes from './components/views/code-barres/CodeBarreEtiquet
 
 const Routes = () => {
     const {
+        barcodeModule,
+        articleMarginModule,
+        clientMarginModule,
+        depenseModule,
+        siteModule,
+        utilisateursModule,
+        suiviModule,
+        mouvementModule,
+        rapportVenteModule,
+        paiementModule,
+    } = useSettings();
+    const {
         isAdmin,
         canManageClients,
         canManageFournisseurs,
@@ -72,27 +85,42 @@ const Routes = () => {
         canManageFacturesAchat,
         canManagePaiementsClients,
         canManagePaiementsFournisseurs,
+        canViewSuiviAchats,
     } = useAuth();
 
     return <>
         {canViewDashboard && <Route exact path="/" component={Dashboard} />}
-        {isAdmin && <Route path="/liste-des-utilisateurs" component={UtilisateurList} />}
-        {isAdmin && <Route path="/rapports-des-ventes" component={Rapports} />}
+        {isAdmin && utilisateursModule?.Enabled && <Route path="/liste-des-utilisateurs" component={UtilisateurList} />}
+        {isAdmin && rapportVenteModule?.Enabled && <Route path="/rapports-des-ventes" component={Rapports} />}
 
-        {canManageDepenses && <Route path="/liste-types-de-depense" component={TypeDepenseList} />}
-        {canManageDepenses && <Route path="/depense" component={Depense} />}
-        {canManageDepenses && <Route path="/liste-des-depenses" component={DepenseList} />}
+        {
+            depenseModule?.Enabled && <>
+                {canManageDepenses && <Route path="/liste-types-de-depense" component={TypeDepenseList} />}
+                {canManageDepenses && <Route path="/depense" component={Depense} />}
+                {canManageDepenses && <Route path="/liste-des-depenses" component={DepenseList} />}
+            </>
+        }
 
-        {canManagePaiementsFournisseurs && <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />}
-        {canManagePaiementsClients && <Route path="/liste-paiements-des-clients" component={PaiementClientList} />}
-        {canManagePaiementsClients && <Route path="/liste-cheques-et-effets-des-clients" component={BankPaiementsClientList} />}
-        {canManagePaiementsFournisseurs && <Route path="/liste-cheques-et-effets-des-fournisseurs" component={BankPaiementsFournisseurList} />}
+        {
+            paiementModule?.Enabled && <>
+                {canManagePaiementsFournisseurs && <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />}
+                {canManagePaiementsClients && <Route path="/liste-paiements-des-clients" component={PaiementClientList} />}
+                {canManagePaiementsClients && <Route path="/liste-cheques-et-effets-des-clients" component={BankPaiementsClientList} />}
+                {canManagePaiementsFournisseurs && <Route path="/liste-cheques-et-effets-des-fournisseurs" component={BankPaiementsFournisseurList} />}
+            </>
+        }
 
-        <Route path="/suivi-des-ventes" component={SuiviVentes} />
-        <Route path="/suivi-des-achats" component={SuiviAchats} />
 
-        {canManageMouvements && <Route path="/mouvement-stock" component={StockMouvement} />}
-        {canManageMouvements && <Route path="/liste-mouvement-stock" component={StockMouvementList} />}
+
+        {suiviModule?.Enabled && <Route path="/suivi-des-ventes" component={SuiviVentes} />}
+        {suiviModule?.Enabled && canViewSuiviAchats && <Route path="/suivi-des-achats" component={SuiviAchats} />}
+
+        {
+            mouvementModule?.Enabled && <>
+                {canManageMouvements && <Route path="/mouvement-stock" component={StockMouvement} />}
+                {canManageMouvements && <Route path="/liste-mouvement-stock" component={StockMouvementList} />}
+            </>
+        }
 
         {canManageBonAvoirsAchat && <Route path="/bon-avoir-achat" component={BonAvoirAchat} />}
         {canManageBonAvoirsVente && <Route path="/liste-bon-avoir-achat" component={BonAvoirAchatList} />}
@@ -114,7 +142,7 @@ const Routes = () => {
         {canManageFacturesVente && <Route path="/Facture" component={Facture} />}
         {canManageFacturesVente && <Route path="/FactureList" component={FactureList} />}
 
-        <Route path="/code-barres" component={CodeBarreEtiquettes} />
+        {barcodeModule?.Enabled && <Route path="/code-barres" component={CodeBarreEtiquettes} />}
 
         {canManageBonReceptions && <Route path="/BonReception" component={BonReception} />}
         <Route path="/BonLivraison" component={BonLivraison} />
@@ -123,12 +151,12 @@ const Routes = () => {
         <Route path="/DevisList" component={DevisList} />
         {canManageArticles && <Route path="/ArticleList" component={ArticleList} />}
         {canManageArticles && <Route path="/_ArticleList" component={FakeArticleList} />}
-        {canManageSites && <Route path="/SiteList" component={SiteList} />}
-        {isAdmin&&<Route path="/marge-articles" component={ArticlesMarginList} />}
-        {isAdmin&&<Route path="/marge-clients" component={ClientsMarginList} />}
+        {canManageSites && siteModule?.Enabled && <Route path="/SiteList" component={SiteList} />}
+        {isAdmin && articleMarginModule?.Enabled && <Route path="/marge-articles" component={ArticlesMarginList} />}
+        {isAdmin && clientMarginModule?.Enabled && <Route path="/marge-clients" component={ClientsMarginList} />}
         {canManageClients && <Route path="/ClientList" component={ClientList} />}
         {canManageFournisseurs && <Route path="/SupplierList" component={SupplierList} />}
-        {isAdmin && <Route path="/liste-methodes-de-paiement" component={TypePaiementList} />}
+        {isAdmin && paiementModule?.Enabled && <Route path="/liste-methodes-de-paiement" component={TypePaiementList} />}
     </>;
 }
 
@@ -142,6 +170,7 @@ const App = () => {
                             <SnackBarProvider>
                                 <TitleProvider>
                                     <Router>
+                                        <ScrollToTop />
                                         <ModalProvider rootComponent={TransitionGroup}>
                                             <Switch>
                                                 <SideMenu onClose={() => null}>

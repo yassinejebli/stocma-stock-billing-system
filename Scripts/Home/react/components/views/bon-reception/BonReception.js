@@ -44,9 +44,9 @@ const BonReception = () => {
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
     const location = useLocation();
+    const BonCommandeId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonCommandeId;
     const BonReceptionId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonReceptionId;
     const isEditMode = Boolean(BonReceptionId);
-    console.log({ location, BonReceptionId });
 
     const columns = React.useMemo(
         () => bonReceptionColumns(),
@@ -72,7 +72,7 @@ const BonReception = () => {
     React.useEffect(() => {
         setData([emptyLine])
     }, [siteId])
-    
+
     React.useEffect(() => {
         setSkipPageReset(false)
     }, [data])
@@ -91,6 +91,18 @@ const BonReception = () => {
                         Pu: x.Pu
                     })));
                     setNumDoc(response.NumBon);
+                }).catch(err => console.error(err))
+                .finally(() => setLoading(false));
+        } else if (BonCommandeId) {
+            setLoading(true);
+            getSingleData('BonCommandes', BonCommandeId, [DOCUMENT_OWNER, 'BonCommandeItems' + '/' + 'Article'])
+                .then(response => {
+                    setFournisseur(response.Fournisseur);
+                    setData(response.BonCommandeItems?.map(x => ({
+                        Article: x.Article,
+                        Qte: x.Qte,
+                        Pu: x.Pu,
+                    })));
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
         }

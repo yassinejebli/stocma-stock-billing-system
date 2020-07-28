@@ -12,14 +12,14 @@
     }
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap" />
-    <link href='https://fonts.googleapis.com/css?family=Libre Barcode 128' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Libre Barcode 39' rel='stylesheet'>
     <!-- Favicons-->
 
     <link rel="icon" href="~/Content/@pageName" sizes="32x32" />
 
     <style>
         html {
-            font-size: 80%;
+            font-size: 90%;
         }
         body{
             background-color: #eff4f7 !important;
@@ -73,9 +73,9 @@
     @RenderBody()
     @*<script src="~/Scripts/dist/Home/react/bundle.js"></script>*@
     @Html.IncludeVersionedJs("/Scripts/dist/Home/react/bundle.js")
-    @*<script id="__bs_script__">
+    <script id="__bs_script__">
     //<![CDATA[
         document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>".replace("HOST", location.hostname));
-//]]></script>*@
+//]]></script>
 </body>
 </html>

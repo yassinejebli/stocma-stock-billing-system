@@ -19,9 +19,13 @@ import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from 'react-router-dom';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import { useAuth } from '../../providers/AuthProvider'
+import { useSettings } from '../../providers/SettingsProvider'
 const TABLE = 'Clients';
 
 const ClientList = () => {
+    const { 
+        clientMarginModule
+    } = useSettings();
     const { isAdmin } = useAuth();
     const { showSnackBar } = useSnackBar();
     const { useVAT } = useSite();
@@ -129,7 +133,7 @@ const ClientList = () => {
         <>
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                {isAdmin && <Button
+                {isAdmin && clientMarginModule?.Enabled && <Button
                     variant="contained"
                     color="primary"
                     startIcon={<LocalAtmIcon />}

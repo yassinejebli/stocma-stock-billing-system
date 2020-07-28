@@ -30,6 +30,7 @@ namespace WebApplication1.Controllers.Print
                 .Select(x => new
                 {
                     Client = x.Client.Name,
+                    ICE = x.Client.ICE,
                     NumBon = x.NumBon,
                     Ref = x.Ref,
                     Date = x.Date,
@@ -74,6 +75,7 @@ namespace WebApplication1.Controllers.Print
                 .Select(x => new
                 {
                     Client = x.Client.Name,
+                    ICE = x.ClientICE,
                     NumBon = x.NumBon,
                     Ref = x.Ref,
                     Date = x.Date,
@@ -85,6 +87,7 @@ namespace WebApplication1.Controllers.Print
                 .Select(x => new
                 {
                     Client = x.Client.Name,
+                    ICE = x.ClientICE,
                     NumBon = x.NumBon,
                     Ref = x.Ref,
                     Date = x.Date,

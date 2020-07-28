@@ -22,13 +22,12 @@ import PrintBL from '../../elements/dialogs/documents-print/PrintBL'
 import qs from 'qs'
 import { useSite } from '../../providers/SiteProvider'
 import { useSettings } from '../../providers/SettingsProvider'
-import { useAuth } from '../../providers/AuthProvider'
 import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
 import BarCodeScanning from '../../elements/animated-icons/BarCodeScanning'
 import BonLivraisonUnsavedList, { AUTO_SAVED_BL } from './BonLivraisonUnsavedList'
 import { getArticleByBarCode } from '../../../queries/articleQueries'
 import BarcodeReader from 'react-barcode-reader'
-import { looseFocus } from '../../../utils/miscUtils'
+import { looseFocus, convertLowercaseNumbersFR } from '../../../utils/miscUtils'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -41,12 +40,16 @@ const emptyLine = {
 }
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
+const audioSuccess = new Audio('/Content/mp3/beep-success.mp3')
+const audioFailure = new Audio('/Content/mp3/beep-failure.mp3')
+
 const BonLivraison = () => {
     const {
         BLDiscount,
         setBLDiscount,
         BLPayment,
-        barcode
+        barcode,
+        barcodeModule,
     } = useSettings();
     const { siteId, site, hasMultipleSites } = useSite();
     const { showSnackBar } = useSnackBar();
@@ -129,7 +132,7 @@ const BonLivraison = () => {
     }, [data])
 
     React.useEffect(() => {
-        setBarcodeScannerEnabled(barcode?.Enabled);
+        setBarcodeScannerEnabled(barcode?.Enabled && barcodeModule?.Enabled);
     }, [barcode])
 
     React.useEffect(() => {
@@ -369,20 +372,32 @@ const BonLivraison = () => {
 
     return (
         <>
-            <BarcodeReader
+            {barcodeModule?.Enabled && <BarcodeReader
                 onError={console.error}
                 onScan={async (result) => {
+                    console.log({ result })
+                    const firstChar = result.charAt(0);
+                    let uppercaseBarCode = result.substring(0);
+                    //TODO: review this
+                    if (firstChar === 'A') {
+                        uppercaseBarCode = convertLowercaseNumbersFR(uppercaseBarCode).toUpperCase();
+                        console.log({ uppercaseBarCode })
+                    }
+
                     if (barcodeScannerEnabled && result) {
                         setLoading(true)
-                        const response = await getArticleByBarCode(result, client?.Id, siteId)
-                        if (response?.Id)
+                        const response = await getArticleByBarCode(uppercaseBarCode, client?.Id, siteId)
+                        if (response?.Id) {
                             setData(_data => ([{
                                 Article: response,
                                 Qte: 1,
                                 Site: site,
                                 Pu: response.PVD
                             }, ..._data]))
+                            audioSuccess.play();
+                        }
                         else {
+                            audioFailure.play();
                             showSnackBar({
                                 error: true,
                                 text: "L'article scanné n'existe pas dans la base de données!"
@@ -391,13 +406,16 @@ const BonLivraison = () => {
 
                         setLoading(false)
                     }
-                    if (!barcodeScannerEnabled)
+                    if (!barcodeScannerEnabled) {
+                        audioFailure.play();
                         showSnackBar({
                             error: true,
                             text: "Vous devez activer la lecture de code à barres!"
                         })
+                    }
+
                 }}
-            />
+            />}
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
                 {!isEditMode && <Button
@@ -473,7 +491,7 @@ const BonLivraison = () => {
                     </Box>}
                 </Box>
                 <Box mt={4}>
-                    <Box mb={2}>
+                    {barcodeModule?.Enabled&&<Box mb={2}>
                         <FormControlLabel
                             control={<Switch
                                 checked={barcodeScannerEnabled}
@@ -483,7 +501,7 @@ const BonLivraison = () => {
                                 }} />}
                             label={<BarCodeScanning scanning={barcodeScannerEnabled} />}
                         />
-                    </Box>
+                    </Box>}
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>
                             Ajouter une ligne

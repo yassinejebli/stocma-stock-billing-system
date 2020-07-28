@@ -4,8 +4,7 @@ const TABLE = 'Articles';
 const ODATA_URL = '/Odata/'
 
 export const getArticles = async (filters) => {
-    if (!filters['Article/Designation']) return [];
-
+    // if (!filters.and[2]?.or) return [];
     const allParams = buildQuery({
         expand: 'Article',
         filter: filters,
@@ -19,7 +18,7 @@ export const getArticles = async (filters) => {
         const res = await (await fetch(URL)).json();
         return res?.value
     } catch (e) {
-        console.log(e);
+        console.error(e);
         return [];
     }
 }

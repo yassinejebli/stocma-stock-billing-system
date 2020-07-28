@@ -14,6 +14,18 @@ export const useSettings = () => {
 }
 
 const SettingsProvider = ({ children }) => {
+    //Modules
+    const [barcodeModule, setBarcodeModule] = React.useState(null);
+    const [articleMarginModule, setArticleMarginModule] = React.useState(null);
+    const [clientMarginModule, setClientMarginModule] = React.useState(null);
+    const [depenseModule, setDepenseModule] = React.useState(null);
+    const [siteModule, setSiteModule] = React.useState(null);
+    const [suiviModule, setSuiviModule] = React.useState(null);
+    const [utilisateursModule, setUtilisateursModule] = React.useState(null);
+    const [rapportVenteModule, setRapportVenteModule] = React.useState(null);
+    const [mouvementModule, setMouvementModule] = React.useState(null);
+    const [paiementModule, setPaiementModule] = React.useState(null);
+
     //BL
     const [BLDiscount, setBLDiscount] = React.useState(null);
     const [BLPayment, setBLPayment] = React.useState(null);
@@ -94,6 +106,17 @@ const SettingsProvider = ({ children }) => {
     const fetchSettings = () => {
         getAllData(TABLE)
             .then(res => {
+                //Modules
+                setBarcodeModule(res.find(x => x.Code === 'module_barcode'));
+                setArticleMarginModule(res.find(x => x.Code === 'module_article_margin'));
+                setClientMarginModule(res.find(x => x.Code === 'module_client_margin'));
+                setDepenseModule(res.find(x => x.Code === 'module_depense'));
+                setSiteModule(res.find(x => x.Code === 'module_site'));
+                setSuiviModule(res.find(x => x.Code === 'module_suivi'));
+                setUtilisateursModule(res.find(x => x.Code === 'module_utilisateurs'));
+                setRapportVenteModule(res.find(x => x.Code === 'module_rapport_vente'));
+                setMouvementModule(res.find(x => x.Code === 'module_mouvement'));
+                setPaiementModule(res.find(x => x.Code === 'module_paiement'));
                 //Devis
                 setDevisDiscount(res.find(x => x.Code === 'devis_discount'));
                 setDevisValidity(res.find(x => x.Code === 'devis_validity'));
@@ -141,7 +164,20 @@ const SettingsProvider = ({ children }) => {
             setFactureCheque,
             //Barcode,
             barcode,
-            setBarcode
+            setBarcode,
+            //Modules
+            barcodeModule,
+            setBarcodeModule,
+            articleMarginModule,
+            setArticleMarginModule,
+            clientMarginModule,
+            depenseModule,
+            siteModule,
+            suiviModule,
+            utilisateursModule,
+            rapportVenteModule,
+            mouvementModule,
+            paiementModule,
         }}>
             {children}
         </SettingsContext.Provider>)

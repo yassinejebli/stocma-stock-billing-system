@@ -79,6 +79,10 @@ export const CLAIMS = [
     {
         id: 'CanManageSites',
         displayName: 'Peut gérer les dépôts/magasins'
+    },
+    {
+        id: 'CanViewSuiviAchats',
+        displayName: 'Peut consulter suivi des achats'
     }
 ]
 

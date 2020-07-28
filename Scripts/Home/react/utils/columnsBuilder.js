@@ -208,13 +208,13 @@ export const getClientColumns = ({ useVAT }) => ([
         align: 'right'
     },
     {
-        id: 'remove',
+        id: 'update',
         Header: '',
-        Cell: ({ row: { original: { Id } }, deleteRow }) => {
+        Cell: ({ row: { original }, updateRow }) => {
             return (
-                <div style={{ textAlign: 'right' }}>
-                    <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(Id)}>
-                        <DeleteForeverOutlinedIcon />
+                <div style={{ textAlign: 'center' }}>
+                    <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
+                        <EditOutlinedIcon />
                     </IconButton>
                 </div>
             )
@@ -223,13 +223,13 @@ export const getClientColumns = ({ useVAT }) => ([
         align: 'right'
     },
     {
-        id: 'update',
+        id: 'remove',
         Header: '',
-        Cell: ({ row: { original }, updateRow }) => {
+        Cell: ({ row: { original: { Id } }, deleteRow }) => {
             return (
-                <div style={{ textAlign: 'center' }}>
-                    <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
-                        <EditOutlinedIcon />
+                <div style={{ textAlign: 'right' }}>
+                    <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(Id)}>
+                        <DeleteForeverOutlinedIcon />
                     </IconButton>
                 </div>
             )

@@ -1166,6 +1166,8 @@ namespace WebApplication1.Datasets {
             
             private global::System.Data.DataColumn columnTypeReglement;
             
+            private global::System.Data.DataColumn columnUser;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public BonLivraisonDataTable() {
@@ -1297,6 +1299,14 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn UserColumn {
+                get {
+                    return this.columnUser;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1332,7 +1342,7 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public BonLivraisonRow AddBonLivraisonRow(string NumBon, System.DateTime Date, string Client, string Ref, string Designation, double Qte, double PU, double TotalHT, string Unite, string Adresse, int CodeClient, string TypeReglement) {
+            public BonLivraisonRow AddBonLivraisonRow(string NumBon, System.DateTime Date, string Client, string Ref, string Designation, double Qte, double PU, double TotalHT, string Unite, string Adresse, int CodeClient, string TypeReglement, string User) {
                 BonLivraisonRow rowBonLivraisonRow = ((BonLivraisonRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         NumBon,
@@ -1346,7 +1356,8 @@ namespace WebApplication1.Datasets {
                         Unite,
                         Adresse,
                         CodeClient,
-                        TypeReglement};
+                        TypeReglement,
+                        User};
                 rowBonLivraisonRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowBonLivraisonRow);
                 return rowBonLivraisonRow;
@@ -1381,6 +1392,7 @@ namespace WebApplication1.Datasets {
                 this.columnAdresse = base.Columns["Adresse"];
                 this.columnCodeClient = base.Columns["CodeClient"];
                 this.columnTypeReglement = base.Columns["TypeReglement"];
+                this.columnUser = base.Columns["User"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1410,6 +1422,8 @@ namespace WebApplication1.Datasets {
                 base.Columns.Add(this.columnCodeClient);
                 this.columnTypeReglement = new global::System.Data.DataColumn("TypeReglement", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTypeReglement);
+                this.columnUser = new global::System.Data.DataColumn("User", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUser);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3781,6 +3795,8 @@ namespace WebApplication1.Datasets {
             
             private global::System.Data.DataColumn columnDiscount;
             
+            private global::System.Data.DataColumn columnUser;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public BonLivraisonSUIVDataTable() {
@@ -4040,6 +4056,14 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn UserColumn {
+                get {
+                    return this.columnUser;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -4103,7 +4127,8 @@ namespace WebApplication1.Datasets {
                         string ClientName, 
                         string ICE, 
                         double Total, 
-                        string Discount) {
+                        string Discount, 
+                        string User) {
                 BonLivraisonSUIVRow rowBonLivraisonSUIVRow = ((BonLivraisonSUIVRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         NumBon,
@@ -4133,7 +4158,8 @@ namespace WebApplication1.Datasets {
                         ClientName,
                         ICE,
                         Total,
-                        Discount};
+                        Discount,
+                        User};
                 rowBonLivraisonSUIVRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowBonLivraisonSUIVRow);
                 return rowBonLivraisonSUIVRow;
@@ -4184,6 +4210,7 @@ namespace WebApplication1.Datasets {
                 this.columnICE = base.Columns["ICE"];
                 this.columnTotal = base.Columns["Total"];
                 this.columnDiscount = base.Columns["Discount"];
+                this.columnUser = base.Columns["User"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4245,6 +4272,8 @@ namespace WebApplication1.Datasets {
                 base.Columns.Add(this.columnTotal);
                 this.columnDiscount = new global::System.Data.DataColumn("Discount", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDiscount);
+                this.columnUser = new global::System.Data.DataColumn("User", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUser);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6298,6 +6327,22 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string User {
+                get {
+                    try {
+                        return ((string)(this[this.tableBonLivraison.UserColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'User\' in table \'BonLivraison\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableBonLivraison.UserColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsNumBonNull() {
                 return this.IsNull(this.tableBonLivraison.NumBonColumn);
             }
@@ -6438,6 +6483,18 @@ namespace WebApplication1.Datasets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetTypeReglementNull() {
                 this[this.tableBonLivraison.TypeReglementColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsUserNull() {
+                return this.IsNull(this.tableBonLivraison.UserColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetUserNull() {
+                this[this.tableBonLivraison.UserColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -8537,6 +8594,22 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string User {
+                get {
+                    try {
+                        return ((string)(this[this.tableBonLivraisonSUIV.UserColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'User\' in table \'BonLivraisonSUIV\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableBonLivraisonSUIV.UserColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsNumBonNull() {
                 return this.IsNull(this.tableBonLivraisonSUIV.NumBonColumn);
             }
@@ -8869,6 +8942,18 @@ namespace WebApplication1.Datasets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetDiscountNull() {
                 this[this.tableBonLivraisonSUIV.DiscountColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsUserNull() {
+                return this.IsNull(this.tableBonLivraisonSUIV.UserColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetUserNull() {
+                this[this.tableBonLivraisonSUIV.UserColumn] = global::System.Convert.DBNull;
             }
         }
         

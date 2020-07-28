@@ -23,7 +23,19 @@ namespace WebApplication1.Migrations
         protected override void Seed(MySaniSoftContext context)
         {
 
-            return;
+            //return;
+
+            var fakeFactureICENull = context.FakeFactures.Where(x => x.ClientICE == null);
+            if (fakeFactureICENull.Count() > 0)
+            {
+                fakeFactureICENull.ForEach(x => x.ClientICE = x.Client.ICE);
+            }
+
+            var factureICENull = context.Factures.Where(x => x.ClientICE == null);
+            if (factureICENull.Count() > 0)
+            {
+                factureICENull.ForEach(x => x.ClientICE = x.Client.ICE);
+            }
 
             var articleBarCodeNull = context.Articles.Where(x => x.BarCode == null);
             //var articleBarCodeNull = context.Articles;
@@ -397,16 +409,156 @@ namespace WebApplication1.Migrations
                 });
             }
 
-            var blActivatedSetting = context.Settings.Where(x => x.Code == "barcode")
+            var barcodeActivatedSetting = context.Settings.Where(x => x.Code == "barcode")
                     .FirstOrDefault();
 
             if (
-                blActivatedSetting == null)
+                barcodeActivatedSetting == null)
             {
                 context.Settings.Add(new Setting
                 {
                     Code = "barcode",
                     Name = "Code à barres"
+                });
+            }
+
+
+            //Modules
+            var barcodeModule = context.Settings.Where(x => x.Code == "module_barcode")
+                   .FirstOrDefault();
+
+            if (
+                barcodeModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_barcode",
+                    Name = "Code à barres",
+                    Enabled = false,
+                });
+            }
+
+            var articleMarginModule = context.Settings.Where(x => x.Code == "module_article_margin")
+                   .FirstOrDefault();
+
+            if (
+                articleMarginModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_article_margin",
+                    Name = "Les marge par article",
+                    Enabled = false,
+                });
+            }
+
+            var clientMarginModule = context.Settings.Where(x => x.Code == "module_client_margin")
+                   .FirstOrDefault();
+
+            if (
+                clientMarginModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_client_margin",
+                    Name = "Les marge par client",
+                    Enabled = false,
+                });
+            }
+
+            var depenseModule = context.Settings.Where(x => x.Code == "module_depense")
+                   .FirstOrDefault();
+
+            if (
+                depenseModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_depense",
+                    Name = "Les dépenses",
+                    Enabled = false,
+                });
+            }
+
+            var siteModule = context.Settings.Where(x => x.Code == "module_site")
+                   .FirstOrDefault();
+
+            if (
+                siteModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_site",
+                    Name = "Les magasins",
+                    Enabled = false,
+                });
+            }
+
+            var suiviModule = context.Settings.Where(x => x.Code == "module_suivi")
+                   .FirstOrDefault();
+
+            if (
+                suiviModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_suivi",
+                    Name = "Suivi",
+                    Enabled = false,
+                });
+            }
+
+            var utilisateurModule = context.Settings.Where(x => x.Code == "module_utilisateurs")
+                   .FirstOrDefault();
+
+            if (
+                utilisateurModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_utilisateurs",
+                    Name = "Utilisateurs",
+                    Enabled = false,
+                });
+            }
+
+            var rapportVenteModule = context.Settings.Where(x => x.Code == "module_rapport_vente")
+                   .FirstOrDefault();
+
+            if (
+                rapportVenteModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_rapport_vente",
+                    Name = "Rapport des ventes",
+                    Enabled = false,
+                });
+            }
+
+            var mouvementModule = context.Settings.Where(x => x.Code == "module_mouvement")
+                  .FirstOrDefault();
+
+            if (mouvementModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_mouvement",
+                    Name = "Mouvements",
+                    Enabled = false,
+                });
+            }
+
+            var paiementModule = context.Settings.Where(x => x.Code == "module_paiement")
+                  .FirstOrDefault();
+
+            if (paiementModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_paiement",
+                    Name = "Paiements",
+                    Enabled = false,
                 });
             }
             ///////////////////////////////////////////////// end Settings
@@ -583,6 +735,17 @@ namespace WebApplication1.Migrations
             {
                 ClientDivers.Name = "Client Divers";
                 ClientDivers.IsClientDivers = true;
+            }
+
+            var company = context.Companies.FirstOrDefault();
+            if(company != null)
+            {
+                var friendlyCompanies = new List<string>() { "EAS", "AQK", "TSR", "SBCIT", "SUIV" };
+                if (friendlyCompanies.Contains(company.Name))
+                {
+                    var settings = context.Settings.Where(x=>x.Code.Contains("module_"));
+                    settings.ForEach(x => x.Enabled = true);
+                }
             }
 
             context.SaveChanges();

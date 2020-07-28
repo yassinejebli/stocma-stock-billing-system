@@ -15,7 +15,7 @@ namespace WebApplication1
         public int LowStockArticlesCount(int IdSite)
         {
             var counter = db.ArticleSites
-                .Where(x => x.QteStock < 0 && x.IdSite == IdSite && !x.Disabled && !x.Site.Disabled)
+                .Where(x => x.QteStock < x.Article.MinStock && x.IdSite == IdSite && !x.Disabled && !x.Site.Disabled)
                 .Count();
 
             return counter;

@@ -122,6 +122,11 @@ const BonCommandeList = () => {
         showModal();
     }, [])
 
+    
+    const convertToBR = React.useCallback((id) => {
+        history.push('/BonReception?BonCommandeId=' + id);
+    }, [])
+    
     return (
         <>
             <Loader loading={loading} />
@@ -154,6 +159,7 @@ const BonCommandeList = () => {
                         data={data}
                         deleteRow={deleteRow}
                         updateRow={updateRow}
+                        convert={convertToBR}
                         print={print}
                         serverPagination
                         totalItems={totalItems}

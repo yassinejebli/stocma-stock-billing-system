@@ -22,11 +22,15 @@ import { useHistory } from 'react-router-dom'
 import AddIcon from '@material-ui/icons/Add';
 import { useAuth } from '../../providers/AuthProvider'
 import { useLoader } from '../../providers/LoaderProvider'
+import { useSettings } from '../../providers/SettingsProvider'
 
 const TABLE = 'ArticleSites';
 const EXPAND = ['Article'];
 
 const ArticleList = () => {
+    const {
+        articleMarginModule
+    } = useSettings();
     const {showLoader} = useLoader();
     const { isAdmin } = useAuth();
     const { siteId } = useSite();
@@ -56,6 +60,9 @@ const ArticleList = () => {
                             contains: debouncedSearchText
                         },
                         'Article/Ref': {
+                            contains: debouncedSearchText
+                        },
+                        'Article/BarCode': {
                             contains: debouncedSearchText
                         },
                     },
@@ -181,7 +188,7 @@ const ArticleList = () => {
                 />
             </Box>
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
-                {isAdmin && <Box mr={2}>
+                {isAdmin && articleMarginModule?.Enabled && <Box mr={2}>
                     <Button
                         variant="contained"
                         color="primary"

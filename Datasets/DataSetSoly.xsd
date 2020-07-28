@@ -48,6 +48,7 @@
               <xs:element name="Adresse" msprop:Generator_ColumnVarNameInTable="columnAdresse" msprop:Generator_ColumnPropNameInRow="Adresse" msprop:Generator_ColumnPropNameInTable="AdresseColumn" msprop:Generator_UserColumnName="Adresse" type="xs:string" minOccurs="0" />
               <xs:element name="CodeClient" msprop:Generator_ColumnVarNameInTable="columnCodeClient" msprop:Generator_ColumnPropNameInRow="CodeClient" msprop:Generator_ColumnPropNameInTable="CodeClientColumn" msprop:Generator_UserColumnName="CodeClient" type="xs:int" minOccurs="0" />
               <xs:element name="TypeReglement" msprop:Generator_ColumnVarNameInTable="columnTypeReglement" msprop:Generator_ColumnPropNameInRow="TypeReglement" msprop:Generator_ColumnPropNameInTable="TypeReglementColumn" msprop:Generator_UserColumnName="TypeReglement" type="xs:string" minOccurs="0" />
+              <xs:element name="User" msprop:Generator_ColumnVarNameInTable="columnUser" msprop:Generator_ColumnPropNameInRow="User" msprop:Generator_ColumnPropNameInTable="UserColumn" msprop:Generator_UserColumnName="User" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -173,6 +174,7 @@
               <xs:element name="ICE" msprop:Generator_ColumnVarNameInTable="columnICE" msprop:Generator_ColumnPropNameInRow="ICE" msprop:Generator_ColumnPropNameInTable="ICEColumn" msprop:Generator_UserColumnName="ICE" type="xs:string" minOccurs="0" />
               <xs:element name="Total" msprop:Generator_ColumnVarNameInTable="columnTotal" msprop:Generator_ColumnPropNameInRow="Total" msprop:Generator_ColumnPropNameInTable="TotalColumn" msprop:Generator_UserColumnName="Total" type="xs:double" minOccurs="0" />
               <xs:element name="Discount" msprop:Generator_ColumnVarNameInTable="columnDiscount" msprop:Generator_ColumnPropNameInRow="Discount" msprop:Generator_ColumnPropNameInTable="DiscountColumn" msprop:Generator_UserColumnName="Discount" type="xs:string" minOccurs="0" />
+              <xs:element name="User" msprop:Generator_ColumnVarNameInTable="columnUser" msprop:Generator_ColumnPropNameInRow="User" msprop:Generator_ColumnPropNameInTable="UserColumn" msprop:Generator_UserColumnName="User" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

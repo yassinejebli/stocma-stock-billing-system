@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center'
     },
     barcode: {
-        fontFamily: "'Libre Barcode 128'",
+        fontFamily: "'Libre Barcode 39'",
         fontSize: 30,
         height: 30,
         color: '#000',
@@ -121,6 +121,9 @@ const ArticleForm = ({ data, onSuccess }) => {
             _errors['PA'] = 'Ce champs est obligatoire.'
         if (!formState.TVA)
             _errors['TVA'] = 'Ce champs est obligatoire.'
+        if (formState.BarCode&&!/^[a-z0-9]+$/i.test(formState.BarCode))
+            _errors['BarCode'] = 'Le code-barres ne doit contenir que des caractères alphanumériques.'
+        //
 
         setFormErrors(_errors);
         return Object.keys(_errors).length === 0;
@@ -146,7 +149,7 @@ const ArticleForm = ({ data, onSuccess }) => {
         } else {
             const response = await saveArticle({ ...preparedData, Id: uuidv4() }, formState.QteStock, siteId);
             if (response?.Id) {
-                setFormState({ ...initialState, Id: uuidv4(), BarCode: "A"+getRandomInt(1000, 100000) });
+                setFormState({ ...initialState, Id: uuidv4(), BarCode: "A" + getRandomInt(1000, 100000) });
                 showSnackBar();
                 if (onSuccess) onSuccess();
             } else {
@@ -277,7 +280,9 @@ const ArticleForm = ({ data, onSuccess }) => {
                 size="small"
                 fullWidth
                 margin="normal"
-                inputProps={{ maxLength: 14 }}
+                inputProps={{
+                    maxLength: 18,
+                }}
                 onChange={onFieldChange}
                 value={formState.BarCode}
                 helperText={formErrors.BarCode}
@@ -285,7 +290,7 @@ const ArticleForm = ({ data, onSuccess }) => {
             />
             {formState.BarCode && formState.Designation && <div className={classes.barcodeWrapper}>
                 <div className={classes.barcode}>
-                    {formState.BarCode}
+                    *{formState.BarCode}*
                 </div>
                 <Box ml={0.5}>
                     <IconButton onClick={showPrintBarcodeLabelModal}>

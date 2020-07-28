@@ -44,6 +44,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
         setFactureCheque,
         barcode,
         setBarcode,
+        barcodeModule,
     } = useSettings();
     const classes = useStyles();
 
@@ -51,7 +52,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
         <Drawer anchor="right" {...props}>
             <div className={classes.root}>
                 <div className={classes.header}>Paramétrage</div>
-                <Box flexDirection="column" display="flex" mt={2}>
+                {barcodeModule?.Enabled && <Box flexDirection="column" display="flex" mt={2}>
                     <TitleIcon title="Code à barres" Icon={BarcodeScan} />
                     <Box mt={2}>
                         <FormControlLabel
@@ -61,7 +62,7 @@ export const SettingsDialog = ({ children, onExited, ...props }) => {
                             label="Activer le scanner toujours"
                         />
                     </Box>
-                </Box>
+                </Box>}
                 <Box flexDirection="column" display="flex" mt={2}>
                     <TitleIcon title="Devis" Icon={DescriptionOutlinedIcon} />
                     <Box mt={2}>

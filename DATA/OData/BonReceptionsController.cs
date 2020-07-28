@@ -158,6 +158,7 @@ namespace WebApplication1.DATA.OData
                     articleSite.Article.PA = (float)Math.Round(PA, 2, MidpointRounding.AwayFromZero);
                 }
                 articleSite.QteStock += bi.Qte;
+                articleSite.Disabled = false;
             }
 
             try

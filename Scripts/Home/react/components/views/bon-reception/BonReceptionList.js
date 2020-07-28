@@ -16,11 +16,15 @@ import PrintBR from '../../elements/dialogs/documents-print/PrintBR'
 import { useSite } from '../../providers/SiteProvider'
 import { bonReceptionListColumns } from '../../elements/table/columns/bonReceptionColumns'
 import AddIcon from '@material-ui/icons/Add';
+import { useSettings } from '../../providers/SettingsProvider'
 
 const DOCUMENT = 'BonReceptions'
 const EXPAND = ['Fournisseur($select=Id,Name)', 'BonReceptionItems']
 
 const BonReceptionList = () => {
+    const {
+        barcodeModule
+    } = useSettings();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -51,7 +55,7 @@ const BonReceptionList = () => {
     const history = useHistory();
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => bonReceptionListColumns(),
+        () => bonReceptionListColumns({barcodeModule}),
         []
     );
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
@@ -125,6 +129,10 @@ const BonReceptionList = () => {
         showModal();
     }, [])
 
+    const printEtiquettes = React.useCallback((id) => {
+        history.push(`code-barres?BonReceptionId=${id}`)
+    }, []) 
+
     return (
         <>
             <Loader loading={loading} />
@@ -158,6 +166,7 @@ const BonReceptionList = () => {
                         deleteRow={deleteRow}
                         updateRow={updateRow}
                         print={print}
+                        customAction={printEtiquettes}
                         serverPagination
                         totalItems={totalItems}
                         pageCount={pageCount}

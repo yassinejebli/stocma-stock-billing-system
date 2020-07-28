@@ -18,6 +18,7 @@ const AuthProvider = ({ children }) => {
     const [username, setUsername] = React.useState();
     const [canUpdateQteStock, setCanUpdateQteStock] = React.useState(false);
     const [canViewDashboard, setCanViewDashboard] = React.useState(false);
+    const [canViewSuiviAchats, setCanViewSuiviAchats] = React.useState(false);
     const [canManageArticles, setCanManageArticles] = React.useState(false);
     const [canManageClients, setCanManageClients] = React.useState(false);
     const [canManageFournisseurs, setCanManageFournisseurs] = React.useState(false);
@@ -68,6 +69,7 @@ const AuthProvider = ({ children }) => {
 
             //
             setCanViewDashboard(Boolean(claims.find(x => x === 'CanViewDashboard')) || isAdmin);
+            setCanViewSuiviAchats(Boolean(claims.find(x => x === 'CanViewSuiviAchats')) || isAdmin);
             setCanUpdateQteStock(Boolean(claims.find(x => x === 'CanUpdateQteStock')) || isAdmin);
             setCanManageClients(Boolean(claims.find(x => x === 'CanManageClients')) || isAdmin);
             setCanManageFournisseurs(Boolean(claims.find(x => x === 'CanManageFournisseurs')) || isAdmin);
@@ -108,6 +110,8 @@ const AuthProvider = ({ children }) => {
             canManageFacturesAchat,
             canManageBonAvoirsAchat,
             canManageBonAvoirsVente,
+            //
+            canViewSuiviAchats,
         }}>
             {children}
         </AuthContext.Provider>)

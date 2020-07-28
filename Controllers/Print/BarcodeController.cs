@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Mvc;
 using WebApplication1.DATA;
+using WebGrease.Css.Extensions;
 
 namespace WebApplication1.Controllers.Print
 {
@@ -43,19 +44,28 @@ namespace WebApplication1.Controllers.Print
             return File(stream, "application/pdf");
         }
 
-        public ActionResult MultipleEtiquettes([FromUri] Guid[] ids)
+        public ActionResult MultipleEtiquettes([FromUri] IDictionary<Guid, int> ids)
         {
             ReportDocument reportDocument = new ReportDocument();
             var company = context.Companies.FirstOrDefault();
 
             reportDocument.Load(
                    Path.Combine(this.Server.MapPath("~/CrystalReports/BarcodeLabels.rpt")));
-
-            reportDocument.SetDataSource(context.Articles.Where(x => ids.Contains(x.Id)).Select(x => new
+            var datasource = new List<dynamic>();
+            ids.ForEach(x =>
             {
-                x.BarCode,
-                x.Designation,
-            }).ToList());
+                var article = context.Articles.Find(x.Key);
+                for (var i = 0; i < x.Value; i++)
+                {
+                    datasource.Add(new
+                    {
+                        BarCode = article.BarCode,
+                        Designation = article.Designation,
+                    });
+                }
+            });
+
+            reportDocument.SetDataSource(datasource);
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition
