@@ -110,5 +110,6 @@ namespace WebApplication1.DATA
         public virtual ICollection<RdbFItem> RdbFItems { get; set; }
         public virtual ICollection<FactureFItem> FactureFItems { get; set; }
         public virtual ICollection<StockMouvementItem> StockMouvementItems { get; set; }
+        public virtual ICollection<InventaireItem> InventaireItems { get; set; }
     }
 }

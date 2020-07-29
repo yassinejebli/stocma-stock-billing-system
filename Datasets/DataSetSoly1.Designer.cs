@@ -5101,6 +5101,8 @@ namespace WebApplication1.Datasets {
             
             private global::System.Data.DataColumn columnPa;
             
+            private global::System.Data.DataColumn columnBarCode;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public TarifDataTable() {
@@ -5200,6 +5202,14 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn BarCodeColumn {
+                get {
+                    return this.columnBarCode;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5235,7 +5245,7 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public TarifRow AddTarifRow(string Titre, string Designation, double Pu, System.DateTime Date, string Unite, string Ref, double Qte, double Pa) {
+            public TarifRow AddTarifRow(string Titre, string Designation, double Pu, System.DateTime Date, string Unite, string Ref, double Qte, double Pa, string BarCode) {
                 TarifRow rowTarifRow = ((TarifRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Titre,
@@ -5245,7 +5255,8 @@ namespace WebApplication1.Datasets {
                         Unite,
                         Ref,
                         Qte,
-                        Pa};
+                        Pa,
+                        BarCode};
                 rowTarifRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowTarifRow);
                 return rowTarifRow;
@@ -5276,6 +5287,7 @@ namespace WebApplication1.Datasets {
                 this.columnRef = base.Columns["Ref"];
                 this.columnQte = base.Columns["Qte"];
                 this.columnPa = base.Columns["Pa"];
+                this.columnBarCode = base.Columns["BarCode"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5297,6 +5309,8 @@ namespace WebApplication1.Datasets {
                 base.Columns.Add(this.columnQte);
                 this.columnPa = new global::System.Data.DataColumn("Pa", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPa);
+                this.columnBarCode = new global::System.Data.DataColumn("BarCode", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBarCode);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9551,6 +9565,22 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string BarCode {
+                get {
+                    try {
+                        return ((string)(this[this.tableTarif.BarCodeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BarCode\' in table \'Tarif\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTarif.BarCodeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsTitreNull() {
                 return this.IsNull(this.tableTarif.TitreColumn);
             }
@@ -9643,6 +9673,18 @@ namespace WebApplication1.Datasets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetPaNull() {
                 this[this.tableTarif.PaColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsBarCodeNull() {
+                return this.IsNull(this.tableTarif.BarCodeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetBarCodeNull() {
+                this[this.tableTarif.BarCodeColumn] = global::System.Convert.DBNull;
             }
         }
         

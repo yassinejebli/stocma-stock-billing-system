@@ -63,6 +63,9 @@ namespace WebApplication1.DATA
 
         public DbSet<FactureItem> FactureItems { get; set; }
 
+        public DbSet<Inventaire> Inventaires { get; set; }
+        public DbSet<InventaireItem> InventaireItems { get; set; }
+
         public DbSet<Depence> Depences { get; set; }
 
         public DbSet<TypeDepence> TypeDepences { get; set; }
@@ -294,6 +297,12 @@ namespace WebApplication1.DATA
                 .WithMany(t => t.BonLivraisons)
                 .HasForeignKey(d => d.IdSite);
             ///
+
+            //---------------------------------------site - inventaire
+            modelBuilder.Entity<Inventaire>()
+                .HasRequired(t => t.Site)
+                .WithMany(t => t.Inventaires)
+                .HasForeignKey(d => d.IdSite);
 
             ///--------------------------------------site - br
             modelBuilder.Entity<BonReception>()
@@ -615,6 +624,20 @@ namespace WebApplication1.DATA
                 .HasRequired(t => t.Depense)
                 .WithMany(t => t.DepenseItems)
                 .HasForeignKey(d => d.IdDepense);
+
+            //Inventory
+            modelBuilder.Entity<Inventaire>().HasKey(t => t.Id);
+            modelBuilder.Entity<InventaireItem>().HasKey(t => t.Id);
+            modelBuilder.Entity<InventaireItem>()
+                .HasRequired(t => t.Inventaire)
+                .WithMany(t => t.InventaireItems)
+                .HasForeignKey(d => d.IdInvetaire);
+
+            modelBuilder.Entity<InventaireItem>()
+                .HasRequired(t => t.Article)
+                .WithMany(t => t.InventaireItems)
+                .HasForeignKey(d => d.IdArticle);
+            //
 
 
             modelBuilder.Entity<Tarif>().HasKey<Guid>((Expression<Func<Tarif, Guid>>)(t => t.Id));

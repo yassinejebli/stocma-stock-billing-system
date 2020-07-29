@@ -55,6 +55,7 @@ import BankPaiementsClientList from './components/views/paiement-client/BankPaie
 import BankPaiementsFournisseurList from './components/views/paiement-fournisseur/BankPaiementsFournisseurList';
 import ClientsMarginList from './components/views/client/ClientsMarginList';
 import CodeBarreEtiquettes from './components/views/code-barres/CodeBarreEtiquettes';
+import Inventaire from './components/views/stock-mouvement/Inventaire';
 
 const Routes = () => {
     const {
@@ -149,6 +150,7 @@ const Routes = () => {
         <Route path="/BonLivraisonList" component={BonLivraisonList} />
         {canManageBonReceptions && <Route path="/BonReceptionList" component={BonReceptionList} />}
         <Route path="/DevisList" component={DevisList} />
+        <Route path="/Inventaire" component={Inventaire} />
         {canManageArticles && <Route path="/ArticleList" component={ArticleList} />}
         {canManageArticles && <Route path="/_ArticleList" component={FakeArticleList} />}
         {canManageSites && siteModule?.Enabled && <Route path="/SiteList" component={SiteList} />}

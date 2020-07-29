@@ -210,3 +210,22 @@ export const getMarginArticles = async (idSite, skip, filters) => {
         return [];
     }
 }
+
+
+//Inventory
+export const getInventoryList = async (siteId, limit) => {
+    const parsedParams = new URLSearchParams({
+        idSite: siteId,
+        limit
+    }).toString();
+
+    const URL = '/Inventory/getInventaireList?' + parsedParams;
+
+    try {
+        const res = await (await fetch(URL, {})).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+        return 0;
+    }
+}

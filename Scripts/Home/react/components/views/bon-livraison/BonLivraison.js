@@ -377,7 +377,7 @@ const BonLivraison = () => {
                 onScan={async (result) => {
                     console.log({ result })
                     const firstChar = result.charAt(0);
-                    let uppercaseBarCode = result.substring(0);
+                    let uppercaseBarCode = result.substring(1);
                     //TODO: review this
                     if (firstChar === 'A') {
                         uppercaseBarCode = convertLowercaseNumbersFR(uppercaseBarCode).toUpperCase();

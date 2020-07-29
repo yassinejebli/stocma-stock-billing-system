@@ -236,6 +236,7 @@
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\Print\InventoryController.cs" />
     <Compile Include="Controllers\Print\BonAvoirVenteController.cs" />
     <Compile Include="Controllers\Print\BonCommandeController.cs" />
     <Compile Include="Controllers\Print\BarcodeController.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Controllers\Print\BLController.cs" />
     <Compile Include="Controllers\Print\BRController.cs" />
     <Compile Include="Controllers\PaiementsDataController.cs" />
+    <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\SalesHistoryController.cs" />
     <Compile Include="Controllers\UploadManagerController.cs" />
     <Compile Include="ConvertisseurChiffresLettres.cs" />
@@ -995,6 +997,9 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="DATA\InventaireItem.cs" />
+    <Compile Include="DATA\Inventaire.cs" />
+    <Compile Include="DATA\OData\InventairesController.cs" />
     <Compile Include="Migrations\202007061850438_Client_IsClientDivers.cs" />
     <Compile Include="Migrations\202007061850438_Client_IsClientDivers.designer.cs">
       <DependentUpon>202007061850438_Client_IsClientDivers.cs</DependentUpon>
@@ -1014,6 +1019,14 @@
     <Compile Include="Migrations\202007131034259_Article_BarCode_MaxLength.cs" />
     <Compile Include="Migrations\202007131034259_Article_BarCode_MaxLength.designer.cs">
       <DependentUpon>202007131034259_Article_BarCode_MaxLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007290733147_Inventaire.cs" />
+    <Compile Include="Migrations\202007290733147_Inventaire.designer.cs">
+      <DependentUpon>202007290733147_Inventaire.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007291526261_Site_Inventaire.cs" />
+    <Compile Include="Migrations\202007291526261_Site_Inventaire.designer.cs">
+      <DependentUpon>202007291526261_Site_Inventaire.cs</DependentUpon>
     </Compile>
     <Compile Include="Statistics\BonLivraisonStatistics.cs" />
     <Compile Include="Statistics\ClientStatistics.cs" />
@@ -4431,6 +4444,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007131034259_Article_BarCode_MaxLength.resx">
       <DependentUpon>202007131034259_Article_BarCode_MaxLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007290733147_Inventaire.resx">
+      <DependentUpon>202007290733147_Inventaire.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007291526261_Site_Inventaire.resx">
+      <DependentUpon>202007291526261_Site_Inventaire.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

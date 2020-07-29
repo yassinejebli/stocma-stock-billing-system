@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   }
 });
 
-const BootstrapInput = withStyles((theme) => ({
+export const BootstrapInput = withStyles((theme) => ({
   input: {
     minWidth: 150,
     borderRadius: 4,

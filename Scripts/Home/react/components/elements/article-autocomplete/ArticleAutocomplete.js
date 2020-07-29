@@ -45,7 +45,6 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       QteStock: x.QteStock,
     })));
   }
-  console.log({ articles })
 
   return (
     <Autocomplete

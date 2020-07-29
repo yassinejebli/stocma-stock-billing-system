@@ -84,3 +84,7 @@ export const getPrintCodeBarreEtiquetteURL = (params) => {
 export const getPrintMultipleCodeBarreEtiquetteURL = (ids) => {
     return `/Barcode/MultipleEtiquettes?${ids}`
 }
+
+export const getPrintInventaireURL = (ids, idSite, titre) => {
+    return `/PrintInventory?${ids}&idSite=${idSite}&titre=${titre}`
+}
