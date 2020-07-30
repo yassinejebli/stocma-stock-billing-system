@@ -15,13 +15,16 @@ namespace WebApplication1.Controllers.Print
     {
         private MySaniSoftContext context = new MySaniSoftContext();
 
-        public ActionResult Index([FromUri] int idSite, [FromUri] Guid[] ids, string titre)
+        public ActionResult Index([FromUri] int idSite, [FromUri] Guid[] ids, string titre, bool showBarCode)
         {
             var currentDate = DateTime.Now;
             ReportDocument reportDocument = new ReportDocument();
             var company = context.Companies.FirstOrDefault();
-
+            if(showBarCode)
             reportDocument.Load(
+                   Path.Combine(this.Server.MapPath("~/CrystalReports/InventoryBarCode.rpt")));
+            else
+                reportDocument.Load(
                    Path.Combine(this.Server.MapPath("~/CrystalReports/Inventory.rpt")));
 
             reportDocument.SetDataSource(context.ArticleSites.Where(x => ids.Contains(x.Article.Id) && x.IdSite == idSite).ToList().Select(x => new

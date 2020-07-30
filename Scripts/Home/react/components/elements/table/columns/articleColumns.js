@@ -24,6 +24,13 @@ export const articleColumns = () => ([
         align: 'right'
     },
     {
+        Header: 'Unité',
+        accessor: 'Article.Unite',
+        type: inputTypes.text.description,
+        align: 'center',
+        width: 26
+    },
+    {
         id: 'PA',
         Header: 'Prix d\'achat',
         accessor: (props) => {
@@ -49,13 +56,6 @@ export const articleColumns = () => ([
         },
         type: inputTypes.text.description,
         align: 'right',
-        width: 26
-    },
-    {
-        Header: 'Unité',
-        accessor: 'Article.Unite',
-        type: inputTypes.text.description,
-        align: 'center',
         width: 26
     },
     {
@@ -99,6 +99,13 @@ export const fakeArticleColumns = () => ([
         align: 'right'
     },
     {
+        Header: 'Unité',
+        accessor: 'Unite',
+        type: inputTypes.text.description,
+        align: 'center',
+        width: 26
+    },
+    {
         id: 'PA',
         Header: 'Prix d\'achat',
         accessor: (props) => {
@@ -124,13 +131,6 @@ export const fakeArticleColumns = () => ([
         },
         type: inputTypes.text.description,
         align: 'right',
-        width: 26
-    },
-    {
-        Header: 'Unité',
-        accessor: 'Unite',
-        type: inputTypes.text.description,
-        align: 'center',
         width: 26
     },
     {

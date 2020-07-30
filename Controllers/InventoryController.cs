@@ -12,6 +12,7 @@ namespace WebApplication1.Controllers
 
         public ActionResult getInventaireList(int idSite, int limit)
         {
+            //var currentYear = DateTime.Now.Year;
             var dateBefore3Months = DateTime.Now.AddDays(-90);
             var articles = db.ArticleSites.Where(x => x.IdSite == idSite && !x.Disabled).ToList().Select(x =>
             {

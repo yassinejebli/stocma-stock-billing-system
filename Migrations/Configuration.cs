@@ -741,7 +741,7 @@ namespace WebApplication1.Migrations
             if(company != null)
             {
                 var friendlyCompanies = new List<string>() { "EAS", "AQK", "TSR", "SBCIT", "SUIV" };
-                if (friendlyCompanies.Contains(company.Name))
+                if (friendlyCompanies.Contains(company.Name.ToUpper()))
                 {
                     var settings = context.Settings.Where(x=>x.Code.Contains("module_"));
                     settings.ForEach(x => x.Enabled = true);

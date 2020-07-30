@@ -85,6 +85,6 @@ export const getPrintMultipleCodeBarreEtiquetteURL = (ids) => {
     return `/Barcode/MultipleEtiquettes?${ids}`
 }
 
-export const getPrintInventaireURL = (ids, idSite, titre) => {
-    return `/PrintInventory?${ids}&idSite=${idSite}&titre=${titre}`
+export const getPrintInventaireURL = ({ids, idSite, titre, showBarCode}) => {
+    return `/PrintInventory?${ids}&idSite=${idSite}&titre=${titre}&showBarCode=${showBarCode}`
 }

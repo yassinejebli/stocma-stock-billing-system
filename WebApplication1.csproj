@@ -394,6 +394,13 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="CrystalReports\InventoryBarCode.cs">
+      <DependentUpon>InventoryBarCode.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\Paiements.cs">
       <DependentUpon>Paiements.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -4212,6 +4219,11 @@
     <Content Include="CrystalReports\Inventory.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Inventory.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\InventoryBarCode.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>InventoryBarCode.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Migrations\201702231840475_init.resx">

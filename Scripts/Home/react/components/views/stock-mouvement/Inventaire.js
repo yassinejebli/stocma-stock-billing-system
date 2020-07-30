@@ -1,4 +1,4 @@
-import { Button, TextField, makeStyles, IconButton, FormControl, Select, MenuItem } from '@material-ui/core'
+import { Button, TextField, makeStyles, IconButton, FormControl, Select, MenuItem, FormControlLabel, Switch } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import React from 'react'
 import AddButton from '../../elements/button/AddButton'
@@ -13,7 +13,7 @@ import ArticleAutocomplete from '../../elements/article-autocomplete/ArticleAuto
 import TitleIcon from '../../elements/misc/TitleIcon'
 import { useModal } from 'react-modal-hook'
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import qs from 'qs'
 import { useLoader } from '../../providers/LoaderProvider'
 import { getSingleData, saveData } from '../../../queries/crudBuilder'
@@ -23,6 +23,8 @@ import IframeDialog from '../../elements/dialogs/IframeDialog'
 import { getPrintInventaireURL } from '../../../utils/urlBuilder'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { v4 as uuidv4 } from 'uuid'
+import DescriptionIcon from '@material-ui/icons/Description';
+import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 
 const emptyLine = {
     Article: null,
@@ -38,16 +40,20 @@ const useStyles = makeStyles({
 const Inventaire = () => {
     const classes = useStyles();
     const { siteId } = useSite();
+    const history = useHistory();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const { showLoader } = useLoader();
     const location = useLocation();
     const InventaireId = qs.parse(location.search, { ignoreQueryPrefix: true }).InventaireId;
+    const isViewMode = Boolean(InventaireId);
     const [data, setData] = React.useState([emptyLine]);
     const [titre, setTitre] = React.useState('');
     const [limit, setLimit] = React.useState(20);
     const [errors, setErrors] = React.useState({});
     const [showPrintModal, hidePrintModal] = useModal(({ in: open, onExited }) => {
+        const [showBarCode, setShowBarCode] = React.useState(false);
+
         return (
             <IframeDialog
                 onExited={onExited}
@@ -55,7 +61,20 @@ const Inventaire = () => {
                 onClose={() => {
                     hidePrintModal(null);
                 }}
-                src={getPrintInventaireURL(data.filter(x => x.Article).map((x) => (`ids=${x.Article.Id}`)).join('&'), siteId, titre)}>
+                src={getPrintInventaireURL({
+                    ids: data.filter(x => x.Article).map((x) => (`ids=${x.Article.Id}`)).join('&'),
+                    idSite: siteId,
+                    titre,
+                    showBarCode
+                })}>
+                <Box p={1}>
+                    <FormControlLabel
+                        control={<Switch
+                            checked={showBarCode}
+                            onChange={(_, checked) => setShowBarCode(checked)} />}
+                        label="Code-barres"
+                    />
+                </Box>
             </IframeDialog>
         )
     }, [data, siteId, titre]);
@@ -72,11 +91,13 @@ const Inventaire = () => {
 
     React.useEffect(() => {
         setTitle('Inventaire')
+        if (isViewMode) {
+            getSingleData(DOCUMENT, InventaireId, ['InventaireItems/Article']).then(response => {
+                setTitre(response.Titre);
+                setData(response.InventaireItems)
+            })
+        }
     }, [])
-
-    React.useEffect(() => {
-        loadData();
-    }, [siteId, limit])
 
     const loadData = () => {
         showLoader(true)
@@ -157,7 +178,6 @@ const Inventaire = () => {
         if (response?.Id) {
             showSnackBar();
             resetData();
-            loadData();
         } else {
             showSnackBar({
                 error: true,
@@ -168,17 +188,25 @@ const Inventaire = () => {
 
     const resetData = () => {
         setTitre('');
-        setTimeout(() => {
-            setDate(new Date());
-        }, 1000)
         addNewRow();
+        setData([emptyLine]);
     }
 
     return (
         <>
+            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<DescriptionIcon />}
+                    onClick={() => history.push('/liste-inventaire')}
+                >
+                    Liste des inventaires
+                </Button>
+            </Box>
             <Paper>
                 <TitleIcon noBorder title="Inventaire" Icon={LocalMallOutlinedIcon} />
-                <Box mt={4} display="flex">
+                <Box mt={2} display="flex" justifyContent="space-between">
                     <Box width={240}>
                         <TextField
                             value={titre}
@@ -189,24 +217,33 @@ const Inventaire = () => {
                             label="Titre"
                         />
                     </Box>
-                    <Box ml={2} width={140}>
-                        <FormControl variant="outlined" size="small" fullWidth>
-                            <Select
-                                value={limit}
-                                fullWidth
-                                onChange={({ target: { value } }) => {
-                                    setLimit(value);
-                                }}
-                            >
-                                {
-                                    [10, 20, 50, 100].map(x => (
-                                        <MenuItem key={x} value={x}>{x}</MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                    </Box>
+                    {!isViewMode && <Box display="flex" alignItems="center">
+                        <Box>
+                            <Button startIcon={<VerticalAlignTopIcon />} variant="contained" color="primary" onClick={loadData}>
+                                Importer des articles
+                            </Button>
+                        </Box>
+                        <Box ml={2} width={100}>
+                            <FormControl variant="outlined" size="small" fullWidth>
+                                <Select
+                                    value={limit}
+                                    fullWidth
+                                    onChange={({ target: { value } }) => {
+                                        setLimit(value);
+                                    }}
+                                >
+                                    {
+                                        [10, 20, 50, 100].map(x => (
+                                            <MenuItem key={x} value={x}>{x}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </Box>}
                 </Box>
+
+
                 <Box mt={2}>
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>
