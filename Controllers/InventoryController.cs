@@ -10,9 +10,8 @@ namespace WebApplication1.Controllers
     {
         MySaniSoftContext db = new MySaniSoftContext();
 
-        public ActionResult getInventaireList(int idSite, int limit)
+        public dynamic InventaireList(int idSite, int limit)
         {
-            //var currentYear = DateTime.Now.Year;
             var dateBefore3Months = DateTime.Now.AddDays(-90);
             var articles = db.ArticleSites.Where(x => x.IdSite == idSite && !x.Disabled).ToList().Select(x =>
             {
@@ -26,6 +25,7 @@ namespace WebApplication1.Controllers
                         x.Article.Designation,
                         x.Article.Ref,
                         x.QteStock,
+                        x.Article.Unite,
                         x.Article.BarCode,
                     },
                     Count = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= dateBefore3Months).Count(),
@@ -33,7 +33,13 @@ namespace WebApplication1.Controllers
                 };
             }).OrderBy(x => x.Date).ThenByDescending(x => x.Count).Take(limit);
 
-            return this.Json(articles, JsonRequestBehavior.AllowGet);
+            return articles;
+        }
+
+        public ActionResult getInventaireList(int idSite, int limit)
+        {
+            return this.Json(InventaireList(idSite, limit), JsonRequestBehavior.AllowGet);
         }
     }
 }
+ 

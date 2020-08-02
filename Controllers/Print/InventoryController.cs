@@ -27,16 +27,24 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.Load(
                    Path.Combine(this.Server.MapPath("~/CrystalReports/Inventory.rpt")));
 
-            reportDocument.SetDataSource(context.ArticleSites.Where(x => ids.Contains(x.Article.Id) && x.IdSite == idSite).ToList().Select(x => new
+            var articles = new List<dynamic>();
+
+            ids.ForEach(x =>
             {
-                Date = currentDate,
-                x.Article.Ref,
-                x.Article.Designation,
-                x.Article.Unite,
-                Qte = x.QteStock,
-                x.Article.BarCode,
-                Titre = titre,
-            }));
+                var articleSite = context.ArticleSites.FirstOrDefault(y => y.IdSite == idSite && y.IdArticle == x);
+                articles.Add(new
+                {
+                    Date = currentDate,
+                    articleSite.Article.Ref,
+                    articleSite.Article.Designation,
+                    articleSite.Article.Unite,
+                    Qte = articleSite.QteStock,
+                    articleSite.Article.BarCode,
+                    Titre = titre,
+                });
+            });
+
+            reportDocument.SetDataSource(articles);
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition
