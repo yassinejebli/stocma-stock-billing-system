@@ -25,6 +25,11 @@ const SettingsProvider = ({ children }) => {
     const [rapportVenteModule, setRapportVenteModule] = React.useState(null);
     const [mouvementModule, setMouvementModule] = React.useState(null);
     const [paiementModule, setPaiementModule] = React.useState(null);
+    const [articleImageModule, setArticleImageModule] = React.useState(null);
+    const [restoreBLModule, setRestoreBLModule] = React.useState(null);
+    const [articlesStatisticsModule, setArticlesStatisticsModule] = React.useState(null);
+    const [clientLoyaltyModule, setClientLoyaltyModule] = React.useState(null);
+    const [articlesNotSellingModule, setArticlesNotSellingModule] = React.useState(null);
 
     //BL
     const [BLDiscount, setBLDiscount] = React.useState(null);
@@ -117,6 +122,11 @@ const SettingsProvider = ({ children }) => {
                 setRapportVenteModule(res.find(x => x.Code === 'module_rapport_vente'));
                 setMouvementModule(res.find(x => x.Code === 'module_mouvement'));
                 setPaiementModule(res.find(x => x.Code === 'module_paiement'));
+                setArticleImageModule(res.find(x => x.Code === 'module_image_article'));
+                setRestoreBLModule(res.find(x => x.Code === 'module_restoration_bl'));
+                setArticlesStatisticsModule(res.find(x => x.Code === 'module_statistique_articles'));
+                setClientLoyaltyModule(res.find(x => x.Code === 'module_client_fidelite'));
+                setArticlesNotSellingModule(res.find(x => x.Code === 'module_article_non_vendus'));
                 //Devis
                 setDevisDiscount(res.find(x => x.Code === 'devis_discount'));
                 setDevisValidity(res.find(x => x.Code === 'devis_validity'));
@@ -178,6 +188,11 @@ const SettingsProvider = ({ children }) => {
             rapportVenteModule,
             mouvementModule,
             paiementModule,
+            articleImageModule,
+            restoreBLModule,
+            articlesStatisticsModule,
+            clientLoyaltyModule,
+            articlesNotSellingModule,
         }}>
             {children}
         </SettingsContext.Provider>)

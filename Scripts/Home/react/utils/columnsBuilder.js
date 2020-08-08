@@ -111,6 +111,7 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
                         value={value||''}
                         inTable
                         align="right"
+                        type="number"
                         onFocus={(event) => event.target.select()}
                         onChange={({ target: { value: _value } }) => updateMyData(index, id, _value)}
                         onBlur={() => updateMyData(index, id, value)}

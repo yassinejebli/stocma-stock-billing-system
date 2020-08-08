@@ -37,6 +37,9 @@ const DevisList = () => {
                         'Client/Name': {
                             contains: debouncedSearchText
                         },
+                        'ClientName': {
+                            contains: debouncedSearchText
+                        },
                         'NumBon': {
                             contains: debouncedSearchText
                         }

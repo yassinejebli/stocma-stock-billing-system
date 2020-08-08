@@ -125,6 +125,12 @@ export const devisListColumns = () => ([
         width: 100
     },
     {
+        Header: 'Nom du client sur le devis',
+        accessor: 'ClientName',
+        type: inputTypes.text.description,
+        width: 100
+    },
+    {
         Header: 'N#',
         accessor: 'NumBon',
         type: inputTypes.text.description,

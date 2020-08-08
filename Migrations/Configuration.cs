@@ -25,6 +25,12 @@ namespace WebApplication1.Migrations
 
             //return;
 
+            var devisClientNameNull = context.Devises.Where(x => x.ClientName == null);
+            if (devisClientNameNull.Count() > 0)
+            {
+                devisClientNameNull.ForEach(x => x.ClientName = x.Client.Name);
+            }
+
             var fakeFactureICENull = context.FakeFactures.Where(x => x.ClientICE == null);
             if (fakeFactureICENull.Count() > 0)
             {
@@ -438,6 +444,49 @@ namespace WebApplication1.Migrations
                 });
             }
 
+            
+            var clientLoyaltyModule = context.Settings.Where(x => x.Code == "module_client_fidelite")
+                   .FirstOrDefault();
+
+            if (
+                clientLoyaltyModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_client_fidelite",
+                    Name = "Client fidélité",
+                    Enabled = false,
+                });
+            }
+
+            var articlesNotSellingModule = context.Settings.Where(x => x.Code == "module_article_non_vendus")
+                   .FirstOrDefault();
+
+            if (
+                articlesNotSellingModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_article_non_vendus",
+                    Name = "Articles non-vendus",
+                    Enabled = false,
+                });
+            }
+
+            var inventaireModule = context.Settings.Where(x => x.Code == "module_inventaire")
+                   .FirstOrDefault();
+
+            if (
+                inventaireModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_inventaire",
+                    Name = "Inventaire",
+                    Enabled = false,
+                });
+            }
+
             var articleMarginModule = context.Settings.Where(x => x.Code == "module_article_margin")
                    .FirstOrDefault();
 
@@ -558,6 +607,58 @@ namespace WebApplication1.Migrations
                 {
                     Code = "module_paiement",
                     Name = "Paiements",
+                    Enabled = false,
+                });
+            }
+
+            var articleImageModule = context.Settings.Where(x => x.Code == "module_image_article")
+                  .FirstOrDefault();
+
+            if (articleImageModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_image_article",
+                    Name = "Image d'article",
+                    Enabled = false,
+                });
+            }
+
+            var restoreBLModule = context.Settings.Where(x => x.Code == "module_restoration_bl")
+                  .FirstOrDefault();
+
+            if (restoreBLModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_restoration_bl",
+                    Name = "Restoration des BLs",
+                    Enabled = false,
+                });
+            }
+
+            var factureModule = context.Settings.Where(x => x.Code == "module_facture")
+                  .FirstOrDefault();
+
+            if (factureModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_facture",
+                    Name = "Factures",
+                    Enabled = false,
+                });
+            }
+
+            var articlesStatisticsModule = context.Settings.Where(x => x.Code == "module_statistique_articles")
+                  .FirstOrDefault();
+
+            if (articlesStatisticsModule == null)
+            {
+                context.Settings.Add(new Setting
+                {
+                    Code = "module_statistique_articles",
+                    Name = "Statistiques des articles",
                     Enabled = false,
                 });
             }

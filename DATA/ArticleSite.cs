@@ -21,6 +21,9 @@ namespace WebApplication1.DATA
 
         [Key, Column(Order = 1)]
         public int IdSite { get; set; }
+
+        public int Counter { get; set; } = 0;
+
         public bool Disabled { get; set; } = false;
     }
 }

@@ -57,6 +57,8 @@ import ClientsMarginList from './components/views/client/ClientsMarginList';
 import CodeBarreEtiquettes from './components/views/code-barres/CodeBarreEtiquettes';
 import Inventaire from './components/views/stock-mouvement/Inventaire';
 import InventaireList from './components/views/stock-mouvement/InventaireList';
+import ArticlesNotSellingList from './components/views/articles/ArticlesNotSellingList';
+import ClientsNotBuyingList from './components/views/client/ClientsNotBuyingList';
 
 const Routes = () => {
     const {
@@ -70,6 +72,8 @@ const Routes = () => {
         mouvementModule,
         rapportVenteModule,
         paiementModule,
+        clientLoyaltyModule,
+        articlesNotSellingModule,
     } = useSettings();
     const {
         isAdmin,
@@ -159,7 +163,9 @@ const Routes = () => {
         {canManageArticles && <Route path="/_ArticleList" component={FakeArticleList} />}
         {canManageSites && siteModule?.Enabled && <Route path="/SiteList" component={SiteList} />}
         {isAdmin && articleMarginModule?.Enabled && <Route path="/marge-articles" component={ArticlesMarginList} />}
+        {isAdmin && articlesNotSellingModule?.Enabled && <Route path="/articles-non-vendus" component={ArticlesNotSellingList} />}
         {isAdmin && clientMarginModule?.Enabled && <Route path="/marge-clients" component={ClientsMarginList} />}
+        {clientLoyaltyModule?.Enabled && <Route path="/clients-non-fidèles" component={ClientsNotBuyingList} />}
         {canManageClients && <Route path="/ClientList" component={ClientList} />}
         {canManageFournisseurs && <Route path="/SupplierList" component={SupplierList} />}
         {isAdmin && paiementModule?.Enabled && <Route path="/liste-methodes-de-paiement" component={TypePaiementList} />}

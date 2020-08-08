@@ -203,7 +203,6 @@ export const getMarginArticles = async (idSite, skip, filters) => {
     const URL = '/Statistics/ArticlesWithMargin?' + parsedParams;
     try {
         const res = await (await fetch(URL)).json();
-        console.log({ res })
         return res;
     } catch (e) {
         console.log(e);
@@ -211,6 +210,22 @@ export const getMarginArticles = async (idSite, skip, filters) => {
     }
 }
 
+export const getArticlesNotSelling = async (idSite, skip, filters) => {
+    const parsedParams = new URLSearchParams({
+        IdSite: idSite,
+        Skip: skip,
+        SearchText: filters.searchText,
+        Months: filters.months
+    }).toString();
+    const URL = '/Statistics/ArticlesNotSellingIn?' + parsedParams;
+    try {
+        const res = await (await fetch(URL)).json();
+        return res;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}
 
 //Inventory
 export const getInventoryList = async (siteId, limit) => {

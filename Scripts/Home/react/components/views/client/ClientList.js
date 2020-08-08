@@ -18,13 +18,15 @@ import { useSite } from '../../providers/SiteProvider'
 import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from 'react-router-dom';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import { useAuth } from '../../providers/AuthProvider'
 import { useSettings } from '../../providers/SettingsProvider'
 const TABLE = 'Clients';
 
 const ClientList = () => {
-    const { 
-        clientMarginModule
+    const {
+        clientMarginModule,
+        clientLoyaltyModule,
     } = useSettings();
     const { isAdmin } = useAuth();
     const { showSnackBar } = useSnackBar();
@@ -133,14 +135,26 @@ const ClientList = () => {
         <>
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                {isAdmin && clientMarginModule?.Enabled && <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<LocalAtmIcon />}
-                    onClick={() => history.push("marge-clients")}
-                >
-                    Marge par client
+                <Box display="flex">
+                    {isAdmin && clientMarginModule?.Enabled && <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<LocalAtmIcon />}
+                        onClick={() => history.push("marge-clients")}
+                    >
+                        Marge par client
                 </Button>}
+                    {clientLoyaltyModule?.Enabled && <Box ml={2}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<PeopleOutlineIcon />}
+                            onClick={() => history.push('/clients-non-fidèles')}
+                        >
+                            Les clients non-fidèles
+                    </Button>
+                    </Box>}
+                </Box>
                 <Button
                     variant="contained"
                     color="primary"

@@ -66,5 +66,25 @@ namespace WebApplication1
             return new { data = articlesWithMargin.OrderByDescending(x => x.Margin).Skip(Skip).Take(10), totalItems };
         }
 
+        public dynamic ArticlesNotSellingIn(int IdSite, int Skip, string SearchText, int Months)
+        {
+            var today = DateTime.Now;
+            var dateBeforeNmonths = DateTime.Now.AddMonths(-Months);
+            var articles = db.ArticleSites.Where(x => x.IdSite == IdSite && x.QteStock > 0.0f && !x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date > dateBeforeNmonths).Any() && (SearchText == "" || x.Article.Designation.ToLower().Contains(SearchText.ToLower())))
+                .Select(x => new
+                {
+                    Article = x.Article.Designation,
+                    QteStock = x.QteStock,
+                    Unite = x.Article.Unite,
+                    PA = x.Article.PA,
+                    PVD = x.Article.PVD,
+                    Total = x.Article.PA * x.QteStock,
+                });
+
+            var totalItems = articles.Count();
+
+
+            return new { data = articles.OrderByDescending(x => x.Total).Skip(Skip).Take(10), totalItems };
+        }
     }
 }

@@ -220,7 +220,7 @@ const Inventaire = () => {
                     {!isViewMode && <Box display="flex" alignItems="center">
                         <Box>
                             <Button startIcon={<VerticalAlignTopIcon />} variant="contained" color="primary" onClick={loadData}>
-                                Importer des articles
+                                auto remplir
                             </Button>
                         </Box>
                         <Box ml={2} width={100}>

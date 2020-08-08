@@ -79,6 +79,7 @@ const Devis = () => {
     const [deliveryType, setDeliveryType] = React.useState(null);
     const [paymentType, setPaymentType] = React.useState(null);
     const [savedDocument, setSavedDocument] = React.useState(null);
+    const [clientName, setClientName] = React.useState('');
     const location = useLocation();
     const DevisId = qs.parse(location.search, { ignoreQueryPrefix: true }).DevisId;
     const isEditMode = Boolean(DevisId);
@@ -135,6 +136,7 @@ const Devis = () => {
                     else
                         setDevisDiscount(_docSetting => ({ ..._docSetting, Enabled: false }));
                     setClient(response.Client);
+                    setClientName(response.ClientName);
                     setDate(response.Date);
                     setNote(response.Note);
                     setData(response.DevisItems?.map(x => ({
@@ -234,10 +236,9 @@ const Devis = () => {
                 PercentageDiscount: (/^\d+(\.\d+)?%$/.test(d.Discount))
             })),
             IdClient: client.Id,
-            Date: date
+            ClientName: clientName,
+            Date: date,
         };
-
-        // return console.log({preparedData});
 
         setLoading(true);
         const response = isEditMode ? await (await updateData(DOCUMENT, preparedData, Id, expand)).json()
@@ -260,6 +261,7 @@ const Devis = () => {
 
     const resetData = () => {
         setClient(null);
+        setClientName('');
         setNote('');
         setDeliveryTime('');
         setValidity('');
@@ -290,7 +292,10 @@ const Devis = () => {
                             <ClientAutocomplete
                                 disabled={isEditMode}
                                 value={client}
-                                onChange={(_, value) => setClient(value)}
+                                onChange={(_, value) => {
+                                    setClient(value);
+                                    setClientName(value?.Name);
+                                }}
                                 errorText={errors.client}
                             />
                         </Box>
@@ -320,6 +325,16 @@ const Devis = () => {
                     <DatePicker
                         value={date}
                         onChange={(_date) => setDate(_date)}
+                    />
+                </Box>
+                <Box mt={2} width={240}>
+                    <TextField
+                        value={clientName}
+                        onChange={({ target: { value } }) => setClientName(value)}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                        label="Nom du client sur le devis"
                     />
                 </Box>
                 <Box mt={2} display="flex" flexWrap="wrap">

@@ -32,11 +32,22 @@ namespace WebApplication1
             return Json(statistics.ArticlesWithMargin(IdSite, Skip, SearchText, From, To), JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult ArticlesNotSellingIn(int IdSite, int Skip, string SearchText, int Months)
+        {
+            ArticlesStatistics statistics = new ArticlesStatistics();
+            return Json(statistics.ArticlesNotSellingIn(IdSite, Skip, SearchText, Months), JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult ClientsProfit(int Skip, string SearchText, DateTime? From, DateTime? To)
         {
             ClientStatistics statistics = new ClientStatistics();
             return Json(statistics.ClientsProfit(Skip, SearchText, From, To), JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult ClientsNotBuying(int Skip, string SearchText, int Months)
+        {
+            ClientStatistics statistics = new ClientStatistics();
+            return Json(statistics.ClientsNotBuying(Skip, SearchText, Months), JsonRequestBehavior.AllowGet);
+        }
     }
 }

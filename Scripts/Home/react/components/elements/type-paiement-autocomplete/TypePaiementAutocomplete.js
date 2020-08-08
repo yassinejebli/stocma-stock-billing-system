@@ -53,7 +53,7 @@ const TypePaiementAutocomplete = ({ errorText, showAllPaymentMethods, ...props }
         <TextField
           onChange={onChangeHandler}
           {...params}
-          placeholder="Choisir une méthode de paiement..."
+          placeholder="Méthode de paiement..."
           error={Boolean(errorText)}
           helperText={errorText}
           variant="outlined"

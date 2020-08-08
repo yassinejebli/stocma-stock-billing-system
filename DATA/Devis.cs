@@ -33,6 +33,7 @@ namespace WebApplication1.DATA
         public Guid IdClient { get; set; }
         public Guid? IdTypePaiement { get; set; }
 
+        public string ClientName { get; set; }
         public string User { get; set; }
 
         public bool WithDiscount { get; set; } = false;

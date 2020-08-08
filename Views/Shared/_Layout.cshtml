@@ -22,10 +22,30 @@
             font-size: 90%;
         }
         body{
-            background-color: #eff4f7 !important;
+            @* background-color: #eff4f7 !important; *@
             font-family: 'Roboto', sans-serif;
             margin-bottom: 80px;
         }
+
+        body{
+            background-image: linear-gradient(125deg,#5b7085,#27ae60,#7abbe6,#2980b9,#c9f08b);
+            background-size: 400% 400%;
+            animation: bganimation 15s infinite;
+        }
+
+        @@keyframes bganimation {
+        0%{
+            background-position: 0% 50%;
+        }
+        50%{
+            background-position: 100% 50%;
+        }
+        100%{
+            background-position: 0% 50%;
+        }
+        }
+
+
         input[type="date"]::-webkit-inner-spin-button,    
         input[type="date"]::-webkit-clear-button{
             display: none;

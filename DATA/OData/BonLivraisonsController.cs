@@ -220,6 +220,7 @@ namespace WebApplication1.DATA.OData
             {
                 var articleSite = db.ArticleSites.FirstOrDefault(x => x.IdArticle == bi.IdArticle && x.IdSite == bi.IdSite);
                 articleSite.QteStock -= bi.Qte;
+                articleSite.Counter += 1;
             }
             //-------------------------------------------
 

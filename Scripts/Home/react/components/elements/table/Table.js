@@ -153,24 +153,30 @@ function Table({
                     })}
                 </tbody>
             </table>
-            {serverPagination && <Box mt={data.length > 0 ? 0 : 60} display="flex" justifyContent="flex-end" alignItems="center">
-                <IconButton disableRipple onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    <SkipPreviousIcon />
-                </IconButton>
-                <IconButton disableRipple onClick={() => previousPage()} disabled={!canPreviousPage}>
-                    <NavigateBeforeIcon />
-                </IconButton>
-                <div>
-                    {pageIndex + 1} - {pageOptions.length}
-                </div>
-                <IconButton disableRipple onClick={() => nextPage()} disabled={!canNextPage}>
-                    <NavigateNextIcon />
-                </IconButton>
-                <IconButton disableRipple onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                    <SkipNextIcon />
-                </IconButton>
-                {/* Nombre d'elements: {totalItems} */}
-            </Box>}
+            <Box mt={data.length > 0 ? 1 : 60}  display="flex" alignItems="center" justifyContent="space-between">
+                <Box ml={0.5}>
+                    <span style={{fontSize: 11}}>Nombre d'éléments : {serverPagination ? totalItems : rows.length}</span>
+                </Box>
+                {serverPagination && <Box display="flex" justifyContent="flex-end" alignItems="center">
+                    <IconButton disableRipple onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                        <SkipPreviousIcon />
+                    </IconButton>
+                    <IconButton disableRipple onClick={() => previousPage()} disabled={!canPreviousPage}>
+                        <NavigateBeforeIcon />
+                    </IconButton>
+                    <div>
+                        {pageIndex + 1} - {pageOptions.length}
+                    </div>
+                    <IconButton disableRipple onClick={() => nextPage()} disabled={!canNextPage}>
+                        <NavigateNextIcon />
+                    </IconButton>
+                    <IconButton disableRipple onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                        <SkipNextIcon />
+                    </IconButton>
+                    {/* Nombre d'elements: {totalItems} */}
+                </Box>}
+            </Box>
+
         </>
     )
 }

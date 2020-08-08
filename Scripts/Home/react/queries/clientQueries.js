@@ -41,7 +41,22 @@ export const getClientsProfit = async (skip, filters) => {
     const URL = '/Statistics/ClientsProfit?' + parsedParams;
     try {
         const res = await (await fetch(URL)).json();
-        console.log({ res })
+        return res;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}
+
+export const getClientsNotBuying = async (skip, filters) => {
+    const parsedParams = new URLSearchParams({
+        Skip: skip,
+        SearchText: filters.searchText,
+        Months: filters.months,
+    }).toString();
+    const URL = '/Statistics/ClientsNotBuying?' + parsedParams;
+    try {
+        const res = await (await fetch(URL)).json();
         return res;
     } catch (e) {
         console.log(e);

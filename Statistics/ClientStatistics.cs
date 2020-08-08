@@ -32,5 +32,31 @@ namespace WebApplication1.Statistics
 
             return new { data = clientsProfit.OrderByDescending(x => x.margin).Skip(Skip).Take(10), totalItems };
         }
+
+        public dynamic ClientsNotBuying(int Skip, string SearchText, int Months)
+        {
+            var dateBeforeNmonths = DateTime.Now.AddMonths(-Months);
+
+            var clients = db.Clients.Where(x => !x.BonLivraisons.Where(y => y.Date > dateBeforeNmonths).Any() && (SearchText == "" || x.Name.ToLower().Contains(SearchText.ToLower())))
+                .Select(x => new
+                {
+                    client = x.Name,
+                    adresse = x.Adresse,
+                    email = x.Email,
+                    solde = x.IsClientDivers ? 0 : x.Paiements.Sum(y => (float?)(y.Debit - y.Credit)) ?? 0f,
+                    turnover = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems)
+                                .Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f -
+                                x.BonAvoirCs.SelectMany(y => y.BonAvoirCItems)
+                                .Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f,
+                    margin = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems)
+                            .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f -
+                            x.BonAvoirCs.SelectMany(y => y.BonAvoirCItems)
+                            .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f,
+                });
+
+            var totalItems = clients.Count();
+
+            return new { data = clients.OrderByDescending(x => x.margin).Skip(Skip).Take(10), totalItems };
+        }
     }
 }

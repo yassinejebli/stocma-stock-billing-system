@@ -23,15 +23,19 @@ import AddIcon from '@material-ui/icons/Add';
 import { useAuth } from '../../providers/AuthProvider'
 import { useLoader } from '../../providers/LoaderProvider'
 import { useSettings } from '../../providers/SettingsProvider'
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 
 const TABLE = 'ArticleSites';
 const EXPAND = ['Article'];
 
 const ArticleList = () => {
     const {
-        articleMarginModule
+        articleMarginModule,
+        articleImageModule,
+        articlesStatisticsModule,
+        articlesNotSellingModule,
     } = useSettings();
-    const {showLoader} = useLoader();
+    const { showLoader } = useLoader();
     const { isAdmin } = useAuth();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
@@ -77,7 +81,7 @@ const ArticleList = () => {
     const [selectedImage, setSelectedImage] = React.useState(null);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => articleColumns(),
+        () => articleColumns({ articleImageModule }),
         []
     )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
@@ -129,7 +133,7 @@ const ArticleList = () => {
             setTotalItems(response.totalItems);
         }).catch((err) => {
             console.log({ err });
-        }).finally(()=>{
+        }).finally(() => {
             showLoader();
         })
     }
@@ -171,7 +175,7 @@ const ArticleList = () => {
                 setTotalCount(Math.ceil(response.totalItems / pageSize))
             }).catch((err) => {
                 console.log({ err });
-            }).finally(()=>{
+            }).finally(() => {
                 showLoader();
             });
         }
@@ -179,15 +183,25 @@ const ArticleList = () => {
 
     return (
         <>
-            <Box my={2} display="flex" justifyContent="center">
+            {articlesStatisticsModule?.Enabled && <Box my={2} display="flex" justifyContent="center">
                 <ArticlesStatistics
                     lowStockSelected={lowStockSelected}
                     onLowStockCountClick={() => {
                         setLowStockSelected(_lowStockSelected => !_lowStockSelected)
                     }}
                 />
-            </Box>
+            </Box>}
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+                {articlesNotSellingModule?.Enabled && <Box mr={2}>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<TrendingDownIcon />}
+                        onClick={() => history.push('/articles-non-vendus')}
+                    >
+                        Les articles non-vendus
+                    </Button>
+                </Box>}
                 {isAdmin && articleMarginModule?.Enabled && <Box mr={2}>
                     <Button
                         variant="contained"

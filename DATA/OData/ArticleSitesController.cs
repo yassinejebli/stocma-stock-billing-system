@@ -20,7 +20,7 @@ namespace WebApplication1.DATA.OData
         [EnableQuery(EnsureStableOrdering = false)]
         public IQueryable<ArticleSite> GetArticleSites()
         {
-            return db.ArticleSites.OrderBy(x=>x.Article.Designation);
+            return db.ArticleSites.OrderByDescending(x=>x.Counter).ThenBy(x=>x.Article.Designation);
         }
 
         // GET: odata/ArticleSites(5)

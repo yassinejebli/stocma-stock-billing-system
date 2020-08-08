@@ -7,7 +7,7 @@ import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
 
-export const articleColumns = () => ([
+export const articleColumns = ({articleImageModule}) => ([
     {
         Header: 'Article',
         accessor: 'Article.Designation',
@@ -64,7 +64,7 @@ export const articleColumns = () => ([
         Cell: ({ row: { original }, updateRow, deleteRow, showImage }) => {
             return (
                 <Box display="flex" justifyContent="flex-end">
-                    {original.Article?.Image && <IconButton tabIndex={-1} size="small" onClick={() => showImage(original.Article.Image)}>
+                    {original.Article?.Image && articleImageModule?.Enabled && <IconButton tabIndex={-1} size="small" onClick={() => showImage(original.Article.Image)}>
                         <ImageOutlinedIcon />
                     </IconButton>}
                     <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
@@ -78,7 +78,7 @@ export const articleColumns = () => ([
         },
         width: 24
     },
-])
+].filter(x=>x))
 
 
 
@@ -200,6 +200,52 @@ export const articlesMarginColumns = () => ([
         Header: 'Marge',
         accessor: (props) => {
             return formatMoney(props.Margin);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+])
+
+
+export const articlesNotSellingColumns = () => ([
+    {
+        Header: 'Article',
+        accessor: 'Article',
+        type: inputTypes.text.description,
+        width: 140
+    },
+    {
+        id: 'QteStock',
+        Header: 'Qte en stock',
+        accessor: (props) => {
+            return formatMoney(props.QteStock);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        id: 'PA',
+        Header: 'Prix d\'achat',
+        accessor: (props) => {
+            return formatMoney(props.PA);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        id: 'PVD',
+        Header: 'Prix de vente',
+        accessor: (props) => {
+            return formatMoney(props.PVD);
+        },
+        type: inputTypes.text.description,
+        align: 'right'
+    },
+    {
+        Id: 'Total',
+        Header: 'Total',
+        accessor: (props) => {
+            return formatMoney(props.Total);
         },
         type: inputTypes.text.description,
         align: 'right'

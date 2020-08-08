@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme => ({
         fontWeight: 500,
         fontSize: 24,
         marginLeft: 4,
+        color: '#FFF',
     },
     icon: {
         width: 30,

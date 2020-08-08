@@ -32,7 +32,7 @@ namespace WebApplication1.Controllers.Print
                 {
                     NumBon = x.Devis.NumBon,
                     Date = x.Devis.Date,
-                    Client = x.Devis.Client.Name,
+                    Client = x.Devis.ClientName ?? x.Devis.Client.Name,
                     Ref = x.Article.Ref,
                     Designation = x.Article.Designation,
                     Qte = x.Qte,

@@ -52,7 +52,7 @@ namespace WebApplication1.Controllers
         public ActionResult GetArticleByBarCode(string BarCode, Guid? IdClient, int IdSite)
         {
             var currentYear = DateTime.Now.Year;
-            var article = db.ArticleSites.ToList().FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite).Article;
+            var article = db.ArticleSites.FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite && !x.Disabled).Article;
             if (IdClient.HasValue && article != null)
             {
                 var lastSoldeTime = article.BonLivraisonItems.Where(x => x.BonLivraison.IdClient == IdClient && x.IdArticle == article.Id && x.BonLivraison.Date.Year == currentYear)

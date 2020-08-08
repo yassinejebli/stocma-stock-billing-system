@@ -17,6 +17,7 @@ import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import PrintCodeBarreEtiquette from '../dialogs/PrintCodeBarreEtiquette';
 import { useModal } from 'react-modal-hook';
 import { getRandomInt } from '../../../utils/numberUtils';
+import { useSettings } from '../../providers/SettingsProvider';
 
 const initialState = {
     Id: uuidv4(),
@@ -29,7 +30,7 @@ const initialState = {
     Disabled: false,
     MinStock: 1,
     Image: null,
-    BarCode: "A" + getRandomInt(1000, 100000),
+    BarCode: '',
 }
 
 const useStyles = makeStyles(theme => ({
@@ -62,12 +63,19 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const ArticleForm = ({ data, onSuccess }) => {
+    const {
+        barcodeModule,
+        articleImageModule,
+    } = useSettings();
     const { canUpdateQteStock } = useAuth();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const editMode = Boolean(data);
     const classes = useStyles();
-    const [formState, setFormState] = React.useState(initialState);
+    const [formState, setFormState] = React.useState({
+        ...initialState,
+        BarCode: "A" + getRandomInt(1000, 100000),
+    });
     const [formErrors, setFormErrors] = React.useState({});
     const [base64, setBase64] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
@@ -115,13 +123,16 @@ const ArticleForm = ({ data, onSuccess }) => {
             _errors['Designation'] = 'Ce champs est obligatoire.'
         if (!formState.Ref)
             _errors['Ref'] = 'Ce champs est obligatoire.'
+        console.log(formState.PVD, formState.PA)
+        if (formState.PVD && Number(formState.PVD) <= Number(formState.PA))
+            _errors['PVD'] = 'Vérifier ce prix.'
         if (!formState.PVD)
             _errors['PVD'] = 'Ce champs est obligatoire.'
         if (!formState.PA)
             _errors['PA'] = 'Ce champs est obligatoire.'
         if (!formState.TVA)
             _errors['TVA'] = 'Ce champs est obligatoire.'
-        if (formState.BarCode&&!/^[a-z0-9]+$/i.test(formState.BarCode))
+        if (formState.BarCode && !/^[a-z0-9]+$/i.test(formState.BarCode))
             _errors['BarCode'] = 'Le code-barres ne doit contenir que des caractères alphanumériques.'
         //
 
@@ -273,32 +284,34 @@ const ArticleForm = ({ data, onSuccess }) => {
                 helperText={formErrors.Unite}
                 error={Boolean(formErrors.Unite)}
             />
-            <TextField
-                name="BarCode"
-                label="Code à barre"
-                variant="outlined"
-                size="small"
-                fullWidth
-                margin="normal"
-                inputProps={{
-                    maxLength: 18,
-                }}
-                onChange={onFieldChange}
-                value={formState.BarCode}
-                helperText={formErrors.BarCode}
-                error={Boolean(formErrors.BarCode)}
-            />
-            {formState.BarCode && formState.Designation && <div className={classes.barcodeWrapper}>
-                <div className={classes.barcode}>
-                    *{formState.BarCode}*
+            {barcodeModule?.Enabled && <>
+                <TextField
+                    name="BarCode"
+                    label="Code à barre"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    margin="normal"
+                    inputProps={{
+                        maxLength: 18,
+                    }}
+                    onChange={onFieldChange}
+                    value={formState.BarCode}
+                    helperText={formErrors.BarCode}
+                    error={Boolean(formErrors.BarCode)}
+                />
+                {formState.BarCode && formState.Designation && <div className={classes.barcodeWrapper}>
+                    <div className={classes.barcode}>
+                        *{formState.BarCode}*
                 </div>
-                <Box ml={0.5}>
-                    <IconButton onClick={showPrintBarcodeLabelModal}>
-                        <PrintOutlinedIcon />
-                    </IconButton>
-                </Box>
-            </div>}
-            <Box my={2}>
+                    <Box ml={0.5}>
+                        <IconButton onClick={showPrintBarcodeLabelModal}>
+                            <PrintOutlinedIcon />
+                        </IconButton>
+                    </Box>
+                </div>}
+            </>}
+            {articleImageModule?.Enabled && <Box my={2}>
                 <Box my={2}>
                     {formState.Image && <div className={classes.image} style={{
                         backgroundImage: `url(${getImageURL(formState.Image)})`
@@ -326,7 +339,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                         }
                     }}
                 />
-            </Box>
+            </Box>}
             <FormControlLabel
                 control={<Switch
                     checked={!formState.Disabled}

@@ -50,6 +50,7 @@ const BonLivraison = () => {
         BLPayment,
         barcode,
         barcodeModule,
+        restoreBLModule,
     } = useSettings();
     const { siteId, site, hasMultipleSites } = useSite();
     const { showSnackBar } = useSnackBar();
@@ -136,7 +137,7 @@ const BonLivraison = () => {
     }, [barcode])
 
     React.useEffect(() => {
-        if (!isEditMode) {
+        if (!isEditMode && restoreBLModule?.Enabled) {
             try {
                 let savedDocuments = [];
                 const autoSavedBonLivraisons = localStorage.getItem(AUTO_SAVED_BL);
@@ -388,12 +389,16 @@ const BonLivraison = () => {
                         setLoading(true)
                         const response = await getArticleByBarCode(uppercaseBarCode, client?.Id, siteId)
                         if (response?.Id) {
-                            setData(_data => ([{
-                                Article: response,
-                                Qte: 1,
-                                Site: site,
-                                Pu: response.PVD
-                            }, ..._data]))
+                            if (data.find(x => x.Article?.Id === response?.Id)) {
+                                setData(_data => _data.map(x => (x.Article?.Id === response?.Id ? { ...x, Qte: Number(x.Qte) + 1 } : x)))
+                            } else {
+                                setData(_data => ([{
+                                    Article: response,
+                                    Qte: 1,
+                                    Site: site,
+                                    Pu: response.PVD
+                                }, ..._data]))
+                            }
                             audioSuccess.play();
                         }
                         else {
@@ -418,7 +423,7 @@ const BonLivraison = () => {
             />}
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                {!isEditMode && <Button
+                {!isEditMode && restoreBLModule?.Enabled && <Button
                     variant="contained"
                     color="secondary"
                     startIcon={<RestoreIcon />}
@@ -491,7 +496,7 @@ const BonLivraison = () => {
                     </Box>}
                 </Box>
                 <Box mt={4}>
-                    {barcodeModule?.Enabled&&<Box mb={2}>
+                    {barcodeModule?.Enabled && <Box mb={2}>
                         <FormControlLabel
                             control={<Switch
                                 checked={barcodeScannerEnabled}

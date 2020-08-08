@@ -17,10 +17,14 @@ import { getImageURL } from '../../../utils/urlBuilder'
 import {ArticlesFactureStatistics} from '../../elements/statistics/ArticlesStatistics'
 import AddIcon from '@material-ui/icons/Add';
 import FakeArticleForm from '../../elements/forms/FakeArticleForm'
+import { useSettings } from '../../providers/SettingsProvider'
 
 const TABLE = 'ArticleFactures';
 
 const FakeArticleList = () => {
+    const {
+        articlesStatisticsModule,
+    } = useSettings();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const [searchText, setSearchText] = React.useState('');
@@ -136,9 +140,9 @@ const FakeArticleList = () => {
     return (
         <>
             <Loader loading={loading} />
-            <Box my={2} display="flex" justifyContent="center">
+            {articlesStatisticsModule?.Enabled&&<Box my={2} display="flex" justifyContent="center">
                 <ArticlesFactureStatistics />
-            </Box>
+            </Box>}
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
                 <Button
                     variant="contained"

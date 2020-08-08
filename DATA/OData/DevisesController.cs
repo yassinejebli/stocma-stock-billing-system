@@ -49,6 +49,7 @@ namespace WebApplication1.DATA.OData
             devis.Ref = newDevis.Ref;
             devis.Date = newDevis.Date;
             devis.Note = newDevis.Note;
+            devis.ClientName = newDevis.ClientName;
             devis.WithDiscount = newDevis.WithDiscount;
             devis.IdTypePaiement = newDevis.IdTypePaiement;
             devis.ValiditeOffre = newDevis.ValiditeOffre;

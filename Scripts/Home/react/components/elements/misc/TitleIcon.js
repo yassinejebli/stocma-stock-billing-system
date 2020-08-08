@@ -48,7 +48,7 @@ const TitleIcon = ({ title, description, Icon, noBorder }) => {
             </Avatar>
             <div className={classes.content}>
                 <div className={classes.title}>{title}</div>
-                {description&&<div className={classes.title}>{description}</div>}
+                {description&&<div className={classes.description} style={{marginTop: 3}}>{description}</div>}
             </div>
         </div>
     )

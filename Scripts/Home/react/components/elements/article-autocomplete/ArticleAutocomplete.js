@@ -32,6 +32,9 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
             'Article/Designation': {
               contains: value
             },
+            'Article/Ref': {
+              contains: value
+            },
             'Article/BarCode': {
               contains: value
             },
