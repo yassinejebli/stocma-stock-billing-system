@@ -66,6 +66,7 @@ namespace WebApplication1.DATA.OData
             {
                 var articleSite = db.ArticleSites.FirstOrDefault(y => y.IdSite == inventaire.IdSite && x.IdArticle == y.IdArticle);
                 articleSite.QteStock = x.QteStockReel;
+                //articleSite.Article.IdCategorie = "";
             });
 
             this.db.Inventaires.Add(inventaire);

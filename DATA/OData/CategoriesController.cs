@@ -15,18 +15,7 @@ using WebApplication1.DATA;
 
 namespace WebApplication1.DATA.OData
 {
-    /*
-    La classe WebApiConfig peut exiger d'autres modifications pour ajouter un itinéraire à ce contrôleur. Fusionnez ces instructions dans la méthode Register de la classe WebApiConfig, le cas échéant. Les URL OData sont sensibles à la casse.
-
-    using System.Web.Http.OData.Builder;
-    using System.Web.Http.OData.Extensions;
-    using WebApplication1.DATA;
-    ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<Categorie>("Categories");
-    builder.EntitySet<Article>("Articles"); 
-    builder.EntitySet<Famille>("Familles"); 
-    config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-    */
+    [Authorize]
     public class CategoriesController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();

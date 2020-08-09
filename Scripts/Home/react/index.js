@@ -59,6 +59,7 @@ import Inventaire from './components/views/stock-mouvement/Inventaire';
 import InventaireList from './components/views/stock-mouvement/InventaireList';
 import ArticlesNotSellingList from './components/views/articles/ArticlesNotSellingList';
 import ClientsNotBuyingList from './components/views/client/ClientsNotBuyingList';
+import ArticleCategoriesList from './components/views/article-categories/ArticleCategoriesList';
 
 const Routes = () => {
     const {
@@ -169,6 +170,7 @@ const Routes = () => {
         {canManageClients && <Route path="/ClientList" component={ClientList} />}
         {canManageFournisseurs && <Route path="/SupplierList" component={SupplierList} />}
         {isAdmin && paiementModule?.Enabled && <Route path="/liste-methodes-de-paiement" component={TypePaiementList} />}
+        {isAdmin && <Route path="/liste-des-familles" component={ArticleCategoriesList} />}
     </>;
 }
 

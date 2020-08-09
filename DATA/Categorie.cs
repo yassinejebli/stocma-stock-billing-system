@@ -12,20 +12,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.DATA
 {
-  public class Categorie
-  {
-    [Key]
-    public Guid Id { get; set; }
+    public class Categorie
+    {
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Required]
-    [Index(IsUnique = false)]
-    [StringLength(200)]
-    public string Name { get; set; }
+        [Required]
+        [Index(IsUnique = false)]
+        [StringLength(200)]
+        public string Name { get; set; }
 
-    public Guid? IdFamille { get; set; }
-    public virtual Famille Famille { get; set; }
+        public Guid? IdFamille { get; set; }
+        public virtual Famille Famille { get; set; }
 
-    public virtual ICollection<Article> Articles { get; set; }
+        public virtual ICollection<Article> Articles { get; set; }
 
-  }
+    }
 }

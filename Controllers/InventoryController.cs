@@ -27,6 +27,7 @@ namespace WebApplication1.Controllers
                         x.QteStock,
                         x.Article.Unite,
                         x.Article.BarCode,
+                        x.Article.Categorie,
                     },
                     Count = x.Article.BonLivraisonItems.Where(y => y.BonLivraison.Date >= dateBefore3Months).Count(),
                     Date = lastInvetoryDate != null ? lastInvetoryDate.Inventaire.Date.Millisecond : 0

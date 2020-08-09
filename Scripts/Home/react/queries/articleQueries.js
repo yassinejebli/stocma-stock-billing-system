@@ -6,7 +6,7 @@ const ODATA_URL = '/Odata/'
 export const getArticles = async (filters) => {
     // if (!filters.and[2]?.or) return [];
     const allParams = buildQuery({
-        expand: 'Article',
+        expand: 'Article/Categorie',
         filter: filters,
         top: 20,
         skip: 0,

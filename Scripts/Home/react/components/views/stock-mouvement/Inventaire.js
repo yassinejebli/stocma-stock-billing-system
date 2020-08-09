@@ -25,6 +25,7 @@ import { useSnackBar } from '../../providers/SnackBarProvider'
 import { v4 as uuidv4 } from 'uuid'
 import DescriptionIcon from '@material-ui/icons/Description';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
+import ArticleCategoriesAutocomplete from '../../elements/article-categories-autocomplete/ArticleCategoriesAutocomplete'
 
 const emptyLine = {
     Article: null,
@@ -92,7 +93,7 @@ const Inventaire = () => {
     React.useEffect(() => {
         setTitle('Inventaire')
         if (isViewMode) {
-            getSingleData(DOCUMENT, InventaireId, ['InventaireItems/Article']).then(response => {
+            getSingleData(DOCUMENT, InventaireId, ['InventaireItems/Article/Categorie']).then(response => {
                 setTitre(response.Titre);
                 setData(response.InventaireItems)
             })
@@ -284,7 +285,7 @@ export const codeBarreListColumns = () => ([
         accessor: 'Article',
         type: inputTypes.text.description,
         editable: true,
-        width: '60%',
+        width: '45%',
         Cell: ({
             value,
             row: { index },
@@ -302,10 +303,11 @@ export const codeBarreListColumns = () => ([
                     onChange={(_, selectedValue) => {
                         updateMyData(index, id, selectedValue);
                         updateMyData(index, 'QteStock', selectedValue?.QteStock)
+                        // updateMyData(index, 'Categorie', selectedValue?.Categorie)
                         if (data.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
 
-                        const qteCell = document.querySelector(`#my-table #QteReel-${(index)} input`);
+                        const qteCell = document.querySelector(`#my-table #QteStockReel-${(index)} input`);
                         if (qteCell) {
                             setTimeout(() => {
                                 qteCell.focus();
@@ -317,12 +319,38 @@ export const codeBarreListColumns = () => ([
             )
         }
     },
+    // {
+    //     Header: 'Famille',
+    //     accessor: 'Categorie',
+    //     type: inputTypes.text.description,
+    //     editable: true,
+    //     width: '25%',
+    //     Cell: ({
+    //         value,
+    //         row: { index },
+    //         column: { id },
+    //         updateMyData,
+    //     }) => {
+    //         console.log('autocomplete', value)
+    //         return (
+    //             <ArticleCategoriesAutocomplete
+    //                 value={value}
+    //                 inTable
+    //                 onBlur={() => updateMyData(index, id, value)}
+    //                 onChange={(_, selectedValue) => {
+    //                     updateMyData(index, id, selectedValue);
+    //                 }}
+
+    //             />
+    //         )
+    //     }
+    // },
     {
         Header: 'Qte. stock',
         accessor: 'QteStock',
         type: inputTypes.number.description,
         align: 'left',
-        width: 40,
+        width: 100,
     },
     {
         Header: 'Qte. réel',
@@ -330,7 +358,7 @@ export const codeBarreListColumns = () => ([
         type: inputTypes.number.description,
         editable: true,
         align: 'left',
-        width: 40,
+        width: 100,
     },
     {
         id: 'remove',

@@ -26,7 +26,7 @@ import { useSettings } from '../../providers/SettingsProvider'
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 
 const TABLE = 'ArticleSites';
-const EXPAND = ['Article'];
+const EXPAND = ['Article/Categorie'];
 
 const ArticleList = () => {
     const {

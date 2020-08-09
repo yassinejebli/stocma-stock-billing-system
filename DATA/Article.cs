@@ -53,7 +53,7 @@ namespace WebApplication1.DATA
         public float? QteEmballagePleine { get; set; }//for suiv QtePleine
 
         [DefaultValue("U")]
-        public string Unite { get; set; }
+        public string Unite { get; set; } = "U";
 
         public bool IsStocked { get; set; } = false;
 

@@ -23,7 +23,7 @@ namespace WebApplication1.Migrations
         protected override void Seed(MySaniSoftContext context)
         {
 
-            //return;
+            return;
 
             var devisClientNameNull = context.Devises.Where(x => x.ClientName == null);
             if (devisClientNameNull.Count() > 0)

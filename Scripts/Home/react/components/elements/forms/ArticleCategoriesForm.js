@@ -5,17 +5,13 @@ import { saveData, partialUpdateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import Loader from '../loaders/Loader';
 import TitleIcon from '../misc/TitleIcon';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const initialState = {
     Name: '',
-    IsDebit: false,
 }
-const TABLE = 'TypePaiements';
+const TABLE = 'Categories';
 
-const TypePaiementForm = ({ data, onSuccess }) => {
+const ArticleCategoriesForm = ({ data, onSuccess }) => {
     const { showSnackBar } = useSnackBar();
     const editMode = Boolean(data);
     const [formState, setFormState] = React.useState(initialState);
@@ -46,7 +42,6 @@ const TypePaiementForm = ({ data, onSuccess }) => {
             const response = await partialUpdateData(TABLE, {
                 Id: formState.Id,
                 Name: formState.Name,
-                IsDebit: formState.IsDebit,
             }, formState.Id);
             if (response.ok) {
                 setFormState({ ...initialState });
@@ -77,10 +72,10 @@ const TypePaiementForm = ({ data, onSuccess }) => {
     return (
         <div>
             <Loader loading={loading} />
-            <TitleIcon title={editMode ? 'Modifier les infos de la méthode de paiement' : 'Ajouter une méthode de paiement'} Icon={DescriptionOutlinedIcon} />
+            <TitleIcon title={editMode ? 'Modifier les infos de la famille' : 'Ajouter une nouvelle famille'} Icon={DescriptionOutlinedIcon} />
             <TextField
                 name="Name"
-                label="Nom du méthode de paiement"
+                label="Nom de la famille"
                 variant="outlined"
                 size="small"
                 fullWidth
@@ -91,18 +86,6 @@ const TypePaiementForm = ({ data, onSuccess }) => {
                 error={Boolean(formErrors.Name)}
             />
 
-            <RadioGroup value={formState.IsDebit.toString()} onChange={({ target: { value } }) => {
-                console.log({ value })
-                setFormState(_formState => ({
-                    ..._formState,
-                    IsDebit: value === 'true'
-                }))
-            }}>
-                <Box display="flex">
-                    <FormControlLabel value="false" control={<Radio />} label="Credit" />
-                    <FormControlLabel value="true" control={<Radio />} label="Debit" />
-                </Box>
-            </RadioGroup>
             <Box my={4} display="flex" justifyContent="flex-end">
                 <Button variant="contained" color="primary" onClick={save}>
                     Enregistrer
@@ -112,4 +95,4 @@ const TypePaiementForm = ({ data, onSuccess }) => {
     )
 }
 
-export default TypePaiementForm
+export default ArticleCategoriesForm

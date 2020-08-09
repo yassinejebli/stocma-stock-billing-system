@@ -18,6 +18,7 @@ import PrintCodeBarreEtiquette from '../dialogs/PrintCodeBarreEtiquette';
 import { useModal } from 'react-modal-hook';
 import { getRandomInt } from '../../../utils/numberUtils';
 import { useSettings } from '../../providers/SettingsProvider';
+import ArticleCategoriesAutocomplete from '../article-categories-autocomplete/ArticleCategoriesAutocomplete';
 
 const initialState = {
     Id: uuidv4(),
@@ -31,6 +32,7 @@ const initialState = {
     MinStock: 1,
     Image: null,
     BarCode: '',
+    Category: null,
 }
 
 const useStyles = makeStyles(theme => ({
@@ -97,7 +99,6 @@ const ArticleForm = ({ data, onSuccess }) => {
         console.log({ data })
         if (editMode) {
             const { Article, QteStock, Disabled } = data;
-            console.log('Article.MinStock', Article.MinStock)
             setFormState({
                 Id: Article.Id,
                 QteStock,
@@ -111,6 +112,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                 Image: Article.Image,
                 MinStock: Article.MinStock,
                 BarCode: Article.BarCode,
+                Category: Article.Categorie,
             });
         }
     }, [])
@@ -142,11 +144,11 @@ const ArticleForm = ({ data, onSuccess }) => {
 
     const save = async () => {
         if (!isFormValid()) return;
-        const { Disabled, ...preparedData } = formState;
+        const { Disabled, Category, ...preparedData } = formState;
 
         setLoading(true);
         if (editMode) {
-            const response = await updateArticle({ ...preparedData, Id: formState.Id }, formState.Id, formState.QteStock, siteId, Disabled);
+            const response = await updateArticle({ ...preparedData, Id: formState.Id, IdCategorie: Category?.Id }, formState.Id, formState.QteStock, siteId, Disabled);
             if (response?.ok) {
                 setFormState({ ...initialState });
                 showSnackBar();
@@ -158,7 +160,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                 });
             }
         } else {
-            const response = await saveArticle({ ...preparedData, Id: uuidv4() }, formState.QteStock, siteId);
+            const response = await saveArticle({ ...preparedData, Id: uuidv4(), IdCategorie: Category?.Id }, formState.QteStock, siteId);
             if (response?.Id) {
                 setFormState({ ...initialState, Id: uuidv4(), BarCode: "A" + getRandomInt(1000, 100000) });
                 showSnackBar();
@@ -205,6 +207,13 @@ const ArticleForm = ({ data, onSuccess }) => {
                 error={Boolean(formErrors.Designation)}
 
             />
+            <Box my={1}>
+                <ArticleCategoriesAutocomplete
+                    value={formState.Category}
+                    errorText={formErrors.Category}
+                    onChange={(_, value) => setFormState(_formState => ({ ...formState, Category: value }))}
+                />
+            </Box>
             <TextField
                 name="QteStock"
                 label="Quantité en stock"

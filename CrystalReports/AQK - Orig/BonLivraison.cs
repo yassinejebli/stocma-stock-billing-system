@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.AQK___Orig {
+namespace WebApplication1.CrystalReports.AQK___orig {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.AQK___Orig {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.AQK - Orig.BonLivraison.rpt";
+                return "WebApplication1.CrystalReports.AQK - orig.BonLivraison.rpt";
             }
             set {
                 // Do nothing

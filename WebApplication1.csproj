@@ -252,55 +252,55 @@
     <Compile Include="Controllers\SalesHistoryController.cs" />
     <Compile Include="Controllers\UploadManagerController.cs" />
     <Compile Include="ConvertisseurChiffresLettres.cs" />
-    <Compile Include="CrystalReports\AQK - Orig\BonAvoirVente.cs">
+    <Compile Include="CrystalReports\AQK - orig\BonAvoirVente.cs">
       <DependentUpon>BonAvoirVente.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\AQK - Orig\BonCommande.cs">
+    <Compile Include="CrystalReports\AQK - orig\BonCommande.cs">
       <DependentUpon>BonCommande.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\AQK - Orig\BonCommandeChiffre.cs">
+    <Compile Include="CrystalReports\AQK - orig\BonCommandeChiffre.cs">
       <DependentUpon>BonCommandeChiffre.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\AQK - Orig\BonLivraison.cs">
+    <Compile Include="CrystalReports\AQK - orig\BonLivraison.cs">
       <DependentUpon>BonLivraison.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\AQK - Orig\DevisAQK.cs">
+    <Compile Include="CrystalReports\AQK - orig\DevisAQK.cs">
       <DependentUpon>DevisAQK.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\AQK - Orig\FactureAQK.cs">
+    <Compile Include="CrystalReports\AQK - orig\FactureAQK.cs">
       <DependentUpon>FactureAQK.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\AQK - Orig\MiniBonLivraison.cs">
+    <Compile Include="CrystalReports\AQK - orig\MiniBonLivraison.cs">
       <DependentUpon>MiniBonLivraison.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\AQK - Orig\MiniBonReceptionAQK1.cs">
+    <Compile Include="CrystalReports\AQK - orig\MiniBonReceptionAQK1.cs">
       <DependentUpon>MiniBonReceptionAQK.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\AQK - Orig\Paiements.cs">
+    <Compile Include="CrystalReports\AQK - orig\Paiements.cs">
       <DependentUpon>Paiements.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
@@ -4285,39 +4285,39 @@
       <LastGenOutput>InventoryBarCode.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\BonAvoirVente.rpt">
+    <Content Include="CrystalReports\AQK - orig\BonAvoirVente.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonAvoirVente.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\BonCommande.rpt">
+    <Content Include="CrystalReports\AQK - orig\BonCommande.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommande.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\BonCommandeChiffre.rpt">
+    <Content Include="CrystalReports\AQK - orig\BonCommandeChiffre.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonCommandeChiffre.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\BonLivraison.rpt">
+    <Content Include="CrystalReports\AQK - orig\BonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BonLivraison.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\DevisAQK.rpt">
+    <Content Include="CrystalReports\AQK - orig\DevisAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DevisAQK.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\FactureAQK.rpt">
+    <Content Include="CrystalReports\AQK - orig\FactureAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FactureAQK.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\MiniBonLivraison.rpt">
+    <Content Include="CrystalReports\AQK - orig\MiniBonLivraison.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonLivraison.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\MiniBonReceptionAQK.rpt">
+    <Content Include="CrystalReports\AQK - orig\MiniBonReceptionAQK.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MiniBonReceptionAQK1.cs</LastGenOutput>
     </Content>
-    <Content Include="CrystalReports\AQK - Orig\Paiements.rpt">
+    <Content Include="CrystalReports\AQK - orig\Paiements.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Paiements.cs</LastGenOutput>
     </Content>

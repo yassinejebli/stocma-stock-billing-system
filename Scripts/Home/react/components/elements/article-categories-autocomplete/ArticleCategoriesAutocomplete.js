@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { getAllData } from '../../../queries/crudBuilder';
 import useDebounce from '../../../hooks/useDebounce';
+import Input from '../input/Input';
 
 const useStyles = makeStyles({
   root: {
@@ -11,23 +12,14 @@ const useStyles = makeStyles({
   },
 });
 
-const TypePaiementAutocomplete = ({ errorText, showAllPaymentMethods, ...props }) => {
+const ArticleCategoriesAutocomplete = ({ errorText, inTable, ...props }) => {
   const classes = useStyles();
   const [searchText, setSearchText] = React.useState('');
-  const [paymentMethods, setPaymentMethods] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
   const debouncedSearchText = useDebounce(searchText);
-  const filters = showAllPaymentMethods ? {} : {
-    IsAvoir: false,
-    IsAchat: false,
-    IsVente: false,
-    IsImpaye: false,
-    IsAncien: false,
-    IsRemise: false,
-    IsRemboursement: false,
-  };
   React.useEffect(() => {
-    getAllData('TypePaiements', filters).then(response => {
-      setPaymentMethods(response);
+    getAllData('Categories').then(response => {
+      setCategories(response);
     });
   }, [debouncedSearchText]);
 
@@ -40,8 +32,8 @@ const TypePaiementAutocomplete = ({ errorText, showAllPaymentMethods, ...props }
       {...props}
       popupIcon={null}
       forcePopupIcon={false}
-      style={{ minWidth: 240 }}
-      options={paymentMethods}
+      style={{ width: '100%' }}
+      options={categories}
       classes={{
         option: classes.option,
       }}
@@ -49,23 +41,15 @@ const TypePaiementAutocomplete = ({ errorText, showAllPaymentMethods, ...props }
       size="small"
       getOptionLabel={(option) => option?.Name}
       renderInput={(params) => (
-        <TextField
-          onChange={onChangeHandler}
+        <Input
           {...params}
-          placeholder="Méthode de paiement..."
-          error={Boolean(errorText)}
-          helperText={errorText}
-          variant="outlined"
-          fullWidth
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
-            margin: 'normal'
-          }}
+          placeholder="Famille..."
+          onChange={onChangeHandler}
+          inTable={inTable}
         />
       )}
     />
   )
 }
 
-export default TypePaiementAutocomplete;
+export default ArticleCategoriesAutocomplete;

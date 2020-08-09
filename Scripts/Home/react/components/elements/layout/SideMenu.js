@@ -362,6 +362,10 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Dépôts/Magasins" />
                         </ListItem>}
+                        {canManageArticles && <ListItem button component={Link} to="/liste-des-familles">
+                            <ListItemIcon />
+                            <ListItemText primary="Familles" />
+                        </ListItem>}
                         {canManageDepenses && depenseModule?.Enabled && <ListItem button component={Link} to="/liste-types-de-depense">
                             <ListItemIcon />
                             <ListItemText primary="Types Dépenses" />

@@ -4,7 +4,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 const useStyles = makeStyles(theme=>({
     root: {
-        padding: '42px 26px'
+        padding: '42px 26px',
+        backgroundColor: 'rgba(255,255,255,0.84)',
     },
 }));
 
