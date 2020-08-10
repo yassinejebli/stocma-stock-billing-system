@@ -78,10 +78,10 @@ namespace WebApplication1.DATA.OData
             var Total = newBonLivraison.BonLivraisonItems.Sum(x => (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f));
 
             //Checking solde
-            var client = db.Clients.Find(bonLivraison.IdClient);
-            var hasSurpassedPlafond = !client.IsClientDivers && client.Plafond != 0 && (client.Solde + Total) > client.Plafond;
-            if (hasSurpassedPlafond)
-                return StatusCode(HttpStatusCode.NotAcceptable);
+            //var client = db.Clients.Find(bonLivraison.IdClient);
+            //var hasSurpassedPlafond = !client.IsClientDivers && client.Plafond != 0 && (client.Solde + Total) > client.Plafond;
+            //if (hasSurpassedPlafond)
+            //    return StatusCode(HttpStatusCode.NotAcceptable);
 
             if (payment != null)
             {
@@ -175,7 +175,7 @@ namespace WebApplication1.DATA.OData
 
             //Check solde
             var client = db.Clients.Find(bonLivraison.IdClient);
-            var hasSurpassedPlafond = !client.IsClientDivers && client.Plafond != 0 && (client.Solde + Total) > client.Plafond;
+            var hasSurpassedPlafond = !client.IsClientDivers && client.Plafond != 0 && client.Solde > client.Plafond;
             if(hasSurpassedPlafond)
                 return StatusCode(HttpStatusCode.NotAcceptable);
 

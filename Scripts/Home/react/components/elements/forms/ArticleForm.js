@@ -14,8 +14,6 @@ import { uploadArticleImage } from '../../../queries/fileUploader';
 import { getImageURL } from '../../../utils/urlBuilder';
 import { useAuth } from '../../providers/AuthProvider';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
-import PrintCodeBarreEtiquette from '../dialogs/PrintCodeBarreEtiquette';
-import { useModal } from 'react-modal-hook';
 import { getRandomInt } from '../../../utils/numberUtils';
 import { useSettings } from '../../providers/SettingsProvider';
 import ArticleCategoriesAutocomplete from '../article-categories-autocomplete/ArticleCategoriesAutocomplete';
@@ -81,19 +79,6 @@ const ArticleForm = ({ data, onSuccess }) => {
     const [formErrors, setFormErrors] = React.useState({});
     const [base64, setBase64] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
-    const [showPrintBarcodeLabelModal, hidePrintBarcodeLabelModal] = useModal(({ in: open, onExited }) => {
-        return (
-            <PrintCodeBarreEtiquette
-                onExited={onExited}
-                open={open}
-                designation={formState.Designation}
-                barCode={formState.BarCode}
-                onClose={() => {
-                    hidePrintBarcodeLabelModal(null);
-                }}
-            />
-        )
-    }, [formState.Designation, formState.BarCode]);
 
     React.useEffect(() => {
         if (editMode) {
@@ -312,11 +297,6 @@ const ArticleForm = ({ data, onSuccess }) => {
                     <div className={classes.barcode}>
                         *{formState.BarCode}*
                 </div>
-                    <Box ml={0.5}>
-                        <IconButton onClick={showPrintBarcodeLabelModal}>
-                            <PrintOutlinedIcon />
-                        </IconButton>
-                    </Box>
                 </div>}
             </>}
             {articleImageModule?.Enabled && <Box my={2}>

@@ -170,7 +170,7 @@ const Routes = () => {
         {canManageClients && <Route path="/ClientList" component={ClientList} />}
         {canManageFournisseurs && <Route path="/SupplierList" component={SupplierList} />}
         {isAdmin && paiementModule?.Enabled && <Route path="/liste-methodes-de-paiement" component={TypePaiementList} />}
-        {isAdmin && <Route path="/liste-des-familles" component={ArticleCategoriesList} />}
+        {canManageArticles && <Route path="/liste-des-familles" component={ArticleCategoriesList} />}
     </>;
 }
 

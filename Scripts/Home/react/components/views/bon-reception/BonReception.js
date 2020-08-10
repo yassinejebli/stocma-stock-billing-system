@@ -22,6 +22,7 @@ import { useSite } from '../../providers/SiteProvider'
 import { bonReceptionColumns } from '../../elements/table/columns/bonReceptionColumns'
 import { useSettings } from '../../providers/SettingsProvider'
 import SuiviAchats from '../achats/suivi/SuiviAchats'
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
 const DOCUMENT = 'BonReceptions'
 const DOCUMENT_ITEMS = 'BonReceptionItems'
@@ -34,7 +35,7 @@ const emptyLine = {
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
 const BonReception = () => {
-    const { 
+    const {
         suiviModule,
     } = useSettings();
     const { siteId } = useSite();
@@ -55,7 +56,7 @@ const BonReception = () => {
     const isEditMode = Boolean(BonReceptionId);
 
     const columns = React.useMemo(
-        () => bonReceptionColumns({suiviModule}),
+        () => bonReceptionColumns({ suiviModule }),
         []
     )
     const [skipPageReset, setSkipPageReset] = React.useState(false);
@@ -241,10 +242,28 @@ const BonReception = () => {
         showModalSuiviAchats();
     }
 
+    const convertPricesInTTC = () => {
+        setData(_data=>{
+            const articles = _data.filter(x=>x.Article && x.Pu);
+            return articles.map(x=>({
+                ...x,
+                Pu: Number(x.Pu) + (Number(x.Pu) * x.Article.TVA/100)
+            }))
+        })
+    }
+
     return (
         <>
             <Loader loading={loading} />
-            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+            <Box mt={1} mb={2} display="flex" justifyContent="space-between">
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<MonetizationOnIcon />}
+                    onClick={convertPricesInTTC}
+                >
+                    Convertir les prix en TTC
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"

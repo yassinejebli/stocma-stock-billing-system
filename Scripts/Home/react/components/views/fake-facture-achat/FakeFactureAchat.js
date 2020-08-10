@@ -22,6 +22,7 @@ import { fakeFactureAchatColumns } from '../../elements/table/columns/fakeFactur
 import { paymentMethods } from '../devis/Devis'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import TypePaiementAutocomplete from '../../elements/type-paiement-autocomplete/TypePaiementAutocomplete'
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
 const DOCUMENT = 'FakeFactureFs'
 const DOCUMENT_ITEMS = 'FakeFactureFItems'
@@ -203,10 +204,28 @@ const FakeFactureAchat = () => {
         addNewRow();
     }
 
+    const convertPricesInTTC = () => {
+        setData(_data=>{
+            const articles = _data.filter(x=>x.Article && x.Pu);
+            return articles.map(x=>({
+                ...x,
+                Pu: Number(x.Pu) + (Number(x.Pu) * x.Article.TVA/100)
+            }))
+        })
+    }
+
     return (
         <>
             <Loader loading={loading} />
-            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+            <Box mt={1} mb={2} display="flex" justifyContent="space-between">
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<MonetizationOnIcon />}
+                    onClick={convertPricesInTTC}
+                >
+                    Convertir les prix en TTC
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"

@@ -103,7 +103,7 @@ const SideWrapperDialog = (props) => {
             case items.categorie:
                 return <ArticleCategoriesForm />;
             default:
-                null;
+                return null;
         }
     }
 
