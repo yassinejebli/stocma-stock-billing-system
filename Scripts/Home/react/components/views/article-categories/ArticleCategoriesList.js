@@ -10,9 +10,9 @@ import { useModal } from 'react-modal-hook'
 import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog'
 import ArticleCategoriesForm from '../../elements/forms/ArticleCategoriesForm'
 import TitleIcon from '../../elements/misc/TitleIcon'
-import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import { TextField, Button } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
+import CategoryIcon from '@material-ui/icons/Category';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
@@ -128,7 +128,7 @@ const ArticleCategoriesList = () => {
             </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <TitleIcon noBorder title="Liste des familles" Icon={DescriptionOutlinedIcon} />
+                    <TitleIcon noBorder title="Liste des familles" Icon={CategoryIcon} />
                     <TextField
                         value={searchText}
                         onChange={({ target: { value } }) => {

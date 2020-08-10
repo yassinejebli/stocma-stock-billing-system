@@ -30,18 +30,21 @@ namespace WebApplication1.Migrations
             {
                 devisClientNameNull.ForEach(x => x.ClientName = x.Client.Name);
             }
+            context.SaveChanges();
 
             var fakeFactureICENull = context.FakeFactures.Where(x => x.ClientICE == null);
             if (fakeFactureICENull.Count() > 0)
             {
                 fakeFactureICENull.ForEach(x => x.ClientICE = x.Client.ICE);
             }
+            context.SaveChanges();
 
             var factureICENull = context.Factures.Where(x => x.ClientICE == null);
             if (factureICENull.Count() > 0)
             {
                 factureICENull.ForEach(x => x.ClientICE = x.Client.ICE);
             }
+            context.SaveChanges();
 
             var articleBarCodeNull = context.Articles.Where(x => x.BarCode == null);
             //var articleBarCodeNull = context.Articles;
@@ -51,11 +54,16 @@ namespace WebApplication1.Migrations
                 articleBarCodeNull.ForEach(x => x.BarCode = "A" + randomGenerator.Next(1000, 100000));
             }
 
+            context.SaveChanges();
+
             var articlesMinStockNull = context.Articles.Where(x => x.MinStock == null);
             if (articlesMinStockNull.Count() > 0)
             {
                 articlesMinStockNull.ForEach(x => x.MinStock = 1);
             }
+
+            context.SaveChanges();
+
             //TODO: remove asap
             var articlesTVANull = context.Articles.Where(x => x.TVA == null);
             if (articlesTVANull.Count() > 0)
@@ -63,24 +71,33 @@ namespace WebApplication1.Migrations
                 articlesTVANull.ForEach(x => x.TVA = 20);
             }
 
+            context.SaveChanges();
+
+
             var articlesFactureTVANull = context.ArticleFactures.Where(x => x.TVA == null);
             if (articlesFactureTVANull.Count() > 0)
             {
                 articlesFactureTVANull.ForEach(x => x.TVA = 20);
             }
 
+            //BonLivraisonItems
             var bonLivraisonItems = context.BonLivraisonItems.Where(x => x.PA == 0);
 
             if (bonLivraisonItems.Count() > 0)
             {
-                bonLivraisonItems.ForEach(x => x.PA = x.Article.PA);
+                //bonLivraisonItems.ForEach(x => x.PA = x.Article.PA);
+                context.Database.ExecuteSqlCommand("UPDATE BonLivraisonItems SET PA = (select PA from Articles where Id = IdArticle) WHERE PA = {0}", 0);
             }
+            //
+
 
             var bonAvoirCItems = context.BonAvoirCItems.Where(x => x.PA == 0);
 
             if (bonAvoirCItems.Count() > 0)
             {
-                bonAvoirCItems.ForEach(x => x.PA = x.Article.PA);
+                //bonAvoirCItems.ForEach(x => x.PA = x.Article.PA);
+                context.Database.ExecuteSqlCommand("UPDATE BonAvoirCItems SET PA = (select PA from Articles where Id = IdArticle) WHERE PA = {0}", 0);
+
             }
 
 
@@ -112,69 +129,99 @@ namespace WebApplication1.Migrations
                 if (mainSite != null) mainSite.Code = "M1";
             }
 
+            context.SaveChanges();
+
+
             var bonLivraisons = context.BonLivraisons.Where(x => x.IdSite == null);
             if (bonLivraisons.Count() > 0)
             {
-                foreach (var b in bonLivraisons)
-                {
-                    b.IdSite = 1;
-                }
+                //foreach (var b in bonLivraisons)
+                //{
+                //    b.IdSite = 1;
+                //}
+
+                context.Database.ExecuteSqlCommand("UPDATE BonLivraisons SET IdSite = {0}", 1);
             }
 
             var bonAvoirVentes = context.BonAvoirCs.Where(x => x.IdSite == null);
             if (bonAvoirVentes.Count() > 0)
             {
-                foreach (var b in bonAvoirVentes)
-                {
-                    b.IdSite = 1;
-                }
+                //foreach (var b in bonAvoirVentes)
+                //{
+                //    b.IdSite = 1;
+                //}
+
+                context.Database.ExecuteSqlCommand("UPDATE BonAvoirCs SET IdSite = {0}", 1);
+
+            }
+
+            var bonAvoirAchats = context.BonAvoirs.Where(x => x.IdSite == null);
+            if (bonAvoirAchats.Count() > 0)
+            {
+                //foreach (var b in bonAvoirVentes)
+                //{
+                //    b.IdSite = 1;
+                //}
+
+                context.Database.ExecuteSqlCommand("UPDATE BonAvoirs SET IdSite = {0}", 1);
+
             }
 
             var devises = context.Devises.Where(x => x.IdSite == null);
             if (devises.Count() > 0)
             {
-                foreach (var b in devises)
-                {
-                    b.IdSite = 1;
-                }
+                //foreach (var b in devises)
+                //{
+                //    b.IdSite = 1;
+                //}
+                context.Database.ExecuteSqlCommand("UPDATE Devis SET IdSite = {0}", 1);
             }
 
             var bonReceptions = context.BonReceptions.Where(x => x.IdSite == null);
             if (bonReceptions.Count() > 0)
             {
-                foreach (var b in bonReceptions)
-                {
-                    b.IdSite = 1;
-                }
+                //foreach (var b in bonReceptions)
+                //{
+                //    b.IdSite = 1;
+                //}
+                context.Database.ExecuteSqlCommand("UPDATE BonReceptions SET IdSite = {0}", 1);
+
             }
 
             var factures = context.Factures.Where(x => x.IdSite == null);
             if (factures.Count() > 0)
             {
-                foreach (var f in factures)
-                {
-                    f.IdSite = 1;
-                }
+                //foreach (var f in factures)
+                //{
+                //    f.IdSite = 1;
+                //}
+                context.Database.ExecuteSqlCommand("UPDATE Factures SET IdSite = {0}", 1);
             }
 
             //
             var blItemsSiteNull = context.BonLivraisonItems.Where(x => x.IdSite == null);
             if (blItemsSiteNull.Count() > 0)
             {
-                blItemsSiteNull.ForEach(x => x.IdSite = 1);
+                //blItemsSiteNull.ForEach(x => x.IdSite = 1);
+                context.Database.ExecuteSqlCommand("UPDATE BonLivraisonItems SET IdSite = {0}", 1);
             }
+            context.SaveChanges();
 
             var bacItemsSiteNull = context.BonAvoirCItems.Where(x => x.IdSite == null);
             if (bacItemsSiteNull.Count() > 0)
             {
-                bacItemsSiteNull.ForEach(x => x.IdSite = 1);
+                //bacItemsSiteNull.ForEach(x => x.IdSite = 1);
+                context.Database.ExecuteSqlCommand("UPDATE BonAvoirCItems SET IdSite = {0}", 1);
+
             }
 
             var baItemsSiteNull = context.BonAvoirItems.Where(x => x.IdSite == null);
             if (baItemsSiteNull.Count() > 0)
             {
-                baItemsSiteNull.ForEach(x => x.IdSite = 1);
+                //baItemsSiteNull.ForEach(x => x.IdSite = 1);
+                context.Database.ExecuteSqlCommand("UPDATE BonAvoirItems SET IdSite = {0}", 1);
             }
+            context.SaveChanges();
 
             if (!context.Familles.Any())
             {
@@ -219,7 +266,7 @@ namespace WebApplication1.Migrations
                     new TypeDepence()
                     {
                         Id = new Guid("45c8b294-3a63-487c-821e-70bf4f9bdc38"),
-                        Name = "Paiement pour un employé"
+                        Name = "Salaire"
                     },
                     new TypeDepence()
                     {
@@ -444,7 +491,7 @@ namespace WebApplication1.Migrations
                 });
             }
 
-            
+
             var clientLoyaltyModule = context.Settings.Where(x => x.Code == "module_client_fidelite")
                    .FirstOrDefault();
 
@@ -839,12 +886,12 @@ namespace WebApplication1.Migrations
             }
 
             var company = context.Companies.FirstOrDefault();
-            if(company != null)
+            if (company != null)
             {
                 var friendlyCompanies = new List<string>() { "EAS", "AQK", "TSR", "SBCIT", "SUIV" };
                 if (friendlyCompanies.Contains(company.Name.ToUpper()))
                 {
-                    var settings = context.Settings.Where(x=>x.Code.Contains("module_"));
+                    var settings = context.Settings.Where(x => x.Code.Contains("module_"));
                     settings.ForEach(x => x.Enabled = true);
                 }
             }

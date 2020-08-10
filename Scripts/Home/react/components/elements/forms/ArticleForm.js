@@ -96,7 +96,6 @@ const ArticleForm = ({ data, onSuccess }) => {
     }, [formState.Designation, formState.BarCode]);
 
     React.useEffect(() => {
-        console.log({ data })
         if (editMode) {
             const { Article, QteStock, Disabled } = data;
             setFormState({

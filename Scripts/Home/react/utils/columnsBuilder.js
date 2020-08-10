@@ -10,9 +10,10 @@ import { formatMoney } from './moneyUtils';
 import { getLastPriceSale } from '../queries/articleQueries';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import { Box, Tooltip } from '@material-ui/core';
+import HistoryIcon from '@material-ui/icons/History';
 import Input from '../components/elements/input/Input';
 
-export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
+export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites, suiviModule }) => ([
     {
         Header: 'Article',
         accessor: 'Article',
@@ -108,7 +109,7 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
                 <>
 
                     <Input
-                        value={value||''}
+                        value={value || ''}
                         inTable
                         align="right"
                         type="number"
@@ -149,13 +150,18 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites }) => ([
     {
         id: 'remove',
         Header: '',
-        Cell: ({ row: { index }, deleteRow }) => {
+        Cell: ({ row: { index, original }, deleteRow, customAction }) => {
             return (
-                <div style={{ textAlign: 'center' }}>
+                <Box display="flex" justifyContent="flex-end">
+                    {suiviModule?.Enabled && original.Article && <Tooltip title="Historiques des ventes">
+                        <IconButton tabIndex={-1} size="small" onClick={() => customAction(original)}>
+                            <HistoryIcon />
+                        </IconButton>
+                    </Tooltip>}
                     <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(index)}>
                         <CloseIcon />
                     </IconButton>
-                </div>
+                </Box>
             )
         },
         width: 24,

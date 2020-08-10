@@ -11,8 +11,9 @@ import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import ArticleAutocomplete from '../../article-autocomplete/ArticleAutocomplete';
 import { format } from 'date-fns';
 import { Box, Tooltip } from '@material-ui/core';
+import HistoryIcon from '@material-ui/icons/History';
 
-export const bonReceptionColumns = () => ([
+export const bonReceptionColumns = ({suiviModule}) => ([
     {
         Header: 'Article',
         accessor: 'Article',
@@ -85,13 +86,18 @@ export const bonReceptionColumns = () => ([
     {
         id: 'remove',
         Header: '',
-        Cell: ({ row: { index }, deleteRow }) => {
+        Cell: ({ row: { index, original }, deleteRow, customAction }) => {
             return (
-                <div style={{ textAlign: 'center' }}>
+                <Box display="flex" justifyContent="flex-end">
+                    {suiviModule?.Enabled && original.Article && <Tooltip title="Historiques des achats">
+                        <IconButton tabIndex={-1} size="small" onClick={() => customAction(original)}>
+                            <HistoryIcon />
+                        </IconButton>
+                    </Tooltip>}
                     <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(index)}>
                         <CloseIcon />
                     </IconButton>
-                </div>
+                </Box>
             )
         },
         width: 24,

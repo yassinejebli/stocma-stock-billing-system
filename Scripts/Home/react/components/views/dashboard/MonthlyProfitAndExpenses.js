@@ -165,7 +165,7 @@ const MonthlyProfitAndExpenses = ({ year }) => {
             <div className={classes.titleWrapper}>
                 <TrendingUpIcon className={classes.icon} />
                 <div className={classes.title}>
-                    Chiffre d'affaire & bénéfices
+                    Chiffre d'affaires & bénéfices
                 </div>
             </div>
             <div className={classes.wrapper}>

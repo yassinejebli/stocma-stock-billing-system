@@ -37,7 +37,7 @@ namespace WebApplication1.Statistics
         {
             var dateBeforeNmonths = DateTime.Now.AddMonths(-Months);
 
-            var clients = db.Clients.Where(x => !x.BonLivraisons.Where(y => y.Date > dateBeforeNmonths).Any() && (SearchText == "" || x.Name.ToLower().Contains(SearchText.ToLower())))
+            var clients = db.Clients.Where(x => !x.Disabled && !x.BonLivraisons.Where(y => y.Date > dateBeforeNmonths).Any() && (SearchText == "" || x.Name.ToLower().Contains(SearchText.ToLower())))
                 .Select(x => new
                 {
                     client = x.Name,

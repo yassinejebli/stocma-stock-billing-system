@@ -1,4 +1,4 @@
-﻿import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core'
+﻿import { Button, TextField, Switch, FormControlLabel, Dialog } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -20,6 +20,8 @@ import PrintBR from '../../elements/dialogs/documents-print/PrintBR'
 import qs from 'qs'
 import { useSite } from '../../providers/SiteProvider'
 import { bonReceptionColumns } from '../../elements/table/columns/bonReceptionColumns'
+import { useSettings } from '../../providers/SettingsProvider'
+import SuiviAchats from '../achats/suivi/SuiviAchats'
 
 const DOCUMENT = 'BonReceptions'
 const DOCUMENT_ITEMS = 'BonReceptionItems'
@@ -32,6 +34,9 @@ const emptyLine = {
 const defaultErrorMsg = 'Ce champs est obligatoire.'
 
 const BonReception = () => {
+    const { 
+        suiviModule,
+    } = useSettings();
     const { siteId } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
@@ -41,6 +46,7 @@ const BonReception = () => {
     const [fournisseur, setFournisseur] = React.useState(null);
     const [date, setDate] = React.useState(new Date());
     const [errors, setErrors] = React.useState({});
+    const [selectedArticleForSuivi, setSelectedArticleForSuivi] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
     const location = useLocation();
@@ -49,7 +55,7 @@ const BonReception = () => {
     const isEditMode = Boolean(BonReceptionId);
 
     const columns = React.useMemo(
-        () => bonReceptionColumns(),
+        () => bonReceptionColumns({suiviModule}),
         []
     )
     const [skipPageReset, setSkipPageReset] = React.useState(false);
@@ -68,6 +74,24 @@ const BonReception = () => {
                 }}
             />)
     }, [savedDocument]);
+
+    const [showModalSuiviAchats, hideModalSuiviAchats] = useModal(({ in: open, onExited }) => {
+        return (
+            <Dialog
+                onExited={onExited}
+                open={open}
+                maxWidth="md"
+                fullWidth
+                onClose={() => {
+                    hideModalSuiviAchats();
+                }}
+            >
+                <SuiviAchats
+                    fournisseur={fournisseur}
+                    article={selectedArticleForSuivi}
+                />
+            </Dialog>)
+    }, [fournisseur, selectedArticleForSuivi]);
 
     React.useEffect(() => {
         setData([emptyLine])
@@ -212,6 +236,11 @@ const BonReception = () => {
         addNewRow();
     }
 
+    const openSuiviAchats = (row) => {
+        setSelectedArticleForSuivi(row?.Article);
+        showModalSuiviAchats();
+    }
+
     return (
         <>
             <Loader loading={loading} />
@@ -258,6 +287,7 @@ const BonReception = () => {
                         data={data}
                         owner={fournisseur}
                         updateMyData={updateMyData}
+                        customAction={openSuiviAchats}
                         deleteRow={deleteRow}
                         skipPageReset={skipPageReset}
                         addNewRow={addNewRow}

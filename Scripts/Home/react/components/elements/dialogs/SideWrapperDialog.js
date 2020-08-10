@@ -11,10 +11,12 @@ import FournisseurForm from '../forms/FournisseurForm';
 import PaiementClientForm from '../forms/PaiementClientForm';
 import SiteForm from '../forms/SiteForm';
 import PaiementFournisseurForm from '../forms/PaiementFournisseurForm';
+import ArticleCategoriesForm from '../forms/ArticleCategoriesForm';
 import FakeArticleForm from '../forms/FakeArticleForm';
 import { useSite } from '../../providers/SiteProvider';
 import { useAuth } from '../../providers/AuthProvider';
 import { useSettings } from '../../providers/SettingsProvider';
+import CategoryIcon from '@material-ui/icons/Category';
 
 const border = '1px solid #d8d8d8';
 
@@ -27,6 +29,7 @@ const items = {
     paiementClient: 'paiementClient',
     paiementFournisseur: 'paiementFournisseur',
     site: 'site',
+    categorie: 'categorie',
 }
 
 export const useStyles = makeStyles(theme => ({
@@ -81,6 +84,7 @@ const SideWrapperDialog = (props) => {
     }, [props.onExited])
 
     const getForm = () => {
+        console.log({selectedItem})
         switch (selectedItem) {
             case items.article:
                 return <ArticleForm />;
@@ -96,6 +100,8 @@ const SideWrapperDialog = (props) => {
                 return <PaiementFournisseurForm />;
             case items.site:
                 return <SiteForm />;
+            case items.categorie:
+                return <ArticleCategoriesForm />;
             default:
                 null;
         }
@@ -137,7 +143,7 @@ const Menu = ({ open }) => {
     return (
         <>
             <div className={classes.header}>Ajouter un élément</div>
-            {canManagePaiementsClients&&<div className={classes.item} onClick={() => open(items.paiementClient)}>
+            {canManagePaiementsClients && <div className={classes.item} onClick={() => open(items.paiementClient)}>
                 <Avatar className={classes.avatar}>
                     <AccountBalanceWalletOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -146,7 +152,7 @@ const Menu = ({ open }) => {
                     <div className={classes.description}>Ajouter des paiements effectués par vos clients</div>
                 </div>
             </div>}
-            {canManagePaiementsFournisseurs&&<div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
+            {canManagePaiementsFournisseurs && <div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
                 <Avatar className={classes.avatar}>
                     <AccountBalanceWalletOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -155,7 +161,7 @@ const Menu = ({ open }) => {
                     <div className={classes.description}>Ajouter des paiements que vous avez effectués à vos fournisseurs</div>
                 </div>
             </div>}
-            {canManageArticles&&<>
+            {canManageArticles && <>
                 <div className={classes.item} onClick={() => open(items.article)}>
                     <Avatar className={classes.avatar}>
                         <AddShoppingCartIcon className={classes.icon} />
@@ -177,7 +183,7 @@ const Menu = ({ open }) => {
                     </div>
                 }
             </>}
-            {canManageClients&&<div className={classes.item} onClick={() => open(items.client)}>
+            {canManageClients && <div className={classes.item} onClick={() => open(items.client)}>
                 <Avatar className={classes.avatar}>
                     <GroupAddOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -186,7 +192,7 @@ const Menu = ({ open }) => {
                     <div className={classes.description}>Ajouter un nouveau client</div>
                 </div>
             </div>}
-            {canManageFournisseurs&&<div className={classes.item} onClick={() => open(items.fournisseur)}>
+            {canManageFournisseurs && <div className={classes.item} onClick={() => open(items.fournisseur)}>
                 <Avatar className={classes.avatar}>
                     <GroupAddOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -195,7 +201,16 @@ const Menu = ({ open }) => {
                     <div className={classes.description}>Ajouter un nouveau fournisseur</div>
                 </div>
             </div>}
-            {canManageSites && siteModule?.Enabled &&<div className={classes.item} onClick={() => open(items.site)}>
+            {canManageArticles && <div className={classes.item} onClick={() => open(items.categorie)}>
+                <Avatar className={classes.avatar}>
+                    <CategoryIcon className={classes.icon} />
+                </Avatar>
+                <div className={classes.content}>
+                    <div className={classes.title}>Famille</div>
+                    <div className={classes.description}>Ajouter une nouvelle famille</div>
+                </div>
+            </div>}
+            {canManageSites && siteModule?.Enabled && <div className={classes.item} onClick={() => open(items.site)}>
                 <Avatar className={classes.avatar}>
                     <StorefrontOutlinedIcon className={classes.icon} />
                 </Avatar>

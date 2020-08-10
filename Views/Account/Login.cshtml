@@ -24,7 +24,27 @@
     <link href="~/Content/animate-custom.css" rel="stylesheet" />
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <script src="js/custom.modernizr.js" type="text/javascript"></script>
+    <style>
+        @@keyframes bganimation {
+        0%{
+            background-position: 0% 50%;
+        }
+        50%{
+            background-position: 100% 50%;
+        }
+        100%{
+            background-position: 0% 50%;
+        }
+        }
 
+        body{
+            background-image: linear-gradient(125deg,#27ae60,#2c3e50,#2e95d8,#e76a3c,#8e44ad) !important;
+            background-size: 400% 400% !important;
+            animation: bganimation 10s infinite;
+            font-family: 'Roboto', sans-serif;
+            margin-bottom: 80px;
+        }
+        </style>
 </head>
 <body class="fade-in">
 

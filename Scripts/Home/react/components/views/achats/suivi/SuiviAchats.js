@@ -17,15 +17,15 @@ const TABLE = 'BonReceptionItems';
 
 const EXPAND = ['Article', 'BonReception/Fournisseur($select=Id,Name)'];
 
-const SuiviAchats = () => {
+const SuiviAchats = ({fournisseur, article}) => {
     const today = new Date();
-    const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth() - (article ? 1 : 0), 1);
     const lastDayCurrentMonth = new Date();
     firstDayCurrentMonth.setHours(0, 0, 0, 0);
     lastDayCurrentMonth.setHours(23, 59, 59, 999);
     const { setTitle } = useTitle();
-    const [fournisseurSearchText, setFournisseurSearchText] = React.useState('');
-    const [articleSearchText, setArticleSearchText] = React.useState('');
+    const [fournisseurSearchText, setFournisseurSearchText] = React.useState(fournisseur?.Name||'');
+    const [articleSearchText, setArticleSearchText] = React.useState(article?.Designation||'');
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
     const [dateFrom, setDateFrom] = React.useState(firstDayCurrentMonth);
     const [dateTo, setDateTo] = React.useState(lastDayCurrentMonth);

@@ -28,6 +28,7 @@ import BonLivraisonUnsavedList, { AUTO_SAVED_BL } from './BonLivraisonUnsavedLis
 import { getArticleByBarCode } from '../../../queries/articleQueries'
 import BarcodeReader from 'react-barcode-reader'
 import { looseFocus, convertLowercaseNumbersFR } from '../../../utils/miscUtils'
+import SuiviVentes from '../ventes/suivi/SuiviVentes'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -51,6 +52,7 @@ const BonLivraison = () => {
         barcode,
         barcodeModule,
         restoreBLModule,
+        suiviModule,
     } = useSettings();
     const { siteId, site, hasMultipleSites } = useSite();
     const { showSnackBar } = useSnackBar();
@@ -67,6 +69,7 @@ const BonLivraison = () => {
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
     const [paymentType, setPaymentType] = React.useState(null);
+    const [selectedArticleForSuivi, setSelectedArticleForSuivi] = React.useState(null);
     const location = useLocation();
     const DevisId = qs.parse(location.search, { ignoreQueryPrefix: true }).DevisId;
     const BonLivraisonId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonLivraisonId;
@@ -88,7 +91,7 @@ const BonLivraison = () => {
     }, 0);
 
     const columns = React.useMemo(
-        () => getBonLivraisonColumns({ BLDiscount, hasMultipleSites }),
+        () => getBonLivraisonColumns({ BLDiscount, hasMultipleSites, suiviModule }),
         [BLDiscount, hasMultipleSites]
     )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
@@ -127,6 +130,24 @@ const BonLivraison = () => {
                 />
             </Dialog>)
     }, []);
+
+    const [showModalSuiviVentes, hideModalSuiviVentes] = useModal(({ in: open, onExited }) => {
+        return (
+            <Dialog
+                onExited={onExited}
+                open={open}
+                maxWidth="md"
+                fullWidth
+                onClose={() => {
+                    hideModalSuiviVentes();
+                }}
+            >
+                <SuiviVentes
+                    client={client}
+                    article={selectedArticleForSuivi}
+                />
+            </Dialog>)
+    }, [client, selectedArticleForSuivi]);
 
     React.useEffect(() => {
         setSkipPageReset(false)
@@ -371,6 +392,11 @@ const BonLivraison = () => {
         addNewRow();
     }
 
+    const openSuiviVentes = (row) => {
+        setSelectedArticleForSuivi(row?.Article);
+        showModalSuiviVentes();
+    }
+
     return (
         <>
             {barcodeModule?.Enabled && <BarcodeReader
@@ -518,6 +544,7 @@ const BonLivraison = () => {
                         owner={client}
                         updateMyData={updateMyData}
                         deleteRow={deleteRow}
+                        customAction={openSuiviVentes}
                         skipPageReset={skipPageReset}
                         addNewRow={addNewRow}
                     />
