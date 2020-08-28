@@ -15,6 +15,12 @@ export const articleColumns = ({articleImageModule}) => ([
         width: 140
     },
     {
+        Header: 'Famille',
+        accessor: 'Article.Categorie.Name',
+        type: inputTypes.text.description,
+        width: 80
+    },
+    {
         id: 'QteStock',
         Header: 'Qte en stock',
         accessor: (props) => {

@@ -74,7 +74,7 @@ const ArticleForm = ({ data, onSuccess }) => {
     const classes = useStyles();
     const [formState, setFormState] = React.useState({
         ...initialState,
-        BarCode: "A" + getRandomInt(1000, 100000),
+        BarCode: getRandomInt(100000, 999999)+"",
     });
     const [formErrors, setFormErrors] = React.useState({});
     const [base64, setBase64] = React.useState(null);
@@ -132,7 +132,7 @@ const ArticleForm = ({ data, onSuccess }) => {
 
         setLoading(true);
         if (editMode) {
-            const response = await updateArticle({ ...preparedData, Id: formState.Id, IdCategorie: Category?.Id }, formState.Id, formState.QteStock, siteId, Disabled);
+            const response = await updateArticle({ ...preparedData, Id: formState.Id, IdCategorie: Category?.Id || null }, formState.Id, formState.QteStock, siteId, Disabled);
             if (response?.ok) {
                 setFormState({ ...initialState });
                 showSnackBar();
@@ -144,9 +144,9 @@ const ArticleForm = ({ data, onSuccess }) => {
                 });
             }
         } else {
-            const response = await saveArticle({ ...preparedData, Id: uuidv4(), IdCategorie: Category?.Id }, formState.QteStock, siteId);
+            const response = await saveArticle({ ...preparedData, Id: uuidv4(), IdCategorie: Category?.Id || null }, formState.QteStock, siteId);
             if (response?.Id) {
-                setFormState({ ...initialState, Id: uuidv4(), BarCode: "A" + getRandomInt(1000, 100000) });
+                setFormState({ ...initialState, Id: uuidv4(), BarCode: getRandomInt(100000, 999999) + "" });
                 showSnackBar();
                 if (onSuccess) onSuccess();
             } else {

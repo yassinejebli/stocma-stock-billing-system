@@ -45,6 +45,8 @@ namespace WebApplication1.Controllers.Print
             });
 
             reportDocument.SetDataSource(articles);
+            //reportDocument.PrintOptions.PaperSize = PaperSize.PaperA4;
+            //reportDocument.PrintOptions.ApplyPageMargins(new PageMargins(0, 0, 0, 0));
 
             Response.Buffer = false;
             var cd = new System.Net.Mime.ContentDisposition

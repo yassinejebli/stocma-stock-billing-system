@@ -7,6 +7,10 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import PrintIcon from '@material-ui/icons/Print';
 import PrintDisabledIcon from '@material-ui/icons/PrintDisabled';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import {
+    CartArrowRight, CartArrowUp, Cash, Checkbook, Sale, CashRefund,
+    CreditCard,
+} from 'mdi-material-ui'
 import { Box, Tooltip } from '@material-ui/core';
 import { inputTypes } from '../../../../types/input';
 import { formatMoney } from '../../../../utils/moneyUtils';
@@ -38,7 +42,32 @@ export const getPaiementClientListColumns = ({ isFiltered, canUpdateBonLivraison
         Header: 'Type',
         accessor: 'TypePaiement.Name',
         type: inputTypes.text.description,
-        width: 120
+        width: 120,
+        Cell: ({ row: { original } }) => {
+            const typePaiement = original.TypePaiement;
+            let icon = null;
+            if (typePaiement.IsEspece)
+                icon = <Cash style={{ color: '#eb9123' }} />;
+            else if (typePaiement.IsVente)
+                icon = <CartArrowRight style={{ color: '#3478c9' }} />;
+            else if (typePaiement.IsBankRelated)
+                icon = <Checkbook style={{ color: 'grey' }} />;
+            else if (typePaiement.IsRemise)
+                icon = <Sale style={{ color: '#39c217' }} />;
+            else if (typePaiement.IsRemboursement)
+                icon = <CashRefund style={{ color: '#7e3ee6' }} />;
+            else if (typePaiement.IsAvoir)
+                icon = <CartArrowUp style={{ color: '#e07575' }} />;
+
+            return (
+                <Box display="flex" alignItems="center">
+                    {icon}
+                    <Box ml={0.4}>
+                        {typePaiement.Name}
+                    </Box>
+                </Box>
+            )
+        },
     },
     {
         id: 'Debit',
@@ -99,17 +128,17 @@ export const getPaiementClientListColumns = ({ isFiltered, canUpdateBonLivraison
                             <LaunchIcon />
                         </Tooltip>
                     </IconButton>}
-                    <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
+                    {!original.IdBonLivraison && !original.IdBonAvoirC && <IconButton tabIndex={-1} size="small" onClick={() => updateRow(original)}>
                         <EditOutlinedIcon />
-                    </IconButton>
+                    </IconButton>}
                     {original?.TypePaiement?.IsBankRelated && !original?.TypePaiement?.IsImpaye && <IconButton tabIndex={-1} size="small" onClick={() => customAction(original)}>
                         <Tooltip title="Chèque/Effet impayé">
                             <KeyboardReturnIcon />
                         </Tooltip>
                     </IconButton>}
-                    <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
+                    {!original.IdBonLivraison && !original.IdBonAvoirC && <IconButton tabIndex={-1} size="small" onClick={() => deleteRow(original.Id)}>
                         <DeleteForeverOutlinedIcon />
-                    </IconButton>
+                    </IconButton>}
                 </Box>
             )
         },

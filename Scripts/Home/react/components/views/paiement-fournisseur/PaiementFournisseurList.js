@@ -19,6 +19,9 @@ import AddIcon from '@material-ui/icons/Add';
 import PrintBR from '../../elements/dialogs/documents-print/PrintBR';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import { useLoader } from '../../providers/LoaderProvider';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import { getPrintSituationGlobaleFournisseursURL } from '../../../utils/urlBuilder';
+import IframeDialog from '../../elements/dialogs/IframeDialog';
 
 const TABLE = 'PaiementFs';
 
@@ -110,6 +113,17 @@ const PaiementFournisseurList = () => {
         () => getPaiementFournisseurListColumns({ isFiltered: Boolean(!fournisseur) }),
         [fournisseur]
     )
+    const [showPrintSituationGlobale, hidePrintSituationGlobale] = useModal(({ in: open, onExited }) => {
+
+        return (
+            <IframeDialog
+                onExited={onExited}
+                open={open}
+                onClose={hidePrintSituationGlobale}
+                src={getPrintSituationGlobaleFournisseursURL()}>
+            </IframeDialog>
+        )
+    }, []);
 
     React.useEffect(() => {
         setTitle('Liste des paiements')
@@ -223,17 +237,27 @@ const PaiementFournisseurList = () => {
                 >
                     Imprimer la situation de compte fournisseur
                 </Button>} */}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    style={{
-                        marginLeft: 'auto'
-                    }}
-                    startIcon={<AddIcon />}
-                    onClick={showNewPaiementModal}
-                >
-                    Nouveau paiement
+                <Box ml="auto">
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        style={{
+                            marginRight: 8
+                        }}
+                        startIcon={<ListAltIcon />}
+                        onClick={showPrintSituationGlobale}
+                    >
+                        Situation Globale
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        onClick={showNewPaiementModal}
+                    >
+                        Nouveau paiement
                 </Button>
+                </Box>
             </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">

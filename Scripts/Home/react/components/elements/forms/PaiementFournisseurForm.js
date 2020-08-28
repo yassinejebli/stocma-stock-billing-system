@@ -8,6 +8,7 @@ import FournisseurAutocomplete from '../fournisseur-autocomplete/FournisseurAuto
 import { saveData, updateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import TypePaiementAutocomplete from '../type-paiement-autocomplete/TypePaiementAutocomplete';
+import { useLoader } from '../../providers/LoaderProvider';
 
 export const useStyles = makeStyles(theme => ({
     root: {
@@ -29,6 +30,7 @@ const initialState = {
 }
 
 const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoir }) => {
+    const { showLoader } = useLoader();
     const { showSnackBar } = useSnackBar();
     const [formState, setFormState] = React.useState(initialState);
     const [formErrors, setFormErrors] = React.useState({});
@@ -62,7 +64,7 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
 
     const save = async () => {
         if (!isFormValid()) return;
-
+        showLoader(true);
         const preparedData = {
             IdTypePaiement: formState.type.Id,
             IdFournisseur: formState.fournisseur.Id,
@@ -100,8 +102,7 @@ const PaiementFournisseurForm = ({ document, amount, paiement, onSuccess, isAvoi
                 })
             }
         }
-
-        console.log({ preparedData });
+        showLoader(false);
     }
 
     const onFieldChange = ({ target }) => setFormState(_formState => ({ ..._formState, [target.name]: target.value }));

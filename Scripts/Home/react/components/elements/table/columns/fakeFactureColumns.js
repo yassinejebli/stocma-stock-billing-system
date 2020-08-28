@@ -7,8 +7,9 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import { format } from 'date-fns';
 import CloseIcon from '@material-ui/icons/Close';
-import { Box } from '@material-ui/core';
+import { Box, Tooltip } from '@material-ui/core';
 import FakeArticleAutocomplete from '../../article-autocomplete/FakeArticleAutocomplete';
+import Input from '../../input/Input';
 
 export const fakeFactureColumns = () => ([
     {
@@ -26,27 +27,40 @@ export const fakeFactureColumns = () => ([
             data
         }) => {
             return (
-                <FakeArticleAutocomplete
-                    value={value}
-                    inTable
-                    placeholder="Entrer un article..."
-                    onBlur={() => updateMyData(index, id, value)}
-                    onChange={(_, selectedValue) => {
-                        updateMyData(index, id, selectedValue);
-                        if (selectedValue)
-                            updateMyData(index, 'Pu', selectedValue.PVD);
-                        if (data.filter(x => !x.Article).length === 1 || data.length === 1)
-                            addNewRow();
+                <>
+                    <FakeArticleAutocomplete
+                        value={value}
+                        inTable
+                        placeholder="Entrer un article..."
+                        onBlur={() => updateMyData(index, id, value)}
+                        onChange={(_, selectedValue) => {
+                            updateMyData(index, id, selectedValue);
+                            if (selectedValue)
+                                updateMyData(index, 'Pu', selectedValue.PVD);
+                            if (data.filter(x => !x.Article).length === 1 || data.length === 1)
+                                addNewRow();
 
-                        const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
-                        if (qteCell) {
-                            setTimeout(() => {
-                                qteCell.focus();
-                            }, 200)
-                        }
-                    }}
+                            const qteCell = document.querySelector(`#my-table #Qte-${(index)} input`);
+                            if (qteCell) {
+                                setTimeout(() => {
+                                    qteCell.focus();
+                                }, 200)
+                            }
+                        }}
 
-                />
+                    />
+                    {value && <Box mb={1} style={{
+                        color: value.MinStock > value.QteStock ? 'red' : 'green'
+                    }}>
+                        <Tooltip title={"CODE:" + Math.floor(1000 + Math.random() * 9000) +
+                            "-" + formatMoney(value.PA) +
+                            "-" + Math.floor(1000 + Math.random() * 9000)}>
+                            <span>
+                                {value.QteStock} en stock
+                            </span>
+                        </Tooltip>
+                    </Box>}
+                </>
             )
         }
     },
@@ -62,7 +76,38 @@ export const fakeFactureColumns = () => ([
         accessor: 'Pu',
         editable: true,
         type: inputTypes.number.description,
-        align: 'right'
+        align: 'right',
+        Cell: ({
+            value,
+            row: { original, index },
+            column: { id },
+            updateMyData,
+        }) => {
+            return (
+                <>
+
+                    <Input
+                        value={value || ''}
+                        inTable
+                        align="right"
+                        type="number"
+                        onFocus={(event) => event.target.select()}
+                        onChange={({ target: { value: _value } }) => updateMyData(index, id, _value)}
+                        onBlur={() => updateMyData(index, id, value)}
+                    />
+                    {console.log({original})}
+                    {Boolean(value && original?.Article?.PA >= value) && <Box mb={1}>
+                        <div style={{
+                            marginLeft: 'auto',
+                            color: 'red',
+                            width: 'fit-content',
+                        }}>
+                            Vérifier le prix!
+                        </div>
+                    </Box>}
+                </>
+            )
+        }
     },
     {
         id: 'TotalHT',

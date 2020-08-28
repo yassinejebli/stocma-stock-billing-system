@@ -29,6 +29,9 @@ import { getArticleByBarCode } from '../../../queries/articleQueries'
 import BarcodeReader from 'react-barcode-reader'
 import { looseFocus, convertLowercaseNumbersFR } from '../../../utils/miscUtils'
 import SuiviVentes from '../ventes/suivi/SuiviVentes'
+import BonLivraisonAutocomplete from '../../elements/bon-livraison-autocomplete/BonLivraisonAutocomplete'
+import { useAuth } from '../../providers/AuthProvider'
+import Quagga from 'quagga'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -46,6 +49,9 @@ const audioFailure = new Audio('/Content/mp3/beep-failure.mp3')
 
 const BonLivraison = () => {
     const {
+        canUpdateBonLivraisons
+    } = useAuth();
+    const {
         BLDiscount,
         setBLDiscount,
         BLPayment,
@@ -54,7 +60,7 @@ const BonLivraison = () => {
         restoreBLModule,
         suiviModule,
     } = useSettings();
-    const { siteId, site, hasMultipleSites } = useSite();
+    const { siteId, site, hasMultipleSites, company } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
@@ -68,12 +74,13 @@ const BonLivraison = () => {
     const [errors, setErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
+    const [selectedBonLivraison, setSelectedBonLivraison] = React.useState(null);
     const [paymentType, setPaymentType] = React.useState(null);
     const [selectedArticleForSuivi, setSelectedArticleForSuivi] = React.useState(null);
     const location = useLocation();
     const DevisId = qs.parse(location.search, { ignoreQueryPrefix: true }).DevisId;
-    const BonLivraisonId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonLivraisonId;
-    const isEditMode = Boolean(BonLivraisonId);
+    const [bonLivraisonId, setBonLivraisonId] = React.useState(qs.parse(location.search, { ignoreQueryPrefix: true }).BonLivraisonId)
+    const [isEditMode, setIsEditMode] = React.useState(Boolean(bonLivraisonId))
     const [skipPageReset, setSkipPageReset] = React.useState(false);
     const total = data.reduce((sum, curr) => (
         sum += curr.Pu * curr.Qte
@@ -89,7 +96,30 @@ const BonLivraison = () => {
         }
         return sum;
     }, 0);
+    const [result, setResult] = React.useState('')
 
+    React.useEffect(()=>{
+        Quagga.init({
+            inputStream : {
+              name : "Live",
+              type : "LiveStream",
+              target: document.querySelector('#quagga')    // Or '#yourElement' (optional)
+            },
+            decoder : {
+              readers : ["code_128_reader"]
+            }
+          }, function(err) {
+              if (err) {
+                  console.log(err);
+                  return
+              }
+              console.log("Initialization finished. Ready to start");
+              Quagga.start();
+              Quagga.onProcessed(r=>{
+                  setResult(JSON.stringify(r))
+              })
+          });
+    }, [])
     const columns = React.useMemo(
         () => getBonLivraisonColumns({ BLDiscount, hasMultipleSites, suiviModule }),
         [BLDiscount, hasMultipleSites]
@@ -122,7 +152,7 @@ const BonLivraison = () => {
                 <BonLivraisonUnsavedList
                     onImport={(document) => {
                         setClient(document.client);
-                        setData(document.data);
+                        setData([...document.data, emptyLine]);
                         setDate(new Date(document.date));
                         setPaymentType(document.paymentType);
                         hideModalUnsavedDocs();
@@ -140,6 +170,7 @@ const BonLivraison = () => {
                 fullWidth
                 onClose={() => {
                     hideModalSuiviVentes();
+                    setTitle('Bon de livraison')
                 }}
             >
                 <SuiviVentes
@@ -208,9 +239,9 @@ const BonLivraison = () => {
     React.useEffect(() => {
         setTitle('Bon de livraison')
         //load bon de livraison
-        if (isEditMode) {
+        if (isEditMode && bonLivraisonId) {
             setLoading(true);
-            getSingleData(DOCUMENT, BonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article', 'Site'])
+            getSingleData(DOCUMENT, bonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article', 'Site'])
                 .then(response => {
                     if (response.WithDiscount)
                         setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: true }));
@@ -219,13 +250,13 @@ const BonLivraison = () => {
                     setClient(response.Client);
                     setDate(response.Date);
                     setNote(response.Note);
-                    setData(response.BonLivraisonItems?.map(x => ({
+                    setData([...response.BonLivraisonItems?.map(x => ({
                         Article: x.Article,
                         Qte: x.Qte,
                         Pu: x.Pu,
                         Site: x.Site,
                         Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
-                    })));
+                    })), emptyLine]);
                     setNumDoc(response.NumBon);
                     setPaymentType(response.TypePaiement);
                     setRef(response.Ref);
@@ -244,13 +275,14 @@ const BonLivraison = () => {
                         Article: x.Article,
                         Qte: x.Qte,
                         Pu: x.Pu,
+                        Site: { Id: 1 },
                         Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
                     })));
                     setPaymentType(response.TypePaiement);
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
         }
-    }, [])
+    }, [bonLivraisonId, isEditMode])
 
     const updateMyData = (rowIndex, columnId, value) => {
         setSkipPageReset(true)
@@ -315,14 +347,13 @@ const BonLivraison = () => {
         if (!areDataValid()) return;
 
         const expand = ['TypePaiement', DOCUMENT_ITEMS, DOCUMENT_OWNER];
-        const Id = isEditMode ? BonLivraisonId : uuidv4();
+        const Id = isEditMode ? bonLivraisonId : uuidv4();
         let oldDate = null;
         if (!isEditMode) {
             oldDate = new Date(date.getTime());
             const currentDateTime = new Date();
             date.setHours(currentDateTime.getHours(), currentDateTime.getMinutes(), currentDateTime.getSeconds());
         }
-        console.log('after', { oldDate })
 
         const preparedData = {
             Id: Id,
@@ -332,7 +363,7 @@ const BonLivraison = () => {
             Ref: ref,
             IdTypePaiement: paymentType?.Id,
             WithDiscount: discount > 0,
-            BonLivraisonItems: data.filter(x => x.Article).map(d => ({
+            BonLivraisonItems: data.filter(x => x.Article).map((d, i) => ({
                 Id: uuidv4(),
                 IdBonLivraison: Id,
                 Qte: d.Qte,
@@ -340,12 +371,14 @@ const BonLivraison = () => {
                 IdArticle: d.Article.Id,
                 IdSite: d.Site.Id,
                 Discount: parseFloat(d.Discount),
-                PercentageDiscount: (/^\d+(\.\d+)?%$/.test(d.Discount))
+                PercentageDiscount: (/^\d+(\.\d+)?%$/.test(d.Discount)),
+                Index: i,
             })),
             IdClient: client.Id,
             Date: date
         };
 
+        //return console.log({preparedData})
         setLoading(true);
         let response = isEditMode ? await updateData(DOCUMENT, preparedData, Id, expand)
             : await saveData(DOCUMENT, preparedData, expand);
@@ -390,6 +423,7 @@ const BonLivraison = () => {
         }, 1000)
         setData([]);
         addNewRow();
+        setSelectedBonLivraison(null)
     }
 
     const openSuiviVentes = (row) => {
@@ -399,17 +433,19 @@ const BonLivraison = () => {
 
     return (
         <>
+        {result}
+        <div id="quagga">
+             
+        </div>
             {barcodeModule?.Enabled && <BarcodeReader
                 onError={console.error}
                 onScan={async (result) => {
                     console.log({ result })
-                    const firstChar = result.charAt(0);
-                    let uppercaseBarCode = result.substring(1);
+                    // const firstChar = result.charAt(0);
+                    let uppercaseBarCode = company?.Name === "AQK" ? result.substring(1) : result;
                     //TODO: review this
-                    if (firstChar === 'A') {
-                        uppercaseBarCode = convertLowercaseNumbersFR(uppercaseBarCode).toUpperCase();
-                        console.log({ uppercaseBarCode })
-                    }
+                    uppercaseBarCode = convertLowercaseNumbersFR(uppercaseBarCode).toUpperCase();
+                    console.log({ uppercaseBarCode })
 
                     if (barcodeScannerEnabled && result) {
                         setLoading(true)
@@ -521,6 +557,21 @@ const BonLivraison = () => {
                         />
                     </Box>}
                 </Box>
+                {canUpdateBonLivraisons && <Box width={240} mt={2}>
+                    <BonLivraisonAutocomplete
+                        withoutMultiple
+                        value={selectedBonLivraison}
+                        onChange={(_, value) => {
+                            const cleared = !Boolean(value?.Id);
+                            setSelectedBonLivraison(value);
+                            setBonLivraisonId(value?.Id);
+                            setIsEditMode(!cleared);
+                            if (cleared)
+                                resetData();
+                            looseFocus();
+                        }}
+                    />
+                </Box>}
                 <Box mt={4}>
                     {barcodeModule?.Enabled && <Box mb={2}>
                         <FormControlLabel

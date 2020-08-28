@@ -160,6 +160,11 @@ const FakeFacture = () => {
                 _errors['table'] = 'Compléter les lignes.';
                 return;
             }
+
+            if (_row.Pu <= _row.Article.PA) {
+                _errors['table'] = 'Vérifier les prix de ventes.';
+                return;
+            }
         });
 
         setErrors(_errors);

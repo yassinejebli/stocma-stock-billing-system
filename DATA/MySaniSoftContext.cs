@@ -637,6 +637,11 @@ namespace WebApplication1.DATA
                 .HasRequired(t => t.Article)
                 .WithMany(t => t.InventaireItems)
                 .HasForeignKey(d => d.IdArticle);
+
+            modelBuilder.Entity<InventaireItem>()
+                .HasOptional(t => t.Categorie)
+                .WithMany(t => t.InventaireItems)
+                .HasForeignKey(d => d.IdCategory);
             //
 
 

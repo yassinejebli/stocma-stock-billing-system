@@ -4,7 +4,7 @@ import { getPrintBonCommandeURL } from '../../../../utils/urlBuilder';
 import { FormControlLabel, Switch, Box } from '@material-ui/core';
 
 const PrinBonCommande = ({ document, onClose, onExited, open }) => {
-    const [hidePrices, setHidePrices] = React.useState(false);
+    const [hidePrices, setHidePrices] = React.useState(true);
     const [showStamp, setShowStamp] = React.useState(false);
     if (!document) return null;
     return (

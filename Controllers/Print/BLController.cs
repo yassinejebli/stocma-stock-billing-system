@@ -56,7 +56,7 @@ namespace WebApplication1.Controllers.Print
                     Discount = x.Discount + (x.PercentageDiscount ? "%" : ""),
                     Total = (x.Qte * x.Pu) - (x.PercentageDiscount ? (x.Qte * x.Pu * (x.Discount ?? 0.0f) / 100) : x.Discount ?? 0.0f),
                     Index = x.Index ?? 0
-                }).OrderByDescending(x => x.Index).ToList()
+                }).OrderBy(x => x.Index).ToList()
              );
             if (reportDocument.ParameterFields["ShowSolde"] != null)
                 reportDocument.SetParameterValue("ShowSolde", showBalance);

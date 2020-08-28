@@ -27,6 +27,8 @@ namespace WebApplication1.DATA
             set { this.dateCreation = value; }
         }
 
+        public DateTime? ModificationDate { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
         public Guid IdClient { get; set; }
 
         public Guid IdTypePaiement { get; set; }

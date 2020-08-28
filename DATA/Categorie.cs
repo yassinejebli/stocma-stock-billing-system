@@ -26,6 +26,7 @@ namespace WebApplication1.DATA
         public virtual Famille Famille { get; set; }
 
         public virtual ICollection<Article> Articles { get; set; }
+        public virtual ICollection<InventaireItem> InventaireItems { get; set; }
 
     }
 }

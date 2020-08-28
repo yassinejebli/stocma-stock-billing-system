@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   }
 });
 
-const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
+const BonLivraisonAutocomplete = ({ errorText, clientId, withoutMultiple, ...props }) => {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
   const [bonLivraisons, setBonLivraisons] = React.useState([]);
@@ -46,8 +46,7 @@ const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
   return (
     <Autocomplete
       {...props}
-      multiple
-      disableClearable
+      multiple={!Boolean(withoutMultiple)}
       filterSelectedOptions
       popupIcon={null}
       forcePopupIcon={false}
@@ -85,7 +84,7 @@ const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
         <TextField
           onChange={onChangeHandler}
           {...params}
-          placeholder="Importer des BL..."
+          placeholder="Importer un BL..."
           error={Boolean(errorText)}
           helperText={errorText}
           variant="outlined"
@@ -93,7 +92,6 @@ const BonLivraisonAutocomplete = ({ errorText, clientId, ...props }) => {
           inputProps={{
             ...params.inputProps,
             autoComplete: 'new-password', // disable autocomplete and autofill
-            type: 'search',
             margin: 'normal'
           }}
         />

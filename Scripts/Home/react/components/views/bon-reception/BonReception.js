@@ -19,10 +19,15 @@ import { useLocation, useHistory } from 'react-router-dom'
 import PrintBR from '../../elements/dialogs/documents-print/PrintBR'
 import qs from 'qs'
 import { useSite } from '../../providers/SiteProvider'
+import { getArticleAchatByBarCode } from '../../../queries/articleQueries'
 import { bonReceptionColumns } from '../../elements/table/columns/bonReceptionColumns'
 import { useSettings } from '../../providers/SettingsProvider'
 import SuiviAchats from '../achats/suivi/SuiviAchats'
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import BonReceptionAutocomplete from '../../elements/bon-reception-autocomplete/BonReceptionAutocomplete'
+import BarcodeReader from 'react-barcode-reader'
+import { convertLowercaseNumbersFR, looseFocus } from '../../../utils/miscUtils'
+import BarCodeScanning from '../../elements/animated-icons/BarCodeScanning'
 
 const DOCUMENT = 'BonReceptions'
 const DOCUMENT_ITEMS = 'BonReceptionItems'
@@ -33,12 +38,15 @@ const emptyLine = {
     Pu: ''
 }
 const defaultErrorMsg = 'Ce champs est obligatoire.'
-
+const audioSuccess = new Audio('/Content/mp3/beep-success.mp3')
+const audioFailure = new Audio('/Content/mp3/beep-failure.mp3')
 const BonReception = () => {
     const {
+        barcode,
+        barcodeModule,
         suiviModule,
     } = useSettings();
-    const { siteId } = useSite();
+    const { siteId, company } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
@@ -47,13 +55,15 @@ const BonReception = () => {
     const [fournisseur, setFournisseur] = React.useState(null);
     const [date, setDate] = React.useState(new Date());
     const [errors, setErrors] = React.useState({});
+    const [selectedBonReception, setSelectedBonReception] = React.useState(null);
     const [selectedArticleForSuivi, setSelectedArticleForSuivi] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [savedDocument, setSavedDocument] = React.useState(null);
     const location = useLocation();
     const BonCommandeId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonCommandeId;
-    const BonReceptionId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonReceptionId;
-    const isEditMode = Boolean(BonReceptionId);
+    const [bonReceptionId, setBonReceptionId] = React.useState(qs.parse(location.search, { ignoreQueryPrefix: true }).BonReceptionId);
+    const [isEditMode, setIsEditMode] = React.useState(Boolean(bonReceptionId));
+    const [barcodeScannerEnabled, setBarcodeScannerEnabled] = React.useState(false);
 
     const columns = React.useMemo(
         () => bonReceptionColumns({ suiviModule }),
@@ -72,6 +82,7 @@ const BonReception = () => {
                 onClose={() => {
                     setSavedDocument(null);
                     hideModal();
+                    setTitle('Bon de réception')
                 }}
             />)
     }, [savedDocument]);
@@ -103,10 +114,14 @@ const BonReception = () => {
     }, [data])
 
     React.useEffect(() => {
+        setBarcodeScannerEnabled(barcode?.Enabled && barcodeModule?.Enabled);
+    }, [barcode])
+
+    React.useEffect(() => {
         setTitle('Bon de réception')
-        if (isEditMode) {
+        if (isEditMode && bonReceptionId) {
             setLoading(true);
-            getSingleData(DOCUMENT, BonReceptionId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
+            getSingleData(DOCUMENT, bonReceptionId, [DOCUMENT_OWNER, DOCUMENT_ITEMS + '/' + 'Article'])
                 .then(response => {
                     setFournisseur(response.Fournisseur);
                     setDate(response.Date);
@@ -131,7 +146,7 @@ const BonReception = () => {
                 }).catch(err => console.error(err))
                 .finally(() => setLoading(false));
         }
-    }, [])
+    }, [isEditMode, bonReceptionId])
 
     const updateMyData = (rowIndex, columnId, value) => {
         setSkipPageReset(true)
@@ -195,7 +210,7 @@ const BonReception = () => {
     const save = async () => {
         if (!areDataValid()) return;
         const expand = [DOCUMENT_ITEMS, DOCUMENT_OWNER];
-        const Id = isEditMode ? BonReceptionId : uuidv4();
+        const Id = isEditMode ? bonReceptionId : uuidv4();
         const preparedData = {
             Id: Id,
             IdSite: siteId,
@@ -232,9 +247,11 @@ const BonReception = () => {
 
     const resetData = () => {
         setFournisseur(null);
+        setNumDoc('');
         setDate(new Date());
         setData([]);
         addNewRow();
+        setSelectedBonReception(null);
     }
 
     const openSuiviAchats = (row) => {
@@ -243,17 +260,62 @@ const BonReception = () => {
     }
 
     const convertPricesInTTC = () => {
-        setData(_data=>{
-            const articles = _data.filter(x=>x.Article && x.Pu);
-            return articles.map(x=>({
+        setData(_data => {
+            const articles = _data.filter(x => x.Article && x.Pu);
+            return articles.map(x => ({
                 ...x,
-                Pu: Number(x.Pu) + (Number(x.Pu) * x.Article.TVA/100)
+                Pu: Number(x.Pu) + (Number(x.Pu) * x.Article.TVA / 100)
             }))
         })
     }
 
     return (
         <>
+            {barcodeModule?.Enabled && <BarcodeReader
+                onError={console.error}
+                onScan={async (result) => {
+                    console.log({ result })
+                    // const firstChar = result.charAt(0);
+                    let uppercaseBarCode = company?.Name === "AQK" ? result.substring(1) : result;
+                    //TODO: review this
+                    uppercaseBarCode = convertLowercaseNumbersFR(uppercaseBarCode).toUpperCase();
+                    console.log({ uppercaseBarCode })
+
+                    if (barcodeScannerEnabled && result) {
+                        setLoading(true)
+                        const response = await getArticleAchatByBarCode(uppercaseBarCode, fournisseur?.Id, siteId)
+                        if (response?.Id) {
+                            if (data.find(x => x.Article?.Id === response?.Id)) {
+                                setData(_data => _data.map(x => (x.Article?.Id === response?.Id ? { ...x, Qte: Number(x.Qte) + 1 } : x)))
+                            } else {
+                                setData(_data => ([{
+                                    Article: response,
+                                    Qte: 1,
+                                    Pu: response.PVD
+                                }, ..._data]))
+                            }
+                            audioSuccess.play();
+                        }
+                        else {
+                            audioFailure.play();
+                            showSnackBar({
+                                error: true,
+                                text: "L'article scanné n'existe pas dans la base de données!"
+                            })
+                        }
+
+                        setLoading(false)
+                    }
+                    if (!barcodeScannerEnabled) {
+                        audioFailure.play();
+                        showSnackBar({
+                            error: true,
+                            text: "Vous devez activer la lecture de code à barres!"
+                        })
+                    }
+
+                }}
+            />}
             <Loader loading={loading} />
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
                 <Button
@@ -278,7 +340,10 @@ const BonReception = () => {
                     <FournisseurAutocomplete
                         disabled={isEditMode}
                         value={fournisseur}
-                        onChange={(_, value) => setFournisseur(value)}
+                        onChange={(_, value) => {
+                            setFournisseur(value)
+                            looseFocus()
+                        }}
                         errorText={errors.fournisseur}
                     />
                     <TextField
@@ -292,10 +357,40 @@ const BonReception = () => {
                     />
                     <DatePicker
                         value={date}
-                        onChange={(_date) => setDate(_date)}
+                        onChange={(_date) => {
+                            setDate(_date)
+                            looseFocus();
+                        }}
+                    />
+                </Box>
+                <Box width={240} mt={2}>
+                    <BonReceptionAutocomplete
+                        withoutMultiple
+                        value={selectedBonReception}
+                        onChange={(_, value) => {
+                            const cleared = !Boolean(value?.Id);
+                            setSelectedBonReception(value);
+                            setBonReceptionId(value?.Id);
+                            setIsEditMode(!cleared);
+                            if (cleared)
+                                resetData();
+                            looseFocus();
+
+                        }}
                     />
                 </Box>
                 <Box mt={4}>
+                    {barcodeModule?.Enabled && <Box mb={2}>
+                        <FormControlLabel
+                            control={<Switch
+                                checked={barcodeScannerEnabled}
+                                onChange={(_, checked) => {
+                                    setBarcodeScannerEnabled(checked);
+                                    looseFocus();
+                                }} />}
+                            label={<BarCodeScanning scanning={barcodeScannerEnabled} />}
+                        />
+                    </Box>}
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>
                             Ajouter une ligne

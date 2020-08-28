@@ -12,14 +12,14 @@ namespace WebApplication1.Controllers
 
         public ActionResult getPriceLastSale(Guid IdClient, Guid IdArticle)
         {
-            var currentYear = DateTime.Now.Year;
             var price = 0.0f;
             var client = db.Clients.Find(IdClient);
+            var dateBeforeOneYear = DateTime.Now.AddYears(-1);
 
             if (!client.IsClientDivers)
             {
                 var bi = db.BonLivraisonItems
-                .Where((x => x.IdArticle == IdArticle && x.BonLivraison.IdClient == IdClient && x.BonLivraison.Date.Year == currentYear))
+                .Where((x => x.IdArticle == IdArticle && x.BonLivraison.IdClient == IdClient && x.BonLivraison.Date >= dateBeforeOneYear))
                 .OrderByDescending(q => q.BonLivraison.Date).Take(1).FirstOrDefault();
                 if (bi != null)
                     price = bi.Pu;
@@ -36,10 +36,10 @@ namespace WebApplication1.Controllers
 
         public ActionResult getPriceLastPurchase(Guid IdFournisseur, Guid IdArticle)
         {
-            var currentYear = DateTime.Now.Year;
+            var dateBeforeOneYear = DateTime.Now.AddYears(-1);
             var price = 0.0f;
             var bi = db.BonReceptionItems
-                .Where((x => x.IdArticle == IdArticle && x.BonReception.IdFournisseur == IdFournisseur && x.BonReception.Date.Year == currentYear))
+                .Where((x => x.IdArticle == IdArticle && x.BonReception.IdFournisseur == IdFournisseur && x.BonReception.Date >= dateBeforeOneYear))
                 .OrderByDescending(q => q.BonReception.Date).Take(1).FirstOrDefault();
             if (bi != null)
                 price = bi.Pu;
@@ -51,16 +51,43 @@ namespace WebApplication1.Controllers
 
         public ActionResult GetArticleByBarCode(string BarCode, Guid? IdClient, int IdSite)
         {
-            var currentYear = DateTime.Now.Year;
+            var dateBeforeOneYear = DateTime.Now.AddYears(-1);
             var article = db.ArticleSites.FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite && !x.Disabled).Article;
             if (IdClient.HasValue && article != null)
             {
-                var lastSoldeTime = article.BonLivraisonItems.Where(x => x.BonLivraison.IdClient == IdClient && x.IdArticle == article.Id && x.BonLivraison.Date.Year == currentYear)
+                var lastSoldeTime = article.BonLivraisonItems.Where(x => x.BonLivraison.IdClient == IdClient && x.IdArticle == article.Id && x.BonLivraison.Date >= dateBeforeOneYear)
                 .OrderByDescending(x => x.BonLivraison.Date).Take(1).FirstOrDefault();
                 if (lastSoldeTime != null)
                     article.PVD = lastSoldeTime.Pu;
             }
             if(article == null)
+                return Json(null, JsonRequestBehavior.AllowGet);
+
+            return Json(new
+            {
+                article.BarCode,
+                article.Designation,
+                article.Id,
+                article.PVD,
+                article.MinStock,
+                article.PA,
+                article.Ref,
+                article.QteStock,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetArticleAchatByBarCode(string BarCode, Guid? IdFournisseur, int IdSite)
+        {
+            var dateBeforeOneYear = DateTime.Now.AddYears(-1);
+            var article = db.ArticleSites.FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite && !x.Disabled).Article;
+            if (IdFournisseur.HasValue && article != null)
+            {
+                var lastPurchasedTime = article.BonReceptionItems.Where(x => x.BonReception.IdFournisseur == IdFournisseur && x.IdArticle == article.Id && x.BonReception.Date >= dateBeforeOneYear)
+                .OrderByDescending(x => x.BonReception.Date).Take(1).FirstOrDefault();
+                if (lastPurchasedTime != null)
+                    article.PVD = lastPurchasedTime.Pu;
+            }
+            if (article == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
             return Json(new

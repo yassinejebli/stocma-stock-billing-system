@@ -267,7 +267,7 @@ const MenuItems = () => {
                         </>}
                         <ListItem button component={Link} to="/inventaire">
                             <ListItemIcon />
-                            <ListItemText primary="Inventaire" />
+                            <ListItemText primary="Inventaires" />
                         </ListItem>
                         {canManageMouvements && mouvementModule?.Enabled && <ListItem button component={Link} to="/mouvement-stock">
                             <ListItemIcon />

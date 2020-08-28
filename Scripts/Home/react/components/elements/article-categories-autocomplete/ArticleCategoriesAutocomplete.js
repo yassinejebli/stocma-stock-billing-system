@@ -27,6 +27,7 @@ const ArticleCategoriesAutocomplete = ({ errorText, inTable, ...props }) => {
     setSearchText(value);
   }
 
+  console.log({value: props.value})
   return (
     <Autocomplete
       {...props}

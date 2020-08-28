@@ -88,3 +88,11 @@ export const getPrintMultipleCodeBarreEtiquetteURL = (ids) => {
 export const getPrintInventaireURL = ({ids, idSite, titre, showBarCode}) => {
     return `/PrintInventory?${ids}&idSite=${idSite}&titre=${titre}&showBarCode=${showBarCode}`
 }
+
+export const getPrintSituationGlobaleClientsURL = () => {
+    return `/SituationGlobale/Clients`
+}
+
+export const getPrintSituationGlobaleFournisseursURL = () => {
+    return `/SituationGlobale/Fournisseurs`
+}

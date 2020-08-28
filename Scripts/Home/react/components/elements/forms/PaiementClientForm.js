@@ -9,6 +9,7 @@ import { saveData, updateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import TypePaiementAutocomplete from '../type-paiement-autocomplete/TypePaiementAutocomplete';
 import { useAuth } from '../../providers/AuthProvider';
+import { useLoader } from '../../providers/LoaderProvider';
 
 export const useStyles = makeStyles(theme => ({
     root: {
@@ -79,6 +80,7 @@ const initialState = {
 }
 
 const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSuccess, isAvoir }) => {
+    const { showLoader } = useLoader();
     const { showSnackBar } = useSnackBar();
     const { canManagePaiementsClients } = useAuth();
     if (!canManagePaiementsClients) return null;
@@ -118,6 +120,7 @@ const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSucces
     const save = async () => {
         if (!isFormValid()) return;
 
+        showLoader(true);
         const preparedData = {
             IdTypePaiement: formState.type.Id,
             IdClient: formState.client.Id,
@@ -130,7 +133,7 @@ const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSucces
         }
 
         if (isEditMode) {
-            const response = await updateData(TABLE, { ...preparedData, Id: paiement.Id }, paiement.Id);
+            const response = await updateData(TABLE, { ...preparedData, Id: paiement.Id, ModificationDate: new Date() }, paiement.Id);
             if (response.ok) {
                 setFormState({ ...initialState });
                 showSnackBar({
@@ -159,7 +162,7 @@ const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSucces
             }
         }
 
-        console.log({ preparedData });
+        showLoader(false);
     }
 
     const onFieldChange = ({ target }) => setFormState(_formState => ({ ..._formState, [target.name]: target.value }));

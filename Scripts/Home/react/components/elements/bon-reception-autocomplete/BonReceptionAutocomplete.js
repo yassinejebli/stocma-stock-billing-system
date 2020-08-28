@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   }
 });
 
-const BonReceptionAutocomplete = ({ errorText, fournisseurId, ...props }) => {
+const BonReceptionAutocomplete = ({ errorText, fournisseurId, withoutMultiple, ...props }) => {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
   const [bonReceptions, setBonReceptions] = React.useState([]);
@@ -46,8 +46,7 @@ const BonReceptionAutocomplete = ({ errorText, fournisseurId, ...props }) => {
   return (
     <Autocomplete
       {...props}
-      multiple
-      disableClearable
+      withoutMultiple
       filterSelectedOptions
       popupIcon={null}
       forcePopupIcon={false}
@@ -73,7 +72,7 @@ const BonReceptionAutocomplete = ({ errorText, fournisseurId, ...props }) => {
         <TextField
           onChange={onChangeHandler}
           {...params}
-          placeholder="Importer des BR..."
+          placeholder="Importer un BR..."
           error={Boolean(errorText)}
           helperText={errorText}
           variant="outlined"
@@ -81,7 +80,6 @@ const BonReceptionAutocomplete = ({ errorText, fournisseurId, ...props }) => {
           inputProps={{
             ...params.inputProps,
             autoComplete: 'new-password', // disable autocomplete and autofill
-            type: 'search',
             margin: 'normal'
           }}
         />

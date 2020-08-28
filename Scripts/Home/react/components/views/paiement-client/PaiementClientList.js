@@ -23,9 +23,10 @@ import { useSnackBar } from '../../providers/SnackBarProvider';
 import PrintClientAccountSummary from '../../elements/dialogs/documents-print/PrintClientAccountSummary';
 import SoldeText from '../../elements/texts/SoldeText';
 import { useLoader } from '../../providers/LoaderProvider';
-import { getExportClientAccountSummaryURL } from '../../../utils/urlBuilder';
+import { getExportClientAccountSummaryURL, getPrintSituationGlobaleClientsURL } from '../../../utils/urlBuilder';
 import { useAuth } from '../../providers/AuthProvider';
-
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import IframeDialog from '../../elements/dialogs/IframeDialog';
 const TABLE = 'Paiements';
 
 const EXPAND = ['TypePaiement', 'Client($select=Id,Name)', 'BonLivraison/Client($select=Id,Name)', 'BonLivraisonItems'];
@@ -133,6 +134,17 @@ const PaiementClientList = () => {
         () => getPaiementClientListColumns({ isFiltered: Boolean(!client), canUpdateBonLivraisons }),
         [client]
     )
+    const [showPrintSituationGlobale, hidePrintSituationGlobale] = useModal(({ in: open, onExited }) => {
+
+        return (
+            <IframeDialog
+                onExited={onExited}
+                open={open}
+                onClose={hidePrintSituationGlobale}
+                src={getPrintSituationGlobaleClientsURL()}>
+            </IframeDialog>
+        )
+    }, []);
 
     React.useEffect(() => {
         setTitle('Liste des paiements')
@@ -241,7 +253,7 @@ const PaiementClientList = () => {
     return (
         <>
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                {client && dateFrom && dateTo && <><Button
+                {client && dateFrom && dateTo && <Box><Button
                     variant="contained"
                     color="primary"
                     startIcon={<PrintIcon />}
@@ -266,18 +278,28 @@ const PaiementClientList = () => {
                             Exporter vers Excel
                         </Button>
                     </Box>
-                </>}
+                </Box>}
+                <Box ml="auto">
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{
+                        marginRight: 8
+                    }}
+                    startIcon={<ListAltIcon />}
+                    onClick={showPrintSituationGlobale}
+                >
+                    Situation Globale
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"
-                    style={{
-                        marginLeft: 'auto'
-                    }}
                     startIcon={<AddIcon />}
                     onClick={showNewPaiementModal}
                 >
                     Nouveau paiement
                 </Button>
+                </Box>
             </Box>
             <Paper>
                 <Box display="flex" justifyContent="space-between" alignItems="center">

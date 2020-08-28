@@ -39,6 +39,8 @@ const SiteProvider = ({ children }) => {
             .then(res => setCompany(res[0]))
             .catch(err => console.error(err));
     }
+
+    console.log({company})
     
     const setSite = (site) => {
         if (site) {
@@ -55,6 +57,7 @@ const SiteProvider = ({ children }) => {
             siteName,
             setSite,
             sites,
+            company,
             //TODO: remove this
             site: {
                 Id: siteId,

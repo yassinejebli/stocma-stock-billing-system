@@ -23,6 +23,14 @@ namespace WebApplication1.Migrations
         protected override void Seed(MySaniSoftContext context)
         {
 
+            //var articleBarCodeLong = context.Articles;
+            //Random randomGenerator2 = new Random();
+
+            //articleBarCodeLong.ForEach(x =>
+            //{
+            //    x.BarCode = randomGenerator2.Next(100000, 999999) + "";
+            //});
+
             return;
 
             var devisClientNameNull = context.Devises.Where(x => x.ClientName == null);
@@ -51,7 +59,7 @@ namespace WebApplication1.Migrations
             Random randomGenerator = new Random();
             if (articleBarCodeNull.Count() > 0)
             {
-                articleBarCodeNull.ForEach(x => x.BarCode = "A" + randomGenerator.Next(1000, 100000));
+                articleBarCodeNull.ForEach(x => x.BarCode = "A" + randomGenerator.Next(100000, 999999));
             }
 
             context.SaveChanges();
@@ -831,11 +839,17 @@ namespace WebApplication1.Migrations
 
                 var TypePaiementAchat = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb7"));
                 if (TypePaiementAchat != null)
+                {
                     TypePaiementAchat.IsAchat = true;
+                    TypePaiementAchat.Name = "Achat";
+                }
 
                 var TypePaiementVente = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb6"));
                 if (TypePaiementVente != null)
+                {
                     TypePaiementVente.IsVente = true;
+                    TypePaiementVente.Name = "Vente";
+                }
 
                 var TypePaiementAvoir = context.TypePaiements.Find(new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb8"));
                 if (TypePaiementAvoir != null)
