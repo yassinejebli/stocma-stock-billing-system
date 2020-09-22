@@ -23,7 +23,12 @@ namespace WebApplication1.Migrations
         protected override void Seed(MySaniSoftContext context)
         {
 
-            //var articleBarCodeLong = context.Articles;
+            //var articlesWithoutCategory = context.ArticleSites.Where(x => x.IdSite == 1 && x.Article.IdCategorie == null);
+            //articlesWithoutCategory.ForEach(x => {
+            //    x.QteStock = 0;
+            //});
+
+            //var articleBarCodeLong = context.Articles.Where(x=>);
             //Random randomGenerator2 = new Random();
 
             //articleBarCodeLong.ForEach(x =>

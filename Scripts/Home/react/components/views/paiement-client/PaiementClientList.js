@@ -36,7 +36,7 @@ const PaiementClientList = () => {
     const refreshCount = React.useRef(0)
     const { showLoader } = useLoader();
     const today = new Date();
-    const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayCurrentMonth = new Date(today.getFullYear() - 1, today.getMonth(), 1);
     const lastDayCurrentMonth = new Date();
     firstDayCurrentMonth.setHours(0, 0, 0, 0);
     lastDayCurrentMonth.setHours(23, 59, 59, 999);
@@ -253,7 +253,7 @@ const PaiementClientList = () => {
     return (
         <>
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                {client && dateFrom && dateTo && <Box><Button
+                {client && dateFrom && dateTo && <Box display="flex"><Button
                     variant="contained"
                     color="primary"
                     startIcon={<PrintIcon />}

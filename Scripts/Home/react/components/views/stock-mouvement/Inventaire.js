@@ -20,7 +20,7 @@ import { getSingleData, saveData } from '../../../queries/crudBuilder'
 import { useSite } from '../../providers/SiteProvider'
 import { getInventoryList, getArticleByBarCode } from '../../../queries/articleQueries'
 import IframeDialog from '../../elements/dialogs/IframeDialog'
-import { getPrintInventaireURL } from '../../../utils/urlBuilder'
+import { getPrintInventaireURL, getPrintInventaireArticleNonCalculesURL } from '../../../utils/urlBuilder'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { v4 as uuidv4 } from 'uuid'
 import DescriptionIcon from '@material-ui/icons/Description';
@@ -30,6 +30,8 @@ import BarCodeScanning from '../../elements/animated-icons/BarCodeScanning'
 import { looseFocus, convertLowercaseNumbersFR } from '../../../utils/miscUtils'
 import { useSettings } from '../../providers/SettingsProvider'
 import BarcodeReader from 'react-barcode-reader'
+import { BarcodeScan } from 'mdi-material-ui'
+import PrintCodeBarreEtiquette from '../../elements/dialogs/PrintCodeBarreEtiquette'
 
 const emptyLine = {
     Article: null,
@@ -65,6 +67,19 @@ const Inventaire = () => {
     const [errors, setErrors] = React.useState({});
     const [barcodeScannerEnabled, setBarcodeScannerEnabled] = React.useState(false);
 
+    const [showPrintBarcodeLabelModal, hidePrintBarcodeLabelModal] = useModal(({ in: open, onExited }) => {
+        return (
+            <PrintCodeBarreEtiquette
+                onExited={onExited}
+                open={open}
+                ids={data.filter(x => x.Article).map((x, i) => (`ids[${i}].key=` + x.Article.Id + `&ids[${i}].value=${1}`)).join('&')}
+                onClose={() => {
+                    hidePrintBarcodeLabelModal(null);
+                }}
+            />
+        )
+    }, [data]);
+    
     const [showPrintModal, hidePrintModal] = useModal(({ in: open, onExited }) => {
         const [showBarCode, setShowBarCode] = React.useState(false);
 
@@ -72,11 +87,9 @@ const Inventaire = () => {
             <IframeDialog
                 onExited={onExited}
                 open={open}
-                onClose={() => {
-                    hidePrintModal(null);
-                }}
+                onClose={hidePrintModal}
                 src={getPrintInventaireURL({
-                    ids: data.filter(x => x.Article).map((x) => (`ids=${x.Article.Id}`)).join('&'),
+                    ids: data?.filter(x => x.Article).map((x) => (`ids=${x.Article.Id}`)).join('&'),
                     idSite: siteId,
                     titre,
                     showBarCode
@@ -93,6 +106,20 @@ const Inventaire = () => {
         )
     }, [data, siteId, titre]);
 
+    const [showPrintNonCalculatedArticlesModal, hidePrintNonCalculatedArticlesModal] = useModal(({ in: open, onExited }) => {
+
+        return (
+            <IframeDialog
+                onExited={onExited}
+                open={open}
+                onClose={hidePrintNonCalculatedArticlesModal}
+                src={getPrintInventaireArticleNonCalculesURL({
+                    idSite: siteId,
+                })}>
+              
+            </IframeDialog>
+        )
+    }, [siteId]);
     const columns = React.useMemo(
         () => codeBarreListColumns(),
         []
@@ -149,7 +176,7 @@ const Inventaire = () => {
     }
 
     const deleteRow = (rowIndex) => {
-        setData(_data => (_data.filter((_, i) => i !== rowIndex)));
+        setData(_data => (_data?.filter((_, i) => i !== rowIndex)));
     }
 
     const addNewRow = () => {
@@ -158,7 +185,7 @@ const Inventaire = () => {
 
     const areDataValid = () => {
         const _errors = [];
-        const filteredData = data.filter(x => x.Article);
+        const filteredData = data?.filter(x => x.Article);
 
         if (filteredData.length < 1) {
             _errors['table'] = 'Ajouter des articles.';
@@ -183,7 +210,7 @@ const Inventaire = () => {
             Id: Id,
             IdSite: siteId,
             Titre: titre,
-            InventaireItems: data.filter(x => x.Article).map(d => ({
+            InventaireItems: data?.filter(x => x.Article).map(d => ({
                 Id: uuidv4(),
                 IdInvetaire: Id,
                 QteStock: d.QteStock,
@@ -262,6 +289,17 @@ const Inventaire = () => {
             <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
                 <Button
                     variant="contained"
+                    color="secondary"
+                    style={{
+                        marginRight: 8
+                    }}
+                    startIcon={<DescriptionIcon />}
+                    onClick={showPrintNonCalculatedArticlesModal}
+                >
+                    Les articles manquants
+                </Button>
+                <Button
+                    variant="contained"
                     color="primary"
                     startIcon={<DescriptionIcon />}
                     onClick={() => history.push('/liste-inventaire')}
@@ -338,7 +376,12 @@ const Inventaire = () => {
                         {errors.table}
                     </Error>}
                     <Box mt={4} display="flex" justifyContent="flex-end">
-                        <Button style={{
+                        {data?.filter(x=>x.Article).length>0&&<Button style={{
+                            marginRight: 12
+                        }} startIcon={<BarcodeScan />} variant="contained" color="secondary" onClick={showPrintBarcodeLabelModal}>
+                            code-barres
+                         </Button>}
+                         <Button style={{
                             marginRight: 12
                         }} startIcon={<PrintIcon />} variant="contained" color="primary" onClick={print}>
                             Imprimer
@@ -383,7 +426,7 @@ export const codeBarreListColumns = () => ([
                         updateMyData(index, id, selectedValue);
                         updateMyData(index, 'QteStock', selectedValue?.QteStock)
                         updateMyData(index, 'Categorie', selectedValue?.Categorie)
-                        if (data.filter(x => !x.Article).length === 1 || data.length === 1)
+                        if (data?.filter(x => !x.Article).length === 1 || data.length === 1)
                             addNewRow();
 
                         const qteCell = document.querySelector(`#my-table #QteStockReel-${(index)} input`);

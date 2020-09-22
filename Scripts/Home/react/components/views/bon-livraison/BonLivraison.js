@@ -31,7 +31,6 @@ import { looseFocus, convertLowercaseNumbersFR } from '../../../utils/miscUtils'
 import SuiviVentes from '../ventes/suivi/SuiviVentes'
 import BonLivraisonAutocomplete from '../../elements/bon-livraison-autocomplete/BonLivraisonAutocomplete'
 import { useAuth } from '../../providers/AuthProvider'
-import Quagga from 'quagga'
 
 const DOCUMENT = 'BonLivraisons'
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
@@ -98,28 +97,6 @@ const BonLivraison = () => {
     }, 0);
     const [result, setResult] = React.useState('')
 
-    React.useEffect(()=>{
-        Quagga.init({
-            inputStream : {
-              name : "Live",
-              type : "LiveStream",
-              target: document.querySelector('#quagga')    // Or '#yourElement' (optional)
-            },
-            decoder : {
-              readers : ["code_128_reader"]
-            }
-          }, function(err) {
-              if (err) {
-                  console.log(err);
-                  return
-              }
-              console.log("Initialization finished. Ready to start");
-              Quagga.start();
-              Quagga.onProcessed(r=>{
-                  setResult(JSON.stringify(r))
-              })
-          });
-    }, [])
     const columns = React.useMemo(
         () => getBonLivraisonColumns({ BLDiscount, hasMultipleSites, suiviModule }),
         [BLDiscount, hasMultipleSites]
@@ -241,7 +218,7 @@ const BonLivraison = () => {
         //load bon de livraison
         if (isEditMode && bonLivraisonId) {
             setLoading(true);
-            getSingleData(DOCUMENT, bonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', DOCUMENT_ITEMS + '/' + 'Article', 'Site'])
+            getSingleData(DOCUMENT, bonLivraisonId, [DOCUMENT_OWNER, 'TypePaiement', 'Site', DOCUMENT_ITEMS + '/' + 'Article/ArticleSites'])
                 .then(response => {
                     if (response.WithDiscount)
                         setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: true }));
@@ -251,10 +228,13 @@ const BonLivraison = () => {
                     setDate(response.Date);
                     setNote(response.Note);
                     setData([...response.BonLivraisonItems?.map(x => ({
-                        Article: x.Article,
+                        Article: {
+                            ...x.Article,
+                            QteStock: x.Article.ArticleSites?.find(y=>y.IdSite === siteId)?.QteStock
+                        },
                         Qte: x.Qte,
                         Pu: x.Pu,
-                        Site: x.Site,
+                        Site: { Id: 1 },
                         Discount: x.Discount ? x.Discount + (x.PercentageDiscount ? '%' : '') : ''
                     })), emptyLine]);
                     setNumDoc(response.NumBon);
@@ -264,7 +244,7 @@ const BonLivraison = () => {
                 .finally(() => setLoading(false));
         } else if (DevisId) {
             setLoading(true);
-            getSingleData('Devises', DevisId, [DOCUMENT_OWNER, 'TypePaiement', 'DevisItems' + '/' + 'Article'])
+            getSingleData('Devises', DevisId, [DOCUMENT_OWNER, 'TypePaiement', 'DevisItems' + '/' + 'Article/ArticleSites'])
                 .then(response => {
                     if (response.WithDiscount)
                         setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: true }));
@@ -272,7 +252,10 @@ const BonLivraison = () => {
                         setBLDiscount(_docSetting => ({ ..._docSetting, Enabled: false }));
                     setClient(response.Client);
                     setData(response.DevisItems?.map(x => ({
-                        Article: x.Article,
+                        Article: {
+                            ...x.Article,
+                            QteStock: x.Article.ArticleSites?.find(y=>y.IdSite === siteId)?.QteStock
+                        },
                         Qte: x.Qte,
                         Pu: x.Pu,
                         Site: { Id: 1 },
@@ -418,6 +401,7 @@ const BonLivraison = () => {
         setClient(null);
         setNote('');
         setPaymentType(null);
+        setIsEditMode(false);
         setTimeout(() => {
             setDate(new Date());
         }, 1000)

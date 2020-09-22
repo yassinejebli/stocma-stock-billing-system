@@ -52,54 +52,54 @@ namespace WebApplication1.Controllers
         public ActionResult GetArticleByBarCode(string BarCode, Guid? IdClient, int IdSite)
         {
             var dateBeforeOneYear = DateTime.Now.AddYears(-1);
-            var article = db.ArticleSites.FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite && !x.Disabled).Article;
-            if (IdClient.HasValue && article != null)
+            var articleSite = db.ArticleSites.FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite && !x.Disabled);
+            if (IdClient.HasValue && articleSite != null)
             {
-                var lastSoldeTime = article.BonLivraisonItems.Where(x => x.BonLivraison.IdClient == IdClient && x.IdArticle == article.Id && x.BonLivraison.Date >= dateBeforeOneYear)
+                var lastSoldeTime = articleSite.Article.BonLivraisonItems.Where(x => x.BonLivraison.IdClient == IdClient && x.IdArticle == articleSite.IdArticle && x.BonLivraison.Date >= dateBeforeOneYear)
                 .OrderByDescending(x => x.BonLivraison.Date).Take(1).FirstOrDefault();
                 if (lastSoldeTime != null)
-                    article.PVD = lastSoldeTime.Pu;
+                    articleSite.Article.PVD = lastSoldeTime.Pu;
             }
-            if(article == null)
+            if(articleSite == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
             return Json(new
             {
-                article.BarCode,
-                article.Designation,
-                article.Id,
-                article.PVD,
-                article.MinStock,
-                article.PA,
-                article.Ref,
-                article.QteStock,
+                articleSite.Article.BarCode,
+                articleSite.Article.Designation,
+                articleSite.Article.Id,
+                articleSite.Article.PVD,
+                articleSite.Article.MinStock,
+                articleSite.Article.PA,
+                articleSite.Article.Ref,
+                articleSite.QteStock,
             }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetArticleAchatByBarCode(string BarCode, Guid? IdFournisseur, int IdSite)
         {
             var dateBeforeOneYear = DateTime.Now.AddYears(-1);
-            var article = db.ArticleSites.FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite && !x.Disabled).Article;
-            if (IdFournisseur.HasValue && article != null)
+            var articleSite = db.ArticleSites.FirstOrDefault(x => x.Article.BarCode == BarCode && x.IdSite == IdSite && !x.Disabled);
+            if (IdFournisseur.HasValue && articleSite != null)
             {
-                var lastPurchasedTime = article.BonReceptionItems.Where(x => x.BonReception.IdFournisseur == IdFournisseur && x.IdArticle == article.Id && x.BonReception.Date >= dateBeforeOneYear)
+                var lastPurchasedTime = articleSite.Article.BonReceptionItems.Where(x => x.BonReception.IdFournisseur == IdFournisseur && x.IdArticle == articleSite.IdArticle && x.BonReception.Date >= dateBeforeOneYear)
                 .OrderByDescending(x => x.BonReception.Date).Take(1).FirstOrDefault();
                 if (lastPurchasedTime != null)
-                    article.PVD = lastPurchasedTime.Pu;
+                    articleSite.Article.PA = lastPurchasedTime.Pu;
             }
-            if (article == null)
+            if (articleSite == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
             return Json(new
             {
-                article.BarCode,
-                article.Designation,
-                article.Id,
-                article.PVD,
-                article.MinStock,
-                article.PA,
-                article.Ref,
-                article.QteStock,
+                articleSite.Article.BarCode,
+                articleSite.Article.Designation,
+                articleSite.Article.Id,
+                articleSite.Article.PVD,
+                articleSite.Article.MinStock,
+                articleSite.Article.PA,
+                articleSite.Article.Ref,
+                articleSite.QteStock,
             }, JsonRequestBehavior.AllowGet);
         }
     }

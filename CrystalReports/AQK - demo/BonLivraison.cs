@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.AQK___orig {
+namespace WebApplication1.CrystalReports.AQK___demo {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.AQK___orig {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class DevisAQK : ReportClass {
+    public class BonLivraison : ReportClass {
         
-        public DevisAQK() {
+        public BonLivraison() {
         }
         
         public override string ResourceName {
             get {
-                return "DevisAQK.rpt";
+                return "BonLivraison.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.AQK - orig.DevisAQK.rpt";
+                return "WebApplication1.CrystalReports.AQK - demo.BonLivraison.rpt";
             }
             set {
                 // Do nothing
@@ -90,7 +90,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowDiscount {
+        public CrystalDecisions.Shared.IParameterField Parameter_ShowPrices {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -98,17 +98,25 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_TotalWords {
+        public CrystalDecisions.Shared.IParameterField Parameter_IsEspece {
             get {
                 return this.DataDefinition.ParameterFields[1];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_ShowDiscount {
+            get {
+                return this.DataDefinition.ParameterFields[2];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedDevisAQK : Component, ICachedReport {
+    public class CachedBonLivraison : Component, ICachedReport {
         
-        public CachedDevisAQK() {
+        public CachedBonLivraison() {
         }
         
         [Browsable(false)]
@@ -145,7 +153,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            DevisAQK rpt = new DevisAQK();
+            BonLivraison rpt = new BonLivraison();
             rpt.Site = this.Site;
             return rpt;
         }

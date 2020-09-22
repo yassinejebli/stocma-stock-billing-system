@@ -89,6 +89,10 @@ export const getPrintInventaireURL = ({ids, idSite, titre, showBarCode}) => {
     return `/PrintInventory?${ids}&idSite=${idSite}&titre=${titre}&showBarCode=${showBarCode}`
 }
 
+export const getPrintInventaireArticleNonCalculesURL = ({idSite}) => {
+    return `/PrintInventory/ArticlesNonCalcules?idSite=${idSite}`
+}
+
 export const getPrintSituationGlobaleClientsURL = () => {
     return `/SituationGlobale/Clients`
 }

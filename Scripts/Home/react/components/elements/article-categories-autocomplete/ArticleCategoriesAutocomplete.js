@@ -12,13 +12,13 @@ const useStyles = makeStyles({
   },
 });
 
-const ArticleCategoriesAutocomplete = ({ errorText, inTable, ...props }) => {
+const ArticleCategoriesAutocomplete = ({ errorText, inTable, withArticles, ...props }) => {
   const classes = useStyles();
   const [searchText, setSearchText] = React.useState('');
   const [categories, setCategories] = React.useState([]);
   const debouncedSearchText = useDebounce(searchText);
   React.useEffect(() => {
-    getAllData('Categories').then(response => {
+    getAllData('Categories', null, [withArticles ? 'Articles' : null]).then(response => {
       setCategories(response);
     });
   }, [debouncedSearchText]);

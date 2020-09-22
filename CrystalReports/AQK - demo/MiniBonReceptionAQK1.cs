@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.AQK___orig {
+namespace WebApplication1.CrystalReports.AQK___demo {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.AQK___orig {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class BonLivraison : ReportClass {
+    public class MiniBonReceptionAQK : ReportClass {
         
-        public BonLivraison() {
+        public MiniBonReceptionAQK() {
         }
         
         public override string ResourceName {
             get {
-                return "BonLivraison.rpt";
+                return "MiniBonReceptionAQK.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.AQK - orig.BonLivraison.rpt";
+                return "WebApplication1.CrystalReports.AQK - demo.MiniBonReceptionAQK.rpt";
             }
             set {
                 // Do nothing
@@ -74,7 +74,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection1 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,7 +82,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[4];
             }
@@ -90,33 +90,17 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowPrices {
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
-                return this.DataDefinition.ParameterFields[0];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_IsEspece {
-            get {
-                return this.DataDefinition.ParameterFields[1];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowDiscount {
-            get {
-                return this.DataDefinition.ParameterFields[2];
+                return this.ReportDefinition.Sections[5];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedBonLivraison : Component, ICachedReport {
+    public class CachedMiniBonReceptionAQK : Component, ICachedReport {
         
-        public CachedBonLivraison() {
+        public CachedMiniBonReceptionAQK() {
         }
         
         [Browsable(false)]
@@ -153,7 +137,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            BonLivraison rpt = new BonLivraison();
+            MiniBonReceptionAQK rpt = new MiniBonReceptionAQK();
             rpt.Site = this.Site;
             return rpt;
         }

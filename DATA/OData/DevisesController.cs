@@ -28,7 +28,7 @@ namespace WebApplication1.DATA.OData
             return (IQueryable<Devis>)this.db.Devises.OrderByDescending(x => x.Date);
         }
 
-        [EnableQuery]
+        [EnableQuery(MaxExpansionDepth = 5)]
         public SingleResult<Devis> GetDevis([FromODataUri] Guid key)
         {
             return SingleResult.Create<Devis>(this.db.Devises.Where<Devis>((Expression<Func<Devis, bool>>)(devis => devis.Id == key)));

@@ -291,7 +291,7 @@ const BonReception = () => {
                                 setData(_data => ([{
                                     Article: response,
                                     Qte: 1,
-                                    Pu: response.PVD
+                                    Pu: response.PA
                                 }, ..._data]))
                             }
                             audioSuccess.play();

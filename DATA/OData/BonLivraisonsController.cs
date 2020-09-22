@@ -24,7 +24,7 @@ namespace WebApplication1.DATA.OData
             return db.BonLivraisons.OrderByDescending(x => new { x.Date.Year, x.Ref });
         }
 
-        [EnableQuery]
+        [EnableQuery(MaxExpansionDepth = 5)]
         public SingleResult<BonLivraison> GetBonLivraison([FromODataUri] Guid key)
         {
             return SingleResult.Create(db.BonLivraisons.Where<BonLivraison>((Expression<Func<BonLivraison, bool>>)(bonLivraison => bonLivraison.Id == key)));

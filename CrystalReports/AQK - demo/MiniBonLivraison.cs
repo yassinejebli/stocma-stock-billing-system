@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.AQK___orig {
+namespace WebApplication1.CrystalReports.AQK___demo {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.AQK___orig {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class BonCommandeChiffre : ReportClass {
+    public class MiniBonLivraison : ReportClass {
         
-        public BonCommandeChiffre() {
+        public MiniBonLivraison() {
         }
         
         public override string ResourceName {
             get {
-                return "BonCommandeChiffre.rpt";
+                return "MiniBonLivraison.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.AQK - orig.BonCommandeChiffre.rpt";
+                return "WebApplication1.CrystalReports.AQK - demo.MiniBonLivraison.rpt";
             }
             set {
                 // Do nothing
@@ -87,12 +87,52 @@ namespace WebApplication1.CrystalReports.AQK___orig {
                 return this.ReportDefinition.Sections[4];
             }
         }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section PageFooterSection3 {
+            get {
+                return this.ReportDefinition.Sections[5];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section PageFooterSection4 {
+            get {
+                return this.ReportDefinition.Sections[6];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_Solde {
+            get {
+                return this.DataDefinition.ParameterFields[0];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_ShowSolde {
+            get {
+                return this.DataDefinition.ParameterFields[1];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_ShowPrices {
+            get {
+                return this.DataDefinition.ParameterFields[2];
+            }
+        }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedBonCommandeChiffre : Component, ICachedReport {
+    public class CachedMiniBonLivraison : Component, ICachedReport {
         
-        public CachedBonCommandeChiffre() {
+        public CachedMiniBonLivraison() {
         }
         
         [Browsable(false)]
@@ -129,7 +169,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            BonCommandeChiffre rpt = new BonCommandeChiffre();
+            MiniBonLivraison rpt = new MiniBonLivraison();
             rpt.Site = this.Site;
             return rpt;
         }

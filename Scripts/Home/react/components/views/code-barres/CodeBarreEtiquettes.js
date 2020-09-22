@@ -18,6 +18,7 @@ import { useLocation } from 'react-router-dom'
 import qs from 'qs'
 import { useLoader } from '../../providers/LoaderProvider'
 import { getSingleData } from '../../../queries/crudBuilder'
+import ArticleCategoriesAutocomplete from '../../elements/article-categories-autocomplete/ArticleCategoriesAutocomplete'
 
 const emptyLine = {
     Article: null,
@@ -37,6 +38,7 @@ const CodeBarreEtiquettes = () => {
     const BonReceptionId = qs.parse(location.search, { ignoreQueryPrefix: true }).BonReceptionId;
     const [data, setData] = React.useState([emptyLine]);
     const [errors, setErrors] = React.useState({});
+    const [selectedCategory, setSelectedCategory] = React.useState(null);
     const [showPrintBarcodeLabelModal, hidePrintBarcodeLabelModal] = useModal(({ in: open, onExited }) => {
         return (
             <PrintCodeBarreEtiquette
@@ -117,10 +119,28 @@ const CodeBarreEtiquettes = () => {
         showPrintBarcodeLabelModal();
     }
 
+    console.log('test', { selectedCategory })
     return (
         <>
             <Paper>
                 <TitleIcon noBorder title="Impression des codes à barres" Icon={BarcodeScan} />
+                <Box mt={4} width={300}>
+                    <ArticleCategoriesAutocomplete
+                        value={selectedCategory}
+                        withArticles
+                        onChange={(_, selectedValue) => {
+                            setSelectedCategory(selectedValue || null)
+                            if (selectedValue)
+                                setData([...selectedValue.Articles.map(x => ({
+                                    Article: x,
+                                    BarCode: x.BarCode,
+                                    Qte: 1,
+                                })), emptyLine])
+                            else
+                                setData([emptyLine])
+                        }}
+                    />
+                </Box>
                 <Box mt={4}>
                     <Box>
                         <AddButton tabIndex={-1} disableFocusRipple disableRipple onClick={addNewRow}>

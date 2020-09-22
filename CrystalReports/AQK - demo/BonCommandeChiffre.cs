@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.AQK___orig {
+namespace WebApplication1.CrystalReports.AQK___demo {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.AQK___orig {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class Paiements : ReportClass {
+    public class BonCommandeChiffre : ReportClass {
         
-        public Paiements() {
+        public BonCommandeChiffre() {
         }
         
         public override string ResourceName {
             get {
-                return "Paiements.rpt";
+                return "BonCommandeChiffre.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.AQK - orig.Paiements.rpt";
+                return "WebApplication1.CrystalReports.AQK - demo.BonCommandeChiffre.rpt";
             }
             set {
                 // Do nothing
@@ -87,36 +87,12 @@ namespace WebApplication1.CrystalReports.AQK___orig {
                 return this.ReportDefinition.Sections[4];
             }
         }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_solde {
-            get {
-                return this.DataDefinition.ParameterFields[0];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_header {
-            get {
-                return this.DataDefinition.ParameterFields[1];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_imageUrl {
-            get {
-                return this.DataDefinition.ParameterFields[2];
-            }
-        }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedPaiements : Component, ICachedReport {
+    public class CachedBonCommandeChiffre : Component, ICachedReport {
         
-        public CachedPaiements() {
+        public CachedBonCommandeChiffre() {
         }
         
         [Browsable(false)]
@@ -153,7 +129,7 @@ namespace WebApplication1.CrystalReports.AQK___orig {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            Paiements rpt = new Paiements();
+            BonCommandeChiffre rpt = new BonCommandeChiffre();
             rpt.Site = this.Site;
             return rpt;
         }
