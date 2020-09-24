@@ -69,7 +69,7 @@ const CodeBarreEtiquettes = () => {
             showLoader(true);
             getSingleData('BonReceptions', BonReceptionId, ['BonReceptionItems' + '/' + 'Article'])
                 .then(response => {
-                    setData(response.BonReceptionItems?.map(x => ({
+                    setData(response.BonReceptionItems?.filter(x=>x.Article.IsBarCodePrintable).map(x => ({
                         Article: x.Article,
                         Qte: x.Qte,
                     })));

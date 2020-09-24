@@ -37,6 +37,8 @@ namespace WebApplication1.Migrations
             //});
 
             return;
+            //context.Database.ExecuteSqlCommand("UPDATE Articles SET IsBarCodePrintable = 1");
+
 
             var devisClientNameNull = context.Devises.Where(x => x.ClientName == null);
             if (devisClientNameNull.Count() > 0)

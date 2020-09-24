@@ -38,6 +38,8 @@ namespace WebApplication1.DATA
         [DefaultValue(0)]
         public float QteStock { get; set; }
 
+
+
         [NotMapped]
         public float QteStockSum { 
             get
@@ -56,6 +58,8 @@ namespace WebApplication1.DATA
         public string Unite { get; set; } = "U";
 
         public bool IsStocked { get; set; } = false;
+
+        public bool IsBarCodePrintable { get; set; } = true;
 
         [DefaultValue(20)]
         public float? TVA { get; set; } = 20;

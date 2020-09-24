@@ -27,6 +27,7 @@ const initialState = {
     Unite: 'U',
     QteStock: 0,
     Disabled: false,
+    IsBarCodePrintable: true,
     MinStock: 1,
     Image: null,
     BarCode: '',
@@ -93,6 +94,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                 TVA: Article.TVA,
                 Unite: Article.Unite,
                 Disabled: Disabled,
+                IsBarCodePrintable: Article.IsBarCodePrintable,
                 Image: Article.Image,
                 MinStock: Article.MinStock,
                 BarCode: Article.BarCode,
@@ -328,6 +330,18 @@ const ArticleForm = ({ data, onSuccess }) => {
                     }}
                 />
             </Box>}
+            <Box>
+            <FormControlLabel
+                control={<Switch
+                    checked={formState.IsBarCodePrintable}
+                    onChange={(_, checked) => setFormState(_formState => ({
+                        ...formState,
+                        IsBarCodePrintable: checked
+                    })
+                    )} />}
+                label="Imprimer code-barres"
+            />
+            </Box>
             <FormControlLabel
                 control={<Switch
                     checked={!formState.Disabled}
