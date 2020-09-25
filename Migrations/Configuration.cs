@@ -36,6 +36,16 @@ namespace WebApplication1.Migrations
             //    x.BarCode = randomGenerator2.Next(100000, 999999) + "";
             //});
 
+            //Avoir
+            /*var date = new DateTime(2020, 1, 1);
+            context.FakeFactures.Where(x => x.Date >= date).SelectMany(x => x.FakeFactureItems).ForEach(x => {
+                x.ArticleFacture.QteStock += x.Qte;
+            });
+
+            context.FakeFacturesF.Where(x => x.Date >= date).SelectMany(x => x.FakeFactureFItems).ForEach(x => {
+                x.ArticleFacture.QteStock -= x.Qte;
+            });*/
+
             return;
             //context.Database.ExecuteSqlCommand("UPDATE Articles SET IsBarCodePrintable = 1");
 

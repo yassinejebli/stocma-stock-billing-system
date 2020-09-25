@@ -34,7 +34,7 @@ namespace WebApplication1
         {
             var counter = db.ArticleFactures
                 .Where(x => x.QteStock > 0 && !x.Disabled)
-                .Sum(x => (float?)(x.QteStock * x.PA)) ?? 0;
+                .Sum(x => (float?)(x.QteStock * (x.PA - (x.PA * x.TVA/100)))) ?? 0;
 
             return counter;
         }
