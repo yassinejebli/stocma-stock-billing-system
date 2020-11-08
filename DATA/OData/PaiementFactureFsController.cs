@@ -10,7 +10,7 @@ using Microsoft.AspNet.OData;
 namespace WebApplication1.DATA.OData
 {
     [Authorize]
-    public class PaiementFactureFFsController : ODataController
+    public class PaiementFactureFsController : ODataController
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 

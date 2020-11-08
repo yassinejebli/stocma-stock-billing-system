@@ -9,8 +9,10 @@ import ArticleForm from '../forms/ArticleForm';
 import ClientForm from '../forms/ClientForm';
 import FournisseurForm from '../forms/FournisseurForm';
 import PaiementClientForm from '../forms/PaiementClientForm';
+import PaiementFactureClientForm from '../forms/PaiementFactureClientForm';
 import SiteForm from '../forms/SiteForm';
 import PaiementFournisseurForm from '../forms/PaiementFournisseurForm';
+import PaiementFactureFournisseurForm from '../forms/PaiementFactureFournisseurForm';
 import ArticleCategoriesForm from '../forms/ArticleCategoriesForm';
 import FakeArticleForm from '../forms/FakeArticleForm';
 import { useSite } from '../../providers/SiteProvider';
@@ -78,7 +80,7 @@ export const useStyles = makeStyles(theme => ({
 
 const SideWrapperDialog = (props) => {
     const [selectedItem, setSelectedItem] = React.useState(null);
-
+    const {useVAT} = useSite();
     React.useEffect(() => {
         setSelectedItem(null);
     }, [props.onExited])
@@ -95,9 +97,9 @@ const SideWrapperDialog = (props) => {
             case items.fournisseur:
                 return <FournisseurForm />;
             case items.paiementClient:
-                return <PaiementClientForm />;
+                return useVAT ? <PaiementFactureClientForm /> : <PaiementClientForm />;
             case items.paiementFournisseur:
-                return <PaiementFournisseurForm />;
+                return useVAT ? <PaiementFactureFournisseurForm /> : <PaiementFournisseurForm />;
             case items.site:
                 return <SiteForm />;
             case items.categorie:

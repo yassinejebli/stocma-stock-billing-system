@@ -226,6 +226,7 @@ const FactureAchat = () => {
                         fournisseurId={fournisseur?.Id}
                         value={selectedBonReceptions}
                         onChange={(_, value) => {
+                            console.log({value})
                             setSelectedBonReceptions(value)
                         }}
                     />

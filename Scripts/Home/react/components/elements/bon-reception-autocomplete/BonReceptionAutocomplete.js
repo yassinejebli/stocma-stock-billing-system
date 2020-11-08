@@ -46,7 +46,7 @@ const BonReceptionAutocomplete = ({ errorText, fournisseurId, withoutMultiple, .
   return (
     <Autocomplete
       {...props}
-      withoutMultiple
+      multiple={!Boolean(withoutMultiple)}
       filterSelectedOptions
       popupIcon={null}
       forcePopupIcon={false}

@@ -23,6 +23,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { useAuth } from '../../providers/AuthProvider';
 import { useSettings } from '../../providers/SettingsProvider';
+import { useSite } from '../../providers/SiteProvider';
 export const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -137,6 +138,7 @@ const MenuItems = () => {
         canManageBonAvoirsVente,
         canViewSuiviAchats,
     } = useAuth();
+    const {useVAT} = useSite();
     const [showSettingSideMenu, hideSettingSideMenu] = useModal(({ in: open, onExited }) => (
         <SettingsDialog open={open} onExited={onExited} onClose={hideSettingSideMenu} />
     ));
@@ -192,7 +194,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Bon de livraison" />
                         </ListItem>
-                        {canManageFacturesVente && <ListItem button className={classes.nested} component={Link} to="/_Facture">
+                        {canManageFacturesVente && <ListItem button className={classes.nested} component={Link} to={useVAT ? "/Facture" : "/_Facture"}>
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>}
@@ -228,7 +230,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Bon de réception" />
                         </ListItem>}
-                        {canManageFacturesAchat && <ListItem button className={classes.nested} component={Link} to="/_FactureAchat">
+                        {canManageFacturesAchat && <ListItem button className={classes.nested} component={Link} to={useVAT ? "/FactureAchat" : "/_FactureAchat"}>
                             <ListItemIcon />
                             <ListItemText primary="Facture" />
                         </ListItem>}

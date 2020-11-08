@@ -11,7 +11,7 @@ import ClientList from './components/views/client/clientList';
 import SnackBarProvider from './components/providers/SnackBarProvider';
 import SupplierList from './components/views/fournisseur/SupplierList';
 import BonLivraisonList from './components/views/bon-livraison/BonLivraisonList';
-import SiteProvider from './components/providers/SiteProvider';
+import SiteProvider, { useSite } from './components/providers/SiteProvider';
 import ArticleList from './components/views/articles/ArticleList';
 import ArticlesMarginList from './components/views/articles/ArticlesMarginList';
 import SiteList from './components/views/sites/SiteList';
@@ -60,6 +60,8 @@ import InventaireList from './components/views/stock-mouvement/InventaireList';
 import ArticlesNotSellingList from './components/views/articles/ArticlesNotSellingList';
 import ClientsNotBuyingList from './components/views/client/ClientsNotBuyingList';
 import ArticleCategoriesList from './components/views/article-categories/ArticleCategoriesList';
+import PaiementClientFactureList from './components/views/paiement-client-facture/PaiementClientFactureList';
+import PaiementFactureFournisseurList from './components/views/paiement-fournisseur-facture/PaiementFactureFournisseurList';
 
 const Routes = () => {
     const {
@@ -95,6 +97,8 @@ const Routes = () => {
         canViewSuiviAchats,
     } = useAuth();
 
+    const {useVAT} = useSite();
+
     return <>
         {canViewDashboard && <Route exact path="/" component={Dashboard} />}
         {isAdmin && utilisateursModule?.Enabled && <Route path="/liste-des-utilisateurs" component={UtilisateurList} />}
@@ -110,8 +114,8 @@ const Routes = () => {
 
         {
             paiementModule?.Enabled && <>
-                {canManagePaiementsFournisseurs && <Route path="/liste-paiements-des-fournisseurs" component={PaiementFournisseurList} />}
-                {canManagePaiementsClients && <Route path="/liste-paiements-des-clients" component={PaiementClientList} />}
+                {canManagePaiementsFournisseurs && <Route path="/liste-paiements-des-fournisseurs" component={useVAT?PaiementFactureFournisseurList : PaiementFournisseurList} />}
+                {canManagePaiementsClients && <Route path="/liste-paiements-des-clients" component={useVAT ? PaiementClientFactureList:PaiementClientList} />}
                 {canManagePaiementsClients && <Route path="/liste-cheques-et-effets-des-clients" component={BankPaiementsClientList} />}
                 {canManagePaiementsFournisseurs && <Route path="/liste-cheques-et-effets-des-fournisseurs" component={BankPaiementsFournisseurList} />}
             </>

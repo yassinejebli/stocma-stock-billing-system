@@ -32,6 +32,9 @@ namespace WebApplication1.DATA
         public DateTime? DateEcheance { get; set; }
 
         public bool? EnCaisse { get; set; }
+
+        public bool? MonCheque { get; set; } = false;
+
         public bool? Hide { get; set; }
 
         public virtual FactureF FactureF { get; set; }

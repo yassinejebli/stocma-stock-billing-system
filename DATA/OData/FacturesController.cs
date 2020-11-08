@@ -17,13 +17,13 @@ namespace WebApplication1.DATA.OData
     {
         private MySaniSoftContext db = new MySaniSoftContext();
 
-        [EnableQuery(EnsureStableOrdering = false, MaxExpansionDepth = 4)]
+        [EnableQuery(EnsureStableOrdering = false, MaxExpansionDepth = 5)]
         public IQueryable<Facture> GetFactures()
         {
             return (IQueryable<Facture>)this.db.Factures.OrderByDescending(x => x.Date);
         }
 
-        [EnableQuery(MaxExpansionDepth = 4)]
+        [EnableQuery(MaxExpansionDepth = 5)]
         public SingleResult<Facture> GetFacture([FromODataUri] Guid key)
         {
             return SingleResult.Create<Facture>(this.db.Factures.Where<Facture>((Expression<Func<Facture, bool>>)(facture => facture.Id == key)));

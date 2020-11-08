@@ -1,13 +1,15 @@
 import React from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Box, Button, TextField } from '@material-ui/core';
+import { Box, Button, TextField, FormControlLabel, Switch } from '@material-ui/core';
 import DatePicker from '../date-picker/DatePicker';
 import TitleIcon from '../misc/TitleIcon';
 import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import ClientAutocomplete from '../client-autocomplete/ClientAutocomplete';
-import { saveData } from '../../../queries/crudBuilder';
+import { saveData, updateData } from '../../../queries/crudBuilder';
 import { useSnackBar } from '../../providers/SnackBarProvider';
+import TypePaiementAutocomplete from '../type-paiement-autocomplete/TypePaiementAutocomplete';
+import { useAuth } from '../../providers/AuthProvider';
+import { useLoader } from '../../providers/LoaderProvider';
 
 export const useStyles = makeStyles(theme => ({
     root: {
@@ -26,17 +28,19 @@ export const paiementMethods = [
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeecb3',
         name: 'Chéque',
-        isBankRelatedItem: true,
+        IsBankRelated: true,
     },
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeecb4',
         name: 'Effet',
-        isBankRelatedItem: true,
+        IsBankRelated: true,
     },
-    // {
-    //     id: '399d159e-9ce0-4fcc-957a-08a65bbeece1',
-    //     name: 'Impayé'
-    // },
+    {
+        id: '399d159e-9ce0-4fcc-957a-08a65bbeece1',
+        name: 'Impayé',
+        IsBankRelated: true,
+        isDebit: true
+    },
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeecc1',
         name: 'Versement',
@@ -56,6 +60,7 @@ export const paiementMethods = [
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeeca4',
         name: 'Remboursement',
+        isDebit: true
     },
     {
         id: '399d159e-9ce0-4fcc-957a-08a65bbeecc9',
@@ -70,14 +75,21 @@ const initialState = {
     date: new Date(),
     dueDate: null,
     comment: '',
-    client: null
+    client: null,
+    isCashed: false
 }
 
-const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) => {
+const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSuccess, isAvoir }) => {
+    const { showLoader } = useLoader();
     const { showSnackBar } = useSnackBar();
-    const [formState, setFormState] = React.useState(initialState);
+    const { canManagePaiementsClients } = useAuth();
+    if (!canManagePaiementsClients) return null;
+    const [formState, setFormState] = React.useState({
+        ...initialState,
+        date: new Date()
+    });
     const [formErrors, setFormErrors] = React.useState({});
-    const isFromDocument = document && amount;
+    const isFromDocument = Boolean(document);
     const isEditMode = Boolean(paiement);
 
     React.useEffect(() => {
@@ -86,8 +98,21 @@ const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) =>
                 ..._formState,
                 amount,
                 client: document.Client,
-                comment: 'FA ' + document.NumBon,
-                IdFacture: document.Id
+                comment: (isAvoir ? 'Avoir ' : 'BL ') + document.NumBon,
+                type: typePaiement,
+                IdBonLivraison: document.Id
+            }));
+        }
+        if (isEditMode) {
+            setFormState(_formState => ({
+                ..._formState,
+                amount: paiement.Credit || paiement.Debit, //TODO: change this
+                client: paiement.Client,
+                type: paiement.TypePaiement,
+                comment: paiement.Comment,
+                date: paiement.Date,
+                dueDate: paiement.DateEcheance,
+                isCashed: paiement.EnCaisse
             }));
         }
     }, []);
@@ -95,32 +120,49 @@ const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) =>
     const save = async () => {
         if (!isFormValid()) return;
 
+        showLoader(true);
         const preparedData = {
-            IdTypePaiement: formState.type.id,
+            IdTypePaiement: formState.type.Id,
             IdClient: formState.client.Id,
-            Credit: formState.type.isDebit ? 0 : formState.amount,
-            Debit: formState.type.isDebit ? formState.amount : 0,
+            Credit: formState.type.IsDebit ? 0 : formState.amount,
+            Debit: formState.type.IsDebit ? formState.amount : 0,
             Date: formState.date,
             DateEcheance: formState.dueDate,
-            Comment: formState.comment
+            Comment: formState.comment,
+            EnCaisse: formState.isCashed
         }
 
         if (isEditMode) {
-
-        } else {
-            const response = await saveData(TABLE, preparedData);
-            if (response?.Id) {
-                showSnackBar();
-                setFormState({...initialState});
+            const response = await updateData(TABLE, { ...preparedData, Id: paiement.Id, ModificationDate: new Date() }, paiement.Id);
+            if (response.ok) {
+                setFormState({ ...initialState });
+                showSnackBar({
+                    text: 'Le paiement est bien enregistré'
+                });
                 if (onSuccess) onSuccess();
             } else {
                 showSnackBar({
-                    error: true
+                    error: true,
+                    text: 'Erreur !'
+                });
+            }
+        } else {
+            const response = await saveData(TABLE, preparedData);
+            if (response?.Id) {
+                showSnackBar({
+                    text: 'Le paiement est bien enregistré'
+                });
+                setFormState({ ...initialState });
+                if (onSuccess) onSuccess();
+            } else {
+                showSnackBar({
+                    error: true,
+                    text: 'Erreur!'
                 })
             }
         }
 
-        console.log({ preparedData });
+        showLoader(false);
     }
 
     const onFieldChange = ({ target }) => setFormState(_formState => ({ ..._formState, [target.name]: target.value }));
@@ -139,19 +181,19 @@ const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) =>
             _errors['dueDate'] = 'Ce champs est obligatoire.'
         if (!formState.comment && formState.type?.IsBankRelated)
             _errors['comment'] = 'Ce champs est obligatoire.'
-        if (!formState.comment && formState.type?.IsBankRelated)
-            _errors['client'] = 'Ce champs est obligatoire.'
 
         setFormErrors(_errors);
         return Object.keys(_errors).length === 0;
     }
 
+    console.log({ formState });
     return (
         <div>
             <TitleIcon title="Paiement" Icon={AccountBalanceWalletOutlinedIcon} />
             <Box flexDirection="column" display="flex" mt={2}>
                 {!isFromDocument && <ClientAutocomplete
                     label="Client"
+                    disabled={isEditMode}
                     value={formState.client}
                     onChange={(_, value) => setFormState(_formState => ({ ...formState, client: value }))}
                     errorText={formErrors.client}
@@ -168,32 +210,14 @@ const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) =>
                     error={Boolean(formErrors.amount)}
                     helperText={formErrors.amount}
                 />
-                <Autocomplete
-                    options={paiementMethods}
-                    disableClearable
-                    autoHighlight
-                    value={formState.type}
-                    onChange={(_, value) => setFormState(_formState => ({ ...formState, type: value }))}
-                    size="small"
-                    getOptionLabel={(option) => option?.name}
-                    renderInput={(params) => (
-                        <TextField
-                            onChange={() => null}
-                            {...params}
-                            margin="normal"
-                            label="Mode de paiement"
-                            variant="outlined"
-                            inputProps={{
-                                ...params.inputProps,
-                                autoComplete: 'new-password',
-                                type: 'search',
-                                margin: 'normal'
-                            }}
-                            error={Boolean(formErrors.type)}
-                            helperText={formErrors.type}
-                        />
-                    )}
-                />
+                <Box mt={1}>
+                    <TypePaiementAutocomplete
+                        showAllPaymentMethods
+                        value={formState.type}
+                        errorText={formErrors.type}
+                        onChange={(_, value) => setFormState(_formState => ({ ...formState, type: value }))}
+                    />
+                </Box>
                 <DatePicker
                     value={formState.date}
                     onChange={(_date) => setFormState(_formState => ({ ...formState, date: _date }))}
@@ -221,7 +245,17 @@ const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) =>
                     error={Boolean(formErrors.comment)}
                     helperText={formErrors.comment}
                 />
-                <Box mt={2} display="flex" justifyContent="flex-end" onClick={save}>
+                {formState.type?.IsBankRelated && !formState.type?.IsDebit && <FormControlLabel
+                    control={<Switch
+                        checked={formState.isCashed}
+                        onChange={(_, checked) => setFormState(_formState => ({
+                            ...formState,
+                            isCashed: checked
+                        })
+                        )} />}
+                    label="Encaissé"
+                />}
+                <Box mt={1} display="flex" justifyContent="flex-end" onClick={save}>
                     <Button variant="contained" color="primary">
                         Enregistrer
                     </Button>
@@ -232,4 +266,4 @@ const PaiementFactureClientForm = ({ document, amount, paiement, onSuccess }) =>
     )
 }
 
-export default PaiementFactureClientForm
+export default PaiementClientForm
