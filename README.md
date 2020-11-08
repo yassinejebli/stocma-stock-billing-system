@@ -10,3 +10,7 @@ I created this side project to help my father and my uncles to manage their stor
 * Other features: Warehouse management, inventory, reports, purchases, stock...
 * Technologies used: ASP.NET MVC, SQL, EF 6, Javascript, React, Material-ui
 * Link to demo: http://demo.stocma.com (Login: admin / Password: comciel123)
+
+## React directory
+
+https://github.com/yassinejebli/stocma-stock-billing-system/tree/master/Scripts/Home/react
