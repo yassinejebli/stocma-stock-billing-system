@@ -36,7 +36,7 @@ const Dashboard = () => {
             <div>
                 <ProfitAndExpenses year={selectedYear} />
                 <MonthlyProfitAndExpenses year={selectedYear} />
-                <MonthlyProfitAndCash year={selectedYear} />
+                {/* <MonthlyProfitAndCash year={selectedYear} /> */}
             </div>
         </div>
     )

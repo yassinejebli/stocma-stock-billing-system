@@ -22,10 +22,10 @@ namespace WebApplication1.DATA.OData
         private MySaniSoftContext db = new MySaniSoftContext();
 
         // GET: odata/FactureFs
-        [EnableQueryAttribute(MaxExpansionDepth = 3)]
+        [EnableQueryAttribute(MaxExpansionDepth = 3, EnsureStableOrdering = false)]
         public IQueryable<FactureF> GetFactureFs()
         {
-            return db.FactureFs;
+            return db.FactureFs.OrderByDescending(x => x.Date);
         }
 
         // GET: odata/FactureFs(5)

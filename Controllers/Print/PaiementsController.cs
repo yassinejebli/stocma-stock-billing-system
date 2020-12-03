@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Web.Caching;
 using System.Web.Mvc;
 using WebApplication1.DATA;
 
@@ -17,18 +18,19 @@ namespace WebApplication1.Controllers.Print
     {
         private MySaniSoftContext context = new MySaniSoftContext();
 
-        public ActionResult Index(Guid id, DateTime dateFrom, DateTime dateTo)
+        public ActionResult Index(Guid id, DateTime dateFrom, DateTime dateTo, bool showStamp = false)
         {
             ReportDocument reportDocument = new ReportDocument();
             StatistiqueController statistiqueController = new StatistiqueController();
             string company = StatistiqueController.getCompanyName().ToUpper();
+            var useVAT = context.Companies.FirstOrDefault().UseVAT;
             var client = context.Clients.Find(id);
 
 
             reportDocument.Load(
                    Path.Combine(this.Server.MapPath("~/CrystalReports/" + company + "/Paiements.rpt")));
 
-            var solde = context.Paiements.Where(x => x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f;
+            var solde = useVAT ? context.PaiementFactures.Where(x => x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f : context.Paiements.Where(x => x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f;
 
 
             reportDocument.SetDataSource(GetPaiements(id, dateFrom, dateTo));
@@ -37,6 +39,8 @@ namespace WebApplication1.Controllers.Print
                 reportDocument.SetParameterValue("solde", solde);
             if (reportDocument.ParameterFields["header"] != null)
                 reportDocument.SetParameterValue("header", solde);
+            if (reportDocument.ParameterFields["cachet"] != null)
+                reportDocument.SetParameterValue("cachet", showStamp);
 
             reportDocument.PrintOptions.PaperSize = PaperSize.PaperA4;
             reportDocument.PrintOptions.ApplyPageMargins(new PageMargins(0, 0, 0, 0));
@@ -57,6 +61,7 @@ namespace WebApplication1.Controllers.Print
 
         private dynamic GetPaiements(Guid id, DateTime dateFrom, DateTime dateTo)
         {
+            var useVAT = context.Companies.FirstOrDefault().UseVAT;
             var client = context.Clients.Find(id);
 
             var dataSource = context.Paiements.Where(x => x.IdClient == id && DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && x.Hide != true)
@@ -73,8 +78,24 @@ namespace WebApplication1.Controllers.Print
                     ICE = x.Client.ICE,
                     Adresse = x.Client.Adresse
                 }).OrderBy(x => x.Date).ToList();
-            var soldeBeforeDate = context.Paiements.Where(x => DbFunctions.TruncateTime(x.Date) < dateFrom.Date && x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f;
-            var solde = context.Paiements.Where(x => x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f;
+            if (useVAT)
+            {
+                dataSource = context.PaiementFactures.Where(x => x.IdClient == id && DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && x.Hide != true)
+                .Select(x => new
+                {
+                    Client = x.Client.Name,
+                    NumBon = x.Facture.NumBon,
+                    Date = x.Date,
+                    Debit = x.Debit,
+                    Credit = x.Credit,
+                    Type = x.TypePaiement.Name,
+                    DateEcheance = "",
+                    Commentaire = x.Comment,
+                    ICE = x.Client.ICE,
+                    Adresse = x.Client.Adresse
+                }).OrderBy(x => x.Date).ToList();
+            }
+            var soldeBeforeDate = useVAT ? context.PaiementFactures.Where(x => DbFunctions.TruncateTime(x.Date) < dateFrom.Date && x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f : context.Paiements.Where(x => DbFunctions.TruncateTime(x.Date) < dateFrom.Date && x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f;
             dataSource.Insert(0, new
             {
                 Client = client.Name,

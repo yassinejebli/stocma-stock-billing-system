@@ -262,10 +262,10 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Articles" />
                         </ListItem>
-                            <ListItem button component={Link} to="/_ArticleList">
+                            {!useVAT&&<ListItem button component={Link} to="/_ArticleList">
                                 <ListItemIcon />
                                 <ListItemText primary="Articles (Facture)" />
-                            </ListItem>
+                            </ListItem>}
                         </>}
                         <ListItem button component={Link} to="/inventaire">
                             <ListItemIcon />

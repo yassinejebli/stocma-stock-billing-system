@@ -16,7 +16,8 @@ const PrintClientAccountSummary = ({ clientId, dateFrom, dateTo, onClose, onExit
             src={getPrintClientAccountSummaryURL({
                 id: clientId,
                 dateFrom: dateFrom.toISOString(),
-                dateTo: dateTo.toISOString()
+                dateTo: dateTo.toISOString(),
+                showStamp: showStamp
             })}>
             <Box p={1}>
                 {document &&

@@ -60,7 +60,7 @@ const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
                                     label="Afficher le cachet"
                                 />
                             </Box>
-                            {!isClientDivers&&canManagePaiementsClients&&<div>
+                            {!isClientDivers&&!useVAT&&canManagePaiementsClients&&<div>
                                 <FormControlLabel
                                     control={<Switch
                                         checked={showForm}
@@ -69,7 +69,7 @@ const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
                                     label="Paiement reçu"
                                 />
                             </div>}
-                            {showForm && !isClientDivers &&
+                            {showForm && !useVAT && !isClientDivers &&
                                 <Box mt={2}>
                                     <PaiementClientForm
                                         amount={document[DOCUMENT_ITEMS]?.reduce((sum, curr) => (

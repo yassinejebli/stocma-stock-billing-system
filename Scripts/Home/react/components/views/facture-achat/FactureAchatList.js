@@ -66,7 +66,7 @@ const FactureAchatList = () => {
     }, [documentToPrint]);
 
     React.useEffect(() => {
-        setTitle('Facture')
+        setTitle("Facture d'achat")
     }, []);
 
     const refetchData = () => {

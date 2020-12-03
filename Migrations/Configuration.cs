@@ -909,6 +909,7 @@ namespace WebApplication1.Migrations
                 TypePaiementCarteBancaire.IsBankRelated = false;
             }
 
+            context.SaveChanges();
             var ClientDivers = context.Clients.Find(new Guid("45c8b294-3a63-487c-821e-70bf4f9bdc39"));
             if (ClientDivers != null)
             {
@@ -926,7 +927,6 @@ namespace WebApplication1.Migrations
                     settings.ForEach(x => x.Enabled = true);
                 }
             }
-
             context.SaveChanges();
         }
     }

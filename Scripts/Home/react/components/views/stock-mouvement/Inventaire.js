@@ -59,6 +59,7 @@ const Inventaire = () => {
     const { setTitle } = useTitle();
     const { showLoader } = useLoader();
     const location = useLocation();
+    const [selectedCategory, setSelectedCategory] = React.useState(null);
     const InventaireId = qs.parse(location.search, { ignoreQueryPrefix: true }).InventaireId;
     const isViewMode = Boolean(InventaireId);
     const [data, setData] = React.useState([emptyLine]);
@@ -79,7 +80,7 @@ const Inventaire = () => {
             />
         )
     }, [data]);
-    
+
     const [showPrintModal, hidePrintModal] = useModal(({ in: open, onExited }) => {
         const [showBarCode, setShowBarCode] = React.useState(false);
 
@@ -116,7 +117,7 @@ const Inventaire = () => {
                 src={getPrintInventaireArticleNonCalculesURL({
                     idSite: siteId,
                 })}>
-              
+
             </IframeDialog>
         )
     }, [siteId]);
@@ -309,6 +310,24 @@ const Inventaire = () => {
             </Box>
             <Paper>
                 <TitleIcon noBorder title="Inventaire" Icon={LocalMallOutlinedIcon} />
+                <Box mt={4} width={240}>
+                        <ArticleCategoriesAutocomplete
+                            value={selectedCategory}
+                            withArticles
+                            onChange={(_, selectedValue) => {
+                                console.log({selectedValue})
+                                setSelectedCategory(selectedValue || null)
+                                if (selectedValue)
+                                    setData([...selectedValue.Articles.map(x => ({
+                                        Article: x,
+                                        QteStock: x.QteStock,
+                                        Categorie: x.Categorie,
+                                    })), emptyLine])
+                                else
+                                    setData([emptyLine])
+                            }}
+                        />
+                    </Box>
                 <Box mt={2} display="flex" justifyContent="space-between">
                     <Box width={240}>
                         <TextField
@@ -320,6 +339,7 @@ const Inventaire = () => {
                             label="Titre"
                         />
                     </Box>
+                    
                     {!isViewMode && <Box display="flex" alignItems="center">
                         <Box>
                             <Button startIcon={<VerticalAlignTopIcon />} variant="contained" color="primary" onClick={loadData}>
@@ -376,12 +396,12 @@ const Inventaire = () => {
                         {errors.table}
                     </Error>}
                     <Box mt={4} display="flex" justifyContent="flex-end">
-                        {data?.filter(x=>x.Article).length>0&&<Button style={{
+                        {data?.filter(x => x.Article).length > 0 && <Button style={{
                             marginRight: 12
                         }} startIcon={<BarcodeScan />} variant="contained" color="secondary" onClick={showPrintBarcodeLabelModal}>
                             code-barres
                          </Button>}
-                         <Button style={{
+                        <Button style={{
                             marginRight: 12
                         }} startIcon={<PrintIcon />} variant="contained" color="primary" onClick={print}>
                             Imprimer

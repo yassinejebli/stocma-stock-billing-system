@@ -2323,7 +2323,7 @@ namespace WebApplication1.Controllers
                 Qte = x.QteStock,
                 Unite = x.Unite,
                 BarCode = x.BarCode
-            }).OrderBy(x => x.Designation).ToList());
+            }).ToList());
             this.Response.Buffer = false;
             this.Response.ClearContent();
             this.Response.ClearHeaders();
