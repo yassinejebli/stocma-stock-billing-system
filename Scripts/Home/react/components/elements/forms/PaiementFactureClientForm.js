@@ -98,7 +98,7 @@ const PaiementClientForm = ({ document, amount, typePaiement, paiement, onSucces
                 ..._formState,
                 amount,
                 client: document.Client,
-                comment: (isAvoir ? 'Avoir ' : 'BL ') + document.NumBon,
+                comment: (isAvoir ? 'Avoir ' : 'FA ') + document.NumBon,
                 type: typePaiement,
                 IdBonLivraison: document.Id
             }));

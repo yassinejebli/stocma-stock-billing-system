@@ -20,10 +20,10 @@ namespace WebApplication1.DATA.OData
   {
     private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
+    [EnableQuery(EnsureStableOrdering = false)]
     public IQueryable<ArticleFacture> GetArticleFactures()
     {
-      return (IQueryable<ArticleFacture>) this.db.ArticleFactures;
+      return (IQueryable<ArticleFacture>) this.db.ArticleFactures.OrderByDescending(x=>x.QteStock);
     }
 
     [EnableQuery]

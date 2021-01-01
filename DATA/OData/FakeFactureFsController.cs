@@ -94,8 +94,19 @@ namespace WebApplication1.DATA.OData
             foreach (var fi in fakeFactureF.FakeFactureFItems)
             {
                 var article = db.ArticleFactures.Find(fi.IdArticleFacture);
+                if (article.QteStock <= 0)
+                {
+                    article.PA = fi.Pu;
+                }
+                else
+                {
+                    //PUMP
+                    var PA = (Decimal)(((article.QteStock * article.PA) + (fi.Qte * fi.Pu)) / (article.QteStock + fi.Qte));
+                    article.PA = (float)Math.Round(PA, 2, MidpointRounding.AwayFromZero);
+                }
                 article.QteStock += fi.Qte;
             }
+
 
             db.FakeFacturesF.Add(fakeFactureF);
 

@@ -14,6 +14,7 @@ namespace WebApplication1.Statistics
         {
             if (!From.HasValue) From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             if (!To.HasValue) To = DateTime.Now;
+            var useVAT = db.Companies.FirstOrDefault().UseVAT;
             var clientsProfit = db.Clients.Where(x => !x.Disabled).Select(x => new
             {
                 client = x.Name,
@@ -25,7 +26,7 @@ namespace WebApplication1.Statistics
                 .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f -
                 x.BonAvoirCs.SelectMany(y => y.BonAvoirCItems).Where(y => y.BonAvoirC.Date >= From && y.BonAvoirC.Date <= To)
                 .Sum(y => (float?)(y.Qte * (y.Pu - y.PA))) ?? 0f,
-                solde = x.IsClientDivers ? 0 : x.Paiements.Sum(y => (float?)(y.Debit - y.Credit)) ?? 0f,
+                solde = x.IsClientDivers ? 0 : (useVAT ? x.PaiementFactures.Sum(y => (float?)(y.Debit - y.Credit)) ?? 0f : x.Paiements.Sum(y => (float?)(y.Debit - y.Credit)) ?? 0f),
             }).Where(x => x.turnover > 0 && (SearchText == "" || x.client.ToLower().Contains(SearchText.ToLower())));
 
             var totalItems = clientsProfit.Count();
@@ -36,6 +37,7 @@ namespace WebApplication1.Statistics
         public dynamic ClientsNotBuying(int Skip, string SearchText, int Months)
         {
             var dateBeforeNmonths = DateTime.Now.AddMonths(-Months);
+            var useVAT = db.Companies.FirstOrDefault().UseVAT;
 
             var clients = db.Clients.Where(x => !x.Disabled && !x.BonLivraisons.Where(y => y.Date > dateBeforeNmonths).Any() && (SearchText == "" || x.Name.ToLower().Contains(SearchText.ToLower())))
                 .Select(x => new
@@ -43,7 +45,7 @@ namespace WebApplication1.Statistics
                     client = x.Name,
                     adresse = x.Adresse,
                     email = x.Email,
-                    solde = x.IsClientDivers ? 0 : x.Paiements.Sum(y => (float?)(y.Debit - y.Credit)) ?? 0f,
+                    solde = x.IsClientDivers ? 0 : (useVAT ? x.PaiementFactures.Sum(y => (float?)(y.Debit - y.Credit)) ?? 0f :  x.Paiements.Sum(y => (float?)(y.Debit - y.Credit)) ?? 0f),
                     turnover = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems)
                                 .Sum(y => (float?)(y.Qte * y.Pu)) ?? 0f -
                                 x.BonAvoirCs.SelectMany(y => y.BonAvoirCItems)

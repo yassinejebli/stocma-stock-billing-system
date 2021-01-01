@@ -131,6 +131,7 @@ export const SideDialogWrapper = ({ children, onExited, ...props }) => {
 const Menu = ({ open }) => {
     const {
         siteModule,
+        paymentModule
     } = useSettings();
     const classes = useStyles();
     const { useVAT } = useSite();
@@ -145,7 +146,7 @@ const Menu = ({ open }) => {
     return (
         <>
             <div className={classes.header}>Ajouter un élément</div>
-            {canManagePaiementsClients && <div className={classes.item} onClick={() => open(items.paiementClient)}>
+            { paymentModule?.Enabled && canManagePaiementsClients && <div className={classes.item} onClick={() => open(items.paiementClient)}>
                 <Avatar className={classes.avatar}>
                     <AccountBalanceWalletOutlinedIcon className={classes.icon} />
                 </Avatar>
@@ -154,7 +155,7 @@ const Menu = ({ open }) => {
                     <div className={classes.description}>Ajouter des paiements effectués par vos clients</div>
                 </div>
             </div>}
-            {canManagePaiementsFournisseurs && <div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
+            {paymentModule?.Enabled && canManagePaiementsFournisseurs && <div className={classes.item} onClick={() => open(items.paiementFournisseur)}>
                 <Avatar className={classes.avatar}>
                     <AccountBalanceWalletOutlinedIcon className={classes.icon} />
                 </Avatar>

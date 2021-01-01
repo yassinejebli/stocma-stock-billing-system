@@ -17,10 +17,12 @@ import { SideDialogWrapper } from '../../elements/dialogs/SideWrapperDialog';
 import AddIcon from '@material-ui/icons/Add';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import { useLoader } from '../../providers/LoaderProvider';
-import ListAltIcon from '@material-ui/icons/ListAlt';
 import { getPrintSituationGlobaleFournisseursURL } from '../../../utils/urlBuilder';
 import IframeDialog from '../../elements/dialogs/IframeDialog';
 import PaiementFactureFournisseurForm from '../../elements/forms/PaiementFactureFournisseurForm';
+import { useSite } from '../../providers/SiteProvider';
+import PrintFournisseurAccountSummary from '../../elements/dialogs/documents-print/PrintFournisseurAccountSummary';
+import PrintIcon from '@material-ui/icons/Print';
 
 const TABLE = 'PaiementFactureFs';
 
@@ -37,13 +39,14 @@ const PaiementFactureFournisseurList = () => {
     const { setTitle } = useTitle();
     const [fournisseur, setFournisseur] = React.useState(null);
     const [searchText, setSearchText] = React.useState('');
+    const [summaryFournisseurIdToPrint, setSummaryFournisseurIdToPrint] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
-    const [documentToPrint, setDocumentToPrint] = React.useState(null);
     const [dateFrom, setDateFrom] = React.useState(firstDayCurrentMonth);
     const [dateTo, setDateTo] = React.useState(lastDayCurrentMonth);
     const debouncedSearchText = useDebounce(searchText);
     const [errors, setErrors] = React.useState({});
     const { showSnackBar } = useSnackBar();
+    const { useVAT } = useSite();
     const filters = React.useMemo(() => {
         return {
             'Date': { ge: dateFrom, le: dateTo },
@@ -70,7 +73,21 @@ const PaiementFactureFournisseurList = () => {
             ]
         }
     }, [debouncedSearchText, fournisseur, dateFrom, dateTo]);
-    
+    const [showAccountSummaryModal, hideAccountSummaryModal] = useModal(({ in: open, onExited }) => {
+        return (
+            <PrintFournisseurAccountSummary
+                onExited={onExited}
+                open={open}
+                fournisseurId={summaryFournisseurIdToPrint}
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                onClose={() => {
+                    setSummaryFournisseurIdToPrint(null);
+                    hideAccountSummaryModal();
+                }}
+            />
+        )
+    }, [summaryFournisseurIdToPrint, dateFrom, dateTo]);
     const [showNewPaiementModal, hideNewPaiementModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideNewPaiementModal}>
             <PaiementFactureFournisseurForm
@@ -174,10 +191,10 @@ const PaiementFactureFournisseurList = () => {
         showPaiementModal();
     }, []);
 
-    // const printAccountSummary = () => {
-    //     setSummaryFournisseurIdToPrint(fournisseur?.Id);
-    //     showAccountSummaryModal();
-    // }
+    const printAccountSummary = () => {
+        setSummaryFournisseurIdToPrint(fournisseur?.Id);
+        showAccountSummaryModal();
+    }
 
     //Impaye
     const customAction = React.useCallback(async (row) => {
@@ -216,14 +233,15 @@ const PaiementFactureFournisseurList = () => {
     return (
         <>
             <Box mt={1} mb={2} display="flex" justifyContent="space-between">
-                {/* {fournisseur && dateFrom && dateTo && <Button
+                {/* TODO: remove useVAT condition */}
+                {fournisseur && useVAT && dateFrom && dateTo && <Button
                     variant="contained"
                     color="primary"
                     startIcon={<PrintIcon />}
                     onClick={printAccountSummary}
                 >
-                    Imprimer la situation de compte fournisseur
-                </Button>} */}
+                    Imprimer la situation du fournisseur
+                </Button>}
                 <Box ml="auto">
                     {/* <Button
                         variant="contained"

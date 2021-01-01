@@ -28,6 +28,7 @@ namespace WebApplication1.DATA.OData
             return SingleResult.Create<FakeFacture>(this.db.FakeFactures.Where<FakeFacture>((Expression<Func<FakeFacture, bool>>)(fakeFacture => fakeFacture.Id == key)));
         }
 
+        // article duplicated issue and QteStock > 0
         [EnableQuery]
         public async Task<IHttpActionResult> Put([FromODataUri] Guid key, FakeFacture newFakeFacture)
         {
@@ -37,8 +38,7 @@ namespace WebApplication1.DATA.OData
             if (fakeFacture == null)
                 return (IHttpActionResult)this.NotFound();
 
-            db.FakeFactureItems.RemoveRange(fakeFacture.FakeFactureItems);
-            db.FakeFactureItems.AddRange(newFakeFacture.FakeFactureItems);
+            
             fakeFacture.Date = newFakeFacture.Date;
             fakeFacture.Ref = newFakeFacture.Ref;
             fakeFacture.Note = newFakeFacture.Note;
@@ -64,6 +64,9 @@ namespace WebApplication1.DATA.OData
                 var article = db.ArticleFactures.Find(fiNew.IdArticleFacture);
                 article.QteStock -= fiNew.Qte;
             }
+
+            db.FakeFactureItems.RemoveRange(fakeFacture.FakeFactureItems);
+            db.FakeFactureItems.AddRange(newFakeFacture.FakeFactureItems);
 
             try
             {

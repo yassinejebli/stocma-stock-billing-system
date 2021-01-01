@@ -161,7 +161,7 @@ const FakeFacture = () => {
                 return;
             }
 
-            if (_row.Pu <= _row.Article.PA) {
+            if (_row.Pu <= _row.Article.PA && !isEditMode) {
                 _errors['table'] = 'Vérifier les prix de ventes.';
                 return;
             }

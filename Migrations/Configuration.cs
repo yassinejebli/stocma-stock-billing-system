@@ -76,7 +76,7 @@ namespace WebApplication1.Migrations
             Random randomGenerator = new Random();
             if (articleBarCodeNull.Count() > 0)
             {
-                articleBarCodeNull.ForEach(x => x.BarCode = "A" + randomGenerator.Next(100000, 999999));
+                articleBarCodeNull.ForEach(x => x.BarCode = "" + randomGenerator.Next(100000, 999999));
             }
 
             context.SaveChanges();

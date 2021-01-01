@@ -46,7 +46,7 @@ const BonReception = () => {
         barcodeModule,
         suiviModule,
     } = useSettings();
-    const { siteId, company } = useSite();
+    const { siteId, company, useVAT } = useSite();
     const { showSnackBar } = useSnackBar();
     const { setTitle } = useTitle();
     const history = useHistory();
@@ -233,10 +233,13 @@ const BonReception = () => {
         console.log({ response, isEditMode });
 
         if (response?.Id) {
-            setSavedDocument(response)
+            console.log({useVAT})
+            if(!useVAT){
+                setSavedDocument(response)
+                showModal();
+            }
             resetData();
             showSnackBar();
-            showModal();
             history.replace('/BonReception')
         } else {
             showSnackBar({

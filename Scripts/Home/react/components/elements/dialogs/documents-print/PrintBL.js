@@ -5,13 +5,16 @@ import { getPrintBonLivraisonURL } from '../../../../utils/urlBuilder';
 import PaiementClientForm from '../../forms/PaiementClientForm';
 import { useSite } from '../../../providers/SiteProvider';
 import { useAuth } from '../../../providers/AuthProvider';
+import { useSettings } from '../../../providers/SettingsProvider';
 
 const DOCUMENT_ITEMS = 'BonLivraisonItems'
 
 const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
     const { canManagePaiementsClients } = useAuth();
+
     const isClientDivers = Boolean(document?.Client?.IsClientDivers);
     const {useVAT} = useSite();
+    const {paiementModule} = useSettings();
     const [showForm, setShowForm] = React.useState(typePaiement && !isClientDivers && canManagePaiementsClients);
     const [bigFormat, setBigFormat] = React.useState(document?.WithDiscount);
     const [showBalance, setShowBalance] = React.useState(false);
@@ -47,7 +50,7 @@ const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
                                         onChange={(_, checked) => setHidePrices(checked)} />}
                                     label="Cacher les prix"
                                 />
-                                {!useVAT&&<FormControlLabel
+                                {!useVAT&&paiementModule?.Enabled&&<FormControlLabel
                                     control={<Switch
                                         checked={showBalance}
                                         onChange={(_, checked) => setShowBalance(checked)} />}
@@ -60,7 +63,7 @@ const PrintBL = ({document, typePaiement, onClose, onExited, open}) => {
                                     label="Afficher le cachet"
                                 />
                             </Box>
-                            {!isClientDivers&&!useVAT&&canManagePaiementsClients&&<div>
+                            {!isClientDivers&&!useVAT&&canManagePaiementsClients&&paiementModule?.Enabled&&<div>
                                 <FormControlLabel
                                     control={<Switch
                                         checked={showForm}

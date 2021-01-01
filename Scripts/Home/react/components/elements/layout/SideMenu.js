@@ -372,7 +372,7 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Types Dépenses" />
                         </ListItem>}
-                        {isAdmin && <ListItem button component={Link} to="/liste-methodes-de-paiement">
+                        {isAdmin && paiementModule?.Enabled && <ListItem button component={Link} to="/liste-methodes-de-paiement">
                             <ListItemIcon />
                             <ListItemText primary="Méthodes de paiement" />
                         </ListItem>}

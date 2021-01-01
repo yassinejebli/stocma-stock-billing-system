@@ -58,7 +58,7 @@ export const getExportClientAccountSummaryURL = (params) => {
 
 export const getPrintFournisseurAccountSummaryURL = (params) => {
     const parsedParams = new URLSearchParams(params).toString();
-    return `/PaiementFs?${parsedParams}`
+    return `/PaiementsF?${parsedParams}`
 }
 
 export const getPrintRapportVentesBLURL = (params) => {

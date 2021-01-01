@@ -28,8 +28,8 @@ export const getPaiementFournisseurListColumns = ({ isFiltered }) => ([
         width: 70,
     },
     {
-        Header: 'BR N#',
-        accessor: 'BonReception.NumBon',
+        Header: 'FA N#',
+        accessor: 'FactureF.NumBon',
         type: inputTypes.text.description
     },
     {

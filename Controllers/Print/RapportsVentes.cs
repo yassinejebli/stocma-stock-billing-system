@@ -134,7 +134,7 @@ namespace WebApplication1.Controllers.Print
                 .Select(x => new
                 {
                     Client = x.Client.Name,
-                    NumBon = "BL" + x.NumBon,
+                    NumBon = "BL " + x.NumBon,
                     Date = x.Date,
                     Debit = x.BonLivraisonItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
