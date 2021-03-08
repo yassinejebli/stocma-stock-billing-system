@@ -4,6 +4,7 @@ import VentesBL from './VentesBL';
 import VentesFA from './VentesFA';
 import Transactions from './Transactions';
 import VentesParUtilisateurs from './VentesParUtilisateur';
+import VentesBLByClient from './VentesBLByClient';
 
 const Rapports = () => {
     const { setTitle } = useTitle();
@@ -14,6 +15,7 @@ const Rapports = () => {
 
     return (
         <>
+            <VentesBLByClient />
             <VentesBL />
             <VentesFA />
             <Transactions />

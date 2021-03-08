@@ -46,7 +46,7 @@ namespace WebApplication1.Controllers.Print
                     TotalHT = x.TotalHT,
                     TypeReglement = x.BonLivraison.TypePaiement != null ? x.BonLivraison.TypePaiement.Name : "",
                     TVA = x.Article.TVA ?? 20,
-                    CodeClient = x.BonLivraison.Client.Code,
+                    CodeClient = company == "EAS" ? x.BonLivraison.Client.CodeClient : x.BonLivraison.Client.Code+"",
                     NumBL = x.BonLivraison.NumBon,
                     Adresse = x.BonLivraison.Client.Adresse,
                     ICE = x.BonLivraison.Client.ICE,

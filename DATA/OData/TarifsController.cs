@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: WebApplication1.DATA.OData.TarifsController
-// Assembly: WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 9C822783-F9C5-42E8-8CB3-732AAA2F6F0F
-// Assembly location: D:\PROJECT\SANI SOFT\WebApplication1\WebApplication1\bin\WebApplication1.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -20,10 +14,10 @@ namespace WebApplication1.DATA.OData
   {
     private MySaniSoftContext db = new MySaniSoftContext();
 
-    [EnableQuery]
+    [EnableQuery(EnsureStableOrdering = false)]
     public IQueryable<Tarif> GetTarifs()
     {
-      return (IQueryable<Tarif>) this.db.Tarifs;
+      return db.Tarifs.OrderByDescending(x => x.Date); ;
     }
 
     [EnableQuery]
@@ -32,17 +26,23 @@ namespace WebApplication1.DATA.OData
       return SingleResult.Create<Tarif>(this.db.Tarifs.Where<Tarif>((Expression<Func<Tarif, bool>>) (tarif => tarif.Id == key)));
     }
 
-    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<Tarif> patch)
+    [EnableQuery]
+    public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Tarif newTarif)
     {
       if (!this.ModelState.IsValid)
         return (IHttpActionResult) this.BadRequest(this.ModelState);
       Tarif tarif = await this.db.Tarifs.FindAsync((object) key);
       if (tarif == null)
         return (IHttpActionResult) this.NotFound();
-      patch.Put(tarif);
+
+      db.TarifItems.RemoveRange(tarif.TarifItems);
+      db.TarifItems.AddRange(newTarif.TarifItems);
+      tarif.Date = newTarif.Date;
+      tarif.Ref = newTarif.Ref;
+
       try
       {
-        int num = await this.db.SaveChangesAsync();
+        await db.SaveChangesAsync();
       }
       catch (DbUpdateConcurrencyException ex)
       {
@@ -50,9 +50,11 @@ namespace WebApplication1.DATA.OData
           return (IHttpActionResult) this.NotFound();
         throw;
       }
-      return (IHttpActionResult) this.Updated<Tarif>(tarif);
+      var tarifWithItems = db.Tarifs.Where(x => x.Id == tarif.Id);
+      return Content(HttpStatusCode.Created, SingleResult.Create(tarifWithItems));
     }
 
+    [EnableQuery]
     public async Task<IHttpActionResult> Post(Tarif tarif)
     {
       if (!this.ModelState.IsValid)
@@ -60,7 +62,7 @@ namespace WebApplication1.DATA.OData
       this.db.Tarifs.Add(tarif);
       try
       {
-        int num = await this.db.SaveChangesAsync();
+        await db.SaveChangesAsync();
       }
       catch (DbUpdateException ex)
       {
@@ -68,8 +70,9 @@ namespace WebApplication1.DATA.OData
           return (IHttpActionResult) this.Conflict();
         throw;
       }
-      return (IHttpActionResult) this.Created<Tarif>(tarif);
-    }
+        var tarifWithItems = db.Tarifs.Where(x => x.Id == tarif.Id);
+        return Content(HttpStatusCode.Created, SingleResult.Create(tarifWithItems));
+     }
 
     [AcceptVerbs(new string[] {"PATCH", "MERGE"})]
     public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Tarif> patch)
@@ -98,8 +101,9 @@ namespace WebApplication1.DATA.OData
       Tarif async = await this.db.Tarifs.FindAsync((object) key);
       if (async == null)
         return (IHttpActionResult) this.NotFound();
-      this.db.Tarifs.Remove(async);
-      int num = await this.db.SaveChangesAsync();
+      db.TarifItems.RemoveRange(async.TarifItems);
+      db.Tarifs.Remove(async);
+      await db.SaveChangesAsync();
       return (IHttpActionResult) this.StatusCode(HttpStatusCode.NoContent);
     }
 

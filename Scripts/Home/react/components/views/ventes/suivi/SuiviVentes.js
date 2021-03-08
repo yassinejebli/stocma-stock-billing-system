@@ -160,6 +160,11 @@ const SuiviVentes = ({client, article}) => {
                         filters={filters}
                     />
                 </Box>
+                <Box mt={2}>
+                    Total Qte: {data.reduce((sum, curr) => (
+                    sum += curr.Qte
+                ), 0)}
+                </Box>
             </Paper>
         </>
     )

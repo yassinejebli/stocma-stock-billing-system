@@ -21,7 +21,8 @@ const useStyles = makeStyles({
 
 const ClientAutocomplete = ({ errorText, ...props }) => {
   const classes = useStyles();
-  const {useVAT} = useSite();
+  const {useVAT, company} = useSite();
+  const showCodeClient = company.Name === 'EAS';
   const [loading, setLoading] = React.useState(false);
   const [clients, setClients] = React.useState([]);
   const [searchText, setSearchText] = React.useState('');
@@ -65,6 +66,7 @@ const ClientAutocomplete = ({ errorText, ...props }) => {
         const solde = !useVAT ? option?.Solde : option?.SoldeFacture;
         return (<div>
           <div>{option?.Name}</div>
+          {showCodeClient&&<div>Code: {option?.CodeClient}</div>}
           <div style={{ color: soldeColor }} className={classes.solde}>Solde: {formatMoney(solde||0)}</div>
         </div>)
       }}

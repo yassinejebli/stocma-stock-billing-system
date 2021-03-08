@@ -13,8 +13,9 @@ import TitleIcon from '../../elements/misc/TitleIcon'
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined'
 import { TextField, Dialog, FormControlLabel, Checkbox, Button } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
+import PrintIcon from '@material-ui/icons/Print';
 import { articleColumns } from '../../elements/table/columns/articleColumns'
-import { getImageURL } from '../../../utils/urlBuilder'
+import { getImageURL, getPrintInventaireTousLesArticlesURL } from '../../../utils/urlBuilder'
 import ArticlesStatistics from '../../elements/statistics/ArticlesStatistics'
 import { useSite } from '../../providers/SiteProvider'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
@@ -212,6 +213,16 @@ const ArticleList = () => {
                         Marge bénéficiaire par article
                     </Button>
                 </Box>}
+                <Box mr={2}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<PrintIcon />}
+                        onClick={() => window.open(getPrintInventaireTousLesArticlesURL({idSite: siteId}),'_blank')}
+                    >
+                        Impression
+                    </Button>
+                </Box>
                 <Button
                     variant="contained"
                     color="primary"

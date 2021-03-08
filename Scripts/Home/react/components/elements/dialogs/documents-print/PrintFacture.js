@@ -3,10 +3,11 @@ import IframeDialog from '../IframeDialog';
 import { Box, FormControlLabel, Switch } from '@material-ui/core';
 import { getPrintFactureURL } from '../../../../utils/urlBuilder';
 import PaiementFactureClientForm from '../../forms/PaiementFactureClientForm';
+import { useSite } from '../../../providers/SiteProvider';
 
 const PrintFacture = ({document, onClose, onExited, open}) => {
     const [showForm, setShowForm] = React.useState(false);
-
+    const {useVAT} = useSite();
     if(!document) return null;
     return (
         <IframeDialog
@@ -19,7 +20,7 @@ const PrintFacture = ({document, onClose, onExited, open}) => {
                 <Box p={1}>
                     {document &&
                         <>
-                            <div>
+                            {!useVAT&&<div>
                                 <FormControlLabel
                                     control={<Switch
                                         checked={showForm}
@@ -27,7 +28,7 @@ const PrintFacture = ({document, onClose, onExited, open}) => {
                                     />}
                                     label="Paiement reçu"
                                 />
-                            </div>
+                            </div>}
                             {showForm &&
                                 <Box mt={2}>
                                     <PaiementFactureClientForm

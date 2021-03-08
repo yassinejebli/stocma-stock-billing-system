@@ -20,7 +20,7 @@ import { getSingleData, saveData } from '../../../queries/crudBuilder'
 import { useSite } from '../../providers/SiteProvider'
 import { getInventoryList, getArticleByBarCode } from '../../../queries/articleQueries'
 import IframeDialog from '../../elements/dialogs/IframeDialog'
-import { getPrintInventaireURL, getPrintInventaireArticleNonCalculesURL } from '../../../utils/urlBuilder'
+import { getPrintInventaireURL, getPrintTarifURL, getPrintInventaireArticleNonCalculesURL } from '../../../utils/urlBuilder'
 import { useSnackBar } from '../../providers/SnackBarProvider'
 import { v4 as uuidv4 } from 'uuid'
 import DescriptionIcon from '@material-ui/icons/Description';
@@ -103,6 +103,22 @@ const Inventaire = () => {
                         label="Code-barres"
                     />
                 </Box>
+            </IframeDialog>
+        )
+    }, [data, siteId, titre]);
+
+    const [showPrintTarifModal, hidePrintTarifModal] = useModal(({ in: open, onExited }) => {
+
+        return (
+            <IframeDialog
+                onExited={onExited}
+                open={open}
+                onClose={hidePrintTarifModal}
+                src={getPrintTarifURL({
+                    ids: data?.filter(x => x.Article).map((x) => (`ids=${x.Article.Id}`)).join('&'),
+                    idSite: siteId,
+                    titre,
+                })}>
             </IframeDialog>
         )
     }, [data, siteId, titre]);
@@ -317,6 +333,7 @@ const Inventaire = () => {
                             onChange={(_, selectedValue) => {
                                 console.log({selectedValue})
                                 setSelectedCategory(selectedValue || null)
+                                setTitre(selectedValue?.Name || "")
                                 if (selectedValue)
                                     setData([...selectedValue.Articles.map(x => ({
                                         Article: x,
@@ -405,6 +422,11 @@ const Inventaire = () => {
                             marginRight: 12
                         }} startIcon={<PrintIcon />} variant="contained" color="primary" onClick={print}>
                             Imprimer
+                         </Button>
+                         <Button style={{
+                            marginRight: 12
+                        }} startIcon={<PrintIcon />} variant="contained" color="primary" onClick={showPrintTarifModal}>
+                            Tarif
                          </Button>
                         <Button variant="contained" color="primary" onClick={save}>
                             Enregistrer

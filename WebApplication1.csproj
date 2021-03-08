@@ -237,6 +237,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\Print\EtatArticleFactureController.cs" />
+    <Compile Include="Controllers\Print\TarifController.cs" />
     <Compile Include="Controllers\Print\PaiementsFController.cs" />
     <Compile Include="Controllers\Print\SituationGlobaleController.cs" />
     <Compile Include="Controllers\Print\InventoryController.cs" />
@@ -255,6 +256,13 @@
     <Compile Include="Controllers\SalesHistoryController.cs" />
     <Compile Include="Controllers\UploadManagerController.cs" />
     <Compile Include="ConvertisseurChiffresLettres.cs" />
+    <Compile Include="CrystalReports\Tarif2.cs">
+      <DependentUpon>Tarif2.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\KDJ\BonAvoirVente.cs">
       <DependentUpon>BonAvoirVente.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -556,11 +564,25 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="CrystalReports\RapportVentesWithoutGroupBy.cs">
+      <DependentUpon>RapportVentesWithoutGroupBy.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\RapportVentesDetails.cs">
+      <DependentUpon>RapportVentesDetails.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\SBCIT\BonCommandeChiffre.cs">
       <DependentUpon>BonCommandeChiffre.rpt</DependentUpon>
-      <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CrystalReports\SBCIT\EtatBonLivraisonsSBCIT.cs">
       <AutoGen>True</AutoGen>
@@ -1182,6 +1204,14 @@
     <Compile Include="Migrations\202009241314225_Article_IsBarCodePrintable_true.cs" />
     <Compile Include="Migrations\202009241314225_Article_IsBarCodePrintable_true.designer.cs">
       <DependentUpon>202009241314225_Article_IsBarCodePrintable_true.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101141614396_Client_CodeClient_Column.cs" />
+    <Compile Include="Migrations\202101141614396_Client_CodeClient_Column.designer.cs">
+      <DependentUpon>202101141614396_Client_CodeClient_Column.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101241444367_UPDATE_TARIF.cs" />
+    <Compile Include="Migrations\202101241444367_UPDATE_TARIF.designer.cs">
+      <DependentUpon>202101241444367_UPDATE_TARIF.cs</DependentUpon>
     </Compile>
     <Compile Include="Statistics\BonLivraisonStatistics.cs" />
     <Compile Include="Statistics\ClientStatistics.cs" />
@@ -4463,6 +4493,21 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>PaiementsF.cs</LastGenOutput>
     </Content>
+    <Content Include="CrystalReports\RapportVentesDetails.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>RapportVentesDetails.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\RapportVentesWithoutGroupBy.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>RapportVentesWithoutGroupBy.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CrystalReports\Tarif2.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Tarif2.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Migrations\201702231840475_init.resx">
       <DependentUpon>201702231840475_init.cs</DependentUpon>
     </EmbeddedResource>
@@ -4714,6 +4759,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009241314225_Article_IsBarCodePrintable_true.resx">
       <DependentUpon>202009241314225_Article_IsBarCodePrintable_true.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101141614396_Client_CodeClient_Column.resx">
+      <DependentUpon>202101141614396_Client_CodeClient_Column.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101241444367_UPDATE_TARIF.resx">
+      <DependentUpon>202101241444367_UPDATE_TARIF.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -61,6 +61,11 @@ export const getPrintFournisseurAccountSummaryURL = (params) => {
     return `/PaiementsF?${parsedParams}`
 }
 
+export const getPrintRapportVentesBLByClientURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/RapportsVentes/BLByClient?${parsedParams}`
+}
+
 export const getPrintRapportVentesBLURL = (params) => {
     const parsedParams = new URLSearchParams(params).toString();
     return `/RapportsVentes/BL?${parsedParams}`
@@ -89,6 +94,10 @@ export const getPrintInventaireURL = ({ids, idSite, titre, showBarCode}) => {
     return `/PrintInventory?${ids}&idSite=${idSite}&titre=${titre}&showBarCode=${showBarCode}`
 }
 
+export const getPrintInventaireTousLesArticlesURL = ({idSite}) => {
+    return `/PrintInventory/TousLesArticles?idSite=${idSite}`
+}
+
 export const getPrintInventaireArticleNonCalculesURL = ({idSite}) => {
     return `/PrintInventory/ArticlesNonCalcules?idSite=${idSite}`
 }
@@ -99,4 +108,9 @@ export const getPrintSituationGlobaleClientsURL = () => {
 
 export const getPrintSituationGlobaleFournisseursURL = () => {
     return `/SituationGlobale/Fournisseurs`
+}
+
+export const getPrintTarifURL = (params) => {
+    const parsedParams = new URLSearchParams(params).toString();
+    return `/Tarif?${parsedParams}`
 }

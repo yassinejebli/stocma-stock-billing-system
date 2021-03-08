@@ -68,11 +68,11 @@ namespace WebApplication1.Controllers.Print
             var company = context.Companies.FirstOrDefault();
 
             reportDocument.Load(
-                   Path.Combine(this.Server.MapPath("~/CrystalReports/RapportVentes.rpt")));
+                   Path.Combine(this.Server.MapPath("~/CrystalReports/RapportVentesWithoutGroupBy.rpt")));
 
             var dataSource = company.UseVAT ? (context.Factures.Where(
-                        (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo))
-                .Select(x => new
+                        (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo)).OrderBy(x => x.Date)
+                .AsEnumerable().Select(x => new
                 {
                     Client = x.Client.Name,
                     ICE = x.ClientICE,
@@ -82,11 +82,12 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.BonLivraisons.SelectMany(y => y.BonLivraisonItems).Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
-                }).OrderBy(x => x.Date).ToList()) : context.FakeFactures.Where(
-                        (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo))
-                .Select(x => new
+                    DateEcheance = x.DateEcheance.HasValue ? x.DateEcheance.Value.ToString("dd/MM/yyyy") : ""
+                }).ToList()) : context.FakeFactures.Where(
+                        (x => DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo)).OrderBy(x => new { x.Ref, x.Date.Year })
+                .AsEnumerable().Select(x => new
                 {
-                    Client = x.Client.Name,
+                    Client = x.ClientName,
                     ICE = x.ClientICE,
                     NumBon = x.NumBon,
                     Ref = x.Ref,
@@ -94,7 +95,8 @@ namespace WebApplication1.Controllers.Print
                     Debit = x.FakeFactureItems.Sum(y => (float?)y.Pu * y.Qte) ?? 0,
                     Credit = 0,
                     Type = x.TypePaiement != null ? x.TypePaiement.Name : "",
-                }).OrderBy(x => new { x.Ref, x.Date.Year }).ToList();
+                    DateEcheance = x.DateEcheance.HasValue ? x.DateEcheance.Value.ToString("dd/MM/yyyy") : ""
+                }).ToList();
 
             reportDocument.SetDataSource(dataSource);
 
@@ -261,6 +263,45 @@ namespace WebApplication1.Controllers.Print
             var cd = new System.Net.Mime.ContentDisposition
             {
                 FileName = "Transactions.pdf",
+                Inline = true,
+            };
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+            Stream stream = reportDocument.ExportToStream(ExportFormatType.PortableDocFormat);
+            stream.Seek(0L, SeekOrigin.Begin);
+            reportDocument.Close();
+            return File(stream, "application/pdf");
+        }
+
+        public ActionResult BLByClient(Guid id, DateTime dateFrom, DateTime dateTo)
+        {
+            ReportDocument reportDocument = new ReportDocument();
+            StatistiqueController statistiqueController = new StatistiqueController();
+
+            reportDocument.Load(
+                   Path.Combine(this.Server.MapPath("~/CrystalReports/RapportVentesDetails.rpt")));
+            var dataSource = context.BonLivraisons.Where(
+                        (x => x.IdClient == id && DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo))
+                .SelectMany(x=>x.BonLivraisonItems)
+                .Select(x => new
+                {
+                    Client = x.BonLivraison.Client.Name,
+                    NumBon = x.BonLivraison.NumBon,
+                    Date = x.BonLivraison.Date,
+                    PU = x.Pu,
+                    Qte = x.Qte,
+                    Article = x.Article.Designation,
+                    Comment = x.BonLivraison.Note
+                }).OrderBy(x => x.Date).ToList();
+
+            reportDocument.SetDataSource(dataSource);
+
+            reportDocument.PrintOptions.PaperSize = PaperSize.PaperA4;
+            reportDocument.PrintOptions.ApplyPageMargins(new PageMargins(0, 0, 0, 0));
+
+            Response.Buffer = false;
+            var cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = "RapportVentesDetails.pdf",
                 Inline = true,
             };
             Response.AppendHeader("Content-Disposition", cd.ToString());

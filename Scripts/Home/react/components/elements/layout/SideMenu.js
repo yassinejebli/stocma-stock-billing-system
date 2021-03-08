@@ -210,6 +210,10 @@ const MenuItems = () => {
                             <ListItemIcon />
                             <ListItemText primary="Suivi" />
                         </ListItem>}
+                        {isAdmin&&<ListItem button className={classes.nested} component={Link} to="/tarif">
+                            <ListItemIcon />
+                            <ListItemText primary="Tarif" />
+                        </ListItem>}
                         {isAdmin && rapportVenteModule?.Enabled && <ListItem button className={classes.nested} component={Link} to="/rapports-des-ventes">
                             <ListItemIcon />
                             <ListItemText primary="Rapports" />

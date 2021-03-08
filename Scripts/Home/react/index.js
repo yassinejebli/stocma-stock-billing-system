@@ -62,6 +62,8 @@ import ClientsNotBuyingList from './components/views/client/ClientsNotBuyingList
 import ArticleCategoriesList from './components/views/article-categories/ArticleCategoriesList';
 import PaiementClientFactureList from './components/views/paiement-client-facture/PaiementClientFactureList';
 import PaiementFactureFournisseurList from './components/views/paiement-fournisseur-facture/PaiementFactureFournisseurList';
+import Tarif from './components/views/tarif/Tarif';
+import TarifList from './components/views/tarif/TarifList';
 
 const Routes = () => {
     const {
@@ -97,7 +99,7 @@ const Routes = () => {
         canViewSuiviAchats,
     } = useAuth();
 
-    const {useVAT} = useSite();
+    const { useVAT } = useSite();
 
     return <>
         {canViewDashboard && <Route exact path="/" component={Dashboard} />}
@@ -114,8 +116,8 @@ const Routes = () => {
 
         {
             paiementModule?.Enabled && <>
-                {canManagePaiementsFournisseurs && <Route path="/liste-paiements-des-fournisseurs" component={useVAT?PaiementFactureFournisseurList : PaiementFournisseurList} />}
-                {canManagePaiementsClients && <Route path="/liste-paiements-des-clients" component={useVAT ? PaiementClientFactureList:PaiementClientList} />}
+                {canManagePaiementsFournisseurs && <Route path="/liste-paiements-des-fournisseurs" component={useVAT ? PaiementFactureFournisseurList : PaiementFournisseurList} />}
+                {canManagePaiementsClients && <Route path="/liste-paiements-des-clients" component={useVAT ? PaiementClientFactureList : PaiementClientList} />}
                 {canManagePaiementsClients && <Route path="/liste-cheques-et-effets-des-clients" component={BankPaiementsClientList} />}
                 {canManagePaiementsFournisseurs && <Route path="/liste-cheques-et-effets-des-fournisseurs" component={BankPaiementsFournisseurList} />}
             </>
@@ -163,6 +165,9 @@ const Routes = () => {
 
         <Route path="/inventaire" component={Inventaire} />
         <Route path="/liste-inventaire" component={InventaireList} />
+
+        {isAdmin && <Route path="/tarif" component={Tarif} />}
+        {isAdmin && <Route path="/liste-tarif" component={TarifList} />}
 
         {canManageArticles && <Route path="/ArticleList" component={ArticleList} />}
         {canManageArticles && <Route path="/_ArticleList" component={FakeArticleList} />}

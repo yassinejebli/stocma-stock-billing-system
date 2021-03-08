@@ -28,6 +28,8 @@ namespace WebApplication1.DATA
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Code { get; set; }
 
+        public string CodeClient { get; set; } = "";
+
         public string Tel { get; set; }
 
         public string Fax { get; set; }

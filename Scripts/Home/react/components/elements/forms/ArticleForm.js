@@ -330,7 +330,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                     }}
                 />
             </Box>}
-            <Box>
+            {barcodeModule?.Enabled&&<Box>
             <FormControlLabel
                 control={<Switch
                     checked={formState.IsBarCodePrintable}
@@ -341,7 +341,7 @@ const ArticleForm = ({ data, onSuccess }) => {
                     )} />}
                 label="Imprimer code-barres"
             />
-            </Box>
+            </Box>}
             <FormControlLabel
                 control={<Switch
                     checked={!formState.Disabled}

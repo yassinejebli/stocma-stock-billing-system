@@ -13,7 +13,7 @@ import { Box, Tooltip } from '@material-ui/core';
 import HistoryIcon from '@material-ui/icons/History';
 import Input from '../components/elements/input/Input';
 
-export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites, suiviModule }) => ([
+export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites, suiviModule, multiplyPA }) => ([
     {
         Header: 'Article',
         accessor: 'Article',
@@ -30,6 +30,14 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites, suiviModu
             data,
             site,
         }) => {
+            // if(multiplyPA && PA){
+            //     const splittedPA = PA.substr(0, PA.indexOf("."));
+            //     const split = splittedPA[0].split("");
+            //     const prefix = split.substr(0, 1);
+            //     const suffix = split[1]
+            //     const calculatedPAPart = Number(prefix)*5;
+                
+            // }
             return (
                 <>
                     <ArticleAutocomplete
@@ -63,7 +71,7 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites, suiviModu
                         color: value.MinStock > value.QteStock ? 'red' : 'green'
                     }}>
                         <Tooltip title={"CODE:" + Math.floor(1000 + Math.random() * 9000) +
-                            "-" + formatMoney(value.PA) +
+                            "-" + formatMoney(multiplyPA ? value.PA * 5 : value.PA) +
                             "-" + Math.floor(1000 + Math.random() * 9000)}>
                             <span>
                                 {value.QteStock} en stock
@@ -170,13 +178,19 @@ export const getBonLivraisonColumns = ({ BLDiscount, hasMultipleSites, suiviModu
 ].filter(x => x))
 
 
-export const getClientColumns = ({ useVAT }) => ([
+export const getClientColumns = ({ useVAT, showCodeClient }) => ([
     {
         Header: 'Client',
         accessor: 'Name',
         type: inputTypes.text.description,
         width: '30%'
     },
+    (showCodeClient && {
+        Header: 'Code',
+        accessor: 'CodeClient',
+        type: inputTypes.text.description,
+        width: 80
+    }),
     {
         Header: 'I.C.E',
         accessor: 'ICE',
@@ -244,7 +258,7 @@ export const getClientColumns = ({ useVAT }) => ([
         width: 24,
         align: 'right'
     },
-])
+].filter(x => x))
 
 
 export const getFournisseurColumns = () => ([

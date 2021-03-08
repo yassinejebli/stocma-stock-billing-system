@@ -46,7 +46,7 @@
               <xs:element name="TotalHT" msprop:Generator_ColumnVarNameInTable="columnTotalHT" msprop:Generator_ColumnPropNameInRow="TotalHT" msprop:Generator_ColumnPropNameInTable="TotalHTColumn" msprop:Generator_UserColumnName="TotalHT" type="xs:double" minOccurs="0" />
               <xs:element name="Unite" msprop:Generator_ColumnVarNameInTable="columnUnite" msprop:Generator_ColumnPropNameInRow="Unite" msprop:Generator_ColumnPropNameInTable="UniteColumn" msprop:Generator_UserColumnName="Unite" type="xs:string" minOccurs="0" />
               <xs:element name="Adresse" msprop:Generator_ColumnVarNameInTable="columnAdresse" msprop:Generator_ColumnPropNameInRow="Adresse" msprop:Generator_ColumnPropNameInTable="AdresseColumn" msprop:Generator_UserColumnName="Adresse" type="xs:string" minOccurs="0" />
-              <xs:element name="CodeClient" msprop:Generator_ColumnVarNameInTable="columnCodeClient" msprop:Generator_ColumnPropNameInRow="CodeClient" msprop:Generator_ColumnPropNameInTable="CodeClientColumn" msprop:Generator_UserColumnName="CodeClient" type="xs:int" minOccurs="0" />
+              <xs:element name="CodeClient" msprop:Generator_ColumnVarNameInTable="columnCodeClient" msprop:Generator_ColumnPropNameInRow="CodeClient" msprop:Generator_ColumnPropNameInTable="CodeClientColumn" msprop:Generator_UserColumnName="CodeClient" type="xs:string" minOccurs="0" />
               <xs:element name="TypeReglement" msprop:Generator_ColumnVarNameInTable="columnTypeReglement" msprop:Generator_ColumnPropNameInRow="TypeReglement" msprop:Generator_ColumnPropNameInTable="TypeReglementColumn" msprop:Generator_UserColumnName="TypeReglement" type="xs:string" minOccurs="0" />
               <xs:element name="User" msprop:Generator_ColumnVarNameInTable="columnUser" msprop:Generator_ColumnPropNameInRow="User" msprop:Generator_ColumnPropNameInTable="UserColumn" msprop:Generator_UserColumnName="User" type="xs:string" minOccurs="0" />
             </xs:sequence>
@@ -217,6 +217,7 @@
               <xs:element name="Qte" msprop:Generator_ColumnVarNameInTable="columnQte" msprop:Generator_ColumnPropNameInRow="Qte" msprop:Generator_ColumnPropNameInTable="QteColumn" msprop:Generator_UserColumnName="Qte" type="xs:double" minOccurs="0" />
               <xs:element name="Pa" msprop:Generator_ColumnVarNameInTable="columnPa" msprop:Generator_ColumnPropNameInRow="Pa" msprop:Generator_ColumnPropNameInTable="PaColumn" msprop:Generator_UserColumnName="Pa" type="xs:double" minOccurs="0" />
               <xs:element name="BarCode" msprop:Generator_ColumnVarNameInTable="columnBarCode" msprop:Generator_ColumnPropNameInRow="BarCode" msprop:Generator_ColumnPropNameInTable="BarCodeColumn" msprop:Generator_UserColumnName="BarCode" type="xs:string" minOccurs="0" />
+              <xs:element name="Pu2" msprop:Generator_ColumnVarNameInTable="columnPu2" msprop:Generator_ColumnPropNameInRow="Pu2" msprop:Generator_ColumnPropNameInTable="Pu2Column" msprop:Generator_UserColumnName="Pu2" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -225,6 +226,19 @@
             <xs:sequence>
               <xs:element name="Client" msprop:Generator_ColumnVarNameInTable="columnClient" msprop:Generator_ColumnPropNameInRow="Client" msprop:Generator_ColumnPropNameInTable="ClientColumn" msprop:Generator_UserColumnName="Client" type="xs:string" minOccurs="0" />
               <xs:element name="Solde" msprop:Generator_ColumnVarNameInTable="columnSolde" msprop:Generator_ColumnPropNameInRow="Solde" msprop:Generator_ColumnPropNameInTable="SoldeColumn" msprop:Generator_UserColumnName="Solde" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="RapportBLByClient" msprop:Generator_TableClassName="RapportBLByClientDataTable" msprop:Generator_TableVarName="tableRapportBLByClient" msprop:Generator_RowChangedName="RapportBLByClientRowChanged" msprop:Generator_TablePropName="RapportBLByClient" msprop:Generator_RowDeletingName="RapportBLByClientRowDeleting" msprop:Generator_RowChangingName="RapportBLByClientRowChanging" msprop:Generator_RowEvHandlerName="RapportBLByClientRowChangeEventHandler" msprop:Generator_RowDeletedName="RapportBLByClientRowDeleted" msprop:Generator_RowClassName="RapportBLByClientRow" msprop:Generator_UserTableName="RapportBLByClient" msprop:Generator_RowEvArgName="RapportBLByClientRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Client" msprop:Generator_ColumnVarNameInTable="columnClient" msprop:Generator_ColumnPropNameInRow="Client" msprop:Generator_ColumnPropNameInTable="ClientColumn" msprop:Generator_UserColumnName="Client" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" msprop:Generator_ColumnVarNameInTable="columnDate" msprop:Generator_ColumnPropNameInRow="Date" msprop:Generator_ColumnPropNameInTable="DateColumn" msprop:Generator_UserColumnName="Date" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="NumBon" msprop:Generator_ColumnVarNameInTable="columnNumBon" msprop:Generator_ColumnPropNameInRow="NumBon" msprop:Generator_ColumnPropNameInTable="NumBonColumn" msprop:Generator_UserColumnName="NumBon" type="xs:string" minOccurs="0" />
+              <xs:element name="Article" msprop:Generator_ColumnVarNameInTable="columnArticle" msprop:Generator_ColumnPropNameInRow="Article" msprop:Generator_ColumnPropNameInTable="ArticleColumn" msprop:Generator_UserColumnName="Article" type="xs:string" minOccurs="0" />
+              <xs:element name="Qte" msprop:Generator_ColumnVarNameInTable="columnQte" msprop:Generator_ColumnPropNameInRow="Qte" msprop:Generator_ColumnPropNameInTable="QteColumn" msprop:Generator_UserColumnName="Qte" type="xs:double" minOccurs="0" />
+              <xs:element name="PU" msprop:Generator_ColumnVarNameInTable="columnPU" msprop:Generator_ColumnPropNameInRow="PU" msprop:Generator_ColumnPropNameInTable="PUColumn" msprop:Generator_UserColumnName="PU" type="xs:double" minOccurs="0" />
+              <xs:element name="Comment" msprop:Generator_ColumnVarNameInTable="columnComment" msprop:Generator_ColumnPropNameInRow="Comment" msprop:Generator_ColumnPropNameInTable="CommentColumn" msprop:Generator_UserColumnName="Comment" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

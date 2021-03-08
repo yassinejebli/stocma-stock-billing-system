@@ -2,6 +2,7 @@ import { Box, Button, FormControlLabel, Switch, TextField } from '@material-ui/c
 import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
 import React from 'react';
 import { saveData, updateData } from '../../../queries/crudBuilder';
+import { useSite } from '../../providers/SiteProvider';
 import { useSnackBar } from '../../providers/SnackBarProvider';
 import Loader from '../loaders/Loader';
 import TitleIcon from '../misc/TitleIcon';
@@ -14,11 +15,13 @@ const initialState = {
     Plafond: 0,
     Adresse: '',
     ICE: '',
+    CodeClient: '',
     Disabled: false
 }
 const TABLE = 'Clients';
 
 const ClientForm = ({data, onSuccess}) => {
+    const {company} = useSite();
     const { showSnackBar } = useSnackBar();
     const editMode = Boolean(data);
     const [formState, setFormState] = React.useState(initialState);
@@ -90,6 +93,18 @@ const ClientForm = ({data, onSuccess}) => {
                 helperText={formErrors.Name}
                 error={Boolean(formErrors.Name)}
             />
+            {company.Name === 'EAS'&&<TextField
+                name="CodeClient"
+                label="Code du client"
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+                onChange={onFieldChange}
+                value={formState.CodeClient||''}
+                helperText={formErrors.CodeClient}
+                error={Boolean(formErrors.CodeClient)}
+            />}
             <TextField
                 name="ICE"
                 label="I.C.E"

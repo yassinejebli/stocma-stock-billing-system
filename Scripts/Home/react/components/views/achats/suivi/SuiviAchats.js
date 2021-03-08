@@ -17,15 +17,15 @@ const TABLE = 'BonReceptionItems';
 
 const EXPAND = ['Article', 'BonReception/Fournisseur($select=Id,Name)'];
 
-const SuiviAchats = ({fournisseur, article}) => {
+const SuiviAchats = ({ fournisseur, article }) => {
     const today = new Date();
     const firstDayCurrentMonth = new Date(today.getFullYear() - 1, today.getMonth(), 1);
     const lastDayCurrentMonth = new Date();
     firstDayCurrentMonth.setHours(0, 0, 0, 0);
     lastDayCurrentMonth.setHours(23, 59, 59, 999);
     const { setTitle } = useTitle();
-    const [fournisseurSearchText, setFournisseurSearchText] = React.useState(fournisseur?.Name||'');
-    const [articleSearchText, setArticleSearchText] = React.useState(article?.Designation||'');
+    const [fournisseurSearchText, setFournisseurSearchText] = React.useState(fournisseur?.Name || '');
+    const [articleSearchText, setArticleSearchText] = React.useState(article?.Designation || '');
     const [documentToPrint, setDocumentToPrint] = React.useState(null);
     const [dateFrom, setDateFrom] = React.useState(firstDayCurrentMonth);
     const [dateTo, setDateTo] = React.useState(lastDayCurrentMonth);
@@ -159,6 +159,11 @@ const SuiviAchats = ({fournisseur, article}) => {
                         fetchData={fetchData}
                         filters={filters}
                     />
+                </Box>
+                <Box mt={2}>
+                    Total Qte: {data.reduce((sum, curr) => (
+                    sum += curr.Qte
+                ), 0)}
                 </Box>
             </Paper>
         </>

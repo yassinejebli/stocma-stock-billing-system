@@ -98,8 +98,8 @@ const BonLivraison = () => {
     const [result, setResult] = React.useState('')
 
     const columns = React.useMemo(
-        () => getBonLivraisonColumns({ BLDiscount, hasMultipleSites, suiviModule }),
-        [BLDiscount, hasMultipleSites]
+        () => getBonLivraisonColumns({ BLDiscount, hasMultipleSites, suiviModule, multiplyPA: company.Name === 'EAS' }),
+        [BLDiscount, hasMultipleSites, company]
     )
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => {
         return (

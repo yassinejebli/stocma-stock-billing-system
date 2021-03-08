@@ -30,7 +30,7 @@ const ClientList = () => {
     } = useSettings();
     const { isAdmin } = useAuth();
     const { showSnackBar } = useSnackBar();
-    const { useVAT } = useSite();
+    const { useVAT, company } = useSite();
     const { setTitle } = useTitle();
     const history = useHistory();
     const [searchText, setSearchText] = React.useState('');
@@ -58,8 +58,8 @@ const ClientList = () => {
     const [pageCount, setTotalCount] = React.useState(0);
     const fetchIdRef = React.useRef(0);
     const columns = React.useMemo(
-        () => getClientColumns({ useVAT: useVAT }),
-        [useVAT]
+        () => getClientColumns({ useVAT: useVAT, showCodeClient: company.Name === 'EAS' }),
+        [useVAT, company]
     )
     const [showClientModal, hideClientModal] = useModal(({ in: open, onExited }) => (
         <SideDialogWrapper open={open} onExited={onExited} onClose={hideClientModal}>
