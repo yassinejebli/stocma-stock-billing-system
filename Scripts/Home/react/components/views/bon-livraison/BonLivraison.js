@@ -227,7 +227,7 @@ const BonLivraison = () => {
                     setClient(response.Client);
                     setDate(response.Date);
                     setNote(response.Note);
-                    setData([...response.BonLivraisonItems?.map(x => ({
+                    setData([...response.BonLivraisonItems?.sort((a,b)=>b.Index - a.Index)?.map(x => ({
                         Article: {
                             ...x.Article,
                             QteStock: x.Article.ArticleSites?.find(y=>y.IdSite === siteId)?.QteStock

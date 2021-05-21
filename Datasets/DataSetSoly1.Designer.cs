@@ -2330,6 +2330,8 @@ namespace WebApplication1.Datasets {
             
             private global::System.Data.DataColumn columnDate;
             
+            private global::System.Data.DataColumn columnTotal;
+            
             private global::System.Data.DataColumn columnDebit;
             
             private global::System.Data.DataColumn columnCredit;
@@ -2402,6 +2404,14 @@ namespace WebApplication1.Datasets {
             public global::System.Data.DataColumn DateColumn {
                 get {
                     return this.columnDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TotalColumn {
+                get {
+                    return this.columnTotal;
                 }
             }
             
@@ -2514,12 +2524,13 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public PaiementRow AddPaiementRow(string Client, string NumBon, System.DateTime Date, double Debit, double Credit, string Type, string DateEcheance, string Commentaire, string SoldeByClient, string Revendeur, string ICE, string Adresse) {
+            public PaiementRow AddPaiementRow(string Client, string NumBon, System.DateTime Date, double Total, double Debit, double Credit, string Type, string DateEcheance, string Commentaire, string SoldeByClient, string Revendeur, string ICE, string Adresse) {
                 PaiementRow rowPaiementRow = ((PaiementRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Client,
                         NumBon,
                         Date,
+                        Total,
                         Debit,
                         Credit,
                         Type,
@@ -2554,6 +2565,7 @@ namespace WebApplication1.Datasets {
                 this.columnClient = base.Columns["Client"];
                 this.columnNumBon = base.Columns["NumBon"];
                 this.columnDate = base.Columns["Date"];
+                this.columnTotal = base.Columns["Total"];
                 this.columnDebit = base.Columns["Debit"];
                 this.columnCredit = base.Columns["Credit"];
                 this.columnType = base.Columns["Type"];
@@ -2574,6 +2586,8 @@ namespace WebApplication1.Datasets {
                 base.Columns.Add(this.columnNumBon);
                 this.columnDate = new global::System.Data.DataColumn("Date", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDate);
+                this.columnTotal = new global::System.Data.DataColumn("Total", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotal);
                 this.columnDebit = new global::System.Data.DataColumn("Debit", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDebit);
                 this.columnCredit = new global::System.Data.DataColumn("Credit", typeof(double), null, global::System.Data.MappingType.Element);
@@ -2593,6 +2607,7 @@ namespace WebApplication1.Datasets {
                 this.columnAdresse = new global::System.Data.DataColumn("Adresse", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnAdresse);
                 this.columnNumBon.Caption = "Client";
+                this.columnTotal.Caption = "Qte";
                 this.columnDebit.Caption = "Qte";
                 this.columnCredit.Caption = "Qte";
                 this.columnType.Caption = "Qte";
@@ -7518,6 +7533,22 @@ namespace WebApplication1.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public double Total {
+                get {
+                    try {
+                        return ((double)(this[this.tablePaiement.TotalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Total\' in table \'Paiement\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePaiement.TotalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public double Debit {
                 get {
                     try {
@@ -7694,6 +7725,18 @@ namespace WebApplication1.Datasets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetDateNull() {
                 this[this.tablePaiement.DateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTotalNull() {
+                return this.IsNull(this.tablePaiement.TotalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTotalNull() {
+                this[this.tablePaiement.TotalColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

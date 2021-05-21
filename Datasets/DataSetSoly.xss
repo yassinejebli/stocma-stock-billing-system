@@ -10,7 +10,7 @@
     <Shape ID="DesignTable:BonLivraison" ZOrder="6" X="1182" Y="76" Height="466" Width="241" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="462" />
     <Shape ID="DesignTable:Devis" ZOrder="14" X="895" Y="229" Height="219" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="215" />
     <Shape ID="DesignTable:BonCommande" ZOrder="10" X="39" Y="335" Height="200" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="196" />
-    <Shape ID="DesignTable:Paiement" ZOrder="1" X="543" Y="406" Height="465" Width="200" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="461" />
+    <Shape ID="DesignTable:Paiement" ZOrder="1" X="543" Y="406" Height="500" Width="232" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="496" />
     <Shape ID="DesignTable:PaiementF" ZOrder="13" X="729" Y="416" Height="181" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="177" />
     <Shape ID="DesignTable:RDB" ZOrder="12" X="214" Y="510" Height="181" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="177" />
     <Shape ID="DesignTable:DGB" ZOrder="11" X="313" Y="28" Height="181" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="177" />

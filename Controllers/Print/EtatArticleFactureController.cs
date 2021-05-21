@@ -1,11 +1,6 @@
 ﻿using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using System;
-using System.Data.Entity;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -29,6 +24,9 @@ namespace WebApplication1.Controllers.Print
                    Path.Combine(this.Server.MapPath("~/CrystalReports/" + company + "/RapportArticleFacture.rpt")));
 
 
+            //(x.QteStock * x.PA / (1 + (x.TVA / 100)))) ?? 0;
+
+            // TODO: Fix HT calculation
             reportDocument.SetDataSource(context.ArticleFactures.Where(x=>x.QteStock>0)
                 .Select(x => new
                 {
@@ -36,7 +34,11 @@ namespace WebApplication1.Controllers.Print
                     NumBon = x.Designation,
                     Date = DateTime.Now,
                     Debit = x.QteStock,
-                    Credit = x.PA-(x.PA*(x.TVA??20)/100),
+                    //{Facture.PU}/(1+{Facture.TVA}/100)
+                    Credit = (x.PA / (1 + (x.TVA ?? 20 / 100))),
+                    //Credit = x.PA / 1.2,
+                    //16 / (1 +(20/100))
+                    Total = x.QteStock*(x.PA / 1.2),
                     Type = "",
                     DateEcheance = "",
                     Commentaire = "",
@@ -59,9 +61,5 @@ namespace WebApplication1.Controllers.Print
             reportDocument.Close();
             return File(stream, "application/pdf");
         }
-
-
-       
-
     }
 }

@@ -32,9 +32,13 @@ namespace WebApplication1
 
         public float TotalStockFacture()
         {
+            /* var counter = db.ArticleFactures
+                 .Where(x => x.QteStock > 0 && !x.Disabled)
+                 .Sum(x => (float?)(x.QteStock * (x.PA - (x.PA * x.TVA/100)))) ?? 0;*/
+
             var counter = db.ArticleFactures
-                .Where(x => x.QteStock > 0 && !x.Disabled)
-                .Sum(x => (float?)(x.QteStock * (x.PA - (x.PA * x.TVA/100)))) ?? 0;
+               .Where(x => x.QteStock > 0 && !x.Disabled)
+               .Sum(x => (float?)(x.QteStock * x.PA / (1 + (x.TVA / 100)))) ?? 0;
 
             return counter;
         }

@@ -13,11 +13,12 @@ import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined'
 import { TextField, Dialog, FormControlLabel, Checkbox, Button } from '@material-ui/core'
 import useDebounce from '../../../hooks/useDebounce'
 import { fakeArticleColumns } from '../../elements/table/columns/articleColumns'
-import { getImageURL } from '../../../utils/urlBuilder'
+import { getImageURL, getPrintArticleFactureReport } from '../../../utils/urlBuilder'
 import {ArticlesFactureStatistics} from '../../elements/statistics/ArticlesStatistics'
 import AddIcon from '@material-ui/icons/Add';
 import FakeArticleForm from '../../elements/forms/FakeArticleForm'
 import { useSettings } from '../../providers/SettingsProvider'
+import PrintIcon from '@material-ui/icons/Print';
 
 const TABLE = 'ArticleFactures';
 
@@ -143,7 +144,15 @@ const FakeArticleList = () => {
             {articlesStatisticsModule?.Enabled&&<Box my={2} display="flex" justifyContent="center">
                 <ArticlesFactureStatistics />
             </Box>}
-            <Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+            <Box mt={1} mb={2} display="flex" justifyContent="space-between">
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<PrintIcon />}
+                    onClick={()=>window.open(getPrintArticleFactureReport(),"_blank")}
+                >
+                    Imprimer
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"

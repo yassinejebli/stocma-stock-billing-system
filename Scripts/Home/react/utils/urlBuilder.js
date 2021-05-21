@@ -114,3 +114,7 @@ export const getPrintTarifURL = (params) => {
     const parsedParams = new URLSearchParams(params).toString();
     return `/Tarif?${parsedParams}`
 }
+
+export const getPrintArticleFactureReport = () => {
+    return `/EtatArticleFacture`
+}
