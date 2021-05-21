@@ -1,17 +1,16 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { getFakeArticles } from '../../../queries/articleQueries';
-import { grey } from '@material-ui/core/colors';
-import Input from '../input/Input';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { getFakeArticles } from "../../../queries/articleQueries";
+import { grey } from "@material-ui/core/colors";
+import Input from "../input/Input";
 
 const useStyles = makeStyles({
   qte: {
     fontSize: 12,
-    color: grey[700]
-  }
+    color: grey[700],
+  },
 });
-
 
 const FakeArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
   const classes = useStyles();
@@ -19,13 +18,19 @@ const FakeArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
 
   const onChangeHandler = async ({ target: { value } }) => {
     const data = await getFakeArticles({
-      'Designation': value ? {
-        contains: value
-      } : undefined,
-      Disabled: false
+      and: value
+        ? value.split(" ").map((word) => ({
+            Designation: {
+              contains: word,
+            },
+          }))
+        : undefined,
+      Disabled: false,
     });
+    console.log({ data });
     setArticles(data);
-  }
+  };
+  console.log({ articles });
 
   return (
     <Autocomplete
@@ -34,20 +39,23 @@ const FakeArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       noOptionsText=""
       forcePopupIcon={false}
       disableClearable
-      style={{ width: '100%' }}
+      style={{ width: "100%" }}
       options={articles}
       classes={{
         option: classes.option,
       }}
+      filterOptions={(x) => x}
       autoHighlight
       size="small"
       getOptionLabel={(option) => {
-        return option?.Designation
+        return option?.Designation;
       }}
-      renderOption={option => (
+      renderOption={(option) => (
         <div>
           <div>{option.Designation}</div>
-          <div className={classes.qte}>quantité en stock: {option.QteStock}</div>
+          <div className={classes.qte}>
+            quantité en stock: {option.QteStock}
+          </div>
         </div>
       )}
       renderInput={(params) => (
@@ -59,7 +67,7 @@ const FakeArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
         />
       )}
     />
-  )
-}
+  );
+};
 
 export default FakeArticleAutocomplete;

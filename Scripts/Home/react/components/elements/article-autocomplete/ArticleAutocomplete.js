@@ -1,16 +1,16 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { getArticles } from '../../../queries/articleQueries';
-import { grey } from '@material-ui/core/colors';
-import Input from '../input/Input';
-import { useSite } from '../../providers/SiteProvider';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { getArticles } from "../../../queries/articleQueries";
+import { grey } from "@material-ui/core/colors";
+import Input from "../input/Input";
+import { useSite } from "../../providers/SiteProvider";
 
 const useStyles = makeStyles({
   qte: {
     fontSize: 12,
-    color: grey[700]
-  }
+    color: grey[700],
+  },
 });
 
 const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
@@ -20,34 +20,39 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
 
   React.useEffect(() => {
     setArticles([]);
-  }, [siteId])
-  
+  }, [siteId]);
+
   const onChangeHandler = async ({ target: { value } }) => {
     const data = await getArticles({
       and: [
         { IdSite: siteId },
         { Disabled: false },
         {
-          or: value ? {
-            'Article/Designation': {
-              contains: value
-            },
-            'Article/Ref': {
-              contains: value
-            },
-            'Article/BarCode': {
-              contains: value
-            },
-          } : undefined,
-        }
-      ]
-
+          or: value
+            ? {
+                and: value.split(" ").map((word) => ({
+                  "Article/Designation": {
+                    contains: word,
+                  },
+                })),
+                "Article/Ref": {
+                  contains: value,
+                },
+                "Article/BarCode": {
+                  contains: value,
+                },
+              }
+            : undefined,
+        },
+      ],
     });
-    setArticles(data.map(x => ({
-      ...x.Article,
-      QteStock: x.QteStock,
-    })));
-  }
+    setArticles(
+      data.map((x) => ({
+        ...x.Article,
+        QteStock: x.QteStock,
+      }))
+    );
+  };
 
   return (
     <Autocomplete
@@ -56,7 +61,7 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       noOptionsText=""
       forcePopupIcon={false}
       disableClearable
-      style={{ width: '100%' }}
+      style={{ width: "100%" }}
       options={articles}
       classes={{
         option: classes.option,
@@ -64,13 +69,15 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
       autoHighlight
       size="small"
       getOptionLabel={(option) => {
-        return option?.Designation
+        return option?.Designation;
       }}
-      renderOption={option => (
+      renderOption={(option) => (
         <div>
           <div>{option.Designation}</div>
           <div className={classes.qte}>code: {option.BarCode}</div>
-          <div className={classes.qte}>quantité en stock: {option.QteStock}</div>
+          <div className={classes.qte}>
+            quantité en stock: {option.QteStock}
+          </div>
         </div>
       )}
       filterOptions={(x) => x}
@@ -83,7 +90,7 @@ const ArticleAutocomplete = ({ inTable, placeholder, ...props }) => {
         />
       )}
     />
-  )
-}
+  );
+};
 
 export default ArticleAutocomplete;
