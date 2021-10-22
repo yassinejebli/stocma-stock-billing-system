@@ -275,7 +275,7 @@ const PaiementClientList = () => {
                                 dateTo: dateTo.toISOString(),
                             })}
                         >
-                            Exporter vers Excel
+                            Exporter Excel
                         </Button>
                     </Box>
                 </Box>}

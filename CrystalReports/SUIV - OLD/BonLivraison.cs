@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.SUIV {
+namespace WebApplication1.CrystalReports.SUIV___OLD {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.BonLivraison.rpt";
+                return "WebApplication1.CrystalReports.SUIV - OLD.BonLivraison.rpt";
             }
             set {
                 // Do nothing
@@ -109,14 +109,6 @@ namespace WebApplication1.CrystalReports.SUIV {
         public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
             get {
                 return this.DataDefinition.ParameterFields[2];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowDiscount {
-            get {
-                return this.DataDefinition.ParameterFields[3];
             }
         }
     }

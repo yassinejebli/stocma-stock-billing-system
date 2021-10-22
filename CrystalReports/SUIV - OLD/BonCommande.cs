@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.SUIV {
+namespace WebApplication1.CrystalReports.SUIV___OLD {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class RDBF : ReportClass {
+    public class BonCommande : ReportClass {
         
-        public RDBF() {
+        public BonCommande() {
         }
         
         public override string ResourceName {
             get {
-                return "RDBF.rpt";
+                return "BonCommande.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.RDBF.rpt";
+                return "WebApplication1.CrystalReports.SUIV - OLD.BonCommande.rpt";
             }
             set {
                 // Do nothing
@@ -87,12 +87,20 @@ namespace WebApplication1.CrystalReports.SUIV {
                 return this.ReportDefinition.Sections[4];
             }
         }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_showStamp {
+            get {
+                return this.DataDefinition.ParameterFields[0];
+            }
+        }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedRDBF : Component, ICachedReport {
+    public class CachedBonCommande : Component, ICachedReport {
         
-        public CachedRDBF() {
+        public CachedBonCommande() {
         }
         
         [Browsable(false)]
@@ -129,7 +137,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            RDBF rpt = new RDBF();
+            BonCommande rpt = new BonCommande();
             rpt.Site = this.Site;
             return rpt;
         }

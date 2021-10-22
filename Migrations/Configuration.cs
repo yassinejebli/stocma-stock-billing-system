@@ -46,7 +46,7 @@ namespace WebApplication1.Migrations
                 x.ArticleFacture.QteStock -= x.Qte;
             });*/
 
-            return;
+             return;
             //context.Database.ExecuteSqlCommand("UPDATE Articles SET IsBarCodePrintable = 1");
 
 
@@ -71,7 +71,7 @@ namespace WebApplication1.Migrations
             }
             context.SaveChanges();
 
-            var articleBarCodeNull = context.Articles.Where(x => x.BarCode == null);
+          /*  var articleBarCodeNull = context.Articles.Where(x => x.BarCode == null);
             //var articleBarCodeNull = context.Articles;
             Random randomGenerator = new Random();
             if (articleBarCodeNull.Count() > 0)
@@ -79,7 +79,7 @@ namespace WebApplication1.Migrations
                 articleBarCodeNull.ForEach(x => x.BarCode = "" + randomGenerator.Next(100000, 999999));
             }
 
-            context.SaveChanges();
+            context.SaveChanges();*/
 
             var articlesMinStockNull = context.Articles.Where(x => x.MinStock == null);
             if (articlesMinStockNull.Count() > 0)

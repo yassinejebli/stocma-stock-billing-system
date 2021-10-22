@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.SUIV {
+namespace WebApplication1.CrystalReports.SBCIT {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class FactureSUIV : ReportClass {
+    public class BonCommandeChiffreSBCIT : ReportClass {
         
-        public FactureSUIV() {
+        public BonCommandeChiffreSBCIT() {
         }
         
         public override string ResourceName {
             get {
-                return "FactureSUIV.rpt";
+                return "BonCommandeChiffreSBCIT.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.FactureSUIV.rpt";
+                return "WebApplication1.CrystalReports.SBCIT.BonCommandeChiffreSBCIT.rpt";
             }
             set {
                 // Do nothing
@@ -98,9 +98,9 @@ namespace WebApplication1.CrystalReports.SUIV {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedFactureSUIV : Component, ICachedReport {
+    public class CachedBonCommandeChiffreSBCIT : Component, ICachedReport {
         
-        public CachedFactureSUIV() {
+        public CachedBonCommandeChiffreSBCIT() {
         }
         
         [Browsable(false)]
@@ -137,7 +137,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            FactureSUIV rpt = new FactureSUIV();
+            BonCommandeChiffreSBCIT rpt = new BonCommandeChiffreSBCIT();
             rpt.Site = this.Site;
             return rpt;
         }

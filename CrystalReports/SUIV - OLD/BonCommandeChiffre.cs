@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.SUIV {
+namespace WebApplication1.CrystalReports.SUIV___OLD {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class DGB : ReportClass {
+    public class BonCommandeChiffre : ReportClass {
         
-        public DGB() {
+        public BonCommandeChiffre() {
         }
         
         public override string ResourceName {
             get {
-                return "DGB.rpt";
+                return "BonCommandeChiffre.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.DGB.rpt";
+                return "WebApplication1.CrystalReports.SUIV - OLD.BonCommandeChiffre.rpt";
             }
             set {
                 // Do nothing
@@ -87,12 +87,20 @@ namespace WebApplication1.CrystalReports.SUIV {
                 return this.ReportDefinition.Sections[4];
             }
         }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_showStamp {
+            get {
+                return this.DataDefinition.ParameterFields[0];
+            }
+        }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedDGB : Component, ICachedReport {
+    public class CachedBonCommandeChiffre : Component, ICachedReport {
         
-        public CachedDGB() {
+        public CachedBonCommandeChiffre() {
         }
         
         [Browsable(false)]
@@ -129,7 +137,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            DGB rpt = new DGB();
+            BonCommandeChiffre rpt = new BonCommandeChiffre();
             rpt.Site = this.Site;
             return rpt;
         }

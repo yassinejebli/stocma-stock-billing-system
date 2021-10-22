@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class BonLivraison : ReportClass {
+    public class FactureSBCIT_ : ReportClass {
         
-        public BonLivraison() {
+        public FactureSBCIT_() {
         }
         
         public override string ResourceName {
             get {
-                return "BonLivraison.rpt";
+                return "FactureSBCIT_.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.BonLivraison.rpt";
+                return "WebApplication1.CrystalReports.SUIV.FactureSBCIT_.rpt";
             }
             set {
                 // Do nothing
@@ -90,7 +90,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowPrices {
+        public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -98,7 +98,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_IsEspece {
+        public CrystalDecisions.Shared.IParameterField Parameter_ShowDiscount {
             get {
                 return this.DataDefinition.ParameterFields[1];
             }
@@ -106,25 +106,17 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
+        public CrystalDecisions.Shared.IParameterField Parameter_IsEspece {
             get {
                 return this.DataDefinition.ParameterFields[2];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowDiscount {
-            get {
-                return this.DataDefinition.ParameterFields[3];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedBonLivraison : Component, ICachedReport {
+    public class CachedFactureSBCIT_ : Component, ICachedReport {
         
-        public CachedBonLivraison() {
+        public CachedFactureSBCIT_() {
         }
         
         [Browsable(false)]
@@ -161,7 +153,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            BonLivraison rpt = new BonLivraison();
+            FactureSBCIT_ rpt = new FactureSBCIT_();
             rpt.Site = this.Site;
             return rpt;
         }

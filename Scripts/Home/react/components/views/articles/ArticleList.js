@@ -8,6 +8,7 @@ import { deleteArticle } from "../../../queries/articleQueries";
 import { useSnackBar } from "../../providers/SnackBarProvider";
 import { useModal } from "react-modal-hook";
 import { SideDialogWrapper } from "../../elements/dialogs/SideWrapperDialog";
+import { MicrosoftExcel } from "mdi-material-ui";
 import ArticleForm from "../../elements/forms/ArticleForm";
 import TitleIcon from "../../elements/misc/TitleIcon";
 import LocalMallOutlinedIcon from "@material-ui/icons/LocalMallOutlined";
@@ -24,6 +25,7 @@ import { articleColumns } from "../../elements/table/columns/articleColumns";
 import {
   getImageURL,
   getPrintInventaireTousLesArticlesURL,
+  getExportStockURL,
 } from "../../../utils/urlBuilder";
 import ArticlesStatistics from "../../elements/statistics/ArticlesStatistics";
 import { useSite } from "../../providers/SiteProvider";
@@ -340,6 +342,21 @@ const ArticleList = () => {
             fetchData={fetchData}
             filters={filters}
           />
+        </Box>
+        <Box mt={2}>
+          <Button
+            style={{
+              backgroundColor: "#026f39",
+            }}
+            variant="contained"
+            color="primary"
+            startIcon={<MicrosoftExcel />}
+            href={getExportStockURL({
+              idSite: siteId,
+            })}
+          >
+            Exporter Excel
+          </Button>
         </Box>
       </Paper>
     </>

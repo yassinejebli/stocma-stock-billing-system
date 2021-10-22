@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.SUIV {
+namespace WebApplication1.CrystalReports.SUIV___OLD {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class BonLivraison : ReportClass {
+    public class DevisSUIV : ReportClass {
         
-        public BonLivraison() {
+        public DevisSUIV() {
         }
         
         public override string ResourceName {
             get {
-                return "BonLivraison.rpt";
+                return "DevisSUIV.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.BonLivraison.rpt";
+                return "WebApplication1.CrystalReports.SUIV - OLD.DevisSUIV.rpt";
             }
             set {
                 // Do nothing
@@ -90,7 +90,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowPrices {
+        public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -98,33 +98,17 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_IsEspece {
-            get {
-                return this.DataDefinition.ParameterFields[1];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
-            get {
-                return this.DataDefinition.ParameterFields[2];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.Shared.IParameterField Parameter_ShowDiscount {
             get {
-                return this.DataDefinition.ParameterFields[3];
+                return this.DataDefinition.ParameterFields[1];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedBonLivraison : Component, ICachedReport {
+    public class CachedDevisSUIV : Component, ICachedReport {
         
-        public CachedBonLivraison() {
+        public CachedDevisSUIV() {
         }
         
         [Browsable(false)]
@@ -161,7 +145,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            BonLivraison rpt = new BonLivraison();
+            DevisSUIV rpt = new DevisSUIV();
             rpt.Site = this.Site;
             return rpt;
         }

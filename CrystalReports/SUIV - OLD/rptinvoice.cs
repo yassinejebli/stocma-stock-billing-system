@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.SUIV {
+namespace WebApplication1.CrystalReports.SUIV___OLD {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class EtatStockArticlesGaz : ReportClass {
+    public class rptinvoice : ReportClass {
         
-        public EtatStockArticlesGaz() {
+        public rptinvoice() {
         }
         
         public override string ResourceName {
             get {
-                return "EtatStockArticlesGaz.rpt";
+                return "rptinvoice.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.EtatStockArticlesGaz.rpt";
+                return "WebApplication1.CrystalReports.SUIV - OLD.rptinvoice.rpt";
             }
             set {
                 // Do nothing
@@ -87,28 +87,12 @@ namespace WebApplication1.CrystalReports.SUIV {
                 return this.ReportDefinition.Sections[4];
             }
         }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_DateDebut {
-            get {
-                return this.DataDefinition.ParameterFields[0];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_DateFin {
-            get {
-                return this.DataDefinition.ParameterFields[1];
-            }
-        }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedEtatStockArticlesGaz : Component, ICachedReport {
+    public class Cachedrptinvoice : Component, ICachedReport {
         
-        public CachedEtatStockArticlesGaz() {
+        public Cachedrptinvoice() {
         }
         
         [Browsable(false)]
@@ -145,7 +129,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            EtatStockArticlesGaz rpt = new EtatStockArticlesGaz();
+            rptinvoice rpt = new rptinvoice();
             rpt.Site = this.Site;
             return rpt;
         }

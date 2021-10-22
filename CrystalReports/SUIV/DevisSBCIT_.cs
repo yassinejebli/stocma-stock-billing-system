@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class BonLivraison : ReportClass {
+    public class DevisSBCIT_ : ReportClass {
         
-        public BonLivraison() {
+        public DevisSBCIT_() {
         }
         
         public override string ResourceName {
             get {
-                return "BonLivraison.rpt";
+                return "DevisSBCIT_.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.BonLivraison.rpt";
+                return "WebApplication1.CrystalReports.SUIV.DevisSBCIT_.rpt";
             }
             set {
                 // Do nothing
@@ -90,41 +90,17 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowPrices {
-            get {
-                return this.DataDefinition.ParameterFields[0];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_IsEspece {
-            get {
-                return this.DataDefinition.ParameterFields[1];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
             get {
-                return this.DataDefinition.ParameterFields[2];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ShowDiscount {
-            get {
-                return this.DataDefinition.ParameterFields[3];
+                return this.DataDefinition.ParameterFields[0];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedBonLivraison : Component, ICachedReport {
+    public class CachedDevisSBCIT_ : Component, ICachedReport {
         
-        public CachedBonLivraison() {
+        public CachedDevisSBCIT_() {
         }
         
         [Browsable(false)]
@@ -161,7 +137,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            BonLivraison rpt = new BonLivraison();
+            DevisSBCIT_ rpt = new DevisSBCIT_();
             rpt.Site = this.Site;
             return rpt;
         }

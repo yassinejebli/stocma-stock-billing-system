@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.SUIV {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class DevisChiffreSUIV : ReportClass {
+    public class PaiementsF : ReportClass {
         
-        public DevisChiffreSUIV() {
+        public PaiementsF() {
         }
         
         public override string ResourceName {
             get {
-                return "DevisChiffreSUIV.rpt";
+                return "PaiementsF.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.SUIV.DevisChiffreSUIV.rpt";
+                return "WebApplication1.CrystalReports.SUIV.PaiementsF.rpt";
             }
             set {
                 // Do nothing
@@ -90,17 +90,25 @@ namespace WebApplication1.CrystalReports.SUIV {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_Cachet {
+        public CrystalDecisions.Shared.IParameterField Parameter_solde {
             get {
                 return this.DataDefinition.ParameterFields[0];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_cachet {
+            get {
+                return this.DataDefinition.ParameterFields[1];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedDevisChiffreSUIV : Component, ICachedReport {
+    public class CachedPaiementsF : Component, ICachedReport {
         
-        public CachedDevisChiffreSUIV() {
+        public CachedPaiementsF() {
         }
         
         [Browsable(false)]
@@ -137,7 +145,7 @@ namespace WebApplication1.CrystalReports.SUIV {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            DevisChiffreSUIV rpt = new DevisChiffreSUIV();
+            PaiementsF rpt = new PaiementsF();
             rpt.Site = this.Site;
             return rpt;
         }
