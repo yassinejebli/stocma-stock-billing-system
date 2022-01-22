@@ -1,6 +1,6 @@
 ## STOCMA
 
-I created this side project to help my father and my uncles to manage their stores and warehouses in order to increase sales and keep track of every unit, order fulfillment, and inventory control software
+I created this project to help my father and my uncles to manage their stores and warehouses in order to increase sales and keep track of every unit, order fulfillment, and inventory control software
 
 ### Features
 
