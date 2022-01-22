@@ -1297,6 +1297,10 @@
     <Compile Include="Migrations\202101241444367_UPDATE_TARIF.designer.cs">
       <DependentUpon>202101241444367_UPDATE_TARIF.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201221138260_BIG_UPDATE.cs" />
+    <Compile Include="Migrations\202201221138260_BIG_UPDATE.designer.cs">
+      <DependentUpon>202201221138260_BIG_UPDATE.cs</DependentUpon>
+    </Compile>
     <Compile Include="Statistics\BonLivraisonStatistics.cs" />
     <Compile Include="Statistics\ClientStatistics.cs" />
     <Compile Include="UserStatisticsController.cs" />
@@ -4902,6 +4906,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101241444367_UPDATE_TARIF.resx">
       <DependentUpon>202101241444367_UPDATE_TARIF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201221138260_BIG_UPDATE.resx">
+      <DependentUpon>202201221138260_BIG_UPDATE.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -53,21 +53,25 @@ namespace WebApplication1.Migrations
             var devisClientNameNull = context.Devises.Where(x => x.ClientName == null);
             if (devisClientNameNull.Count() > 0)
             {
-                devisClientNameNull.ForEach(x => x.ClientName = x.Client.Name);
+                context.Database.ExecuteSqlCommand("UPDATE Devises SET ClientName = (select Name from Clients where Id = IdClient) WHERE ClientName is null");
+                //devisClientNameNull.ForEach(x => x.ClientName = x.Client.Name);
             }
             context.SaveChanges();
 
             var fakeFactureICENull = context.FakeFactures.Where(x => x.ClientICE == null);
             if (fakeFactureICENull.Count() > 0)
             {
-                fakeFactureICENull.ForEach(x => x.ClientICE = x.Client.ICE);
+                context.Database.ExecuteSqlCommand("UPDATE FakeFactures SET ClientICE = (select ICE from Clients where Id = IdClient) WHERE ClientICE is null");
+               // fakeFactureICENull.ForEach(x => x.ClientICE = x.Client.ICE);
             }
             context.SaveChanges();
 
             var factureICENull = context.Factures.Where(x => x.ClientICE == null);
             if (factureICENull.Count() > 0)
             {
-                factureICENull.ForEach(x => x.ClientICE = x.Client.ICE);
+                context.Database.ExecuteSqlCommand("UPDATE Factures SET ClientICE = (select ICE from Clients where Id = IdClient) WHERE ClientICE is null");
+
+               // factureICENull.ForEach(x => x.ClientICE = x.Client.ICE);
             }
             context.SaveChanges();
 
@@ -84,7 +88,8 @@ namespace WebApplication1.Migrations
             var articlesMinStockNull = context.Articles.Where(x => x.MinStock == null);
             if (articlesMinStockNull.Count() > 0)
             {
-                articlesMinStockNull.ForEach(x => x.MinStock = 1);
+               // articlesMinStockNull.ForEach(x => x.MinStock = 1);
+                context.Database.ExecuteSqlCommand("UPDATE Articles SET MinStock = 1 WHERE MinStock is null");
             }
 
             context.SaveChanges();
@@ -93,7 +98,9 @@ namespace WebApplication1.Migrations
             var articlesTVANull = context.Articles.Where(x => x.TVA == null);
             if (articlesTVANull.Count() > 0)
             {
-                articlesTVANull.ForEach(x => x.TVA = 20);
+                //articlesTVANull.ForEach(x => x.TVA = 20);
+                context.Database.ExecuteSqlCommand("UPDATE Articles SET TVA = 20 WHERE TVA is null");
+
             }
 
             context.SaveChanges();
@@ -102,7 +109,9 @@ namespace WebApplication1.Migrations
             var articlesFactureTVANull = context.ArticleFactures.Where(x => x.TVA == null);
             if (articlesFactureTVANull.Count() > 0)
             {
-                articlesFactureTVANull.ForEach(x => x.TVA = 20);
+               // articlesFactureTVANull.ForEach(x => x.TVA = 20);
+                context.Database.ExecuteSqlCommand("UPDATE ArticleFactures SET TVA = 20 WHERE TVA is null");
+
             }
 
             //BonLivraisonItems
