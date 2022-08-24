@@ -127,8 +127,11 @@ namespace WebApplication1
 
             if (fa.TypeReglement == "Au-Comptant")
             {
-                float drt = number * 0.0025f;//droit timbre if espece
-                num += drt;
+                if(getCompanyName() != "SMTB")
+                {
+                    float drt = number * 0.0025f;//droit timbre if espece
+                    num += drt;
+                }
             }
 
             if (this.context.Paiements.Where((x => x.Facture.Id == IdFacture)).FirstOrDefault() != null) { 

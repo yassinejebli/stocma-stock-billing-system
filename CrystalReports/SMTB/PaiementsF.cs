@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.AQK {
+namespace WebApplication1.CrystalReports.SMTB {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.AQK {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class FactureAQK : ReportClass {
+    public class PaiementsF : ReportClass {
         
-        public FactureAQK() {
+        public PaiementsF() {
         }
         
         public override string ResourceName {
             get {
-                return "FactureAQK.rpt";
+                return "PaiementsF.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.AQK {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.AQK.FactureAQK.rpt";
+                return "WebApplication1.CrystalReports.SMTB.PaiementsF.rpt";
             }
             set {
                 // Do nothing
@@ -90,7 +90,7 @@ namespace WebApplication1.CrystalReports.AQK {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_totalMots {
+        public CrystalDecisions.Shared.IParameterField Parameter_solde {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -98,41 +98,17 @@ namespace WebApplication1.CrystalReports.AQK {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_IsEspece {
+        public CrystalDecisions.Shared.IParameterField Parameter_cachet {
             get {
                 return this.DataDefinition.ParameterFields[1];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_BaseTVA0 {
-            get {
-                return this.DataDefinition.ParameterFields[2];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_BaseTVA20 {
-            get {
-                return this.DataDefinition.ParameterFields[3];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_BaseTVA10 {
-            get {
-                return this.DataDefinition.ParameterFields[4];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedFactureAQK : Component, ICachedReport {
+    public class CachedPaiementsF : Component, ICachedReport {
         
-        public CachedFactureAQK() {
+        public CachedPaiementsF() {
         }
         
         [Browsable(false)]
@@ -169,7 +145,7 @@ namespace WebApplication1.CrystalReports.AQK {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            FactureAQK rpt = new FactureAQK();
+            PaiementsF rpt = new PaiementsF();
             rpt.Site = this.Site;
             return rpt;
         }

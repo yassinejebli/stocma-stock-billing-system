@@ -929,7 +929,7 @@ namespace WebApplication1.Migrations
             var company = context.Companies.FirstOrDefault();
             if (company != null)
             {
-                var friendlyCompanies = new List<string>() { "EAS", "AQK", "TSR", "SBCIT", "SUIV" };
+                var friendlyCompanies = new List<string>() { "EAS", "AQK", "TSR", "SBCIT", "SUIV", "SMTB" };
                 if (friendlyCompanies.Contains(company.Name.ToUpper()))
                 {
                     var settings = context.Settings.Where(x => x.Code.Contains("module_"));

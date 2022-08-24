@@ -361,6 +361,17 @@ const MenuItems = () => {
                 <ListItemText primary="Suivi" />
               </ListItem>
             )}
+            {isAdmin && (
+              <ListItem
+                button
+                className={classes.nested}
+                component={Link}
+                to="/rapports-des-achats"
+              >
+                <ListItemIcon />
+                <ListItemText primary="Rapports" />
+              </ListItem>
+            )}
           </List>
         </Collapse>
       </List>

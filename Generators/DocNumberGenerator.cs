@@ -16,7 +16,10 @@ namespace WebApplication1.Generators
 
             var newRef = lastRef + 1;
 
-            if(companyName == "SUIV" || companyName == "SBCIT")
+            if (companyName == "SMTB")
+                return  date.ToString("yy")  + String.Format("{0:00000}", newRef);
+
+            if (companyName == "SUIV" || companyName == "SBCIT")
                 return companyName + "/" + date.ToString("yy") + "/" + date.ToString("MM") + String.Format("/{0:00000}", newRef);
 
             if (companyName == "AQK")

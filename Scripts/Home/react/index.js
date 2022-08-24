@@ -48,6 +48,7 @@ import PaiementFournisseurList from "./components/views/paiement-fournisseur/Pai
 import Depense from "./components/views/depense/Depense";
 import DepenseList from "./components/views/depense/DepenseList";
 import Rapports from "./components/views/ventes/rapports/Rapports";
+import RapportsAchats from "./components/views/achats/rapports/Rapports";
 import LoaderProvider from "./components/providers/LoaderProvider";
 import TypeDepenseList from "./components/views/type-depense/TypeDepenseList";
 import UtilisateurList from "./components/views/utilisateurs/UtilisateurList";
@@ -111,6 +112,9 @@ const Routes = () => {
       )}
       {isAdmin && rapportVenteModule?.Enabled && (
         <Route path="/rapports-des-ventes" component={Rapports} />
+      )}
+      {isAdmin && (
+        <Route path="/rapports-des-achats" component={RapportsAchats} />
       )}
 
       {depenseModule?.Enabled && (

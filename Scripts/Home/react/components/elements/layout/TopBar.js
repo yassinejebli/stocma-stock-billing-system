@@ -15,7 +15,8 @@ import SettingsDialog from "../dialogs/SettingsDialog";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: `calc(100% - ${(props) => (props.isMenuOpen ? drawerWidth : 0)}px)`,
+    width: (props) =>
+      props.isMenuOpen ? `calc(100% - ${drawerWidth}px)` : "100%",
     marginLeft: (props) => (props.isMenuOpen ? drawerWidth : 0),
   },
   menuButton: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function TopBar({ isMenuOpen, toggleIsMenuOpen }) {
+  console.log({ isMenuOpen });
   const { title } = useTitle();
   const classes = useStyles({ isMenuOpen });
   const [showModal, hideModal] = useModal(({ in: open, onExited }) => (

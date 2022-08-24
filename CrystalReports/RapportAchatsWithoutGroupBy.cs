@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1.CrystalReports.AQK {
+namespace WebApplication1.CrystalReports {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace WebApplication1.CrystalReports.AQK {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class FactureAQK : ReportClass {
+    public class RapportAchatsWithoutGroupBy : ReportClass {
         
-        public FactureAQK() {
+        public RapportAchatsWithoutGroupBy() {
         }
         
         public override string ResourceName {
             get {
-                return "FactureAQK.rpt";
+                return "RapportAchatsWithoutGroupBy.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace WebApplication1.CrystalReports.AQK {
         
         public override string FullResourceName {
             get {
-                return "WebApplication1.CrystalReports.AQK.FactureAQK.rpt";
+                return "WebApplication1.CrystalReports.RapportAchatsWithoutGroupBy.rpt";
             }
             set {
                 // Do nothing
@@ -90,7 +90,7 @@ namespace WebApplication1.CrystalReports.AQK {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_totalMots {
+        public CrystalDecisions.Shared.IParameterField Parameter_dateDebut {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -98,7 +98,7 @@ namespace WebApplication1.CrystalReports.AQK {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_IsEspece {
+        public CrystalDecisions.Shared.IParameterField Parameter_dateFin {
             get {
                 return this.DataDefinition.ParameterFields[1];
             }
@@ -106,7 +106,7 @@ namespace WebApplication1.CrystalReports.AQK {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_BaseTVA0 {
+        public CrystalDecisions.Shared.IParameterField Parameter_document {
             get {
                 return this.DataDefinition.ParameterFields[2];
             }
@@ -114,7 +114,7 @@ namespace WebApplication1.CrystalReports.AQK {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_BaseTVA20 {
+        public CrystalDecisions.Shared.IParameterField Parameter_total {
             get {
                 return this.DataDefinition.ParameterFields[3];
             }
@@ -122,17 +122,25 @@ namespace WebApplication1.CrystalReports.AQK {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_BaseTVA10 {
+        public CrystalDecisions.Shared.IParameterField Parameter_totalEspece {
             get {
                 return this.DataDefinition.ParameterFields[4];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.Shared.IParameterField Parameter_totalCheque {
+            get {
+                return this.DataDefinition.ParameterFields[5];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedFactureAQK : Component, ICachedReport {
+    public class CachedRapportAchatsWithoutGroupBy : Component, ICachedReport {
         
-        public CachedFactureAQK() {
+        public CachedRapportAchatsWithoutGroupBy() {
         }
         
         [Browsable(false)]
@@ -169,7 +177,7 @@ namespace WebApplication1.CrystalReports.AQK {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            FactureAQK rpt = new FactureAQK();
+            RapportAchatsWithoutGroupBy rpt = new RapportAchatsWithoutGroupBy();
             rpt.Site = this.Site;
             return rpt;
         }

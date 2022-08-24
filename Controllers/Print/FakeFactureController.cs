@@ -14,7 +14,7 @@ namespace WebApplication1.Controllers.Print
     {
         private MySaniSoftContext context = new MySaniSoftContext();
 
-        public ActionResult Index(Guid IdFakeFacture)
+        public ActionResult Index(Guid IdFakeFacture, Boolean isEASAndNewFacture = false)
         {
             var ESPECE_PAYMENT_TYPE = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
             AmountTextGenerator atg = new AmountTextGenerator();
@@ -25,6 +25,12 @@ namespace WebApplication1.Controllers.Print
             ReportDocument reportDocument = new ReportDocument();
             StatistiqueController statistiqueController = new StatistiqueController();
 
+            if(isEASAndNewFacture == true)
+                reportDocument.Load(
+               Path.Combine(
+                   this.Server.MapPath("~/CrystalReports/" + company.Name + "/NewFacture" + company.Name +
+                                       ".rpt")));
+            else
             reportDocument.Load(
                 Path.Combine(
                     this.Server.MapPath("~/CrystalReports/" + company.Name + "/Facture" + company.Name +

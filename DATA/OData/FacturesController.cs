@@ -75,7 +75,7 @@ namespace WebApplication1.DATA.OData
             var company = db.Companies.FirstOrDefault();
             var ESPECE_PAYMENT_TYPE = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
 
-            if (company.UseVAT && newFacture?.IdTypePaiement == ESPECE_PAYMENT_TYPE)
+            if (company.UseVAT && newFacture?.IdTypePaiement == ESPECE_PAYMENT_TYPE && company.Name != "SMTB")
             {
                 Total *= (1 + 0.0025f);
             }
@@ -139,7 +139,7 @@ namespace WebApplication1.DATA.OData
             var company = db.Companies.FirstOrDefault();
             var ESPECE_PAYMENT_TYPE = new Guid("399d159e-9ce0-4fcc-957a-08a65bbeecb2");
 
-            if (company.UseVAT && facture?.IdTypePaiement == ESPECE_PAYMENT_TYPE)
+            if (company.UseVAT && facture?.IdTypePaiement == ESPECE_PAYMENT_TYPE && company.Name != "SMTB")
             {
                 Total *= (1 + 0.0025f);
             }

@@ -76,6 +76,11 @@ export const getPrintRapportVentesFAURL = (params) => {
   return `/RapportsVentes/FA?${parsedParams}`;
 };
 
+export const getPrintRapportAchatsFAURL = (params) => {
+  const parsedParams = new URLSearchParams(params).toString();
+  return `/RapportsAchats/FA?${parsedParams}`;
+};
+
 export const getPrintRapportTransactionURL = (params) => {
   const parsedParams = new URLSearchParams(params).toString();
   return `/RapportsVentes/Transactions?${parsedParams}`;
