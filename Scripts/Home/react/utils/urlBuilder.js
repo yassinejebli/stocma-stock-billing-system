@@ -128,3 +128,8 @@ export const getExportStockURL = (params) => {
   const parsedParams = new URLSearchParams(params).toString();
   return `/ExportArticles?${parsedParams}`;
 };
+
+export const getPrintSituationJournaliereURL = (params) => {
+  const parsedParams = new URLSearchParams(params).toString();
+  return `/SitutationJournaliere?${parsedParams}`;
+};

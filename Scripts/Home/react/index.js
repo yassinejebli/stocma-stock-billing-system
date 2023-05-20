@@ -110,7 +110,7 @@ const Routes = () => {
       {isAdmin && utilisateursModule?.Enabled && (
         <Route path="/liste-des-utilisateurs" component={UtilisateurList} />
       )}
-      {isAdmin && rapportVenteModule?.Enabled && (
+      {rapportVenteModule?.Enabled && (
         <Route path="/rapports-des-ventes" component={Rapports} />
       )}
       {isAdmin && (
@@ -244,8 +244,8 @@ const Routes = () => {
       <Route path="/inventaire" component={Inventaire} />
       <Route path="/liste-inventaire" component={InventaireList} />
 
-      {isAdmin && <Route path="/tarif" component={Tarif} />}
-      {isAdmin && <Route path="/liste-tarif" component={TarifList} />}
+      {<Route path="/tarif" component={Tarif} />}
+      {<Route path="/liste-tarif" component={TarifList} />}
 
       {canManageArticles && (
         <Route path="/ArticleList" component={ArticleList} />

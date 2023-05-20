@@ -18,7 +18,7 @@ namespace WebApplication1.Controllers.Print
     {
         private MySaniSoftContext context = new MySaniSoftContext();
 
-        public ActionResult Index(Guid id, DateTime dateFrom, DateTime dateTo, bool showStamp = false)
+        public ActionResult Index(Guid id, DateTime? dateFrom, DateTime? dateTo, bool showStamp = false)
         {
             ReportDocument reportDocument = new ReportDocument();
             StatistiqueController statistiqueController = new StatistiqueController();
@@ -59,12 +59,17 @@ namespace WebApplication1.Controllers.Print
         }
 
 
-        private dynamic GetPaiements(Guid id, DateTime dateFrom, DateTime dateTo)
+        private dynamic GetPaiements(Guid id, DateTime? dateFrom, DateTime? dateTo)
         {
-            var useVAT = context.Companies.FirstOrDefault().UseVAT;
+            var company = context.Companies.FirstOrDefault();
+            var useVAT = company.UseVAT;
             var client = context.Clients.Find(id);
 
-            var dataSource = context.Paiements.Where(x => x.IdClient == id && DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && x.Hide != true)
+            dynamic dataSource;
+
+            if (dateFrom.HasValue && dateTo.HasValue)
+            {
+                dataSource = context.Paiements.Where(x => x.IdClient == id && DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && x.Hide != true)
                 .Select(x => new
                 {
                     Client = x.Client.Name,
@@ -78,43 +83,86 @@ namespace WebApplication1.Controllers.Print
                     ICE = x.Client.ICE,
                     Adresse = x.Client.Adresse
                 }).OrderBy(x => x.Date).ToList();
-            if (useVAT)
-            {
-                dataSource = context.PaiementFactures.Where(x => x.IdClient == id && DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && x.Hide != true)
-                .Select(x => new
+
+                if (useVAT)
                 {
-                    Client = x.Client.Name,
-                    NumBon = x.Facture.NumBon,
-                    Date = x.Date,
-                    Debit = x.Debit,
-                    Credit = x.Credit,
-                    Type = x.TypePaiement.Name,
-                    DateEcheance = "",
-                    Commentaire = x.Comment,
-                    ICE = x.Client.ICE,
-                    Adresse = x.Client.Adresse
-                }).OrderBy(x => x.Date).ToList();
+
+                    dataSource = context.PaiementFactures.Where(x => x.IdClient == id && DbFunctions.TruncateTime(x.Date) >= dateFrom && DbFunctions.TruncateTime(x.Date) <= dateTo && x.Hide != true)
+                    .Select(x => new
+                    {
+                        Client = x.Client.Name,
+                        NumBon = x.Facture.NumBon,
+                        Date = x.Date,
+                        Debit = x.Debit,
+                        Credit = x.Credit,
+                        Type = x.TypePaiement.Name,
+                        DateEcheance = "",
+                        Commentaire = x.Comment,
+                        ICE = x.Client.ICE,
+                        Adresse = x.Client.Adresse
+                    }).OrderBy(x => x.Date).ToList();
+                }
             }
-            var soldeBeforeDate = useVAT ? context.PaiementFactures.Where(x => DbFunctions.TruncateTime(x.Date) < dateFrom.Date && x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f : context.Paiements.Where(x => DbFunctions.TruncateTime(x.Date) < dateFrom.Date && x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f;
-            dataSource.Insert(0, new
+            else
             {
-                Client = client.Name,
-                NumBon = "",
-                Date = dateFrom,
-                Debit = soldeBeforeDate,
-                Credit = 0f,
-                Type = "-",
-                DateEcheance = "",
-                Commentaire = "Solde avant : " + dateFrom.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
-                ICE = client.ICE,
-                Adresse = client.Adresse
-            });
+                dataSource = context.Paiements.Where(x => x.IdClient == id && x.Hide != true)
+               .Select(x => new
+               {
+                   Client = x.Client.Name,
+                   NumBon = x.BonLivraison.NumBon,
+                   Date = x.Date,
+                   Debit = x.Debit,
+                   Credit = x.Credit,
+                   Type = x.TypePaiement.Name,
+                   DateEcheance = "",
+                   Commentaire = x.Comment,
+                   ICE = x.Client.ICE,
+                   Adresse = x.Client.Adresse
+               }).OrderBy(x => x.Date).ToList();
+
+                if (useVAT)
+                {
+
+                    dataSource = context.PaiementFactures.Where(x => x.IdClient == id && x.Hide != true)
+                    .Select(x => new
+                    {
+                        Client = x.Client.Name,
+                        NumBon = x.Facture.NumBon,
+                        Date = x.Date,
+                        Debit = x.Debit,
+                        Credit = x.Credit,
+                        Type = x.TypePaiement.Name,
+                        DateEcheance = "",
+                        Commentaire = x.Comment,
+                        ICE = x.Client.ICE,
+                        Adresse = x.Client.Adresse
+                    }).OrderBy(x => x.Date).ToList();
+                }
+            }
+          
+            if(dateFrom.HasValue && dateTo.HasValue)
+            {
+                var soldeBeforeDate = useVAT ? context.PaiementFactures.Where(x => DbFunctions.TruncateTime(x.Date) < dateFrom.Value && x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f : context.Paiements.Where(x => DbFunctions.TruncateTime(x.Date) < dateFrom.Value && x.IdClient == id).Sum(x => (float?)(x.Debit - x.Credit)) ?? 0f;
+                dataSource.Insert(0, new
+                {
+                    Client = client.Name,
+                    NumBon = "",
+                    Date = dateFrom.Value,
+                    Debit = soldeBeforeDate,
+                    Credit = 0f,
+                    Type = "-",
+                    DateEcheance = "",
+                    Commentaire = "Solde avant : " + (dateFrom.HasValue ? dateFrom.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : ""),
+                    ICE = client.ICE,
+                    Adresse = client.Adresse
+                });
+            }
 
             return dataSource;
         }
 
 
-        public void Export(Guid id, DateTime dateFrom, DateTime dateTo)
+        public void Export(Guid id, DateTime? dateFrom, DateTime? dateTo)
         {
             var client = context.Clients.Find(id);
             ExcelPackage Ep = new ExcelPackage();
@@ -202,8 +250,8 @@ namespace WebApplication1.Controllers.Print
             Response.Clear();
             Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             Response.AddHeader("content-disposition", "attachment; filename=" +
-                client.Name + " " + dateFrom.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) +
-                " - " + dateTo.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + ".xlsx");
+                client.Name + " " + (dateFrom.HasValue ? dateFrom.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "") +
+                " - " + (dateTo.HasValue ? dateTo.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + ".xlsx" : ""));
             Response.BinaryWrite(Ep.GetAsByteArray());
             Response.End();
         }

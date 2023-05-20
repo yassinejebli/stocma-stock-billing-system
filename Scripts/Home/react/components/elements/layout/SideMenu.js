@@ -272,7 +272,7 @@ const MenuItems = () => {
                 <ListItemText primary="Suivi" />
               </ListItem>
             )}
-            {isAdmin && (
+            {
               <ListItem
                 button
                 className={classes.nested}
@@ -282,8 +282,8 @@ const MenuItems = () => {
                 <ListItemIcon />
                 <ListItemText primary="Tarif" />
               </ListItem>
-            )}
-            {isAdmin && rapportVenteModule?.Enabled && (
+            }
+            {rapportVenteModule?.Enabled && (
               <ListItem
                 button
                 className={classes.nested}

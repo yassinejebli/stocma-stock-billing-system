@@ -244,6 +244,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\Print\EtatArticleFactureController.cs" />
     <Compile Include="Controllers\Print\RapportsAchats.cs" />
+    <Compile Include="Controllers\Print\SituationJournaliereController.cs" />
     <Compile Include="Controllers\Print\TarifController.cs" />
     <Compile Include="Controllers\Print\PaiementsFController.cs" />
     <Compile Include="Controllers\Print\SituationGlobaleController.cs" />

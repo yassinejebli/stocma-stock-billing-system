@@ -1,19 +1,19 @@
-import 'date-fns';
-import React from 'react';
+import "date-fns";
+import React from "react";
 import frLocale from "date-fns/locale/fr";
-import DateFnsUtils from '@date-io/date-fns';
+import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   DatePicker as MuiDatePicker,
-} from '@material-ui/pickers';
-import { makeStyles } from '@material-ui/core';
+} from "@material-ui/pickers";
+import { makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles(theme=>({
+const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: 240,
     // margin: '16px 0 0 0'
-  }
-}))
+  },
+}));
 
 export default function DatePicker(props) {
   const classes = useStyles();
@@ -21,14 +21,15 @@ export default function DatePicker(props) {
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={frLocale}>
       <MuiDatePicker
         {...props}
+        clearable
         size="small"
         autoOk
         inputVariant="outlined"
         format="dd/MM/yyyy"
         cancelLabel="Annuler"
-        clearLabel="Effacer"
+        clearLabel="Supprimer la date"
         className={classes.root}
       />
     </MuiPickersUtilsProvider>
-  )
+  );
 }

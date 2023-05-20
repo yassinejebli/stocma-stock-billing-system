@@ -53,7 +53,7 @@ namespace WebApplication1.Migrations
             var devisClientNameNull = context.Devises.Where(x => x.ClientName == null);
             if (devisClientNameNull.Count() > 0)
             {
-                context.Database.ExecuteSqlCommand("UPDATE Devises SET ClientName = (select Name from Clients where Id = IdClient) WHERE ClientName is null");
+                context.Database.ExecuteSqlCommand("UPDATE Devis SET ClientName = (select Name from Clients where Id = IdClient) WHERE ClientName is null");
                 //devisClientNameNull.ForEach(x => x.ClientName = x.Client.Name);
             }
             context.SaveChanges();
